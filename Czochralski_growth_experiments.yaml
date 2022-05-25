@@ -1,0 +1,56 @@
+# Data structure for synthesis from the melt
+
+## Czochralski growth experiments
+
+-  general info (experiment ID):
+    - grown material
+    - targeted crystal size
+    - external fields (magnetic…)
+    - seed direction
+    - date 
+    - staff/grower
+
+- process parameter (process ID):
+    - power(t)
+    - ac frequency
+    - rot. rate crystal 
+    - rot. rate crucible
+    - crucible position(t)
+    - pul.rate (t)
+    - magnetic field(t)
+    - feedstock quality
+    - feedstock weight
+    - gas composition
+    - pressure
+    - gas flow rate(t)
+    - seed orientation
+    - doping material
+    - doping quality
+    - doping weight/concentration
+    - process duration
+
+- set up (furnace ID):
+    - furnace geometry
+    - furnace material assignment
+    - heater type ( induction/res.)
+    - crucible diameter
+    - crucible quality
+    - crucible material
+    - furnace manufacturer
+    - process control ( T or power)
+    - age of furnace parts
+
+- monitored parameters (measured & set):
+    - crystal length(t)
+    - crucible diameter(t)
+    - temperature in TE(t)
+    - pul. Rate(t)
+    - crystal growth rate(t)
+
+-  basic features of crystal as-grown:
+    - final crystal length
+    - crystal weight
+    - visual quality (poly,twins etc.)
+    - average crystal diameter
+    - safety/reactivity
+    - color

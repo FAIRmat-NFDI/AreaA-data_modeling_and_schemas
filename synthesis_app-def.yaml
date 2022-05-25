@@ -1,0 +1,101 @@
+# General synthesis data structure concept
+# All the words enclosed into round braket are STANDARD classes
+melt_czochralski:
+    (entry):
+
+        operator(user):
+            exists: [min, 1, max, unbounded]
+            name:
+            affiliation:
+            address:
+            email:
+            orcid:
+            telephone_number:
+
+        responsible_person(user):
+            exists: [min, 0, max, unbounded]
+            name:
+            affiliation:
+            address:
+            email:
+            orcid:
+            telephone_number:
+
+        instrument: 
+            doc: description of all used equipment for the sample preparation or preparation environment
+            device_id: "PHMT"
+            device_type: "pH meter"
+            device_company: "Mettler Toledo"
+            device_name: "Five Easy"
+            device_calibration [optional]: date…
+            device_status [optional]: In operation
+            serial number:
+            # Device specific.
+            device_standard_measurement: 1, 3, 7
+            # Every kind of instrument component:
+            furnace:
+            heating:
+            temperature_sensor:
+            voltage_sensor:
+            current_sensor:
+            
+        chemicals(sample): 
+            doc: list of chemicals that will be linked inside each process step.
+            exists: [min, 1, max, unbounded]
+            sample_id: 
+            qualification: {the type of sample, e.g. element, compound, mixture, etc}
+            properties: {all the available or desired info}
+            sample_components(sample): {in case of complex structure of sample}
+
+        substrate(sample): 
+            doc: list of chemicals that will be linked inside each process step.
+            exists: [min, 1, max, unbounded]
+            sample_id: 
+            qualification: {the type of sample, e.g. element, compound, mixture, substrate, etc}
+            properties: {all the available or desired info}
+            sample_components(sample): {in case of complex structure of sample}
+
+        (synthesis): 
+            doc: description of the process including, starting material, pre-process and post-process steps
+            general: #the entry is the most general entity constituting a synthesis or measurement experiment
+                # paramters that stay constant
+                definition: {name of synthesis process}
+                experiment_identifier:
+                experiment_location:
+                start_time:
+                end_time:
+                synthesis_category:
+                synthesis_method: melt | gas phase | assembly | solid phase and solution | ?
+                targeted_material:
+                status_of_experiment: Enum(completed, ongoing, aborted, ...)
+                substrate or seed material:
+                general process parameters: 
+            synthesis_step:
+                pre_process: 
+                    doc: pretreatments, e.g. substrate prepretreatment, target preparation (--> link to setup), preparation of catalysis solution
+                process: # main proces of sample preparation
+                    chemical: {link to sample_id}
+                    amount:
+                    timestamp:
+                    device:
+                        device: {link to instrument or to specific component used in this step, e.g. a sensor}
+                        set parameter values: 
+                        actual parameter values:
+                    in_situ_measurement: (from link to characterization section)
+                post_process: # post treatment, sample children, etc.    
+            
+        (characterization): 
+            doc: all the measurements performed on your final sample, they can be stored in another schema file and linked here
+            # description of the characterization methods and its results
+            method:
+                description:
+                measurement: {specify here a detailed description or link to another ENTRY}
+
+        (simulation):
+
+        data_post_processing(data): {post_processing and plots of relevant data}
+
+        result:
+                
+    
+

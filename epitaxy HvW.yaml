@@ -1,0 +1,47 @@
+# 20220516 Oliver Bierwagen
+# summarizing what is needed to describe epitaxial samples (layer(s) on a substrate)
+- crystal: #used in anything crystalline (e.g., substrate, layer, domain(?)
+	- compound: # please cross-check similarities to Tamas' chemical_compound class !
+		- chemical formula: # e.g., Ga2O3 - the chemical formula (What about alloys?, e.g. (Al0.4Ga0.6)2O3 or Al0.8Ga1.2O3
+		- DOPANT: # can be multiple dopants or impurities
+			- element: # chem. symbol, e.g. Fe
+			- concentration: # typically given in cm^-3, e.g., 3e18
+	- crystal structure: # anything missing or is there a more common definition?
+		- space group: # integer number or some other accepted descriptor of the xtal structure, maybr use 0 for amorphous
+		- lattice parameters: # a, b, c typically given in A°
+		- angles: # alpha, beta, gamma in degrees
+	- out-of-plane orientation: # the physical surface may be different if the surface forms facets - may be worth to define a surface class 
+		- hkl: # e.g. (1 0 0) three integer numbers
+		- offcut:
+			- degrees: #, e.g. 2
+			- towards:  e.g. (001)
+	- in-plane reference orientation: # used for epitaxy, allows to define in-plane epitaxial relation for stacks of xtals, e.g. layer on substrate - in real or reciprocal space ? ([u v w] or (h k l)
+
+- substrate: # description of a substrate, i.e., a single crystalline wafer used in e.g., epitaxy. May also be amorphous (e.g. glass)
+	- crystal: # such that substrate can be derived from crystal
+	- thickness: # typically given in mm
+	- shape: # e.g., 2" dia, 10mm x 10mm or piece, e.g., 1/4 2" or 3mm x 5mm
+	- polishing: # 1sp = single sided, 2sp = double sided
+	- rms roughness: # or other descriptors of the surface polishing
+	- vendor: # text
+	- wafer id: # text, e.g. batch and individual wafer or whatever the ID the vendor provides 
+	- epiready: yes/no #can the substrate be used as delivered
+	- pretreatment: #only for epiready_no, describe treatment of substrate done by grower prior to deposition	
+
+- layer: # 	howto allow for non-single crystallinity (texture/domain structure, polyxtalline, mixture of diff. xtal structures, microstructure such as dislocations)
+	- CRYSTAL: # possible multiple if layer consists of different domains, crystal structures ...
+	- thickness: # typically given in nm or ML (ML=monolayer, ML thickness depends on crystal structure and orientation)
+	- growth: # a reference to the growth/synthesis (?) this is essential
+
+- surface:
+	- topology: #closed layer, islands, wires ?? 
+	- reconstruction: # unclear, howto describe - check with some expert on terminology for recos.
+	- FACETS: # what facet orientations form
+		- hkl: # facet orientation=physical surface
+		- lateral size: # eg in nm, to get an idea
+	- roughness: # typ. determined by AFM
+		- lateral image size: # size of AFM image used to quantify roughness, e.g., 1µm
+		- rms: # typically in nm or A°
+		- peak-to-valley: #maximal height difference of a sample surface
+
+		
