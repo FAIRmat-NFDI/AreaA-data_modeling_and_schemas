@@ -1,60 +1,68 @@
 data:  
   m_def: ../upload/raw/melt_czochralski_app-def_schema.archive.yaml#MeltCzochralski
-  operator:
-    name: Giovanni Giorgio
-    affiliation_institution:
-    affiliation_group:
+  operator: #section name - not to be filled
+    name: Josef Pal
+    affiliation_institution: Leibniz Institut für Kristallzüchtung
+    affiliation_group: Model experiment
     address:
     email:
     orcid:
     telephone_number:
-  responsible_person:
-    name: Giovanni Giorgio
-    affiliation_institution:
-    affiliation_group:
+  responsible_person: #section name - not to be filled
+    name: Iason Tsiapkinis
+    affiliation_institution: Leibniz Institut für Kristallzüchtung
+    affiliation_group: Model experiment
     address:
     email:
     orcid:
     telephone_number:
-  instrument:
-    furnace:
-      test_quantity:
-    heating:
-      test_quantity:
-    temperature_sensors:
-      sensor_type:
-      description:
-      channel:
-      measured_property:
-      unit:
-      value:
-    pyro_sensor:
-      sensor_type:
-      description:
-      model:
-      channel:
-      measured_property:
-      unit:
-      emission:
-      transmission:
-      t90:
-      value:
-    synthesis:
-      general:
-        experiment_identifier:
-        experiment_location:
-        start_time:
-        end_time:
-        synthesis_category:
-        synthesis_method:
-      synthesis_step:
-        pre_process:
-          timestamp:
-        process:
-          timestamp:
-          crystal_diameter:
-          fan:
-          pump:
-          sensors:
-        post_process:
-          test_quantity:
+  instrument: #section name - not to be filled
+    furnace: #section name - not to be filled
+      furnace_type: Test-Cz
+    heating: #section name - not to be filled
+      heater_type: 
+      heater_id: vXXX
+    sensors:
+      sensors_locations: 
+      temperature_sensor: #section name - not to be filled
+        sensor_type: temperature_probes
+        sensor_description: "Temperature inside the crystal, 25 mm above melt"
+        sensor_alias: TE_1_front
+        channel: 101
+        measured_property: Temperature
+        value:
+      pyro_sensor: #section name - not to be filled
+        sensor_type: pyrometer
+        sensor_description: "Crucible outside surface temperature at position of TE_1"
+        sensor_alias: Pyro-1-IGA-6-23
+        model: IGA 6/23
+        channel: 501
+        measured_property: Temperature
+        emission: 89
+        transmission: 100
+        t90: 0.01
+        value:
+  processing: #section name - not to be filled
+    multimeter: Keithley
+    software: multilog vXXX
+    sampling_time: 1000
+  synthesis: #section name - not to be filled
+    general: #section name - not to be filled
+      experiment_identifier:
+      experiment_location:
+      start_time: 2021-03-04 10:15:00+01
+      end_time: 2021-03-04 10:15:00+01
+      synthesis_category: melt
+      synthesis_method: Czochralski
+    synthesis_step: #section name - not to be filled
+      pre_process: #section name - not to be filled
+        timestamp: 2021-03-04 10:15:00+01
+      process: #section name - not to be filled
+        timestamp: 2021-03-04 10:30:00+01
+        crystal_diameter:
+        fan:
+        pump:
+        sensors:
+      post_process: #section name - not to be filled
+        timestamp: 2021-03-04 10:45:00+01
+        test_quantity:

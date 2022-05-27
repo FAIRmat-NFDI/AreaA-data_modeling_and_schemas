@@ -87,51 +87,157 @@ definitions:
               furnace:
                 section:
                   quantities:
-                    test_quantity:
+                    furnace_type:
                       type: str
+                      description: "Furnace description"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
               heating:
                 section:
                   quantities:
-                    test_quantity:
+                    heater_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Resistance
+                          - Inductor
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    heater_id:
                       type: str
-              temperature_sensor:
+                      description: "Inductor or resistance heater name or ID"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              sensors:
                 section:
                   quantities:
-                    sensor_type:
+                    sensors_locations:
                       type: str
-                    description:
-                      type: str
-                    channel:
-                      type: str
-                    measured_property:
-                      type: str
-                    unit:
-                      type: str
-                    value:
-                      type: str
-              pyro_sensor:
-                section:
-                  quantities:
-                    sensor_type:
-                      type: str
-                    description:
-                      type: str
-                    model:
-                      type: str
-                    channel:
-                      type: str
-                    measured_property:
-                      type: str
-                    unit:
-                      type: str
-                    emission:
-                      type: str
-                    transmission:
-                      type: str
-                    t90:
-                      type: str
-                    value:
-                      type: str
+                      description: Picture of sensor locations
+                      m_annotations:
+                        eln:
+                          component: RichTextEditQuantity
+                  sub_sections:
+                    temperature_sensor:
+                      section:
+                        #m_def: label_quantity='sensor_alias'
+                        quantities:
+                          sensor_type:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          sensor_description:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          sensor_alias:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          channel:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          measured_property:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          value:
+                            type: np.float64
+                            shape: ['*']
+                            unit: K
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                    pyro_sensor:
+                      section:
+                        quantities:
+                          sensor_type:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          sensor_description:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          sensor_alias:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          channel:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          measured_property:
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
+                          emission:
+                            type: int
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                                minValue: 0
+                                maxValue: 100
+                            description: "Emission percentage value set in pyrometer"
+                          transmission:
+                            type: np.float64
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                                minValue: 0
+                                maxValue: 100
+                            description: "Transmission percentage value set in pyrometer"
+                          t90:
+                            type: np.float64
+                            description: "FILL THE DESCRIPTION"
+                            unit: seconds
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                          value:
+                            type: np.float64
+                            shape: ['*']
+                            unit: K
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+        processing:
+          section:
+            quantities:
+              multimeter: 
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                description: "Multimeter used for data logging"
+              software:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                description: "Software used for logging"
+              sampling_time:
+                type: np.float64
+                unit: ms
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: ms
+                description: "Time between sampled points"
         synthesis:
           section:
             sub_sections:
@@ -140,16 +246,34 @@ definitions:
                   quantities:
                     experiment_identifier:
                       type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
                     experiment_location:
                       type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
                     start_time:
-                      type: str
+                      type: Datetime
+                      m_annotations:
+                        eln:
+                          component: DateTimeEditQuantity
                     end_time:
-                      type: str
+                      type: Datetime
+                      m_annotations:
+                        eln:
+                          component: DateTimeEditQuantity
                     synthesis_category:
                       type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
                     synthetis_method:
                       type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
               synthesis_step:
                 section:
                   sub_sections:
@@ -157,22 +281,48 @@ definitions:
                       section:
                         quantities:
                           timestamp:
-                            type: str
+                            type: Datetime
+                            m_annotations:
+                              eln:
+                                component: DateTimeEditQuantity
                     process:
                       section:
                         quantities:
                           timestamp:
-                            type: str
+                            type: Datetime
+                            m_annotations:
+                              eln:
+                                component: DateTimeEditQuantity
                           crystal_diameter:
                             type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
                           fan: 
                             type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
                           pump:
-                            type: str 
+                            type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity 
                           sensors:
                             type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
                     post_process:
                       section:
                         quantities:
+                          timestamp:
+                            type: Datetime
+                            m_annotations:
+                              eln:
+                                component: DateTimeEditQuantity
                           test_quantity:
                             type: str
+                            m_annotations:
+                              eln:
+                                component: StringEditQuantity
