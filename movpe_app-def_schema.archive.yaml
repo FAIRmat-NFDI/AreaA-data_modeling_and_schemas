@@ -55,6 +55,175 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
+        precursor_sample:
+          section:
+            sub_sections:
+              chemical:
+                section:
+                  quantities:
+                    comment:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    chemical_name:
+                      type: str
+                      description: The name of the chemical that is typically used in literature
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    iupac_name:
+                      type: str
+                      description: the IUPAC nomencalture of the chemical
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    phase:
+                      type: str
+                      description: Phase of the chemical in ist bottle
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    supplier:
+                      type: str
+                      description: Fabricating company
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    purity:
+                      type: str
+                      description: Purity of the Chemical
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    buying_date:
+                      type: str
+                      description: Date of the Invoice Mail
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    opening_date:
+                      type: str
+                      description: Date of Opening the Chemical bottle in the Glove box
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    CAS:
+                      type: str
+                      description: CAS number
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+            quantities:
+              comment:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              fabrication_date:
+                type: str
+                description: Date of precursor solution preparation
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              mass:
+                type: str
+                description: Mass of the powder precursor weighted out in the glove box
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              amount:
+                type: str
+                description: Amount of substance of precursor powder weighted out
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              volume_solvent:
+                type: str
+                description: Volume of solvent used to solve the powder precursor
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              mass_concentration:
+                type: str
+                description: Mass concentration of the prepared precursor-solvent solution
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              concentration:
+                type: str
+                description: amount of substance concentration of the prepared precursor-solvent solution
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              flow:
+                type: str
+                description: Velocity of the precursor solution flow adjusted by peristaltic pumps
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        substrate:
+          section:
+            quantities:
+              comment:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              supplier:
+                type: str
+                description: Sample preparation including orientating, polishing, cutting done by this company
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              orientation:
+                type: str
+                description: crystallographic orientation of the substrate in [hkl]
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              off_cut:
+                type: str
+                description: Off-cut angle to the substrates surface
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              doping_level:
+                type: str
+                description: Chemical doping level of electrically conductive substrates
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              doping_species:
+                type: str
+                description: Doping species to obtain electrical conductivity in the substrates
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              charge:
+                type: str
+                description:Substrate charge ID given by fabrication company. Detailed information can be obtained from the company by requesting this charge ID
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              size:
+                type: str
+                description: Substrate dimensions
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              prepared:
+                type: str
+                description: Is the sample annealed, cleaned and etched for smooth stepped surface?
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              recycled:
+                type: str
+                description: Was the substrate deposited already and is recycled by polishing?
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
         instrument:
           section:
             sub_sections:
