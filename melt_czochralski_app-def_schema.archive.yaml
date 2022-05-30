@@ -5,47 +5,20 @@ definitions:
       # EntryArchive.data sub-section
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
-        operator:
+        user:
           section:
+            # m_def: 
+            #  label_quantity: name
             quantities:
-              name:
-                type: str
+              role:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Operator
+                    - Responsible_person
                 m_annotations:
                   eln:
-                    component: StringEditQuantity
-              affiliation_institution:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              affiliation_group:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              address:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              email:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              orcid:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              telephone_number:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-        responsible_person:
-          section:
-            quantities:
+                    component: EnumEditQuantity
               name:
                 type: str
                 m_annotations:
@@ -215,7 +188,7 @@ definitions:
                             m_annotations:
                               eln:
                                 component: NumberEditQuantity
-        processing:
+        data_processing:
           section:
             quantities:
               multimeter: 
@@ -240,40 +213,38 @@ definitions:
                 description: "Time between sampled points"
         synthesis:
           section:
+            quantities:
+              experiment_identifier:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              experiment_location:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              start_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              end_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              synthesis_category:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              synthesis_method:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
             sub_sections:
-              general:
-                section:
-                  quantities:
-                    experiment_identifier:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    experiment_location:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    start_time:
-                      type: Datetime
-                      m_annotations:
-                        eln:
-                          component: DateTimeEditQuantity
-                    end_time:
-                      type: Datetime
-                      m_annotations:
-                        eln:
-                          component: DateTimeEditQuantity
-                    synthesis_category:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    synthetis_method:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
               synthesis_step:
                 section:
                   sub_sections:

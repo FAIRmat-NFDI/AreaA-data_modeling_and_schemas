@@ -1,15 +1,8 @@
 data:  
   m_def: ../upload/raw/melt_czochralski_app-def_schema.archive.yaml#MeltCzochralski
-  operator: #section name - not to be filled
+  user: #section name - not to be filled
+    role: Operator
     name: Josef Pal
-    affiliation_institution: Leibniz Institut für Kristallzüchtung
-    affiliation_group: Model experiment
-    address:
-    email:
-    orcid:
-    telephone_number:
-  responsible_person: #section name - not to be filled
-    name: Iason Tsiapkinis
     affiliation_institution: Leibniz Institut für Kristallzüchtung
     affiliation_group: Model experiment
     address:
@@ -22,7 +15,7 @@ data:
     heating: #section name - not to be filled
       heater_type: 
       heater_id: vXXX
-    sensors:
+    sensors: #section name - not to be filled
       sensors_locations: 
       temperature_sensor: #section name - not to be filled
         sensor_type: temperature_probes
@@ -42,18 +35,17 @@ data:
         transmission: 100
         t90: 0.01
         value:
-  processing: #section name - not to be filled
+  data_processing: #section name - not to be filled
     multimeter: Keithley
     software: multilog vXXX
     sampling_time: 1000
   synthesis: #section name - not to be filled
-    general: #section name - not to be filled
-      experiment_identifier:
-      experiment_location:
-      start_time: 2021-03-04 10:15:00+01
-      end_time: 2021-03-04 10:15:00+01
-      synthesis_category: melt
-      synthesis_method: Czochralski
+    experiment_identifier:
+    experiment_location:
+    start_time: 2021-03-04 10:15:00+01
+    end_time: 2021-03-04 10:15:00+01
+    synthesis_category: melt
+    synthesis_method: Czochralski
     synthesis_step: #section name - not to be filled
       pre_process: #section name - not to be filled
         timestamp: 2021-03-04 10:15:00+01
