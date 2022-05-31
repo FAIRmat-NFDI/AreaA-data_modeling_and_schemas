@@ -2,66 +2,65 @@ definitions:
   name: 'Electronic Lab Notebook schema fot MOVPE-STO'
   sections:  # Schemas consist of section definitions
     Chemical:
-      section:
-        quantities:
-          comment:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          chemical_name:
-            type: str
-            description: The name of the chemical that is typically used in literature
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          iupac_name:
-            type: str
-            description: the IUPAC nomencalture of the chemical
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          phase:
-            type: str
-            description: Phase of the chemical in ist bottle
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          supplier:
-            type: str
-            description: Fabricating company
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          purity:
-            type: str
-            description: Purity of the Chemical
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          buying_date:
-            type: Datetime
-            description: Date of the Invoice Mail
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          opening_date:
-            type: Datetime
-            description: Date of Opening the Chemical bottle in the Glove box
-            m_annotations:
-              eln:
-                component: DateTimeEditQuantity
-          CAS:
-            type: str
-            description: CAS number
-            m_annotations:
-              eln:
-                component: DateTimeEditQuantity
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        chemical_name:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          description: the IUPAC nomencalture of the chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        phase:
+          type: str
+          description: Phase of the chemical in ist bottle
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        supplier:
+          type: str
+          description: Fabricating company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        purity:
+          type: str
+          description: Purity of the Chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        buying_date:
+          type: Datetime
+          description: Date of the Invoice Mail
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        opening_date:
+          type: Datetime
+          description: Date of Opening the Chemical bottle in the Glove box
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        CAS:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
     User:
-      #repeats: true
-      section:
           #m_def: 
           # label_quantity: name
+        base_section: nomad.datamodel.data.EntryData
         quantities:
           role:
             type:
@@ -113,13 +112,31 @@ definitions:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
         users:
-          section_def: '#/User'
+          repeats: true
+          section:
+            base_section: User
+            m_annotations:
+              eln:  # ads the sub-section to the eln and allows users to create new instances of this sub-section
+            # We can also nest sub_sections. It goes aribitrarely deep.
+            #sub_sections:
+            #  user:
+            #    section:
+            #      base_section: User
+                  #m_annotations:
+                    # We can use the eln annotations to put the section to the overview
+                    # page, and hide unwanted inherited quantities.
+                    #eln:
+                    #  overview: true
+                    #        hide: []
         precursor_sample:
           section:
-            sub_sections:
-              chemicals:
-                section_def: '#/Chemical'
             quantities:
+              chemicals:
+                type: Chemical
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
               comment:
                 type: str
                 m_annotations:
