@@ -1,0 +1,14 @@
+data:  
+  m_def: ../upload/raw/movpe_app-def_schema.archive.yaml#MovpeSto_schema 
+  users: #section name - not to be filled
+    role: Operator
+    name: Giovanni Giorgio
+    affiliation_institution: CNR
+    address:
+    email:
+    orcid:
+    telephone_number:
+  precursor_sample:
+    chemicals:
+      chemical_name: Giovanni Giorgio's special recipe
+  
