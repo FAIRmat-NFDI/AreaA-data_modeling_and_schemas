@@ -10,4 +10,6 @@ data:
     chemicals:
       - "../upload/raw/Copper_II_Selenide.archive.json#data"
       - "../upload/raw/CHEMICAL.archive.yaml#data"
+  synthesis:
+    data_file: ELAB-255_NEW-STD_nontested.csv
   

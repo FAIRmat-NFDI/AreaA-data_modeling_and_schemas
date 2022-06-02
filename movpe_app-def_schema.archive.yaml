@@ -17,13 +17,13 @@ definitions:
               component: StringEditQuantity
         iupac_name:
           type: str
-          description: the IUPAC nomencalture of the chemical
+          description: the IUPAC nomenclature of the chemical
           m_annotations:
             eln:
               component: StringEditQuantity
         phase:
           type: str
-          description: Phase of the chemical in ist bottle
+          description: Phase of the chemical in the bottle
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -112,22 +112,15 @@ definitions:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
         users:
-          repeats: true
+          #repeats: true
           section:
-            base_section: User
-            m_annotations:
-              eln:  # ads the sub-section to the eln and allows users to create new instances of this sub-section
-            # We can also nest sub_sections. It goes aribitrarely deep.
-            #sub_sections:
-            #  user:
-            #    section:
-            #      base_section: User
-                  #m_annotations:
-                    # We can use the eln annotations to put the section to the overview
-                    # page, and hide unwanted inherited quantities.
-                    #eln:
-                    #  overview: true
-                    #        hide: []
+            quantities:
+              user:
+                type: User
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
         precursor_sample:
           section:
             quantities:
@@ -257,11 +250,32 @@ definitions:
         synthesis:
           section:
             quantities:
+              data_file:
+                type: str
+                description: |
+                  A reference to an uploaded .csv
+                m_annotations:
+                  # The tabular_parser annotation, will treat the values of this
+                  # quantity as files. It will try to interpret the files and fill
+                  # quantities in this section (and sub_section) with the column
+                  # data of .csv or .xlsx files.
+                  tabular_parser:
+                    sep: '\t'
+                    comment: '#'
+                  browser:
+                    adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                  eln:
+                    component: FileEditQuantity  # A form field that allows to drop and select files.
               experiment_identifier:
                 type: str
+                shape: ['*']
                 m_annotations:
-                  eln:
-                    component: StringEditQuantity
+                  # The tabular annotation defines a mapping to column headers used in
+                  # tabular data files
+                  tabular:
+                    name: Experiment_Identifier
+                  #eln:
+                  #  component: StringEditQuantity
               experiment_location:
                 type: str
                 m_annotations:
