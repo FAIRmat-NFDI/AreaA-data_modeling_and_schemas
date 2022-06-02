@@ -1,0 +1,13 @@
+data:  
+  m_def: ../upload/raw/movpe_app-def_schema.archive.yaml#MovpeSto_schema 
+  users: #section name - not to be filled
+    - "../upload/raw/USER.archive.yaml#data"
+    - "../upload/raw/USER2.archive.yaml#data"
+  #  user:
+  #    role: Operator
+  #    name: Marco
+  precursor_sample:
+    chemicals:
+      - "../upload/raw/Copper_II_Selenide.archive.json#data"
+      - "../upload/raw/CHEMICAL.archive.yaml#data"
+  
