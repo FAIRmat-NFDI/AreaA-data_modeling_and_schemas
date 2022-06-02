@@ -1,0 +1,212 @@
+definitions:
+  sections:
+    Bridgman:
+      base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        general_info:
+          section:
+            quantities:
+              SampleID:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Target_material: 
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity  
+              Date:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Growth_method: 
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity  
+              Grower: 
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity  
+              Tags:
+                type: str
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        Instruments:
+          section:
+            sub_sections:
+              Furnace:
+                section:
+                  quantities:
+                    Name:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Manufacturer:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Melting_type:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              Crucible:
+                section:
+                  quantities:
+                    Material:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Diameter:
+                      type: np.float64
+                      unit: millimeter
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity                    
+              Tube:
+                section:
+                  quantities:
+                    Material:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Diameter:
+                      type: np.float64
+                      unit: millimeter
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    Filling:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+        Process_parameters:
+          section:
+            quantities:
+              Temperature:
+                type: np.float64
+                unit: °C
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Pulling_rate:
+                type: np.float64
+                unit: mm / minute
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+        Basic_crystal_features:
+          section:
+            quantities:
+              Achieved_composition:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Singe_poly:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Final_crystal_length:
+                type: np.float64
+                unit: mm
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Shape:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Orientation:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Safety_Reactivity:
+                type: str
+                shape: ["*"]
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        Remarks:
+          section:
+            quantities:
+              Text:
+                type: str
+                m_annotations:
+                  eln:
+                    component: RichTextEditQuantity
+        Initial_materials:
+          section:
+            sub_sections:
+              Component_1:
+                section:
+                  quantities:
+                    Material:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Type:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Weight:
+                      type: np.float64
+                      unit: g
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    Company:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Purity:
+                      type: np.float64
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity   
+              Component_2:
+                section:
+                  quantities:
+                    Material:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Type:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Weight:
+                      type: np.float64
+                      unit: g
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    Company:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Purity:
+                      type: np.float64
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity

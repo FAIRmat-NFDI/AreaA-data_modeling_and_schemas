@@ -1,0 +1,51 @@
+# example data file for chemical vapor transport synthesis by Jonathan Noky @ CPFS Dresden
+data:  
+  m_def: #../upload/raw/bridgman2.archive.yaml#Bridgman
+  general_info:
+    SampleID: JN123
+    Target_material: NaCl
+    Date: 2020-01-01
+    Growth_method: Chemical_Vapor_Transport
+    Grower: Jonathan Noky
+    Tags:
+        - Chemical Vapor Transport
+        - JN123
+        - NaCl
+  Instruments:
+    Furnace:
+      Name: B1.2.3.2
+      Manufacturer: HeaterPower
+      Melting_type: Induction
+    Tube:
+      Material: Quartz
+      Diameter: 15
+      Length: 10
+      Filling: Vacuum
+  Process_parameters:
+    Temperature_1: 600
+    Temperature_2: 500
+    Transport_agent: text
+  Basic_crystal_features:
+    Achieved_composition: NaCl
+    Singe_poly: Single crystal
+    Final_crystal_length: 10
+    Shape: round
+    Orientation: 001
+    Safety_Reactivity: 
+      - Air sensitive
+      - poisonous
+  Remarks: 
+    Text: Reaction easily done. No complications occured.
+  Initial_materials:
+    Component_1:
+      Material: Na
+      Type: powder
+      weight: 10
+      Company: Na-Company
+      Purity: 99.99
+    Component_2:
+      Material: Cl
+      Type: pieces
+      Weight: 5
+      Company: Cl-Company
+      Purity: 99.999

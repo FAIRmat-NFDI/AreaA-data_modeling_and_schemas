@@ -1,0 +1,53 @@
+# example data file for Bridgman synthesis by Jonathan Noky @ CPFS Dresden
+data:  
+  m_def: ../upload/raw/bridgman2.archive.yaml#Bridgman
+  general_info:
+    SampleID: JN123
+    Target_material: NaCl
+    Date: 2020-01-01
+    Growth_method: Bridgman
+    Grower: Jonathan Noky
+    Tags:
+        - Bridgman
+        - JN123
+        - NaCl
+        - Bui
+  Instruments:
+    Furnace:
+      Name: B1.2.3.2
+      Manufacturer: HeaterPower
+      Melting_type: Induction
+    Crucible:
+      Material: Al
+      Diameter: 12
+    Tube:
+      Material: Quartz
+      Diameter: 15
+      Filling: Vacuum
+  Process_parameters:
+    Temperature: 600
+    Pulling_rate: 10
+  Basic_crystal_features:
+    Achieved_composition: NaCl
+    Singe_poly: Single crystal
+    Final_crystal_length: 10
+    Shape: round
+    Orientation: 001
+    Safety_Reactivity: 
+      - Air sensitive
+      - poisonous
+  Remarks: 
+    Text: Reaction easily done. No complications occured.
+  Initial_materials:
+    Component_1:
+      Material: Na
+      Type: powder
+      weight: 10
+      Company: Na-Company
+      Purity: 99.99
+    Component_2:
+      Material: Cl
+      Type: pieces
+      Weight: 5
+      Company: Cl-Company
+      Purity: 99.999

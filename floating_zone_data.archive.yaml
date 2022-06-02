@@ -1,0 +1,54 @@
+# example data file for floating zone synthesis by Jonathan Noky @ CPFS Dresden
+data:  
+  m_def: #../upload/raw/bridgman2.archive.yaml#Bridgman
+  general_info:
+    SampleID: JN123
+    Target_material: NaCl
+    Date: 2020-01-01
+    Growth_method: floating zone
+    Grower: Jonathan Noky
+    Tags:
+        - floating zone
+        - JN123
+        - NaCl
+        - Bui
+  Instruments:
+    Furnace:
+      Name: B1.2.3.2
+      Manufacturer: HeaterPower
+      Melting_type: Induction
+  Rod_information:
+    Rod_preparation: text
+    Seed_rod_diameter: 12
+    Feed_rod_diameter: 12
+    Feed_rod_crystal_direction: hkl
+  Process_parameters:
+    Melting_power: 12
+    Growth_power: 12
+    Rotation_speed: 12
+    Rotation_direction: text
+    Pulling_rate: 10
+  Basic_crystal_features:
+    Achieved_composition: NaCl
+    Singe_poly: Single crystal
+    Final_crystal_length: 10
+    Shape: round
+    Orientation: 001
+    Safety_Reactivity: 
+      - Air sensitive
+      - poisonous
+  Remarks: 
+    Text: Reaction easily done. No complications occured.
+  Initial_materials:
+    Component_1:
+      Material: Na
+      Type: powder
+      weight: 10
+      Company: Na-Company
+      Purity: 99.99
+    Component_2:
+      Material: Cl
+      Type: pieces
+      Weight: 5
+      Company: Cl-Company
+      Purity: 99.999
