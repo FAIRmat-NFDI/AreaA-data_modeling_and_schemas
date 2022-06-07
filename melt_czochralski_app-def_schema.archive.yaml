@@ -6,7 +6,9 @@ definitions:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
         user:
-          #repeats: true
+          m_annotations:
+            eln:
+          repeats: true
           section:
              #m_def: 
              # label_quantity: name

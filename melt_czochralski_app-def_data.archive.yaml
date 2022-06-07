@@ -1,14 +1,14 @@
 data:  
   m_def: ../upload/raw/melt_czochralski_app-def_schema.archive.yaml#MeltCzochralski
   user: #section name - not to be filled
-    role: Operator
-    name: Josef Pal
-    affiliation_institution: Leibniz Institut für Kristallzüchtung
-    affiliation_group: Model experiment
-    address:
-    email:
-    orcid:
-    telephone_number:
+    - role: Operator
+      name: Josef Pal
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: Model experiment
+      address:
+      email:
+      orcid:
+      telephone_number:
   instrument: #section name - not to be filled
     furnace: #section name - not to be filled
       furnace_type: Test-Cz

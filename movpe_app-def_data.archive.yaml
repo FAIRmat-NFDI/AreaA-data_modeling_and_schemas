@@ -1,11 +1,21 @@
 data:  
   m_def: ../upload/raw/movpe_app-def_schema.archive.yaml#MovpeSto_schema 
-  users: #section name - not to be filled
-    - "../upload/raw/USER.archive.yaml#data"
-    - "../upload/raw/USER2.archive.yaml#data"
-  #  user:
-  #    role: Operator
-  #    name: Marco
+  users:
+    - name: Carola
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: Model experiment
+      address:
+      email:
+      orcid:
+      telephone_number:
+    - name: Giangi
+      affiliation_institution: HZB
+      affiliation_group: Quantum sensing
+      address:
+      email:
+      orcid:
+      telephone_number:
+    - name: Giovanna
   precursor_sample:
     chemicals:
       - "../upload/raw/Copper_II_Selenide.archive.json#data"
