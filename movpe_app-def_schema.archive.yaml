@@ -17,13 +17,13 @@ definitions:
               component: StringEditQuantity
         iupac_name:
           type: str
-          description: the IUPAC nomencalture of the chemical
+          description: the IUPAC nomenclature of the chemical
           m_annotations:
             eln:
               component: StringEditQuantity
         phase:
           type: str
-          description: Phase of the chemical in ist bottle
+          description: Phase of the chemical in the bottle
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -58,54 +58,52 @@ definitions:
             eln:
               component: DateTimeEditQuantity
     User:
-          #m_def: 
-          # label_quantity: name
-        base_section: nomad.datamodel.data.EntryData
-        quantities:
-          role:
-            type:
-              type_kind: Enum
-              type_data:
-                - Operator
-                - Responsible_person
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
-          name:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          affiliation_institution:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          affiliation_group:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          address:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          email:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          orcid:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          telephone_number:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        role:
+          type:
+            type_kind: Enum
+            type_data:
+              - Operator
+              - Responsible_person
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_institution:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_group:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        address:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        email:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orcid:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        telephone_number:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     MovpeSto_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
@@ -113,21 +111,10 @@ definitions:
       sub_sections:
         users:
           repeats: true
+          m_annotations:
+            eln:
           section:
             base_section: User
-            m_annotations:
-              eln:  # ads the sub-section to the eln and allows users to create new instances of this sub-section
-            # We can also nest sub_sections. It goes aribitrarely deep.
-            #sub_sections:
-            #  user:
-            #    section:
-            #      base_section: User
-                  #m_annotations:
-                    # We can use the eln annotations to put the section to the overview
-                    # page, and hide unwanted inherited quantities.
-                    #eln:
-                    #  overview: true
-                    #        hide: []
         precursor_sample:
           section:
             quantities:
@@ -257,11 +244,32 @@ definitions:
         synthesis:
           section:
             quantities:
+              data_file:
+                type: str
+                description: |
+                  A reference to an uploaded .csv
+                m_annotations:
+                  # The tabular_parser annotation, will treat the values of this
+                  # quantity as files. It will try to interpret the files and fill
+                  # quantities in this section (and sub_section) with the column
+                  # data of .csv or .xlsx files.
+                  tabular_parser:
+                    sep: '\t'
+                    comment: '#'
+                  browser:
+                    adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                  eln:
+                    component: FileEditQuantity  # A form field that allows to drop and select files.
               experiment_identifier:
                 type: str
+                shape: ['*']
                 m_annotations:
-                  eln:
-                    component: StringEditQuantity
+                  # The tabular annotation defines a mapping to column headers used in
+                  # tabular data files
+                  tabular:
+                    name: Experiment_Identifier
+                  #eln:
+                  #  component: StringEditQuantity
               experiment_location:
                 type: str
                 m_annotations:
