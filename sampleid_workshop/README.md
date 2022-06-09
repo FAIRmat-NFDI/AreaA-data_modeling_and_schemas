@@ -35,9 +35,9 @@ Sebastian Brückner, Markus Kühbach, Hampus Näsström, Martin Albrecht, Johann
     -	Consider sample aliases
 -	Implementation:
     -	Pepe creates a md-file in our github:  https://github.com/FAIRmat-Experimental/Area_A_application_definitions/blob/main/sampleid_workshop/sampleid.md
--	md-file: A convention for generation of a human readable sample id, as the basis for a “sample_id base class“ that serves as a suggestion to users who need a sample id system/workflow
--	Anyone can comment on it in github
--	When we reach an agreement it will be included in NOMAD 
+    -	md-file: A convention for generation of a human readable sample id, as the basis for a “sample_id base class“ that serves as a suggestion to users who need a sample id system/workflow
+    -	Anyone can comment on it in github
+    -	When we reach an agreement it will be included in NOMAD 
 
 
 
