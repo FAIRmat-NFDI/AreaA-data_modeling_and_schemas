@@ -21,10 +21,10 @@ Sebastian Brückner, Markus Kühbach, Hampus Näsström, Martin Albrecht, Johann
 -	Need for pid / uid
     -	given by NOMAD for each upload and each entry within Upload
     -	for any sample (also unpublished ones)
-    -	(Relation between pids needed  sample inheritance)
+    -	(Relation between pids needed --> sample inheritance)
     -	Not replacing sample ID (see below)
 -	Need for individual sample ID 
-    -	human readable  internal use, understand sample without using computer
+    -	human readable --> internal use, understand sample without using computer
     -	Examples seen in the workshop contained information about:
         -	Sample owner
         -	Date stamp (or acronym)
@@ -34,7 +34,7 @@ Sebastian Brückner, Markus Kühbach, Hampus Näsström, Martin Albrecht, Johann
     -	**should be in NOMAD metainfo**
     -	Consider sample aliases
 -	Implementation:
-    -	Pepe creates a md-file in our github  https://github.com/FAIRmat-Experimental/Area_A_application_definitions/blob/main/sampleid_workshop/sampleid.md
+    -	Pepe creates a md-file in our github:  https://github.com/FAIRmat-Experimental/Area_A_application_definitions/blob/main/sampleid_workshop/sampleid.md
 -	md-file: A convention for generation of a human readable sample id, as the basis for a “sample_id base class“ that serves as a suggestion to users who need a sample id system/workflow
 -	Anyone can comment on it in github
 -	When we reach an agreement it will be included in NOMAD 
