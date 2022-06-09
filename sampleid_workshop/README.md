@@ -36,7 +36,7 @@ Sebastian Brückner, Markus Kühbach, Hampus Näsström, Martin Albrecht, Johann
 -	Implementation:
     -	Pepe creates a md-file in our github:  https://github.com/FAIRmat-Experimental/Area_A_application_definitions/blob/main/sampleid_workshop/sampleid.md
     -	md-file: A convention for generation of a human readable sample id, as the basis for a “sample_id base class“ that serves as a suggestion to users who need a sample id system/workflow
-    -	Anyone can comment on it in github
+    -	Anyone can comment on it in github. Here is a [link to the issue in github](https://github.com/FAIRmat-Experimental/Area_A_application_definitions/issues/1)
     -	When we reach an agreement it will be included in NOMAD 
 
 
