@@ -20,8 +20,10 @@ data:
     chemicals:
       - "../upload/raw/Copper_II_Selenide.archive.json#data"
       - "../upload/raw/CHEMICAL.archive.yaml#data"
+  substrate:
+    comment:
   synthesis:
-    #data_file: ELAB-255_NEW-STD_nontested.csv
+    data_file: ELAB-255_NEW-STD_nontested.csv
     experiment_identifier: 
     experiment_location:
     start_time:
@@ -39,7 +41,7 @@ data:
     synthesis_step:
       timestamp:
       duration:
-      step_number:
+      step_number: 2
       step_title: 
       step_comment:
       step_annotation:
@@ -49,11 +51,11 @@ data:
       argon_purge_titan:
       vaporization_temperature_titan:
       chamber_pressure:
-      substrate_temperature_filament:
-      shaft_temperature:
+      substrate_temperature_filament: 101
+      shaft_temperature: 101
       carrier_rotation:
       peristaltic_pump_rotation_titan:
       peristaltic_pump_rotation_strontium_lanthan:
       vaporization_temperature_strontium_lanthan:
-      argon_push_strontium_lanthan:
-      argon_purge_strontium_lanthan:
+      argon_push_strontium_lanthan: 2
+      argon_purge_strontium_lanthan: 3

@@ -10,7 +10,7 @@ definitions:
             eln:
           repeats: true
           section:
-             #m_def: 
+             #m_def:
              # label_quantity: name
             quantities:
               role:
@@ -184,6 +184,7 @@ definitions:
                             m_annotations:
                               eln:
                                 component: NumberEditQuantity
+                                defaultDisplayUnit: seconds
                           value:
                             type: np.float64
                             shape: ['*']
@@ -194,7 +195,7 @@ definitions:
         data_processing:
           section:
             quantities:
-              multimeter: 
+              multimeter:
                 type: str
                 m_annotations:
                   eln:
@@ -272,7 +273,7 @@ definitions:
                             m_annotations:
                               eln:
                                 component: StringEditQuantity
-                          fan: 
+                          fan:
                             type: str
                             m_annotations:
                               eln:
@@ -281,7 +282,7 @@ definitions:
                             type: str
                             m_annotations:
                               eln:
-                                component: StringEditQuantity 
+                                component: StringEditQuantity
                           sensors:
                             type: str
                             m_annotations:
