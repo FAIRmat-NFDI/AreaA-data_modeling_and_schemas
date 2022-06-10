@@ -9,6 +9,30 @@ data:
       email:
       orcid:
       telephone_number:
+    - role: Responsible_person
+      name: Iason Tsiapkinis
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: Model experiment
+      address:
+      email:
+      orcid:
+      telephone_number:
+    - role: Responsible_person
+      name: Arved Enders-Seidlitz
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: Model experiment
+      address:
+      email:
+      orcid:
+      telephone_number:
+    - role: Responsible_person
+      name: Kaspars Dadzis
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: Model experiment
+      address:
+      email:
+      orcid:
+      telephone_number:
   instrument: #section name - not to be filled
     furnace: #section name - not to be filled
       furnace_type: Test-Cz

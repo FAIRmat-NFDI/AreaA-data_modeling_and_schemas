@@ -1,62 +1,63 @@
 definitions:
   sections:  # Schemas consist of section definitions
+    User:
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        role:
+          type:
+            type_kind: Enum
+            type_data:
+              - Operator
+              - Responsible_person
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_institution:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_group:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        address:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        email:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orcid:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        telephone_number:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     MeltCzochralski:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
-        user:
+        users:
+          repeats: true
           m_annotations:
             eln:
-          repeats: true
           section:
-             #m_def:
-             # label_quantity: name
-            quantities:
-              role:
-                type:
-                  type_kind: Enum
-                  type_data:
-                    - Operator
-                    - Responsible_person
-                m_annotations:
-                  eln:
-                    component: EnumEditQuantity
-              name:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              affiliation_institution:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              affiliation_group:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              address:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              email:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              orcid:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              telephone_number:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
+            base_section: User
         instrument:
           section:
             sub_sections:
