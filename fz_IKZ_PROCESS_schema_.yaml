@@ -1,0 +1,151 @@
+# example data file for Float zone process at IKZ
+data:  
+  m_def: #../upload/raw/melt_czochralski_app-def_schema.archive.yaml#MeltCzochralski
+  user: #section name - not to be filled
+    role: Operator
+    name: Iryna
+    affiliation_institution: Leibniz Institut für Kristallzüchtung
+    affiliation_group: FZ
+    address:
+    email:
+    orcid:
+    telephone_number:
+  instrument:
+    furnace ID: 1505/1  | 1505/2 | 1510 | 1520 | FZ30
+    Vacuum before process (HV) [mbar]: 5.8*10^-8
+    furnace leak rate: good  | bad
+    induktor:
+      inductor ID: 4ZDIFF2-19
+      inductor drawing:
+    reflector:
+      reflector ID:
+      reflector-inductor position [mm]:
+  process consumables:
+  samples:
+    gases:
+      gas_name: N2
+      gas_id: ref to entry
+    dopand:
+      dopand_name: PH3
+      dopand_id: ref to entry
+    feed rod:
+      material: Wacker | ASIMI | REC | other
+      diameter [mm]:
+      rod surface: round grinded | raw
+      rod pretreatment: raw | etched | US cleaned | ...
+      rod position during preheating [mm]:
+  process:
+    time_independent_settings: #global settings cannot be changed during process!
+      gas stuff: ??? # ask Iryna again 
+      doping: 0
+    time_dependent_settings_user_filled: # if value is from digital protocol, it may not be filled in!
+      timestamp:  
+      process_type: main | pre | post # realize preprocess and main process section with respective quantities/paramters
+      Gas_ambient: # use a section for gas related stuff?
+        Gas_pressure:
+        Ar_inflow_rate:
+        Gas_outflow_rate:
+        N2_Gas_composition:
+        Doping_PH3: 0 | 1 | 10 | 100 | 500
+        Doping_B2H6: 0 | 1 | 10 | 100 | 500
+      process_settings: # maybe delete 
+        process_step_name: process preparation | rod preheating | rod glowing | melting | back-melting | dash-neck | transition to cone | cone growing | crystal body | operation of crystal support system | process end
+        comment: e.g. melting at droplet
+        rod_preheating_method: IR | Graphite preheater | Molibdenum preheater | other
+        rod_preheating_voltage [kV]:
+        rod_preheating_duration [min]:
+        rod glowing_voltage [kV]: # is it always the same voltage?
+        back-melting_start_voltage:
+        back-melting_end voltage [kV]:
+        coil offset [mm]:
+        upper pull speed [mm/min]: mean
+        lower pull speed [mm/min]: end value
+        upper rotation [min-1]: mean
+        lower rotation [min-1]: mean
+        start voltage [kV]: start
+        maximum voltage [kV]: max
+        minimum voltage [kV]: min
+        neck length [mm]:
+        switching to software process control: yes/no
+        lower position (crystal): 270
+        upper position (rod): 50
+    time_dependent_settings_digital_filled: # section could be deleted, since ther is only 1 subsection
+      digital protocol:
+        measurment no.:
+        date:
+        time:
+        upper position (rod) [mm]:
+        upper pull speed (rod) [mm/min]:
+        upper rotation (rod) [min-1]:
+        lower position (crystal) [mm]:
+        lower pull speed (crystal) [mm/min]:
+        lower rotation (crystal) [min-1]:
+        control parameter:
+        control parameter (set):
+        power (obtained) [kW]:
+        current (obtained) [A]:
+        voltage (obtained) [kV]:
+        grid current [A]:
+        high-frequency current [A]:
+        high-frequency voltage [kV]:
+        frequency [1/seconds]:
+        inner mechanisms position [mm]:
+          Pos-Arbkr: #!!!
+          Pos-Spindel:
+          Pos-Nachheizen:
+        upper diameter (rod) [mm]:
+        lower diameter (crystal) [mm]:
+        zone height [mm]:
+        meniscus angle on left side, grad:
+        meniscus angle on right side, grad:
+ characterization:
+    basic_crystal_characterization: # harmonize with Noky
+      crystal length [mm]:
+      diameter [mm]:
+          target crystal: 103
+          measured crystal: 103
+      body diameter [mm]:
+      body length [mm]:
+      conclusion: text field
+    crystal quality: # are there more sections coming? should be referenced to other entries
+      resistivity: # Changed!!!
+        target resistivity [Ohmcm]: # changed!!
+        maximum resistivity on body [Ohmcm]:
+        minimum resistivity on body [Ohmcm]:
+        measurement protocol:
+      lifetime:
+        average lifetime on body [us]:
+        lifetime map:
+      lateral photovoltage scanning:
+        interface curvative [mm]:
+        LPS map:
+
+
+
+  overview_section or evaluation:  
+    dash-neck:
+      timestamp:
+      coil offset [mm]:
+      upper pull speed [mm/min]: mean
+      lower pull speed [mm/min]: end value
+      upper rotation [min-1]: mean
+      lower rotation [min-1]: mean
+      start voltage [kV]: start
+      maximum voltage [kV]: max
+      minimum voltage [kV]: min
+      neck length [mm]:
+      text field:
+    process data at crystal body: #move one level up!
+      lower position (crystal): start 259
+      lower diameter (crystal) [mm]: start103
+      upper pull speed (rod) [mm/min]: s3.62
+      lower pull speed (crystal)  [mm/min]: 3.5
+      upper rotation (rod) [min-1]: 0.8
+      lower rotation (crystal) [min-1]: 6.0
+      voltage setpoint [kV]: 5.14
+      voltage obtained [kV]: 5.09
+      current I_A [A]: 7.69
+      grid current I_G [A]: 1.84
+      frequency [MHz]: 2.97
+      power[kW]: 39.13
+  
