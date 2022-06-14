@@ -243,67 +243,82 @@ definitions:
                     component: StringEditQuantity
         synthesis:
           section:
+            base_section: nomad.parsing.tabular.TableData
             quantities:
               data_file:
                 type: str
                 description: |
                   A reference to an uploaded .csv
-                ###m_annotations:
+                m_annotations:
                   # The tabular_parser annotation, will treat the values of this
                   # quantity as files. It will try to interpret the files and fill
                   # quantities in this section (and sub_section) with the column
                   # data of .csv or .xlsx files.
-                  ###tabular_parser:
-                  ###  sep: '\t'
-                  ###  comment: '#'
-                  ###browser:
-                  ###  adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-                  ###eln:
-                  ###  component: FileEditQuantity  # A form field that allows to drop and select files.
+                  tabular_parser:
+                    sep: ','
+                    comment: '#'
+                  browser:
+                    adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                  eln:
+                    component: FileEditQuantity  # A form field that allows to drop and select files.
               experiment_identifier:
                 type: str
                 m_annotations:
                   # The tabular annotation defines a mapping to column headers used in
                   # tabular data files
-                  ###tabular:
-                  ###  name: Experiment_Identifier
+                  tabular:
+                    name: Experiment Identifier
                   eln:
                     component: StringEditQuantity
               experiment_location:
                 type: str
                 m_annotations:
+                  tabular:
+                    name: Experiment Location
                   eln:
                     component: StringEditQuantity
               start_time:
                 type: Datetime
                 m_annotations:
+                  tabular:
+                    name: Start Time
                   eln:
                     component: DateTimeEditQuantity
               end_time:
                 type: Datetime
                 m_annotations:
+                  #tabular:
+                  #  name: End Time
                   eln:
                     component: DateTimeEditQuantity
               synthesis_category:
                 type: str
                 m_annotations:
+                  tabular:
+                    name: Synthesis Category
                   eln:
                     component: StringEditQuantity
               synthesis_method:
                 type: str
                 m_annotations:
+                  tabular:
+                    name: Synthesis Method
                   eln:
                     component: StringEditQuantity
               film:
                 type: str
                 description: Film material (Material:Dopant species)
                 m_annotations:
+                  tabular:
+                    name: Film
                   eln:
                     component: StringEditQuantity
               substrate:
                 type: str
                 description: Substrates placed into the reactor for film growth. Details are shown in "Substrate"-folder
                 m_annotations:
+                  tabular:
+                    name: Substrate
                   eln:
                     component: StringEditQuantity
               t_substrate:
@@ -311,6 +326,8 @@ definitions:
                 unit: celsius
                 description: Substrate temperature obtained by the Pyrometer on the samples surface
                 m_annotations:
+                  tabular:
+                    name: Substrate Temperature
                   eln:
                     component: StringEditQuantity
               o2_ar:
@@ -318,12 +335,16 @@ definitions:
                 unit: ml
                 description: Gas flux ratio between oxygen and argon in the process gas
                 m_annotations:
+                  tabular:
+                    name: O2 Argon
                   eln:
                     component: StringEditQuantity                    
               composition:
                 type: str
                 description: films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see folder "Precursor"
                 m_annotations:
+                  tabular:
+                    name: Composition
                   eln:
                     component: StringEditQuantity
               thickness:
@@ -331,6 +352,8 @@ definitions:
                 unit: nanometer
                 description: Film thickness obtained from HRXRD
                 m_annotations:
+                  tabular:
+                    name: Thickness
                   eln:
                     component: StringEditQuantity
               roughness:
@@ -338,6 +361,8 @@ definitions:
                 unit: nanometer
                 description: RMS roughness value obtained by AFM
                 m_annotations:
+                  tabular:
+                    name: Roughness
                   eln:
                     component: StringEditQuantity
               d_vert:
@@ -345,6 +370,8 @@ definitions:
                 unit: angstrom
                 description: "Vertical lattice parameter d_vert obtained from HRXRD"
                 m_annotations:
+                  tabular:
+                    name: d Vertical
                   eln:
                     component: StringEditQuantity
             sub_sections:
@@ -491,80 +518,80 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              deposition_control:
-                section:
-                  quantities:
-                    timestamp:
-                      type: Datetime
-                      description: Past time since process start
-                      m_annotations:
-                        eln:
-                          component: DateTimeEditQuantity
-                    pyrotemperature:
-                      type: str
-                      description: Temperature that is controlled by the pyrometer on the substartes surface
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    vaporization_titan:
-                      type: str
-                      description: Vaporization temperature of the Ti flash evaporator
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    vaporization_strontium_lanthan:
-                      type: str
-                      description: Vaporization temperature of the Sr/La flash evaporator
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    o2_temperature:
-                      type: str
-                      description: Oxygen process gas temperature
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    backpressure_titanium:
-                      type: str
-                      description: Backpressure in the Ti evaporation line controlling the vapor pressure of this line
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    backpressure_strontium_lanthan:
-                      type: str
-                      description: Backpressure in the Sr/La evaporation line controlling the vapor pressure of this line
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    throttle_valve:
-                      type: str
-                      description: Opening level of the throttle valve at the turbo pump used to apply the chamber pressure 
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    chamber_pressure:
-                      type: str
-                      description: chamber pressure in the reaction chamber
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    rotation:
-                      type: str
-                      description: carrier rottaion velocity
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    voltage:
-                      type: str
-                      description: Voltage control of the heating system
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    current:
-                      type: str
-                      description: Current control of the heating system
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                                              
-                    
+        deposition_control:
+          section:
+            quantities:
+              timestamp:
+                type: Datetime
+                description: Past time since process start
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              pyrotemperature:
+                type: str
+                description: Temperature that is controlled by the pyrometer on the substartes surface
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              vaporization_titan:
+                type: str
+                description: Vaporization temperature of the Ti flash evaporator
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              vaporization_strontium_lanthan:
+                type: str
+                description: Vaporization temperature of the Sr/La flash evaporator
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              o2_temperature:
+                type: str
+                description: Oxygen process gas temperature
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              backpressure_titanium:
+                type: str
+                description: Backpressure in the Ti evaporation line controlling the vapor pressure of this line
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              backpressure_strontium_lanthan:
+                type: str
+                description: Backpressure in the Sr/La evaporation line controlling the vapor pressure of this line
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              throttle_valve:
+                type: str
+                description: Opening level of the throttle valve at the turbo pump used to apply the chamber pressure 
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              chamber_pressure:
+                type: str
+                description: chamber pressure in the reaction chamber
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              rotation:
+                type: str
+                description: carrier rottaion velocity
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              voltage:
+                type: str
+                description: Voltage control of the heating system
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              current:
+                type: str
+                description: Current control of the heating system
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                                        
+              
