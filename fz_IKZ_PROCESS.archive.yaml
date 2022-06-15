@@ -1,6 +1,6 @@
 # example data file for Float zone process at IKZ
 definitions:
-  name: 'Electronic Lab Notebook schema for Float-zone'
+  name: 'Electronic Lab Notebook schema for Float-zone' # mandatory!?
   sections:  # Schemas consist of section definitions
     User:
           base_section: nomad.datamodel.data.EntryData
@@ -51,7 +51,7 @@ definitions:
                   component: StringEditQuantity
     FZ_IKZ_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
-      # EntryArchive.data sub-section
+      # EntryArchive.data sub-section 
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
         users:
