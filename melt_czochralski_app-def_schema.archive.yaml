@@ -99,6 +99,9 @@ definitions:
                           component: RichTextEditQuantity
                   sub_sections:
                     temperature_sensor:
+                      repeats: true
+                      m_annotations:
+                        eln:
                       section:
                         #m_def: label_quantity='sensor_alias'
                         quantities:
@@ -135,6 +138,9 @@ definitions:
                               eln:
                                 component: StringEditQuantity
                     pyro_sensor:
+                      repeats: true
+                      m_annotations:
+                        eln:
                       section:
                         quantities:
                           sensor_type:

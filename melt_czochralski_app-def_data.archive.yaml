@@ -42,23 +42,30 @@ data:
     sensors: #section name - not to be filled
       sensors_locations: 
       temperature_sensor: #section name - not to be filled
-        sensor_type: temperature_probes
-        sensor_description: "Temperature inside the crystal, 25 mm above melt"
-        sensor_alias: TE_1_front
-        channel: 101
-        measured_property: Temperature
-        value:
+        - sensor_type: temperature_probes
+          sensor_description: "Temperature inside the crystal, 25 mm above melt"
+          sensor_alias: TE_1_front
+          channel: 101
+          measured_property: Temperature
+          value:
+        - sensor_type: temperature_probes
+          sensor_description: "Temperature inside the crystal, 25 mm above melt"
+          sensor_alias: TE_2_vessel
+          channel: 102
+          measured_property: Temperature
+          value:
+        # and so on with sensor listing!
       pyro_sensor: #section name - not to be filled
-        sensor_type: pyrometer
-        sensor_description: "Crucible outside surface temperature at position of TE_1"
-        sensor_alias: Pyro-1-IGA-6-23
-        model: IGA 6/23
-        channel: 501
-        measured_property: Temperature
-        emission: 89
-        transmission: 100
-        t90: 0.01
-        value:
+        - sensor_type: pyrometer
+          sensor_description: "Crucible outside surface temperature at position of TE_1"
+          sensor_alias: Pyro-1-IGA-6-23
+          model: IGA 6/23
+          channel: 501
+          measured_property: Temperature
+          emission: 89
+          transmission: 100
+          t90: 0.01
+          value:
   data_processing: #section name - not to be filled
     multimeter: Keithley
     software: multilog vXXX
