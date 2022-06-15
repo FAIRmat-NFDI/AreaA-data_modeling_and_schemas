@@ -47,6 +47,96 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+    Temperature_sensor:
+      # repeats: true
+      # m_annotations:
+      #   eln:
+      section:
+        #m_def: label_quantity='sensor_alias'
+        quantities:
+          sensor_type:
+            type: np.float64
+            shape: ['*']
+            m_annotations:
+              tabular:
+                name: time
+              eln:
+                component: StringEditQuantity
+          sensor_description:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          sensor_alias:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          channel:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          measured_property:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+    Pyro_sensor:
+      # repeats: true
+      # m_annotations:
+      #   eln:
+      section:
+        quantities:
+          sensor_type:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          sensor_description:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          sensor_alias:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          channel:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          measured_property:
+            type: str
+            m_annotations:
+              eln:
+                component: StringEditQuantity
+          emission:
+            type: int
+            m_annotations:
+              eln:
+                component: NumberEditQuantity
+                minValue: 0
+                maxValue: 100
+            description: "Emission percentage value set in pyrometer"
+          transmission:
+            type: np.float64
+            m_annotations:
+              eln:
+                component: NumberEditQuantity
+                minValue: 0
+                maxValue: 100
+            description: "Transmission percentage value set in pyrometer"
+          t90:
+            type: np.float64
+            description: "FILL THE DESCRIPTION"
+            unit: seconds
+            m_annotations:
+              eln:
+                component: NumberEditQuantity
+                defaultDisplayUnit: second
     MeltCzochralski:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
@@ -90,115 +180,174 @@ definitions:
                           component: StringEditQuantity
               sensors:
                 section:
+                  base_section: nomad.parsing.tabular.TableData
                   quantities:
+                    data_file:
+                      type: str
+                      description: |
+                        A reference to an uploaded .csv
+                      m_annotations:
+                        # The tabular_parser annotation, will treat the values of this
+                        # quantity as files. It will try to interpret the files and fill
+                        # quantities in this section (and sub_section) with the column
+                        # data of .csv or .xlsx files.
+                        tabular_parser:
+                          sep: ','
+                          comment: '#'
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity  # A form field that allows to drop and select files.
                     sensors_locations:
                       type: str
                       description: Picture of sensor locations
                       m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
-                          component: RichTextEditQuantity
+                          component: FileEditQuantity
+                    time:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: time
+                    timestamp:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: timestamp
+                    TE_1_front:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '101'           
+                    TE_2_vessel:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '102'
+                    TE_3_left:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '103'  
+                    TE_4_rear:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '104'   
+                    TE_5_right:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '105'   
+                    TE_HF:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '106'   
+                    TE_6_room:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '119'   
+                    TE_7_melt:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '120'   
+                    Rogowski:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '201'   
+                    PT_100_1_rear:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '206'   
+                    PT_1000_1_above:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '208'   
+                    Pyro_1_IGA_6_23:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '501'   
+                    Pyro_2_IGAR_6:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '502'  
+                    Pyro_h1:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: '2001'        
                   sub_sections:
-                    temperature_sensor:
-                      repeats: true
-                      m_annotations:
-                        eln:
+                    TE_1_front_info:
                       section:
-                        #m_def: label_quantity='sensor_alias'
-                        quantities:
-                          sensor_type:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          sensor_description:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          sensor_alias:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          channel:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          measured_property:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          value:
-                            type: np.float64
-                            shape: ['*']
-                            unit: K
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                    pyro_sensor:
-                      repeats: true
-                      m_annotations:
-                        eln:
+                        base_section: Temperature_sensor
+                        m_annotations:
+                          eln:
+                            dict()
+                    TE_2_vessel_info:
                       section:
-                        quantities:
-                          sensor_type:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          sensor_description:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          sensor_alias:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          channel:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          measured_property:
-                            type: str
-                            m_annotations:
-                              eln:
-                                component: StringEditQuantity
-                          emission:
-                            type: int
-                            m_annotations:
-                              eln:
-                                component: NumberEditQuantity
-                                minValue: 0
-                                maxValue: 100
-                            description: "Emission percentage value set in pyrometer"
-                          transmission:
-                            type: np.float64
-                            m_annotations:
-                              eln:
-                                component: NumberEditQuantity
-                                minValue: 0
-                                maxValue: 100
-                            description: "Transmission percentage value set in pyrometer"
-                          t90:
-                            type: np.float64
-                            description: "FILL THE DESCRIPTION"
-                            unit: seconds
-                            m_annotations:
-                              eln:
-                                component: NumberEditQuantity
-                                defaultDisplayUnit: seconds
-                          value:
-                            type: np.float64
-                            shape: ['*']
-                            unit: K
-                            m_annotations:
-                              eln:
-                                component: NumberEditQuantity
+                        base_section: Temperature_sensor
+                    TE_3_left_info:
+                      section:
+                        base_section: Temperature_sensor  
+                    TE_4_rear_info:
+                      section:
+                        base_section: Temperature_sensor 
+                    TE_5_right_info:
+                      section:
+                        base_section: Temperature_sensor 
+                    TE_HF_info:
+                      section:
+                        base_section: Temperature_sensor 
+                    TE_6_room_info:
+                      section:
+                        base_section: Temperature_sensor 
+                    TE_7_melt_info:
+                      section:
+                        base_section: Temperature_sensor  
+                    Rogowski_info:
+                      section:
+                        base_section: Temperature_sensor  
+                    PT_100_1_rear_info:
+                      section:
+                        base_section: Temperature_sensor  
+                    PT_1000_1_above_info:
+                      section:
+                        base_section: Temperature_sensor 
+                    Pyro_1_IGA_6_23_info:
+                      section:
+                        base_section: Pyro_sensor  
+                    Pyro_2_IGAR_6_info:
+                      section:
+                        base_section: Pyro_sensor   
+                    Pyro_h1_info:   
+                      section:
+                        base_section: Pyro_sensor      
         data_processing:
           section:
             quantities:
