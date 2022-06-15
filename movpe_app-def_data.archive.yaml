@@ -29,7 +29,7 @@ data:
     experiment_identifier: 
     experiment_location:
     start_time:
-    end_time:
+    end_time: 2022-01-22 10:00:00+01
     synthesis_category:
     synthesis_method:
     film:
