@@ -181,16 +181,19 @@ definitions:
               sensors:
                 section:
                   base_section: nomad.parsing.tabular.TableData
+                  # m_annotation:
+                  #   plot:
+                  #     title: Sensors for growth monitoring
+                  #     x: time
+                  #     y:
+                  #       - chamber_pressure
+                  #       - substrate_temperature  
                   quantities:
                     data_file:
                       type: str
                       description: |
                         A reference to an uploaded .csv
                       m_annotations:
-                        # The tabular_parser annotation, will treat the values of this
-                        # quantity as files. It will try to interpret the files and fill
-                        # quantities in this section (and sub_section) with the column
-                        # data of .csv or .xlsx files.
                         tabular_parser:
                           sep: ','
                           comment: '#'
@@ -223,7 +226,7 @@ definitions:
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: '101'           
+                          name: '101'         
                     TE_2_vessel:
                       type: np.float64
                       shape: ['*']
@@ -296,19 +299,28 @@ definitions:
                       m_annotations:
                         tabular:
                           name: '502'  
-                    Pyro_h1:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '2001'        
+                    # Pyro_h1:
+                    #   type: np.float64
+                    #   shape: ['*']
+                    #   m_annotations:
+                    #     tabular:
+                    #       name: '2001'        
                   sub_sections:
+                    my_test:
+                      section:
+                        quantities:
+                          Pyro_h1_test:
+                            type: np.float64
+                            shape: ['*']
+                            m_annotations:
+                              tabular:
+                                name: '2001'  
                     TE_1_front_info:
+                      m_annotations:
+                        eln:
+                          dict()
                       section:
                         base_section: Temperature_sensor
-                        m_annotations:
-                          eln:
-                            dict()
                     TE_2_vessel_info:
                       section:
                         base_section: Temperature_sensor
