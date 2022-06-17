@@ -1,4 +1,5 @@
 definitions:
+  name: 'Electronic Lab Notebo' # mandatory!?
   sections:  # Schemas consist of section definitions
     User:
       base_section: nomad.datamodel.data.EntryData
@@ -51,15 +52,13 @@ definitions:
       # repeats: true
       # m_annotations:
       #   eln:
-      section:
+        base_sections: 
+          - nomad.metainfo.metainfo.Section
         #m_def: label_quantity='sensor_alias'
         quantities:
           sensor_type:
-            type: np.float64
-            shape: ['*']
+            type: str
             m_annotations:
-              tabular:
-                name: time
               eln:
                 component: StringEditQuantity
           sensor_description:
@@ -86,57 +85,57 @@ definitions:
       # repeats: true
       # m_annotations:
       #   eln:
-      section:
-        quantities:
-          sensor_type:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          sensor_description:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          sensor_alias:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          channel:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          measured_property:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          emission:
-            type: int
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                minValue: 0
-                maxValue: 100
-            description: "Emission percentage value set in pyrometer"
-          transmission:
-            type: np.float64
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                minValue: 0
-                maxValue: 100
-            description: "Transmission percentage value set in pyrometer"
-          t90:
-            type: np.float64
-            description: "FILL THE DESCRIPTION"
-            unit: seconds
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: second
+      base_section: nomad.metainfo.metainfo.Section
+      quantities:
+        sensor_type:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sensor_description:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sensor_alias:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        channel:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        measured_property:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        emission:
+          type: int
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 100
+          description: "Emission percentage value set in pyrometer"
+        transmission:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 100
+          description: "Transmission percentage value set in pyrometer"
+        t90:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: seconds
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: second
     MeltCzochralski:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
@@ -180,14 +179,17 @@ definitions:
                           component: StringEditQuantity
               sensors:
                 section:
-                  base_section: nomad.parsing.tabular.TableData
-                  # m_annotation:
-                  #   plot:
-                  #     title: Sensors for growth monitoring
-                  #     x: time
-                  #     y:
-                  #       - chamber_pressure
-                  #       - substrate_temperature  
+                  base_sections: 
+                    - nomad.parsing.tabular.TableData
+                    - nomad.datamodel.data.EntryData
+                  m_annotation:
+                    eln:
+                    plot:
+                      title: Sensors for growth monitoring
+                      x: time
+                      y: 
+                        - TE_1_front
+                        - TE_2_vessel
                   quantities:
                     data_file:
                       type: str
@@ -226,13 +228,19 @@ definitions:
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: '101'         
+                          name: '101'  
+                        plot:
+                          x: time
+                          y: TE_1_front       
                     TE_2_vessel:
                       type: np.float64
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: '102'
+                          name: '102'  
+                        plot:
+                          x: time
+                          y: TE_2_vessel 
                     TE_3_left:
                       type: np.float64
                       shape: ['*']
@@ -299,26 +307,14 @@ definitions:
                       m_annotations:
                         tabular:
                           name: '502'  
-                    # Pyro_h1:
-                    #   type: np.float64
-                    #   shape: ['*']
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: '2001'        
-                  sub_sections:
-                    my_test:
-                      section:
-                        quantities:
-                          Pyro_h1_test:
-                            type: np.float64
-                            shape: ['*']
-                            m_annotations:
-                              tabular:
-                                name: '2001'  
-                    TE_1_front_info:
+                    Pyro_h1:
+                      type: np.float64
+                      shape: ['*']
                       m_annotations:
-                        eln:
-                          dict()
+                        tabular:
+                          name: '2001'        
+                  sub_sections:
+                    TE_1_front_info:
                       section:
                         base_section: Temperature_sensor
                     TE_2_vessel_info:

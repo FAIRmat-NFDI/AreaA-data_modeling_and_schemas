@@ -1,6 +1,6 @@
 data:  
   m_def: ../upload/raw/melt_czochralski_app-def_schema.archive.yaml#MeltCzochralski
-  user: #section name - not to be filled
+  users: #section name - not to be filled
     - role: Operator
       name: Josef Pal
       affiliation_institution: Leibniz Institut für Kristallzüchtung
