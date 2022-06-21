@@ -1,0 +1,30 @@
+# This is a basic structure which can be used to carry out 
+# a data revision on any research data. The structure contains
+# the names of the sections and subsections, as well as the 
+# different names of the quantitities and all the neccessary 
+# properties to the describe them. The completely filled out
+# structure serves as a basis to create a NOMAD Oasis ELN schema.
+
+your_section_name_1:
+  your_quantity_name_1: # intendation enables different hierarchy levels
+    description: # a description of your quantity
+    value:
+    unit: # e.g. m, V, ...
+    type: # e.g. string, integer, float, datetime
+    data_input: # manually written / from *.csv (or any other digital source)
+    otional: True/False # is data input optional?
+  your_quantity_name_2:
+    ... # see above
+  your_sub_section_1:
+    your_quantity_name_3:
+      description: # a description of your quantity
+      value:
+      unit: # e.g. m, V, ...
+      type: # e.g. string, integer, float, datetime
+      data_input: # manually written / from *.csv (or any other digital source)
+      otional: True/False # is data input optional?
+    ... # add more quantities if you like
+  your_sub_section_2:
+    ...
+your_section_name_2:
+  ...
