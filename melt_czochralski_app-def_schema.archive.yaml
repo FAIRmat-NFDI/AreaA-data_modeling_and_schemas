@@ -1,8 +1,8 @@
 definitions:
-  name: 'Electronic Lab Notebo' # mandatory!?
+  name: 'Electronic Lab Noteboh' # mandatory!?
   sections:  # Schemas consist of section definitions
     User:
-      base_section: nomad.datamodel.data.EntryData
+      # base_section: nomad.datamodel.data.EntryData
       quantities:
         role:
           type:
@@ -52,8 +52,8 @@ definitions:
       # repeats: true
       # m_annotations:
       #   eln:
-        base_sections: 
-          - nomad.metainfo.metainfo.Section
+        #base_sections: 
+        #  - nomad.metainfo.metainfo.Section
         #m_def: label_quantity='sensor_alias'
         quantities:
           sensor_type:
@@ -85,7 +85,7 @@ definitions:
       # repeats: true
       # m_annotations:
       #   eln:
-      base_section: nomad.metainfo.metainfo.Section
+      # base_section: nomad.metainfo.metainfo.Section
       quantities:
         sensor_type:
           type: str
@@ -145,8 +145,7 @@ definitions:
           repeats: true
           m_annotations:
             eln:
-          section:
-            base_section: User
+          section: User
         instrument:
           section:
             sub_sections:
@@ -228,16 +227,16 @@ definitions:
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: '101'  
+                          name: '101' 
                         plot:
                           x: time
-                          y: TE_1_front       
+                          y: TE_1_front         
                     TE_2_vessel:
                       type: np.float64
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: '102'  
+                          name: '102'
                         plot:
                           x: time
                           y: TE_2_vessel 
@@ -312,7 +311,7 @@ definitions:
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: '2001'        
+                          name: '2001'    
                   sub_sections:
                     TE_1_front_info:
                       section:
