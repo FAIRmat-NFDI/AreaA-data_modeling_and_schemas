@@ -1,0 +1,65 @@
+data:  
+  m_def: ../upload/raw/movpe_app-def_schema.archive.yaml#MovpeSto_schema 
+  users:
+    - role: Operator
+      name: Carlo
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: Model experiment
+      address:
+      email:
+      orcid:
+      telephone_number:
+    - role: Responsible_person
+      name: Giangi
+      affiliation_institution: HZB
+      affiliation_group: Quantum sensing
+      address:
+      email:
+      orcid:
+      telephone_number:
+    - name: Giovanna
+  materials:
+    precursor_sample:
+      chemicals:
+        - "../upload/raw/Copper_II_Selenide.archive.json#data"
+        - "../upload/raw/CHEMICAL.archive.yaml#data"
+    substrate:
+      comment:
+  process:
+    data_file: ELAB-255_NEW-STD_nontested.csv
+    experiment_identifier: 
+    experiment_location:
+    start_time:
+    end_time: 2022-01-22 10:00:00+01
+    synthesis_category:
+    synthesis_method:
+    film:
+    substrate:
+    t_substrate:
+    o2_ar:          
+    composition:
+    process_steps:
+      - timestamp:
+        duration:
+        step_number: 2
+        step_title: 
+        step_comment:
+        step_annotation:
+        argon_flow:
+        oxygen_flow:
+        argon_push_titan:
+        argon_purge_titan:
+        vaporization_temperature_titan:
+        chamber_pressure:
+        substrate_temperature_filament: 101
+        shaft_temperature: 101
+        carrier_rotation:
+        peristaltic_pump_rotation_titan:
+        peristaltic_pump_rotation_strontium_lanthan:
+        vaporization_temperature_strontium_lanthan:
+        argon_push_strontium_lanthan: 2
+        argon_purge_strontium_lanthan: 3
+    HR_XRD_measurements:
+      thickness:
+      roughness:
+      d_vert:
