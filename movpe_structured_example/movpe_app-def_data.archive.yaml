@@ -19,14 +19,14 @@ data:
       telephone_number:
     - name: Giovanna
   materials:
-    precursor_sample:
+    precursor:
       chemicals:
         - "../upload/raw/Copper_II_Selenide.archive.json#data"
         - "../upload/raw/CHEMICAL.archive.yaml#data"
     substrate:
       comment:
   process:
-    data_file: ELAB-255_NEW-STD_nontested.csv
+    data_file: OVERVIEW.csv
     experiment_identifier: 
     experiment_location:
     start_time:
@@ -39,27 +39,24 @@ data:
     o2_ar:          
     composition:
     process_steps:
-      - timestamp:
-        duration:
-        step_number: 2
-        step_title: 
-        step_comment:
-        step_annotation:
-        argon_flow:
-        oxygen_flow:
-        argon_push_titan:
-        argon_purge_titan:
-        vaporization_temperature_titan:
-        chamber_pressure:
-        substrate_temperature_filament: 101
-        shaft_temperature: 101
-        carrier_rotation:
-        peristaltic_pump_rotation_titan:
-        peristaltic_pump_rotation_strontium_lanthan:
-        vaporization_temperature_strontium_lanthan:
-        argon_push_strontium_lanthan: 2
-        argon_purge_strontium_lanthan: 3
-    HR_XRD_measurements:
-      thickness:
-      roughness:
-      d_vert:
+      - data_file: STEPS.csv
+      # - step_duration:
+      #   elapsed_time:
+      #   step_number: 2
+      #   step_title: 
+      #   step_comment:
+      #   step_annotation:
+      #   argon_flow:
+      #   oxygen_flow:
+      #   argon_push_titan:
+      #   argon_purge_titan:
+      #   vaporization_temperature_titan:
+      #   chamber_pressure:
+      #   substrate_temperature_filament: 101
+      #   shaft_temperature: 101
+      #   carrier_rotation:
+      #   peristaltic_pump_rotation_titan:
+      #   peristaltic_pump_rotation_strontium_lanthan:
+      #   vaporization_temperature_strontium_lanthan:
+      #   argon_push_strontium_lanthan: 2
+      #   argon_purge_strontium_lanthan: 3

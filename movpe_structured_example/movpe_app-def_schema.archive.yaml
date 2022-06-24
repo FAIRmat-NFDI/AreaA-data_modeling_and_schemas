@@ -248,6 +248,10 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
+              # intended_sample:
+              #   section:
+              # obtained_sample:
+              #   section:
         process:
           section:
             base_section: nomad.parsing.tabular.TableData
@@ -277,20 +281,20 @@ definitions:
                     name: Experiment Identifier
                   eln:
                     component: StringEditQuantity
-              experiment_location:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: Experiment Location
-                  eln:
-                    component: StringEditQuantity
-              start_time:
-                type: Datetime
-                m_annotations:
-                  tabular:
-                    name: Start Time
-                  eln:
-                    component: DateTimeEditQuantity
+              # experiment_location:
+              #   type: str
+              #   m_annotations:
+              #     tabular:
+              #       name: Experiment Location
+              #     eln:
+              #       component: StringEditQuantity
+              # start_time:
+              #   type: Datetime
+              #   m_annotations:
+              #     tabular:
+              #       name: Start Time
+              #     eln:
+              #       component: DateTimeEditQuantity
               # end_time:
               #   type: Datetime
               #   m_annotations:
@@ -361,18 +365,35 @@ definitions:
                   eln:
                 section:
                   quantities:
-                    timestamp:
+                    data_file:
+                      type: str
+                      description: |
+                        A reference to an uploaded .csv
+                      m_annotations:
+                        tabular_parser:
+                          sep: ','
+                          comment: '#'
+                        browser:
+                          adaptor: RawFileAdaptor  
+                        eln:
+                          component: FileEditQuantity  
+                    step_duration:
                       type: np.float64
-                      unit: min
+                      unit: minute
+                      shape: ['*']
                       description: Past time since process start
                       m_annotations:
+                        tabular:
+                          name: Duration
                         eln:
-                          component: DateTimeEditQuantity
-                    duration:
+                          component: NumberEditQuantity #DateTimeEditQuantity
+                    elapsed_time:
                       type: np.float64
                       unit: minute
                       description: Duration of each step
                       m_annotations:
+                        tabular:
+                          name: Timestamp
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: minute
@@ -380,24 +401,32 @@ definitions:
                       type: int
                       description: sequential number of the step on going
                       m_annotations:
+                        tabular:
+                          name: Step
                         eln:
                           component: NumberEditQuantity
                     step_title: 
                       type: str
                       description: what this step consists of
                       m_annotations:
+                        tabular:
+                          name: Reason
                         eln:
                           component: StringEditQuantity
                     step_comment:
                       type: str
                       description: more verbose description of the step
                       m_annotations:
+                        tabular:
+                          name: Description
                         eln:
                           component: StringEditQuantity 
                     step_annotation:
                       type: str
                       description: final remarks on the step
                       m_annotations:
+                        tabular:
+                          name: annotations
                         eln:
                           component: StringEditQuantity 
                     argon_flow:
@@ -405,6 +434,8 @@ definitions:
                       unit: centimeter ** 3 / minute
                       description: Argon process gas flow in to the reaction chamber
                       m_annotations:
+                        tabular:
+                          name: Argon flow 
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: centimeter ** 3 / minute
@@ -413,6 +444,8 @@ definitions:
                       unit: centimeter ** 3 / minute
                       description: Oxygen process gas flow in to the reaction chamber
                       m_annotations:
+                        tabular:
+                          name: Oxygen flow
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: centimeter ** 3 / minute
@@ -421,6 +454,8 @@ definitions:
                       unit: centimeter ** 3 / minute
                       description: Argon gas in the flash evaporator used to push Ti-Precursor into the reaction chamber
                       m_annotations:
+                        tabular:
+                          name: Argon push Titan
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: centimeter ** 3 / minute
@@ -429,6 +464,8 @@ definitions:
                       unit: centimeter ** 3 / minute
                       description: Argon gas in the flash evaporator used to purge Ti-Precursor
                       m_annotations:
+                        tabular:
+                          name: Argon purge Titan
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: centimeter ** 3 / minute
@@ -437,6 +474,8 @@ definitions:
                       unit: celsius
                       description: Temperature in the flash evaporation to vaporize the Ti-precursor solution
                       m_annotations:
+                        tabular:
+                          name: Vaporization temperature Titan
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: celsius
@@ -445,6 +484,8 @@ definitions:
                       unit: millibar
                       description: Pressure applied in the reaction chamber
                       m_annotations:
+                        tabular:
+                          name: Chamber pressure
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: millibar
@@ -453,6 +494,8 @@ definitions:
                       unit: celsius
                       description: Temperature applied on the filament in the reaction chamber 
                       m_annotations:
+                        tabular:
+                          name: Substrat temperature
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: celsius
@@ -461,6 +504,8 @@ definitions:
                       unit: celsius
                       description: Temperature applied on the shaft in the reaction chamber 
                       m_annotations:
+                        tabular:
+                          name: Shaft temperature 
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: celsius
@@ -469,6 +514,8 @@ definitions:
                       unit: rpm
                       description: Rotation velocity of the carrier with substrates
                       m_annotations:
+                        tabular:
+                          name: Carrier rotation
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: rpm
@@ -477,6 +524,8 @@ definitions:
                       unit: rpm
                       description: Pumping velocity of the peristaltic pump of Ti
                       m_annotations:
+                        tabular:
+                          name: Peristaltic pump rotation Titan
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: rpm
@@ -485,6 +534,8 @@ definitions:
                       unit: rpm
                       description: Pumping velocity of the peristaltic pump of Sr/La
                       m_annotations:
+                        tabular:
+                          name: Peristaltic pump rotation Sr La
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: rpm
@@ -493,6 +544,8 @@ definitions:
                       unit: celsius
                       description: Temperature in the flash evaporation to vaporize the Sr/La precursor solution
                       m_annotations:
+                        tabular:
+                          name: Vaporization temperature  Sr La
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: celsius
@@ -501,6 +554,8 @@ definitions:
                       unit: centimeter ** 3 / minute
                       description: SCCM Argon gas in the flash evaporator used to push Sr/La-Precursor into the reaction chamber
                       m_annotations:
+                        tabular:
+                          name: Argon push Sr La
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: centimeter ** 3 / minute
@@ -509,6 +564,8 @@ definitions:
                       unit: centimeter ** 3 / minute
                       description: SCCM Argon gas in the flash evaporator used to purge Sr/La-Precursor
                       m_annotations:
+                        tabular:
+                          name: Argon purge Sr La
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: centimeter ** 3 / minute
@@ -587,36 +644,39 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              HR_XRD_measurements:
-                section:
-                  quantities:
-                    thickness:
-                      type: np.float64
-                      unit: nanometer
-                      description: Film thickness obtained from HRXRD
-                      m_annotations:
-                        tabular:
-                          name: Thickness
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    roughness:
-                      type: np.float64
-                      unit: nanometer
-                      description: RMS roughness value obtained by AFM
-                      m_annotations:
-                        tabular:
-                          name: Roughness
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    d_vert:
-                      type: np.float64
-                      unit: angstrom
-                      description: "Vertical lattice parameter d_vert obtained from HRXRD"
-                      m_annotations:
-                        tabular:
-                          name: d Vertical
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: angstrom
+              # HR_XRD_measurements:
+              #   section:
+              #     quantities:
+              #       thickness:
+              #         type: np.float64
+              #         unit: nanometer
+              #         description: Film thickness obtained from HRXRD
+              #         m_annotations:
+              #           tabular:
+              #             name: Thickness
+              #           eln:
+              #             component: NumberEditQuantity
+              #             defaultDisplayUnit: nanometer
+              #       d_vert:
+              #         type: np.float64
+              #         unit: angstrom
+              #         description: "Vertical lattice parameter d_vert obtained from HRXRD"
+              #         m_annotations:
+              #           tabular:
+              #             name: d Vertical
+              #           eln:
+              #             component: NumberEditQuantity
+              #             defaultDisplayUnit: angstrom
+              # AFM_measurements:
+              #   section:
+              #     quantities:
+              #       roughness:
+              #         type: np.float64
+              #         unit: nanometer
+              #         description: RMS roughness value obtained by AFM
+              #         m_annotations:
+              #           tabular:
+              #             name: Roughness
+              #           eln:
+              #             component: NumberEditQuantity
+              #             defaultDisplayUnit: nanometer
