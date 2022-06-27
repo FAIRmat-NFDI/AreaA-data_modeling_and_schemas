@@ -27,19 +27,8 @@ data:
       comment:
   process:
     data_file: OVERVIEW.csv
-    experiment_identifier: 
-    experiment_location:
-    start_time:
-    end_time: 2022-01-22 10:00:00+01
-    synthesis_category:
-    synthesis_method:
-    film:
-    substrate:
-    t_substrate:
-    o2_ar:          
-    composition:
     process_steps:
-      - data_file: STEPS.csv
+      data_file: STEPS.csv
       # - step_duration:
       #   elapsed_time:
       #   step_number: 2
