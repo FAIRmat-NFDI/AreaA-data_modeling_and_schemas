@@ -3,52 +3,52 @@ definitions:
   name: 'Electronic Lab Notebook schema for Float-zone' # mandatory!?
   sections:  # Schemas consist of section definitions
     User:
-          base_section: nomad.datamodel.data.EntryData
-          quantities:
-            role:
-              type:
-                type_kind: Enum
-                type_data:
-                  - Operator
-                  - Responsible_person
-              m_annotations:
-                eln:
-                  component: EnumEditQuantity
-            name:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
-            affiliation_institution:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
-            affiliation_group:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
-            address:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
-            email:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
-            orcid:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
-            telephone_number:
-              type: str
-              m_annotations:
-                eln:
-                  component: StringEditQuantity
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        role:
+          type:
+            type_kind: Enum
+            type_data:
+              - Operator
+              - Responsible_person
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_institution:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_group:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        address:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        email:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orcid:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        telephone_number:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     FZ_IKZ_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section 
@@ -442,8 +442,183 @@ definitions:
                           #start_voltage [kV]: # same voltage as in protocol but before you write the protocol
                           #maximum_voltage [kV]: # same voltage as in protocol but before you write the protocol
                           #minimum_voltage [kV]: # same voltage as in protocol but before you write the protocol
-              #time_dependent_settings_user_filled:
-              #time_dependent_settings_digitaly_filled:
+              time_dependent_settings_digital_protocol:
+                section:
+                  base_section: nomad.parsing.tabular.TableData
+                  quantities:
+                    data_file:
+                      type: str
+                      description: |
+                        A reference to an uploaded .csv
+                      m_annotations:
+                        # The tabular_parser annotation, will treat the values of this
+                        # quantity as files. It will try to interpret the files and fill
+                        # quantities in this section (and sub_section) with the column
+                        # data of .csv or .xlsx files.
+                        tabular_parser:
+                          sep: ';'
+                          comment: '#'
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity  # A form field that allows to drop and select files.
+                    measurment_no:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: 0
+                    date:
+                      type: str
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Datum
+                    time:
+                      type: str
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Zeit
+                    upper_position_rod:
+                      type: np.float64
+                      unit: millimeter
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: PosHubOb
+                    upper_pull_speed_rod:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: SollHubOb
+                    upper_rotation_rod:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: SollRotOb
+                    lower_position_crystal:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: PosHubUnt
+                    lower_pull_speed_crystal:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: SollHubUnt
+                    lower_rotation_crystal:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: SollRotUnt
+                    control_parameter:
+                      type: str
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Betr.Art
+                    control_parameter_set:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Gen-Soll
+                    power_obtained:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: P-Ist
+                    current_obtained:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Ia-Ist
+                    voltage_obtained:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Ua-Ist
+                    grid_current:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Ig-Ist
+                    high_frequency_current:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: I-hf
+                    high_frequency_voltage:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: U-hf
+                    frequency:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: f-HF
+                    inner_mechanisms_position_arbkr:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Pos-Arbkr
+                    inner_mechanisms_position_spindel:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Pos-Spindel
+                    inner_mechanisms_position_nachheizen:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: Pos-Nachheiz
+                    upper_diameter_rod:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: DurchmObn
+                    lower_diameter_crystal:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: DurchmUnt
+                    zone_height:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: ZonenHö
+                    meniscus_angle_on_left_side:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: WinkelLi
+                    meniscus_angle_on_right_side:
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        tabular:
+                          name: WinkelRe
         characterization:
           section:
             m_annotations:
