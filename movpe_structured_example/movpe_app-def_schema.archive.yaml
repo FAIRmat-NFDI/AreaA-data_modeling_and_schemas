@@ -360,17 +360,23 @@ definitions:
                     component: StringEditQuantity
             sub_sections:
               process_steps:
-                # repeats: true
-                m_annotations:
-                  eln:
-                  plot:
-                      title: TEST
-                      x: elapsed_time
-                      y:
-                        - argon_flow
-                        - oxygen_flow
                 section:
+                  # repeats: true
                   base_section: nomad.parsing.tabular.TableData
+                  m_annotations:
+                    eln:
+                    plot:
+                      - title: TEST
+                        x: elapsed_time
+                        y:
+                          - argon_flow
+                          - oxygen_flow
+                      - title: TEST
+                        x: elapsed_time
+                        y:
+                          - shaft_temperature
+                          - substrate_temperature_filament
+                          - vaporization_temperature_titan
                   quantities:
                     data_file:
                       type: str
@@ -403,6 +409,7 @@ definitions:
                       m_annotations:
                         tabular:
                           name: Timestamp
+                          unit: minute
                         # eln:
                         #   component: NumberEditQuantity
                         #   defaultDisplayUnit: minute
@@ -449,7 +456,8 @@ definitions:
                       description: Argon process gas flow in to the reaction chamber
                       m_annotations:
                         tabular:
-                          name: Argon flow 
+                          name: Argon flow
+                          unit: centimeter ** 3 / minute 
                         plot:
                           x: elapsed_time
                           y: argon_flow
