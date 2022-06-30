@@ -298,8 +298,8 @@ definitions:
               end_time:
                 type: Datetime
                 m_annotations:
-                  #tabular:
-                  #  name: End Time
+                  tabular:
+                    name: End Time
                   eln:
                     component: DateTimeEditQuantity
               synthesis_category:
@@ -360,11 +360,23 @@ definitions:
                     component: StringEditQuantity
             sub_sections:
               process_steps:
-                # repeats: true
-                m_annotations:
-                  eln:
                 section:
+                  # repeats: true
                   base_section: nomad.parsing.tabular.TableData
+                  m_annotations:
+                    eln:
+                    plot:
+                      - title: TEST
+                        x: elapsed_time
+                        y:
+                          - argon_flow
+                          - oxygen_flow
+                      - title: TEST
+                        x: elapsed_time
+                        y:
+                          - shaft_temperature
+                          - substrate_temperature_filament
+                          - vaporization_temperature_titan
                   quantities:
                     data_file:
                       type: str
@@ -388,7 +400,7 @@ definitions:
                           name: Duration
                         # eln:
                         #   component: NumberEditQuantity #DateTimeEditQuantity
-                        #   defaultDisplayUnit: minute
+                        #  defaultDisplayUnit: minute
                     elapsed_time:
                       type: np.float64
                       unit: minute
@@ -397,181 +409,204 @@ definitions:
                       m_annotations:
                         tabular:
                           name: Timestamp
+                          unit: minute
                         # eln:
                         #   component: NumberEditQuantity
                         #   defaultDisplayUnit: minute
-                    # step_number:
-                    #   type: int
-                    #   shape: ['*']
-                    #   description: sequential number of the step on going
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Step
+                    step_number:
+                      type: int
+                      shape: ['*']
+                      description: sequential number of the step on going
+                      m_annotations:
+                        tabular:
+                          name: Step
                     #     eln:
                     #       component: NumberEditQuantity
-                    # step_title: 
-                    #   type: str
-                    #   shape: ['*']
-                    #   description: what this step consists of
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Reason
+                    step_title: 
+                      type: str
+                      shape: ['*']
+                      description: what this step consists of
+                      m_annotations:
+                        tabular:
+                          name: Reason
                     #     eln:
                     #       component: StringEditQuantity
-                    # step_comment:
-                    #   type: str
-                    #   description: more verbose description of the step
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Description
+                    step_comment:
+                      type: str
+                      shape: ['*']
+                      description: more verbose description of the step
+                      m_annotations:
+                        tabular:
+                          name: Description
                     #     eln:
                     #       component: StringEditQuantity 
-                    # step_annotation:
-                    #   type: str
-                    #   description: final remarks on the step
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: annotations
+                    step_annotation:
+                      type: str
+                      shape: ['*']
+                      description: final remarks on the step
+                      m_annotations:
+                        tabular:
+                          name: annotations
                     #     eln:
                     #       component: StringEditQuantity 
-                    # argon_flow:
-                    #   type: np.float64
-                    #   shape: ['*']
-                    #   unit: centimeter ** 3 / minute
-                    #   description: Argon process gas flow in to the reaction chamber
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Argon flow 
+                    argon_flow:
+                      type: np.float64
+                      shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: Argon process gas flow in to the reaction chamber
+                      m_annotations:
+                        tabular:
+                          name: Argon flow
+                          unit: centimeter ** 3 / minute 
+                        plot:
+                          x: elapsed_time
+                          y: argon_flow
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: centimeter ** 3 / minute
-                    # oxygen_flow:
-                    #   type: np.float64
-                    #   unit: centimeter ** 3 / minute
-                    #   description: Oxygen process gas flow in to the reaction chamber
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Oxygen flow
+                    oxygen_flow:
+                      type: np.float64
+                      shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: Oxygen process gas flow in to the reaction chamber
+                      m_annotations:
+                        tabular:
+                          name: Oxygen flow
+                        plot:
+                          x: elapsed_time
+                          y: oxygen_flow
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: centimeter ** 3 / minute
-                    # argon_push_titan:
-                    #   type: np.float64
-                    #   unit: centimeter ** 3 / minute
-                    #   description: Argon gas in the flash evaporator used to push Ti-Precursor into the reaction chamber
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Argon push Titan
+                    argon_push_titan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: Argon gas in the flash evaporator used to push Ti-Precursor into the reaction chamber
+                      m_annotations:
+                        tabular:
+                          name: Argon push Titan
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: centimeter ** 3 / minute
-                    # argon_purge_titan:
-                    #   type: np.float64
-                    #   unit: centimeter ** 3 / minute
-                    #   description: Argon gas in the flash evaporator used to purge Ti-Precursor
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Argon purge Titan
+                    argon_purge_titan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: Argon gas in the flash evaporator used to purge Ti-Precursor
+                      m_annotations:
+                        tabular:
+                          name: Argon purge Titan
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: centimeter ** 3 / minute
-                    # vaporization_temperature_titan:
-                    #   type: np.float64
-                    #   unit: celsius
-                    #   description: Temperature in the flash evaporation to vaporize the Ti-precursor solution
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Vaporization temperature Titan
+                    vaporization_temperature_titan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: celsius
+                      description: Temperature in the flash evaporation to vaporize the Ti-precursor solution
+                      m_annotations:
+                        tabular:
+                          name: Vaporization temperature Titan
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: celsius
-                    # chamber_pressure:
-                    #   type: np.float64
-                    #   unit: millibar
-                    #   description: Pressure applied in the reaction chamber
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Chamber pressure
+                    chamber_pressure:
+                      type: np.float64
+                      shape: ['*']
+                      unit: millibar
+                      description: Pressure applied in the reaction chamber
+                      m_annotations:
+                        tabular:
+                          name: Chamber pressure
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: millibar
-                    # substrate_temperature_filament:
-                    #   type: np.float64
-                    #   unit: celsius
-                    #   description: Temperature applied on the filament in the reaction chamber 
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Substrat temperature
+                    substrate_temperature_filament:
+                      type: np.float64
+                      shape: ['*']
+                      unit: celsius
+                      description: Temperature applied on the filament in the reaction chamber 
+                      m_annotations:
+                        tabular:
+                          name: Substrat temperature
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: celsius
-                    # shaft_temperature:
-                    #   type: np.float64
-                    #   unit: celsius
-                    #   description: Temperature applied on the shaft in the reaction chamber 
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Shaft temperature 
+                    shaft_temperature:
+                      type: np.float64
+                      shape: ['*']
+                      unit: celsius
+                      description: Temperature applied on the shaft in the reaction chamber 
+                      m_annotations:
+                        tabular:
+                          name: Shaft temperature 
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: celsius
-                    # carrier_rotation:
-                    #   type: np.float64
-                    #   unit: rpm
-                    #   description: Rotation velocity of the carrier with substrates
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Carrier rotation
+                    carrier_rotation:
+                      type: np.float64
+                      shape: ['*']
+                      unit: rpm
+                      description: Rotation velocity of the carrier with substrates
+                      m_annotations:
+                        tabular:
+                          name: Carrier rotation
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: rpm
-                    # peristaltic_pump_rotation_titan:
-                    #   type: np.float64
-                    #   unit: rpm
-                    #   description: Pumping velocity of the peristaltic pump of Ti
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Peristaltic pump rotation Titan
+                    peristaltic_pump_rotation_titan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: rpm
+                      description: Pumping velocity of the peristaltic pump of Ti
+                      m_annotations:
+                        tabular:
+                          name: Peristaltic pump rotation Titan
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: rpm
-                    # peristaltic_pump_rotation_strontium_lanthan:
-                    #   type: np.float64
-                    #   unit: rpm
-                    #   description: Pumping velocity of the peristaltic pump of Sr/La
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Peristaltic pump rotation Sr La
+                    peristaltic_pump_rotation_strontium_lanthan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: rpm
+                      description: Pumping velocity of the peristaltic pump of Sr/La
+                      m_annotations:
+                        tabular:
+                          name: Peristaltic pump rotation Sr La
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: rpm
-                    # vaporization_temperature_strontium_lanthan:
-                    #   type: np.float64
-                    #   unit: celsius
-                    #   description: Temperature in the flash evaporation to vaporize the Sr/La precursor solution
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Vaporization temperature  Sr La
+                    vaporization_temperature_strontium_lanthan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: celsius
+                      description: Temperature in the flash evaporation to vaporize the Sr/La precursor solution
+                      m_annotations:
+                        tabular:
+                          name: Vaporization temperature  Sr La
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: celsius
-                    # argon_push_strontium_lanthan:
-                    #   type: np.float64
-                    #   unit: centimeter ** 3 / minute
-                    #   description: SCCM Argon gas in the flash evaporator used to push Sr/La-Precursor into the reaction chamber
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Argon push Sr La
+                    argon_push_strontium_lanthan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: SCCM Argon gas in the flash evaporator used to push Sr/La-Precursor into the reaction chamber
+                      m_annotations:
+                        tabular:
+                          name: Argon push Sr La
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: centimeter ** 3 / minute
-                    # argon_purge_strontium_lanthan:
-                    #   type: np.float64
-                    #   unit: centimeter ** 3 / minute
-                    #   description: SCCM Argon gas in the flash evaporator used to purge Sr/La-Precursor
-                    #   m_annotations:
-                    #     tabular:
-                    #       name: Argon purge Sr La
+                    argon_purge_strontium_lanthan:
+                      type: np.float64
+                      shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: SCCM Argon gas in the flash evaporator used to purge Sr/La-Precursor
+                      m_annotations:
+                        tabular:
+                          name: Argon purge Sr La
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: centimeter ** 3 / minute
