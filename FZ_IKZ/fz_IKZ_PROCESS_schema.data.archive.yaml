@@ -1,0 +1,22 @@
+# example data file for Float zone process at IKZ
+data:  
+  m_def: ../upload/raw/fz_IKZ_PROCESS.archive.yaml#FZ_IKZ_schema
+  user: #section name - not to be filled
+    - role: Operator , siupervisors
+      name: Iryna
+      affiliation_institution: Leibniz Institut für Kristallzüchtung
+      affiliation_group: FZ
+      address:
+      email:
+      orcid:
+      telephone_number:
+  instrument:
+    #furnace_type: 1505/1
+    vacuum_before_process_HV: 50000
+    #furnace_leak_rate: good
+    inductor:
+      inductor_id: 1
+      inductor_drawing: #"<p><span style=\"background-color: #fbeeb8;\">lrtsjdrsgj</span></p>"
+    reflector:
+      reflector_id: 2
+      reflector_inductor_position: 0.1
