@@ -559,18 +559,18 @@ definitions:
                       m_annotations:
                         tabular:
                           name: 0
-                    date:
-                      type: str
+                    # date:
+                    #   type: str
+                    #   shape: ['*']
+                    #   m_annotations:
+                    #     tabular:
+                    #       name: Datum
+                    timestamp:
+                      type: Datetime
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: Datum
-                    time:
-                      type: str
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: Zeit
+                          name: Datum_Zeit
                     upper_position_rod:
                       type: np.float64
                       #unit: meter
