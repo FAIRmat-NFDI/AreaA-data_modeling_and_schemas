@@ -58,6 +58,7 @@ Process:
               component: StringEditQuantity
   
   INSTRUMENT:
+    
 
   MATERIALS:
     doc: |
@@ -198,7 +199,11 @@ Process:
           m_annotations:
             eln:
               component: StringEditQuantity
-        Selfmade batch: (HCl/Ethanol) --> recipe
+        #Selfmade batch: (HCl/Ethanol) --> recipe
+        composition:
+          HCl(COMPONENT):
+          Ethanol(COMPONENT)):
+
 
     chemical_additives_2:
       quantities:
@@ -233,6 +238,8 @@ Process:
       elapsed_time:
       step_sequantial_index:
       step_information: 
+      VESSEL:
+        vessel_1: 
       REAGENTS:
         chemical_precursor: link to the sample in MATERIAL section
         chemical_solvent: link to the sample in MATERIAL section
