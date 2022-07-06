@@ -115,6 +115,9 @@ definitions:
           section: User
         materials:
           section:
+            m_annotations:
+              eln:
+                dict()
             sub_sections:
               precursor:
                 section:
