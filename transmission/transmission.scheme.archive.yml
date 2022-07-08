@@ -1,0 +1,80 @@
+definitions:
+  name: "ELN schema for transmission experiments"
+  sections:
+    Sample:
+    Scan:
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        wavelength_start:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+              minValue: 0
+        wavelength_stop:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+              minValue: 0
+        wavelength_interval:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+              minValue: 1e-2
+        representation:
+          type: Enum
+          type_data:
+            - "%T (Transmittance)"
+            - "A (Absorbance)"
+            - E1 (energy from sample beam)
+            - E2 (energy from reference beam)
+            - "%R (Reflectance)"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        cycles:
+          type: int
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 1
+              maxValue: 999
+        cycle_delay:
+          type: np.float64
+          unit: second
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: s
+              minValue: 0
+    Instrument:
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        lamps:
+          type: str
+          shape: ["*"]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        lamp_change:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+        monochromator_change:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
