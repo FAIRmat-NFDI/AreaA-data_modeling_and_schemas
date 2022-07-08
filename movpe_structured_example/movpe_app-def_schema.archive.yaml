@@ -113,6 +113,11 @@ definitions:
           m_annotations:
             eln:
           section: User
+        instrument:
+          section:
+            m_annotations:
+              eln:
+                dict()
         materials:
           section:
             m_annotations:
