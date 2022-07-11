@@ -29,7 +29,7 @@ definitions:
                 type: str
                 m_annotations:
                   tabular_parser:
-                    sep: ','
+                    sep: '\s*,\s*'
                     comment: '#'
                   browser:
                     adaptor: RawFileAdaptor
@@ -41,14 +41,14 @@ definitions:
                 shape: ['*']
                 m_annotations:
                   tabular:
-                    name: Wavelength
+                    name: nm
                     unit: nm
               transmission:
                 type: np.float64
                 shape: ['*']
                 m_annotations:
                   tabular:
-                    name: Transmission
+                    name: '%T'
         User:
           section:
             m_annotations:
