@@ -78,3 +78,93 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nm
+        detector_change:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+        common_beam_mask:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 100
+        common_beam_depolarizer:
+          type: bool
+          m_annotations:
+            eln:
+              component: BooleanEditQuantity
+        polarizer:
+          type: int
+          unit: degree
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 340
+        ref_attenuator:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 100
+        sample_attenuator:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+        PMT_response_time:
+          type: np.float64
+          unit: second
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+        PMT_slit:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+        PMT_slit_type:
+          type: Enum
+          type_data:
+            - Fixed
+            - Servo
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        PbS_gain:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+        PbS_response_time:
+          type: np.float64
+          unit: second
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+        PbS_slit:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nm
+        PbS_slit_type:
+          type: Enum
+          type_data:
+            - Fixed
+            - Servo
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
