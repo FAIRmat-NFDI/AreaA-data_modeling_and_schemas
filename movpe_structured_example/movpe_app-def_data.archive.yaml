@@ -20,10 +20,11 @@ data:
     - name: Giovanna
   materials:
     precursor:
-      chemicals:
-        - "../upload/raw/Copper_II_Selenide.archive.json#data"
-        - "../upload/raw/CHEMICAL.archive.yaml#data"
+      comment: "the precursor is freshly prepared in the lab"
     substrate:
+      composition:
+        - "../upload/raw/Copper_II_Selenide.archive.json#data"
+        - "../upload/raw/Zinc_Selenide.archive.yaml#data"
       comment:
   process:
     data_file: OVERVIEW.csv

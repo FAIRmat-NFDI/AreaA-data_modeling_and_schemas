@@ -1,9 +1,14 @@
 definitions:
   name: 'Electronic Lab Notebook schema fot MOVPE-STO jjj'
   sections:  # Schemas consist of section definitions
-    Chemical:
+    Substance:
       base_section: nomad.datamodel.data.EntryData
       quantities:
+        id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         comment:
           type: str
           m_annotations:
@@ -51,9 +56,15 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        CAS:
+        cas_number:
           type: str
           description: CAS number
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        sku_number:
+          type: str
+          description: sku number
           m_annotations:
             eln:
               component: DateTimeEditQuantity
@@ -113,6 +124,11 @@ definitions:
           m_annotations:
             eln:
           section: User
+        instrument:
+          section:
+            m_annotations:
+              eln:
+                dict()
         materials:
           section:
             m_annotations:
@@ -122,23 +138,22 @@ definitions:
               precursor:
                 section:
                   quantities:
-                    chemicals:
-                      type: Chemical #../upload/raw/chemical_schema.archive.yaml#definitions/section_definitions/0
+                    composition:
+                      type: Substance #../upload/raw/chemical_schema.archive.yaml#definitions/section_definitions/0
                       shape: ['*']
                       m_annotations:
                         eln:
                           component: ReferenceEditQuantity
-                    comment:
-                      type: str
+                    method:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Experimental
+                          - Simulation
+                          - Declared by Vendor
                       m_annotations:
                         eln:
-                          component: StringEditQuantity
-                    fabrication_date:
-                      type: Datetime
-                      description: Date of precursor solution preparation
-                      m_annotations:
-                        eln:
-                          component: DateTimeEditQuantity
+                          component: RadioEnumEditQuantity
                     mass:
                       type: np.float64
                       unit: milligram
@@ -187,9 +202,20 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: milliliter/minute
+                    comment:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
               substrate:
                 section:
                   quantities:
+                    composition:
+                      type: Substance #../upload/raw/chemical_schema.archive.yaml#definitions/section_definitions/0
+                      shape: ['*']
+                      m_annotations:
+                        eln:
+                          component: ReferenceEditQuantity
                     comment:
                       type: str
                       m_annotations:

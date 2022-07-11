@@ -1,0 +1,218 @@
+definitions:
+  name: "ELN schema for transmission experiments"
+  base_section: nomad.datamodel.data.EntryData
+  sections:
+    Transmission:
+      base_section: nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: []
+      sub_sections:
+        Sample:
+          section:
+            m_annotations:
+              eln:
+                overview: true
+            base_section: nomad.datamodel.metainfo.eln.Sample
+        User:
+          section:
+            m_annotations:
+              eln:
+                overview: true
+            quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              role:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              affiliation:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              address:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              email:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        Scan:
+          section:
+            quantities:
+              wavelength_start:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+                    minValue: 0
+              wavelength_stop:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+                    minValue: 0
+              wavelength_interval:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+                    minValue: 1e-2
+              representation:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - "%T (Transmittance)"
+                    - "A (Absorbance)"
+                    - E1 (energy from sample beam)
+                    - E2 (energy from reference beam)
+                    - "%R (Reflectance)"
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
+              cycles:
+                type: int
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 1
+                    maxValue: 999
+              cycle_delay:
+                type: np.float64
+                unit: second
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: s
+                    minValue: 0
+        Instrument:
+          section:
+            quantities:
+              lamps:
+                type: str
+                shape: ["*"]
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              lamp_change:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+              monochromator_change:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+              detector_change:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+              common_beam_mask:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+                    maxValue: 100
+              common_beam_depolarizer:
+                type: bool
+                m_annotations:
+                  eln:
+                    component: BooleanEditQuantity
+              polarizer:
+                type: int
+                unit: degree
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+                    maxValue: 340
+              ref_attenuator:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+                    maxValue: 100
+              sample_attenuator:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+              PMT_response_time:
+                type: np.float64
+                unit: second
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: s
+                    minValue: 0
+              PMT_slit:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+              PMT_slit_type:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Fixed
+                    - Servo
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
+              PbS_gain:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+              PbS_response_time:
+                type: np.float64
+                unit: second
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: s
+                    minValue: 0
+              PbS_slit:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+              PbS_slit_type:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Fixed
+                    - Servo
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
