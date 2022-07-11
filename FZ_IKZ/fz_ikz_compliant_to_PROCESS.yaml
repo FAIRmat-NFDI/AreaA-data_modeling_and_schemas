@@ -1,0 +1,122 @@
+# FZ IKZ
+Process:
+  GLOBAL:
+  USER:
+  INSTRUMENT:
+    furnace:
+      furnace_type:
+      vacuum_before_process_HV:
+      furnace_leak_rate:
+    inductor:
+      inductor_id:
+      inductor_drawing:
+    reflector:
+      reflector_id:
+      reflector_inductor_position:
+
+
+  MATERIALS:
+    gases:
+      - name: Ar
+        id: Ar_id # link to SUBSTANCE
+    dopants:
+      - name: PH3
+        id: PH3_id # link to SUBSTANCE
+    feed_rod:
+      name: Wacker
+      material:
+      diameter:
+      rod_surface:
+      rod_pretreatment:
+      rod_position_during_preheating:
+      #id: xy # link to a COMPONENT
+    intended_sample:
+    final_sample:
+      # linked infor from steps
+
+  STEPS:
+    - gas_ambient_settings:
+        step_type: main process
+        timestamp: 
+        step_sequence: 1
+        step_information: crystal body
+        process_note:
+        gas_pressure:
+        Ar_inflow_rate:
+        gas_outflow_rate:
+        N2_Gas_composition:
+        dopant:
+        doping_concentration:
+    - process_settings:
+        step_type: main process
+        timestamp: 
+        step_sequence: 1
+        step_information: crystal body
+        process_note:
+        rod_preheating_method:
+        rod_preheating_voltage:
+        rod_preheating_duration:
+        voltage:
+        coil_offset:
+        upper_pull_speed_rod:
+        lower_pull_speed_crystal:
+        upper_rotation_rod:
+        lower_rotation_crystal:
+        neck_length:
+        switching_to_software_process_control:
+        lower_position_crystal:
+        upper_position_rod:
+    digital_protocol:
+      data_file:
+      step_type: main process
+      measurment_no:
+      timestamp:
+      upper_position_rod:
+      upper_pull_speed_rod:
+      upper_rotation_rod:
+      lower_position_crystal:
+      lower_pull_speed_crystal:
+      lower_rotation_crystal:
+      control_parameter:
+      control_parameter_set:
+      power_obtained:
+      current_obtained:
+      voltage_obtained:
+      grid_current:
+      high_frequency_current:
+      high_frequency_voltage:
+      frequency:
+      inner_mechanisms_position_arbkr:
+      inner_mechanisms_position_spindel:
+      inner_mechanisms_position_nachheizen:
+      upper_diameter_rod:
+      lower_diameter_crystal:
+      zone_height:
+      meniscus_angle_on_left_side:
+      meniscus_angle_on_right_side:
+    basic_crystal_characterization: # link to intended and final_sample
+      step_type: measurement
+      diameter_target_crystal:
+      diameter_measured_crystal:
+      body_diameter:
+      body_length:
+      process_conclusion:
+    resistivity: # link to intended and final_sample, link to resistivity measurement
+      step_type: measurement
+      target_resistivity:
+      maximum_resistivity_on_body:
+      minimum_resistivity_on_body:
+      measurement_protocol:
+    lifetime: # link to intended and final_sample
+      step_type: measurement
+      average_lifetime_on_body:
+      lifetime_map:
+    lateral_photovoltage_scanning: # link to intended and final_sample
+      step_type: measurement
+      interface_curvative:
+      LPS_map:
+
+
+
+
+
