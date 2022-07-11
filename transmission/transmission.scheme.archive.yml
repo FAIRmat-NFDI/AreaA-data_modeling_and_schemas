@@ -14,6 +14,41 @@ definitions:
               eln:
                 overview: true
             base_section: nomad.datamodel.metainfo.eln.Sample
+        Data:
+          section:
+            base_section: nomad.parsing.tabular.TableData
+            m_annotations:
+              eln:
+                overview: true
+              plot:
+                - title: Measurement
+                  x: wavelength
+                  y: transmission
+            quantities:
+              data_file:
+                type: str
+                m_annotations:
+                  tabular_parser:
+                    sep: ','
+                    comment: '#'
+                  browser:
+                    adaptor: RawFileAdaptor
+                  eln:
+                    component: FileEditQuantity
+              wavelength:
+                type: np.float64
+                unit: nm
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: Wavelength
+                    unit: nm
+              transmission:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: Transmission
         User:
           section:
             m_annotations:
