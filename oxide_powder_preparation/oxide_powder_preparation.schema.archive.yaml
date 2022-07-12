@@ -1,0 +1,86 @@
+Process:
+
+  GLOBAL:
+    tags:
+    description:
+    experiment_identifier:
+    experiment_location:
+    start_time:
+    end_time:
+    synthesis_category:
+    synthesis_method:
+
+  USER:
+
+  INSTRUMENT:
+
+  MATERIALS:
+    component_1: link
+      ID: 1
+      ...
+      mass: x
+    component_2: link
+    component_3: link
+    component_2_dried:
+    component_3_dried:
+    sinterized_material:
+
+  STEPS:
+    Drying:
+      step_type: pre-process [pre-process, process, post-process, measurement, storage] 
+      timestamp:
+      duration:
+      elapsed_time:
+      step_sequence:
+      step_information: could be information about your step
+      ... list here your relevant step measured parameters
+      weight_loss:
+      REAGENTS:
+        component_1: link
+      PRODUCTS:
+        component_dried: link
+          ID: 1bis
+
+    Drying:
+      step_type: pre-process [pre-process, process, post-process, measurement, storage] 
+      timestamp:
+      duration:
+      elapsed_time:
+      step_sequence:
+      step_information: could be information about a layer
+      REAGENTS:
+        component_2:
+      PRODUCTS:
+        component_2_dried:
+          ID:
+
+    Drying:
+      step_type: pre-process [pre-process, process, post-process, measurement, storage] 
+      timestamp:
+      duration:
+      elapsed_time:
+      step_sequence:
+      step_information: could be information about a layer
+      REAGENTS:
+        component_3:
+      PRODUCTS:
+
+    Sintering:
+      step_type: process [pre-process, process, post-process, measurement, storage] 
+      timestamp:
+      duration:
+      elapsed_time:
+      step_sequence:
+      step_information: could be information about a layer
+      REAGENTS:
+        component_dried: link
+        component_2:
+        component_3:
+      PRODUCTS:
+        syntherized_material:
+          ID: my_new_id
+
+    Characterization:
+      step_type: measurement  [pre-process, process, post-process, measurement, storage] 
+      parameters of interests:
+      measurement: link
