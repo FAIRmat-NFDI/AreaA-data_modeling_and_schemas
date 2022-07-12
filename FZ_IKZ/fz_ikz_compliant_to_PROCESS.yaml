@@ -1,8 +1,8 @@
 # FZ IKZ
 Process:
-  GLOBAL:
-  USER:
-  INSTRUMENT:
+  #GLOBAL:
+  users:
+  instrument:
     furnace:
       furnace_type:
       vacuum_before_process_HV:
@@ -15,15 +15,15 @@ Process:
       reflector_inductor_position:
 
 
-  MATERIALS:
+  materials:
     gases:
-      - name: Ar
-        id: Ar_id # link to SUBSTANCE
+      - gas_name: Ar
+        gas_id: Ar_id # link to SUBSTANCE
     dopants:
-      - name: PH3
-        id: PH3_id # link to SUBSTANCE
+      - dopant_name: PH3
+        dopant_id: PH3_id # link to SUBSTANCE
     feed_rod:
-      name: Wacker
+      feed_rod_name: Wacker
       material:
       diameter:
       rod_surface:
