@@ -25,7 +25,7 @@ definitions:
         current_source: Keithley 220 Programmable current source
         switch_matrix: Keithley 7001 Switch System
         software: Lake Shore Hall Measurement Software   
-      sample: #section name - not to be filled
+      materials: #section name - not to be filled
       - Sample-ID: 
           description: #A unique assignment of the sample by means of an identification number. Should be linked with growth database in NOMAD system.
           value: 22-127-G
