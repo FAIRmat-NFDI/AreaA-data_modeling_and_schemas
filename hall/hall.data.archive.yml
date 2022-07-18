@@ -19,7 +19,8 @@ definitions:
         email:
         orcid:
         telephone_number:
-      instrument: Lake Shore Hall Measurement System
+      instrument: 
+        model: Lake Shore Hall Measurement System
         voltmeter: Keithley 2182 Nanovoltmeter
         amperemeter: Keithley 485 Autoranging Picoammeter
         current_source: Keithley 220 Programmable current source

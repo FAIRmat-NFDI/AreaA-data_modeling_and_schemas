@@ -1,0 +1,24 @@
+definitions:
+  name: 'Electronic Lab Notebook Hall'
+  sections:  # Schemas consist of section definitions
+    Sample:
+      base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+      quantities:
+        chemicals:
+          type: ../upload/raw/sample2.schema.archive.yml#/definitions/section_definitions/0
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+

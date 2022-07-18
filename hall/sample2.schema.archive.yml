@@ -1,0 +1,12 @@
+definitions:
+  name: 'Electronic Lab Notebook Hall'
+  sections:  # Schemas consist of section definitions
+    Sample:
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        recycled:
+          type: str
+          description: Was the substrate deposited already and is recycled by polishing?
+          m_annotations:
+            eln:
+              component: StringEditQuantity
