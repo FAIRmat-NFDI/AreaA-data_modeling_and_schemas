@@ -72,6 +72,24 @@ def is_meas_header(expr: str) -> bool:
     return bool(re.search(r"^[^\]]+\[[^\]]+\]", expr))
 
 
+def get_unique_dkey(dic: dict, dkey: str) -> str:
+    """Checks whether a data key is already contained in a dictionary
+    and returns a unique key if it is not.
+
+    Args:
+        dic (dict): The dictionary to check for keys
+        dkey (str): The data key which shall be written.
+
+    Returns:
+        str: A unique data key. If a key already exists it is appended with a number
+    """
+    suffix = 0
+    while f"{dkey}{suffix}" in dic:
+        suffix += 1
+
+    return f"{dkey}{suffix}"
+
+
 def split_add_key(fobj: TextIO, dic: dict, prefix: str, expr: str) -> None:
     """_summary_
 
@@ -99,9 +117,8 @@ def split_add_key(fobj: TextIO, dic: dict, prefix: str, expr: str) -> None:
             else:
                 data.append(list(map(lambda x: x.strip(), re.split("\t+", line))))
 
-        dic[f"{prefix}/{key}/{jval}/data"] = pd.DataFrame(
-            np.array(data[1:], dtype=np.float64), columns=data[0]
-        )
+        dkey = get_unique_dkey(dic, f"{prefix}/{key}/{jval}/data")
+        dic[dkey] = pd.DataFrame(np.array(data[1:], dtype=np.float64), columns=data[0])
     else:
         dic[f"{prefix}/{key}"] = jval
 
@@ -126,8 +143,8 @@ def read_template_from_file(fname: str, encoding: str = "iso-8859-1") -> dict:
                 current_section = f"/{SECTION_REPLACEMENTS.get(sline, sline)}"
                 current_measurement = ""
             elif is_measurement(line):
-                _, _, *meas = line.partition(":")
-                sline = "".join(meas).strip()[:-1]
+                step, _, *meas = line.partition(":")
+                sline = f"{step[6:]}_" + "".join(meas).strip()[:-1]
                 current_measurement = f"/{MEASUREMENT_REPLACEMENTS.get(sline, sline)}"
             elif is_key(line):
                 split_add_key(
@@ -141,7 +158,10 @@ def read_template_from_file(fname: str, encoding: str = "iso-8859-1") -> dict:
                     data.append(list(map(lambda x: x.strip(), re.split("\t+", mline))))
 
                 header = list(map(lambda x: x.strip(), re.split("\t+", line)))
-                template[f"{current_section}{current_measurement}/data"] = pd.DataFrame(
+                dkey = get_unique_dkey(
+                    template, f"{current_section}{current_measurement}/data"
+                )
+                template[dkey] = pd.DataFrame(
                     np.array(data, dtype=np.float64), columns=header
                 )
 
@@ -151,6 +171,7 @@ def read_template_from_file(fname: str, encoding: str = "iso-8859-1") -> dict:
 def main() -> None:
     """Reads the example hall file and generates the template"""
     read_template_from_file("22-127-G_Hall-RT_TT-Halter.txt")
+    read_template_from_file("22-127-G_20K-320K_TT-Halter_WDH_060722.txt")
 
 
 if __name__ == "__main__":
