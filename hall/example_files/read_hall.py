@@ -167,6 +167,9 @@ def read_template_from_file(fname: str, encoding: str = "iso-8859-1") -> dict:
                 template[dkey] = pd.DataFrame(
                     np.array(data, dtype=np.float64), columns=header
                 )
+            else:
+                if line.strip():
+                    print(f"Warning: line `{line.strip()}` ignored")
 
     return template
 
