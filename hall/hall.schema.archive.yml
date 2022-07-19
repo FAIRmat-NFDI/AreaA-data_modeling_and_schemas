@@ -1,5 +1,5 @@
 definitions:
-  name: 'Electronic Lab Notebook Hall measurements'
+  name: 'Elec'
   sections:  # Schemas consist of section definitions
     User:
       quantities:
@@ -60,7 +60,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        chemical_name:
+        name:
           type: str
           description: The name of the chemical that is typically used in literature
           m_annotations:
@@ -128,19 +128,17 @@ definitions:
                 # hide: ['children', 'parents']
                 # hide: ['children', 'parents', institute]
                 hide: []
-        subsample:
-          section:
-            base_sections:
-              - '../upload/raw/sample.schema.archive.yml#/definitions/section_definitions/2'
-            m_annotations: 
-              eln: 
-      quantities:
         composition:
-          type: Sample #../upload/raw/chemical_schema.archive.yaml#definitions/section_definitions/0
-          shape: ['*']
+          repeats: true
           m_annotations:
             eln:
-              component: ReferenceEditQuantity
+          section: Sample
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         method: 
           type:
             type_kind: Enum
@@ -149,11 +147,6 @@ definitions:
               - simulation
               - declared_by_vendor
               - nominal
-        chemical_name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         iupac_name:
           type: str
           m_annotations:
@@ -346,24 +339,12 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        materials: #section name - not to be filled
+        materials:
+          repeats: true
           m_annotations:
             eln:
             #  dict()
-          section: 
-            sub_sections:
-              material_test2:
-                repeats: true
-                m_annotations:
-                  eln:
-                section: Sample
-            quantities:
-              material_test1:
-                type: Sample #../upload/raw/chemical_schema.archive.yaml#definitions/section_definitions/0
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
+          section: Sample
             # quantities:
             #   materials:
             #     type: Sample #../upload/raw/chemical_schema.archive.yaml#definitions/section_definitions/0

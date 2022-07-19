@@ -18,18 +18,18 @@ data:
       orcid:
       telephone_number:
     - name: Giovanna
-  materials:
-    precursor:
-      comment: "the precursor is freshly prepared in the lab"
-    substrate:
-      composition:
-        - "../upload/raw/Copper_II_Selenide.archive.json#data"
-        - "../upload/raw/Zinc_Selenide.archive.yaml#data"
-      comment:
+  # materials:
+  #   precursor:
+  #     comment: "the precursor is freshly prepared in the lab"
+  #   substrate:
+  #     composition:
+  #       - "../upload/raw/Copper_II_Selenide.archive.json#data"
+  #       - "../upload/raw/Zinc_Selenide.archive.yaml#data"
+  #     comment:
   process:
-    data_file: OVERVIEW.csv
-    process_steps:
-      data_file: STEPS.csv
+    data_file: ELAB-255.xlsx # OVERVIEW.csv #
+   # process_steps:
+   #   data_file: STEPS.csv
       # - step_duration:
       #   elapsed_time:
       #   step_number: 2
