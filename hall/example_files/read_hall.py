@@ -91,7 +91,9 @@ def get_unique_dkey(dic: dict, dkey: str) -> str:
 
 
 def split_add_key(fobj: TextIO, dic: dict, prefix: str, expr: str) -> None:
-    """_summary_
+    """Splits a key value pair and adds it to the dictionary.
+    It also checks for measurement headers and adds the full tabular data as a
+    pandas array to the dictionary.
 
     Args:
         fobj (TextIO): The file object to read from
@@ -109,7 +111,8 @@ def split_add_key(fobj: TextIO, dic: dict, prefix: str, expr: str) -> None:
                 break
             if is_key(line):
                 split_add_key(
-                    None,  # There should be no deeper measurement, prevent further consum of lines
+                    None,  # There should be no deeper measurement,
+                    # prevent further consumption of lines
                     dic,
                     f"{prefix}/{key}/{jval}",
                     line,
