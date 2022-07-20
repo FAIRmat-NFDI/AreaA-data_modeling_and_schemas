@@ -1,0 +1,719 @@
+definitions:
+  name: 'Elecrrrrr'
+  sections:  # Schemas consist of section definitions
+    User:
+      quantities:
+        role:
+          type:
+            type_kind: Enum
+            type_data:
+              - Operator
+              - Responsible_person
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_institution:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        affiliation_group:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        address:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        email:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orcid:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        telephone_number:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Substance:
+      base_section: nomad.datamodel.data.EntryData
+      quantities:
+        id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        name:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          description: the IUPAC nomenclature of the chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type: str
+          description: Phase of the chemical in the bottle
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        supplier:
+          type: str
+          description: Fabricating company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        purity:
+          type: str
+          description: Purity of the Chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        buying_date:
+          type: Datetime
+          description: Date of the Invoice Mail
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        opening_date:
+          type: Datetime
+          description: Date of Opening the Chemical bottle in the Glove box
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        cas_number:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        sku_number:
+          type: str
+          description: sku number
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+    Sample:
+      base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        composition:
+          repeats: true
+          m_annotations:
+            eln:
+          section: Sample
+      quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        method: 
+          type:
+            type_kind: Enum
+            type_data:
+              - experimental
+              - simulation
+              - declared_by_vendor
+              - nominal
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        iupac_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orientation:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        creation_datetime:
+          type: str
+          description: creation date
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        growth_method:
+          type:
+            type_kind: Enum
+            type_data:
+              - MOVPE
+              - what not
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        thickness:
+          type: np.float64
+          unit: nanometer
+          description: layer thickness
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+    Process:
+      quantities:
+        timestamp:
+            type: Datetime
+            description: my descr
+            m_annotations:
+              eln:
+                component: DateTimeEditQuantity
+        elapsed_time:
+            type: np.float64
+            description: my descr
+            m_annotations:
+              eln:
+                component: NumberEditQuantity
+        process_type:
+            type:
+              type_kind: Enum
+              type_data:
+                - Pre-process
+                - Process
+                - Post-process
+                - Measurement
+                - Storage
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: temperature 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        atmosphere:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        method:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        chemical:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Hall_measurement:
+      base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        global:
+          section:
+            quantities:
+              experiment_identifier:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              experiment_location:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              start_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              end_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              synthesis_category:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              synthesis_method:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        users:
+          repeats: true
+          m_annotations:
+            eln:
+          section: User
+        instrument: 
+          section:
+            quantities:
+              model: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              voltmeter: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              amperemeter: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              current_source:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              switch_matrix: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              software: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        materials: 
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              layer:
+                repeats: true
+                m_annotations:
+                  eln:
+                section: 
+                  base_section: Sample
+                  quantities:
+                    epitaxy_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Homoepitaxy
+                          - Heteroepitaxy
+                      m_annotations:
+                        eln:
+                          component: RadioEnumEditQuantity
+                    substrate:
+                      type: Sample
+                      # shape: ['*']
+                      m_annotations:
+                        eln:
+                          component: ReferenceEditQuantity
+              bulk:
+                repeats: true
+                m_annotations:
+                  eln:
+                section: 
+                  base_section: Sample
+                  quantities:
+                    epitaxy_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Homoepitaxy
+                          - Heteroepitaxy
+                      m_annotations:
+                        eln:
+                          component: RadioEnumEditQuantity
+              contacts:
+                repeats: true
+                m_annotations:
+                  eln:
+                    dict()
+                section: 
+                  sub_sections:
+                    metal_stack:
+                      repeats: true
+                      m_annotations:
+                        eln:
+                          dict()
+                      section: 
+                        base_section: Sample
+                    process_steps:
+                      repeats: true
+                      m_annotations:
+                        eln:
+                          dict()
+                      section: 
+                        base_section: Process
+
+#     Post-Annealing:
+#         description: #Was there a post-annealing step? If yes, what was time, temperature, atmosphere and method?
+#         value: RTA 470°C 1min N2
+#         unit: no unit
+#         type: string
+#         data_input: manually written
+#         otional: True
+#     Pre-treatment:
+#         description: #Was there a pre-treatment of the surface? If yes, what was done (temperature, time, chemical, method)?
+#         value: Aqua regia cleaning for 5 min @ room temperature + rinsing in DI water
+#         unit: no unit
+#         type: string
+#         data_input: manually written
+#         otional: True
+#     implantation:
+#         description: #Was an implatation made for contact formation? If yes, what was done (dose, duration, annealing)?
+#         value:
+#         unit: no unit
+#         type: string
+#         data_input: manually written
+#         otional: True
+#     regrowth:
+#         description: #Was a regrowth made for contact formation? If yes, what was done (growth, thickness, concentration, lift-off)?
+#         value:
+#         unit: no unit
+#         type: string
+#         data_input: manually written
+#         otional: True
+# measurement_geometry: 
+#     description: #choose between those two possible set-up geometries
+#     value: Van der Pauw/Hall bar
+#     unit: no unit
+#     type: boolean
+#     data_input: manually written
+#     otional: False # Mandatory!
+#     If_Van_der_Pauw: #If sample measurement geometry = Van der Pauw
+#         sample_shape: 
+#             description: #choose between those three shapes
+#             value: square/rectangular/arbitrary
+#             unit: no unit
+#             type: boolean
+#             data_input: manually written
+#             otional: True
+#             If_square: #If sample shape = square
+#                 edge_length: 
+#                     description: #length of the edge of the square shaped sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True
+#             If_rectangular: #If sample shape = rectangular
+#                 edge_length_a: 
+#                     description: #length of the horizontal edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True                 
+#                 edge_length_b: 
+#                     description: #length of the vertical edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True                 
+#                 data_input: manually
+#                 optional: True
+#             If_arbitrary: #If sample shape = arbitrary
+#                 shape_discription: 
+#                     description: #describe the shape of the sample
+#                     value: like a kidney
+#                     unit: no unit
+#                     type: string
+#                     data_input: manually written
+#                     otional: True         
+#                 edge_length_a: 
+#                     description: #approximate length of the horizontal edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True                 
+#                 edge_length_b: 
+#                     description: #approximate length of the vertical edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True
+#     If_Hall_bar:
+#         sample_shape: 
+#             description: #choose between those three shapes
+#             value: 1-2-2-1/1-3-1-1
+#             unit: no unit
+#             type: boolean
+#             data_input: manually written
+#             otional: True
+#         Hall_bar_length:
+#             description: #distance between the Voltage probe lines. Value will be used to calculate Resistivity.
+#             value: 10
+#             unit: µm
+#             type: float
+#             data_input: manually written
+#             otional: True
+#         Hall_bar_width:
+#             description: #width of the Hall bar. Value will be used to calculate Resistivity.
+#             value: 10
+#             unit: µm
+#             type: float
+#             data_input: manually written
+#             otional: True
+# measurement:
+#     room_temperature_measurement:
+#         data_file: 22-127-G_Hall-RT_TT-Halter.txt
+#         data:
+#             2_point_resistance_1-2:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 1 to 2
+#                 value: 1.87e4
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True
+#             2_point_resistance_2-3:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 2 to 3
+#                 value: 1.05e4
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True
+#             2_point_resistance_3-4:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 3 to 4
+#                 value: 6.38e3
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True
+#             2_point_resistance_4-1:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 4 to 1
+#                 value: 1.34e4
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True                
+#             Hall_excitation_current:
+#                 description: #applied current for the Hall measurement
+#                 value: 2.0
+#                 unit: µA
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!  
+#             magnetic_field:
+#                 description: #applied magnetic field for the Hall measurements
+#                 value: 3.0e3
+#                 unit: G
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!            
+#             resistivity:
+#                 description: #4-point Resistivity measurement
+#                 value: 7.12e-1
+#                 unit: Ohm*cm
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!
+#             Hall_coefficient:
+#                 description: #4-point Hall coefficient measurement. Negative means electrons and positive means holes are the majority charge carrier.
+#                 value: -1.07e2
+#                 unit: cm³/C
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!                
+#             Charge_carrier_concentration:
+#                 description: #charge carrier concentration from Hall measurement. Negative means electrons and positive means holes are the majority charge carrier. Calculated using the single type conductivity model.
+#                 value: -5.81e16
+#                 unit: 1/cm³
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!                
+#             Hall_mobility:
+#                 description: #Hall mobility from Hall measurement. Negative means electron mobility and positive means hole mobility. Calculated using the single type conductivity model.
+#                 value: -1.51e2
+#                 unit: cm²/Vs
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory! 
+#         Ambient:
+#             temperature:
+#                 description: #What was the temperature during the measurement?
+#                 value: 295.12
+#                 unit: K
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: True            
+#             atmosphere:
+#                 description: #What was the atmosphere during the measurement?
+#                 value: Air
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#             illumination:
+#                 description: #What were the lighting conditions during the measurement?
+#                 value: dark
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#     temperature_dependent_hall_measurement:           
+#         cryostat: 
+#             description: #Which cryostat was used for the measurement?
+#             value: Closed cycle refrigerator
+#             unit: no unit
+#             type: string
+#             data_input: manually written
+#             otional: True
+#         Ambient:
+#             temperature_range:
+#                 temperature_min:
+#                     description: #What was the minimum/starting temperature of the measurement?
+#                     value: 20
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True
+#                 temperature_max:
+#                     description: #What was the maximum/final temperature of the measurement?
+#                     value: 320
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True                         
+#             atmosphere:
+#                 description: #What was the atmosphere during the measurement?
+#                 value: Helium
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#             illumination:
+#                 description: #What were the lighting conditions during the measurement?
+#                 value: dark
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#         data:
+#             data_file: 22-127-G_20K-320K_TT-Halter_WDH_060722.txt
+#             temperature_range_of_reliable_data:
+#                 description: #Points for which the Hall Voltage scales lineary with magnetic field (+/-)
+#                 temperature_min_of_reliable_data:
+#                     description: #What is the lowest temperature point of a reliable Hall measurement?
+#                     value: 30
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True
+#                 temperature_max_of_reliable_data:
+#                     description: #What is the highest temperature point of a reliable Hall measurement?
+#                     value: 320
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True
+#             data_matrix: #Loop over data from temperature_min_of_reliable_data to temperature_max_of_reliable_data               
+#                 temperature:
+#                     description: #measured temperature
+#                     value: 20.741
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!  
+#                 Hall_excitation_current:
+#                     description: #applied current for the Hall measurement
+#                     value: 1.0
+#                     unit: nA
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!  
+#                 magnetic_field:
+#                     description: #applied magnetic field for the Hall measurements
+#                     value: 3.0e3
+#                     unit: G
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!            
+#                 resistivity:
+#                     description: #4-point Resistivity measurement
+#                     value: 1.03e4
+#                     unit: Ohm*cm
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!
+#                 Hall_coefficient:
+#                     description: #4-point Hall coefficient measurement. Negative means electrons and positive means holes are the majority charge carrier.
+#                     value: -4.73e5
+#                     unit: cm³/C
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!                
+#                 Charge_carrier_concentration:
+#                     description: #charge carrier concentration from Hall measurement. Negative means electrons and positive means holes are the majority charge carrier. Calculated using the single type conductivity model.
+#                     value: -1.32e13
+#                     unit: 1/cm³
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!                
+#                 Hall_mobility:
+#                     description: #Hall mobility from Hall measurement. Negative means electron mobility and positive means hole mobility. Calculated using the single type conductivity model.
+#                     value: -4.71e1
+#                     unit: cm²/Vs
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!
