@@ -144,7 +144,15 @@ definitions:
                 m_annotations:
                   eln:
                 section: 
-                  base_section: nomad.datamodel.data.EntryData
+                  base_sections:
+                        # We use ElnBaseSection here. This provides a few quantities (name, description, tags)
+                        # that are added to the search index. If we map table columns to these quantities,
+                        # we can make those cells available for search.
+                    # - nomad.datamodel.metainfo.eln.ElnBaseSection
+                        # Schemas that are used to directly parse table files (.csv, .xlsx), need to
+                        # have the first definition to extend nomad.parsing.tabular.TableRow.
+                    # - nomad.parsing.tabular.TableRow
+                    - nomad.datamodel.data.EntryData
                   sub_sections:
                     SampleID:
                       section:
