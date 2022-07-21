@@ -1,0 +1,149 @@
+# FAIRmat consortium 21.07.2022
+# Draft NeXus application definition for transmission experiments
+
+category: application
+doc: Application definition for transmission experiments
+symbols:
+  doc: Variables used throughout the experiment
+  N_wavelengths: Number of wavelength points
+  N_parameters: Number of sample parameters scanned
+  N_time: Number of time points scanned
+
+(NXtransmission):
+  (NXentry):
+    doc: |
+      This application definition
+    definition:
+      doc: "An application definition for transmission."
+      \@version:
+        doc: "Version number to identify which definition of this application
+          definition was used for this entry/data."
+      \@url:
+        doc: "URL where to find further material (documentation, examples)
+          relevant to the application definition."
+      enumeration: [NXtransmission]
+    start_time(NX_DATE_TIME):
+      doc: "Start time of the experiment."
+    (NXinstrument):
+      common_beam_mask(NXslit):
+        doc: Common beam mask to shape the incident beam
+        x_gap(NX_NUMBER):
+      common_beam_depolarizer(NX_BOOLEAN):
+        doc: |
+          If true, the incident beam is depolarized.
+      polarizer(NX_NUMBER):
+        doc: Polarizer value inside the beam path
+        unit: NX_ANGLE
+      ref_attenuator(NXattenuator):
+        doc: Attenuator in the reference beam
+        attenuator_transmission(NX_FLOAT):
+      sample_attenuator(NXattenuator):
+        doc: Attenuator in the sample beam
+        attenuator_transmission(NX_FLOAT):
+      operator(NXuser):
+        exists: [min, 1]
+        doc: "Contact information of at least the user of the instrument or the
+          investigator who performed this experiment.
+          Adding multiple users if relevant is recommended."
+        name:
+          doc: "Name of the user."
+        affiliation:
+          doc:
+            "Name of the affiliation of the user at the point in time when the
+            experiment was performed."
+        address:
+          doc: "Street address of the user's affiliation."
+        email:
+          doc: "Email address of the user."
+        orcid:
+          exists: recommended
+          doc: "Author ID defined by https://orcid.org/."
+        telephone_number:
+          exists: recommended
+          doc: "Telephone number of the user."
+      (NXmonochromator):
+        wavelength_range(NX_NUMBER):
+          doc: Wavelength range in which this monochromator was used
+          dimensions:
+            rank: 1
+            dim: [[1, 2]]
+          unit: NX_LENGTH
+      (NXdetector):
+        wavelength_range(NX_NUMBER):
+          doc: Wavelength range in which this detector was used
+          dimensions:
+            rank: 1
+            dim: [[1, 2]]
+          unit: NX_LENGTH
+        response_time(NX_NUMBER):
+          doc: Response time of the detector
+          exists: optional
+          unit: NX_TIME
+        gain(NX_NUMER):
+          doc: Detector gain
+          exists: optional
+      (NXsource):
+        doc: The lamp used for illumination
+        type(NX_CHAR):
+          doc: "The type of lamp, e.g. halogen, D2 etc."
+        spectrum(NX_NUMBER):
+          doc: "The spectrum of the lamp used"
+          exists: optional
+          dimensions:
+            rank: 1
+            dim: [[1, N_wavelengths]]
+        wavelength_range(NX_NUMBER):
+          doc: Wavelength range in which the lamp was used
+          dimensions:
+            rank: 1
+            dim: [[1, 2]]
+          unit: NX_LENGTH
+        slit(NXslit):
+          doc: Slit setting used for measurement with this detector
+          type(NX_CHAR):
+            enumeration: [fixed, servo]
+      (NXsample):
+        doc: Properties of the sample measured
+        name(NX_SAMPLE):
+      (NXdata):
+        \@signal:
+          enumeration: ["data"]
+        type:
+          doc: "Type of the measured signal"
+          enumeration: [transmission, absorption, reflection]
+        wavelength(NX_NUMBER):
+          doc: Wavelengths of the measurement
+          unit: NX_LENGTH
+          dimensions:
+            rank: 1
+            dim: [[1, N_wavelengths]]
+        time_points(NX_NUMBER):
+          doc: |
+            An array of relative time points with respect to the 
+            measurement start time.
+          exists: optional
+          unit: NX_TIME
+          dimensions:
+            rank: 1
+            dim: [[1, N_time]]
+        parameter_type(NX_CHAR):
+          doc: Explanation of the additionally scanned parameter
+          exists: optional
+        parameter_points(NX_NUMBER):
+          doc: |
+            An array of parameter points.
+            The type of parameter is specified in the parameter_type field.
+          exists: optional
+          dimension:
+            rank: 1
+            dim: [[1, N_parameters]]
+        signal(NX_NUMBER):
+          doc: |
+            Resulting signal of the measurement.
+            The type of the data is specified in the NXdata type field.
+            If N_time or N_parameters are greater than 1, it is highly
+            recommended to supply the axis values in the time_points
+            or parameter_points fields, respectively.
+          dimensions:
+            rank: 3
+            dim: [[3, N_time], [2, N_parameters], [1, N_wavelengths]]
