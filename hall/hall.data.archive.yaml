@@ -43,3 +43,17 @@ data:
         - name: material_3
           empirical_formula: Ra
           thickness: 7500
+  measurement_geometry:
+    sample(Hexahedron):
+      is_hall_bar: false
+      edges: [(1e , 2cm), (2e, 5cm)]
+      surface: [(1s , 2cm*2cm), (2s, 5cm*5cm)]
+      vertices: [1v, 2v]
+    contacts:
+      placing_index: 1e
+      positioning: [central, left, right, coordinates]
+        coordinates: 1cm
+    contacts:
+      placing_index: 1s
+      positioning: [central, left, right, coordinates]
+        coordinates: (1cm, 3cm)

@@ -523,37 +523,28 @@ definitions:
                   m_annotation:
                     eln:
                     plot:
-                      title: time-dependent data plot
-                      x: time
-                      y: 
-                        - lower_diameter_crystal
-                        - zone_height
-                        - upper_pull_speed_rod
+                      label: control parameter set
+                      x: timestamp
+                      y: control_parameter_set
+                    # - label: time-dependent data plot
+                    #   x: timestamp
+                    #   y: 
+                    #     - control_parameter_set
+                    #     - lower_diameter_crystal
+                    #     - zone_height
+                    #     - upper_pull_speed_rod
                   quantities:
-                    plots:
-                      type: str
-                      description: "what is the gas id?"
-                      m_annotations:
-                        eln:
-                          #component: StringEditQuantity
-                          plot:
-                            title: time-dependent data plot
-                            x: time
-                            y: 
-                              - lower_diameter_crystal
-                              - zone_height
-                              - upper_pull_speed_rod
                     data_file:
                       type: str
                       description: |
-                        A reference to an uploaded .csv
+                        A reference to an uploaded .xlsx
                       m_annotations:
                         # The tabular_parser annotation, will treat the values of this
                         # quantity as files. It will try to interpret the files and fill
                         # quantities in this section (and sub_section) with the column
                         # data of .csv or .xlsx files.
                         tabular_parser:
-                          sep: ';'
+                          # sep: ','
                           comment: '#'
                         browser:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
@@ -564,7 +555,7 @@ definitions:
                       shape: ['*']
                       m_annotations:
                         tabular:
-                          name: 0
+                          name: Index
                     # date:
                     #   type: str
                     #   shape: ['*']
@@ -702,15 +693,12 @@ definitions:
                       type: np.float64
                       shape: ['*']
                       m_annotations:
-                        #plot:
-                        #  title: time-dependent data plot
-                        #  x: time
-                        #  y: 
-                        #    - lower_diameter_crystal
-                        #    - zone_height
-                        #    - upper_pull_speed_rod
+                        plot:
+                          label: time-dependent data plot
+                          x: timestamp
+                          y: zone_height
                         tabular:
-                          name: ZonenHö
+                          name: ZonenHo
                     meniscus_angle_on_left_side:
                       type: np.float64
                       shape: ['*']

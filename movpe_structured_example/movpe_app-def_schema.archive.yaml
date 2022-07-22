@@ -409,14 +409,14 @@ definitions:
                   eln:
                     component: NumberEditQuantity
               o2_ar:
-                type: np.float64
+                type: str
                 unit: ml
                 description: Gas flux ratio between oxygen and argon in the process gas
                 m_annotations:
                   tabular:
                     name: Overview/O2 Argon
                   eln:
-                    component: NumberEditQuantity                    
+                    component: StringEditQuantity                    
               composition:
                 type: str
                 description: films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see folder "Precursor"
