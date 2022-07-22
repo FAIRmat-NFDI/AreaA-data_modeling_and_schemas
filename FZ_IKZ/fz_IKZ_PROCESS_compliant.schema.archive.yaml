@@ -829,7 +829,7 @@ definitions:
                           component: RichTextEditQuantity
               lateral_photovoltage_scanning:
                 repeats: true
-                m_annotations:
+                m_annotations: 
                   eln:
                 section:
                   quantities:
