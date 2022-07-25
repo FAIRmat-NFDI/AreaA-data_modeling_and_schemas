@@ -207,6 +207,12 @@ definitions:
               defaultDisplayUnit: nanometer
     Process:
       quantities:
+        name:
+            type: str
+            description: my descr
+            m_annotations:
+              eln:
+                component: StringEditQuantity
         timestamp:
             type: Datetime
             description: my descr
@@ -231,6 +237,12 @@ definitions:
             m_annotations:
               eln:
                 component: EnumEditQuantity
+        comment:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         temperature:
           type: np.float64
           unit: celsius
@@ -239,6 +251,14 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: celsius
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
         atmosphere:
           type: str
           description: my descr
@@ -251,12 +271,17 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        chemical:
-          type: str
-          description: my descr
+      sub_sections:
+        reagents:
+          repeats: true
           m_annotations:
             eln:
-              component: StringEditQuantity
+          section: Sample
+        products:
+          repeats: true
+          m_annotations:
+            eln:
+          section: Sample
     Hall_measurement:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
@@ -293,6 +318,21 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
+        users_test:
+          section:
+            quantities:
+              nomad_user:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: UserEditQuantity
+              not_nomad_user:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
         users:
           repeats: true
           m_annotations:
@@ -402,35 +442,6 @@ definitions:
                           dict()
                       section: 
                         base_section: Process
-
-#     Post-Annealing:
-#         description: #Was there a post-annealing step? If yes, what was time, temperature, atmosphere and method?
-#         value: RTA 470°C 1min N2
-#         unit: no unit
-#         type: string
-#         data_input: manually written
-#         otional: True
-#     Pre-treatment:
-#         description: #Was there a pre-treatment of the surface? If yes, what was done (temperature, time, chemical, method)?
-#         value: Aqua regia cleaning for 5 min @ room temperature + rinsing in DI water
-#         unit: no unit
-#         type: string
-#         data_input: manually written
-#         otional: True
-#     implantation:
-#         description: #Was an implatation made for contact formation? If yes, what was done (dose, duration, annealing)?
-#         value:
-#         unit: no unit
-#         type: string
-#         data_input: manually written
-#         otional: True
-#     regrowth:
-#         description: #Was a regrowth made for contact formation? If yes, what was done (growth, thickness, concentration, lift-off)?
-#         value:
-#         unit: no unit
-#         type: string
-#         data_input: manually written
-#         otional: True
 # measurement_geometry: 
 #     description: #choose between those two possible set-up geometries
 #     value: Van der Pauw/Hall bar
