@@ -1,0 +1,13 @@
+data:
+  #m_def: ../upload/raw/chemical_schema.archive.yaml#/definitions/section_definitions/0
+  m_def: ../upload/raw/Einwaage.schema.archive.yaml#/definitions/section_definitions/0
+  name: ZnSe
+  id: 235647838
+  empirical_formula: ZnSe
+  iupac_name: Zinc Selenide
+  supplier: Sigma Aldrich
+  purity: crystalline solid
+  phase: powder
+  cas_number: 1317-41-5
+  opening_date: 2021-12-31 20:00+01
+  
