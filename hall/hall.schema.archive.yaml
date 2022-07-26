@@ -1,52 +1,6 @@
 definitions:
   name: 'Elecrrrrr'
   sections:  # Schemas consist of section definitions
-    User:
-      quantities:
-        role:
-          type:
-            type_kind: Enum
-            type_data:
-              - Operator
-              - Responsible_person
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        affiliation_institution:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        affiliation_group:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        address:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        email:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        orcid:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        telephone_number:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Substance:
       base_section: nomad.datamodel.data.EntryData
       quantities:
@@ -318,26 +272,23 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        users_test:
+        users:
           section:
             quantities:
               nomad_user:
                 type: str
+                shape: ['*']
                 description: my descr
                 m_annotations:
                   eln:
                     component: UserEditQuantity
               not_nomad_user:
                 type: str
+                shape: ['*']
                 description: my descr
                 m_annotations:
                   eln:
                     component: AuthorEditQuantity
-        users:
-          repeats: true
-          m_annotations:
-            eln:
-          section: User
         instrument: 
           section:
             quantities:

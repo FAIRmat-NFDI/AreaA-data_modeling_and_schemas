@@ -68,62 +68,28 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-    User:
-      quantities:
-        role:
-          type:
-            type_kind: Enum
-            type_data:
-              - Operator
-              - Responsible_person
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        affiliation_institution:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        affiliation_group:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        address:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        email:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        orcid:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        telephone_number:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     MovpeSto_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
         users:
-          repeats: true
-          m_annotations:
-            eln:
-          section: User
+          section:
+            quantities:
+              nomad_user:
+                type: str
+                shape: ['*']
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: UserEditQuantity
+              not_nomad_user:
+                type: str
+                shape: ['*']
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
         instrument:
           section:
             m_annotations:
