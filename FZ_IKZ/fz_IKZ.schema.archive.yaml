@@ -3,7 +3,7 @@ definitions:
   name: 'Electronic Lab Notebook schema for Float-zone' # mandatory!?
   sections:  # Schemas consist of section definitions
     User:
-      base_section: nomad.datamodel.data.EntryData
+      base_section: nomad.datamodel.data.EntryData # neccessary or not?
       quantities:
         role:
           type:
@@ -54,12 +54,58 @@ definitions:
       # EntryArchive.data sub-section 
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
+        global:
+          section:
+            m_annotations:
+              eln:
+                overview: True
+            quantities:
+              tags:
+                type: str
+                shape: [('*')]
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              experiment_identifier:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              experiment_location:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              start_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              end_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              synthesis_category:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              synthesis_method:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
         users:
           repeats: true
           m_annotations:
             eln:
           section:
             base_section: User
+            m_annotations:
+              eln:
+                overview: True
+                hide: ['affiliation_institution', 'affiliation_group','address','email','orcid','telephone_number' ]
         instrument:
           section:
             quantities:
@@ -237,34 +283,8 @@ definitions:
           section:
             m_annotations:
               eln:
-                dict()
+                #dict()
             sub_sections:
-              # time_dependent_setting_user_filled:
-              #   section:
-              #     quantities:
-              #       timestamp:
-              #         type: Datetime
-              #         m_annotations:
-              #           eln:
-              #             component: DateTimeEditQuantity
-              #       process_type:
-              #         type: 
-              #           type_kind: Enum
-              #           type_data:
-              #             - pre
-              #             - main 
-              #             - post 
-              #         description: "choose type of process"
-              #         m_annotations:
-              #           eln:
-              #             component: EnumEditQuantity
-              #       process_note:
-              #         type: str
-              #         description: "Text field for any process notes"
-              #         m_annotations:
-              #           eln:
-              #             component: RichTextEditQuantity
-              #   sub_sections:
               gas_ambient_settings:
                 repeats: true
                 m_annotations:
@@ -520,12 +540,26 @@ definitions:
               digital_protocol:
                 section:
                   base_section: nomad.parsing.tabular.TableData
-                  m_annotation:
+                  m_annotations:
                     eln:
+                      #dict()
                     plot:
-                      label: control parameter set
-                      x: timestamp
-                      y: control_parameter_set
+                    - label: time-dependent data
+                      x: "timestamp"
+                      y: ["./control_parameter_set", "./lower_diameter_crystal", "./zone_height", "./upper_pull_speed_rod"]
+                    - label: time-dependent data 2
+                      x: "timestamp"
+                      y: 
+                        - control_parameter_set 
+                        - lower_diameter_crystal 
+                        - zone_height
+                        - upper_pull_speed_rod
+                    - label: time-dependent data 3
+                      x: "timestamp"
+                      y: 
+                        - lower_diameter_crystal 
+                        - zone_height                      
+
                     # - label: time-dependent data plot
                     #   x: timestamp
                     #   y: 
@@ -570,37 +604,42 @@ definitions:
                           name: Datum_Zeit
                     upper_position_rod:
                       type: np.float64
-                      #unit: meter
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: PosHubOb
                     upper_pull_speed_rod:
                       type: np.float64
+                      unit: millimeter/minute
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: SollHubOb
                     upper_rotation_rod:
                       type: np.float64
+                      unit: 1/minute
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: SollRotOb
                     lower_position_crystal:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: PosHubUnt
                     lower_pull_speed_crystal:
                       type: np.float64
+                      unit: millimeter/minute
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: SollHubUnt
                     lower_rotation_crystal:
                       type: np.float64
+                      unit: 1/minute
                       shape: ['*']
                       m_annotations:
                         tabular:
@@ -613,110 +652,116 @@ definitions:
                           name: Betr.Art
                     control_parameter_set:
                       type: np.float64
+                      unit: kV
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Gen-Soll
                     power_obtained:
                       type: np.float64
+                      unit: kW
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: P-Ist
                     current_obtained:
                       type: np.float64
+                      unit: A
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Ia-Ist
                     voltage_obtained:
                       type: np.float64
+                      unit: kV
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Ua-Ist
                     grid_current:
                       type: np.float64
+                      unit: A
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Ig-Ist
                     high_frequency_current:
                       type: np.float64
+                      unit: A
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: I-hf
                     high_frequency_voltage:
                       type: np.float64
+                      unit: kV
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: U-hf
                     frequency:
                       type: np.float64
+                      unit: MHz
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: f-HF
                     inner_mechanisms_position_arbkr:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Pos-Arbkr
                     inner_mechanisms_position_spindel:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Pos-Spindel
                     inner_mechanisms_position_nachheizen:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: Pos-Nachheiz
                     upper_diameter_rod:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: DurchmObn
                     lower_diameter_crystal:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: DurchmUnt
                     zone_height:
                       type: np.float64
+                      unit: millimeter
                       shape: ['*']
                       m_annotations:
-                        plot:
-                          label: time-dependent data plot
-                          x: timestamp
-                          y: zone_height
                         tabular:
                           name: ZonenHo
                     meniscus_angle_on_left_side:
                       type: np.float64
+                      unit: degree
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: WinkelLi
                     meniscus_angle_on_right_side:
                       type: np.float64
+                      unit: degree
                       shape: ['*']
                       m_annotations:
                         tabular:
                           name: WinkelRe
-        # characterization:
-        #   section:
-        #     m_annotations:
-        #       eln:
-        #         dict()
-        #     sub_sections:
               basic_crystal_characterization:
                 repeats: true
                 m_annotations:
@@ -757,12 +802,6 @@ definitions:
                       m_annotations:
                         eln:
                           component: RichTextEditQuantity
-              # crystal_quality:
-              #   section:
-              #     m_annotations:
-              #       eln:
-              #         dict()
-              #     sub_sections:
               resistivity:
                 repeats: true
                 m_annotations:
