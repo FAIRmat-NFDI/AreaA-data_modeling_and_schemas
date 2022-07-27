@@ -1,59 +1,70 @@
 # example data file for Float zone process at IKZ
 definitions:
-  name: 'Electronic Lab Notebook schema for Float-zone' # mandatory!?
+  name: 'FZ schema 20220727' # mandatory!?
   sections:  # Schemas consist of section definitions
-    User:
-      base_section: nomad.datamodel.data.EntryData # neccessary or not?
-      quantities:
-        role:
-          type:
-            type_kind: Enum
-            type_data:
-              - Operator
-              - Responsible_person
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        affiliation_institution:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        affiliation_group:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        address:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        email:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        orcid:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        telephone_number:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
+    # User:
+    #   base_section: nomad.datamodel.data.EntryData # neccessary or not?
+    #   quantities:
+    #     role:
+    #       type:
+    #         type_kind: Enum
+    #         type_data:
+    #           - Operator
+    #           - Responsible_person
+    #       m_annotations:
+    #         eln:
+    #           component: EnumEditQuantity
+    #     name:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #     affiliation_institution:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #     affiliation_group:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #     address:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #     email:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #     orcid:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #     telephone_number:
+    #       type: str
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
     FZ_IKZ_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section 
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
         global:
           section:
             m_annotations:
@@ -63,16 +74,6 @@ definitions:
               tags:
                 type: str
                 shape: [('*')]
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              experiment_identifier:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              experiment_location:
-                type: str
                 m_annotations:
                   eln:
                     component: StringEditQuantity
@@ -101,11 +102,32 @@ definitions:
           m_annotations:
             eln:
           section:
-            base_section: User
-            m_annotations:
-              eln:
-                overview: True
-                hide: ['affiliation_institution', 'affiliation_group','address','email','orcid','telephone_number' ]
+            quantities:
+              executed_by:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Name:
+                type: str #User
+                #shape: ['*']
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: UserEditQuantity
+              Name_test:
+                type: str #Author
+                #shape: ['*']
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
+
+            # base_section: User
+            # m_annotations:
+            #   eln:
+            #     overview: True
+            #     hide: ['affiliation_institution', 'affiliation_group','address','email','orcid','telephone_number' ]
         instrument:
           section:
             quantities:
@@ -544,21 +566,32 @@ definitions:
                     eln:
                       #dict()
                     plot:
-                    - label: time-dependent data
+                    - label: control_parameter_set
                       x: "timestamp"
-                      y: ["./control_parameter_set", "./lower_diameter_crystal", "./zone_height", "./upper_pull_speed_rod"]
-                    - label: time-dependent data 2
+                      y: 
+                        - control_parameter_set
+                    - label: lower_diameter_crystal
+                      x: "timestamp"
+                      y: 
+                        - lower_diameter_crystal 
+                    - label: zone_height
+                      x: "timestamp"
+                      y: 
+                        - zone_height
+                    - label: upper_pull_speed_rod
+                      x: "timestamp"
+                      y: 
+                        - upper_pull_speed_rod
+                    - label: control parameter set vs. lower diamenter crystal
+                      x: "lower_diameter_crystal"
+                      y: control_parameter_set #["./control_parameter_set", "./lower_diameter_crystal", "./zone_height", "./upper_pull_speed_rod"]
+                    - label: all time-dependent data
                       x: "timestamp"
                       y: 
                         - control_parameter_set 
                         - lower_diameter_crystal 
                         - zone_height
-                        - upper_pull_speed_rod
-                    - label: time-dependent data 3
-                      x: "timestamp"
-                      y: 
-                        - lower_diameter_crystal 
-                        - zone_height                      
+                        - upper_pull_speed_rod                  
 
                     # - label: time-dependent data plot
                     #   x: timestamp
