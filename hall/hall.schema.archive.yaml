@@ -277,14 +277,14 @@ definitions:
             quantities:
               nomad_user:
                 type: str
-                shape: ['*']
+                # shape: ['*']
                 description: my descr
                 m_annotations:
                   eln:
                     component: UserEditQuantity
               not_nomad_user:
                 type: str
-                shape: ['*']
+                # shape: ['*']
                 description: my descr
                 m_annotations:
                   eln:

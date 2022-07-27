@@ -9,14 +9,18 @@ data:
     synthesis_category: test
     synthesis_method: test
   users:  #section name - not to be filled
-    - name: Andreas Fiedler 
-      role: Operator
-      affiliation_institution: Leibniz Institut für Kristallzüchtung
-      affiliation_group: Transport and Electrical Properties
-      address: test
-      email: test
-      orcid: test
-      telephone_number: test
+    not_nomad_user:
+      first_name: aa
+      last_name: bb
+    nomad_user: d350a114-e309-4602-9644-8d9f2ed75399
+    # - name: Andreas Fiedler 
+    #   role: Operator
+    #   affiliation_institution: Leibniz Institut für Kristallzüchtung
+    #   affiliation_group: Transport and Electrical Properties
+    #   address: test
+    #   email: test
+    #   orcid: test
+    #   telephone_number: test
   instrument:  #section name - not to be filled
     model: Lake Shore Hall Measurement System
     voltmeter: Keithley 2182 Nanovoltmeter
