@@ -335,14 +335,14 @@ definitions:
                     name: Overview/End Time
                   eln:
                     component: DateTimeEditQuantity
-              synthesis_category:
+              process_category:
                 type: str
                 m_annotations:
                   tabular:
                     name: Overview/Synthesis Category
                   eln:
                     component: StringEditQuantity
-              synthesis_method:
+              process_method:
                 type: str
                 m_annotations:
                   tabular:
@@ -443,6 +443,18 @@ definitions:
                         line:
                           color: rgb(100, 0, 0)
                   quantities:
+                    process_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Pre-process
+                          - Process
+                          - Post-process
+                          - Measurement
+                          - Storage
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
                     step_duration:
                       type: np.float64
                       unit: minute

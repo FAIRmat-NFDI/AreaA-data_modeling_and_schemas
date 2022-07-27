@@ -3,12 +3,19 @@ definitions:
   sections:
     Substance:
       base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
       quantities:
-        id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         comment:
           type: str
           m_annotations:
@@ -74,6 +81,118 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
+    Process:
+      m_annotations:
+        eln:
+      quantities:
+        experiment_identifier:
+          type: str
+          m_annotations:
+            # The tabular annotation defines a mapping to column headers used in
+            # tabular data files
+            tabular:
+              name: Overview/Experiment Identifier
+            eln:
+              component: StringEditQuantity
+        experiment_location:
+          type: str
+          m_annotations:
+            tabular:
+              name: Overview/Experiment Location
+            eln:
+              component: StringEditQuantity
+        start_time:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: Overview/Start Time
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: Overview/End Time
+            eln:
+              component: DateTimeEditQuantity
+        process_category:
+          type: str
+          m_annotations:
+            tabular:
+              name: Overview/Synthesis Category
+            eln:
+              component: StringEditQuantity
+        process_method:
+          type: str
+          m_annotations:
+            tabular:
+              name: Overview/Synthesis Method
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        process_steps:
+          repeats: true
+          m_annotations:
+            eln:
+          section:
+            quantities:
+              process_type:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Pre-process
+                    - Process
+                    - Post-process
+                    - Measurement
+                    - Storage
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
+              name: 
+                type: str
+                description: what this step consists of
+                m_annotations:
+                  tabular:
+                    name: Processdata/Reason
+              #     eln:
+              #       component: StringEditQuantity
+              step_duration:
+                type: np.float64
+                unit: minute
+                description: Past time since process start
+                m_annotations:
+                  tabular:
+                    name: Processdata/Duration
+                  # eln:
+                  #   component: NumberEditQuantity #DateTimeEditQuantity
+                  #  defaultDisplayUnit: minute
+              elapsed_time:
+                type: np.float64
+                unit: minute
+                description: Duration of each step
+                m_annotations:
+                  tabular:
+                    name: Processdata/Timestamp
+                    unit: minute
+                  # eln:
+                  #   component: NumberEditQuantity
+                  #   defaultDisplayUnit: minute
+              step_number:
+                type: int
+                description: sequential number of the step on going
+                m_annotations:
+                  tabular:
+                    name: Processdata/Step
+              #     eln:
+              #       component: NumberEditQuantity
+              step_comment:
+                type: str
+                description: more verbose description of the step
+                m_annotations:
+                  tabular:
+                    name: Processdata/Description
+              #     eln:
+              #       component: StringEditQuantity 
     Powder:
       base_section: nomad.datamodel.data.EntryData
       quantities:
@@ -176,26 +295,6 @@ definitions:
                       # hide: ['children', 'parents', institute]
                       hide: []
               process: 
-                repeats: true
                 m_annotations:
                   eln:
-                section:
-                  quantities:
-                    name:
-                      type: str
-                      description: The name of the chemical that is typically used in literature
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    process_type:
-                        type:
-                          type_kind: Enum
-                          type_data:
-                            - Pre-process
-                            - Process
-                            - Post-process
-                            - Measurement
-                            - Storage
-                        m_annotations:
-                          eln:
-                            component: EnumEditQuantity
+                section: Process

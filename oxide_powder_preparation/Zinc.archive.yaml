@@ -1,8 +1,9 @@
 data:
   #m_def: ../upload/raw/chemical_schema.archive.yaml#/definitions/section_definitions/0
   m_def: ../upload/raw/Einwaage.schema.archive.yaml#/definitions/section_definitions/0
+  SampleID:
+    sample_id: my_sample_id
   name: ZnSe
-  id: 235647838
   empirical_formula: ZnSe
   iupac_name: Zinc Selenide
   supplier: Sigma Aldrich
