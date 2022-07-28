@@ -1,5 +1,5 @@
 definitions:
-  name: 'Elecrrrrr'
+  name: 'Electrony Lab Notebook for Hall'
   sections:  # Schemas consist of section definitions
     Substance:
       base_section: nomad.datamodel.data.EntryData
@@ -88,11 +88,6 @@ definitions:
             eln:
           section: Sample
       quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         name:
           type: str
           m_annotations:
@@ -109,6 +104,11 @@ definitions:
           m_annotations:
             eln:
               component: RadioEnumEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         iupac_name:
           type: str
           m_annotations:
@@ -120,10 +120,14 @@ definitions:
             eln:
               component: StringEditQuantity
         state_or_phase:
-          type: str
+          type:
+            type_kind: Enum
+            type_data:
+              - Homoepitaxy
+              - Heteroepitaxy
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: RadioEnumEditQuantity
         supplier:
           type: str
           description: Sample preparation including orientating, polishing, cutting done by this company
@@ -393,7 +397,80 @@ definitions:
                           dict()
                       section: 
                         base_section: Process
-# measurement_geometry: 
+        measurement:
+          m_annotations:
+            eln:
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              measurement_geometry: 
+                section:
+                  m_annotations:
+                    eln:
+                      dict()
+                  sub_sections:
+                    Van_der_Pauw:
+                      section:       
+                        test:
+                          type: str
+                          description: test quantity
+                          m_annotations:
+                            eln:
+                              component: StringEditQuantity
+                    Hall_bar:
+                      section:       
+                        test2:
+                          type: str
+                          description: test quantity
+                          m_annotations:
+                            eln:
+                              component: StringEditQuantity
+              room_temperature_measurement:
+                section:
+                  m_annotations:
+                    eln:
+                  quantities:   
+                    data_file:
+                      type: str
+                      description: |
+                        A reference to an uploaded .xlsx
+                      m_annotations:
+                        # The tabular_parser annotation, will treat the values of this
+                        # quantity as files. It will try to interpret the files and fill
+                        # quantities in this section (and sub_section) with the column
+                        # data of .csv or .xlsx files.
+                        tabular_parser:
+                          # sep: ','
+                          comment: '#'
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity  # A form field that allows to drop and select files.
+              temperature_dependent_hall_measurement:
+                section:
+                  m_annotations:
+                    eln:
+                  quantities:   
+                    data_file:
+                      type: str
+                      description: |
+                        A reference to an uploaded .xlsx
+                      m_annotations:
+                        # The tabular_parser annotation, will treat the values of this
+                        # quantity as files. It will try to interpret the files and fill
+                        # quantities in this section (and sub_section) with the column
+                        # data of .csv or .xlsx files.
+                        tabular_parser:
+                          # sep: ','
+                          comment: '#'
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity  # A form field that allows to drop and select files.
+                  
+                    
 #     description: #choose between those two possible set-up geometries
 #     value: Van der Pauw/Hall bar
 #     unit: no unit

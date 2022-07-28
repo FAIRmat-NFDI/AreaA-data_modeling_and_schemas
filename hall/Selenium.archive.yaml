@@ -1,6 +1,6 @@
 data:
   #m_def: ../upload/raw/chemical_schema.archive.yaml#/definitions/section_definitions/0
-  m_def: ../upload/raw/hall.schema.archive.yml#/definitions/section_definitions/1
+  m_def: ../upload/raw/hall.schema.archive.yaml#/definitions/section_definitions/1
   chemical_name: Se
   iupac_name: Selenium
   supplier: Sigma Aldrich
