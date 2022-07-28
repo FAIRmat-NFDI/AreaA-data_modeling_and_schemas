@@ -26,10 +26,6 @@ data:
       target_mass: 67.254
       actual_mass: null
       notes: null
-      process:
-        process_steps:
-          - name: zioccan
-          - name: diozan
     - name: component_2  #component_2:
       formula: Al2O3 #formula
       target_mass: 92.803

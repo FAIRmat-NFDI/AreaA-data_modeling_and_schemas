@@ -152,47 +152,69 @@ definitions:
                 type: str
                 description: what this step consists of
                 m_annotations:
-                  tabular:
-                    name: Processdata/Reason
-              #     eln:
-              #       component: StringEditQuantity
+                  # tabular:
+                  #   name: Processdata/Reason
+                  eln:
+                    component: StringEditQuantity
+              step_number:
+                type: int
+                description: sequential number of the step on going
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Step
+                  eln:
+                    component: NumberEditQuantity
+              step_comment:
+                type: str
+                description: more verbose description of the step
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Description
+                  eln:
+                    component: StringEditQuantity 
               step_duration:
                 type: np.float64
                 unit: minute
                 description: Past time since process start
                 m_annotations:
-                  tabular:
-                    name: Processdata/Duration
-                  # eln:
-                  #   component: NumberEditQuantity #DateTimeEditQuantity
-                  #  defaultDisplayUnit: minute
+                  # tabular:
+                  #   name: Processdata/Duration
+                  eln:
+                    component: NumberEditQuantity #DateTimeEditQuantity
+                    defaultDisplayUnit: minute
               elapsed_time:
                 type: np.float64
                 unit: minute
                 description: Duration of each step
                 m_annotations:
-                  tabular:
-                    name: Processdata/Timestamp
-                    unit: minute
-                  # eln:
-                  #   component: NumberEditQuantity
-                  #   defaultDisplayUnit: minute
-              step_number:
-                type: int
-                description: sequential number of the step on going
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: minute
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: minute
+              temperature_increase_rate:
+                type: np.float64
+                unit: celsius / hour
+                description: temperature increase rate
                 m_annotations:
-                  tabular:
-                    name: Processdata/Step
-              #     eln:
-              #       component: NumberEditQuantity
-              step_comment:
-                type: str
-                description: more verbose description of the step
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: celsius / hour
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: celsius / hour
+              temperature:
+                type: np.float64
+                unit: celsius
+                description: Duration of each step
                 m_annotations:
-                  tabular:
-                    name: Processdata/Description
-              #     eln:
-              #       component: StringEditQuantity 
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: celsius
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: celsius
     Powder:
       base_section: nomad.datamodel.data.EntryData
       quantities:
@@ -281,7 +303,7 @@ definitions:
                 description: notes
                 m_annotations:
                   eln:
-                    component: RichTextEditQuantity
+                    component: StringEditQuantity
             sub_sections:
               SampleID:
                 section:
@@ -297,4 +319,48 @@ definitions:
               process: 
                 m_annotations:
                   eln:
-                section: Process
+                section:
+                  base_section: Process 
+                  quantities:
+                    net_mass_before:
+                      type: np.float64
+                      unit: gram
+                      description: net mass before the process step
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: gram
+                    crucible_model:
+                      type: str
+                      description: The name of the chemical that is typically used in literature
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    crucible_mass:
+                      type: np.float64
+                      unit: gram
+                      description: crucible mass
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: gram
+                    brutto_mass_before:
+                      type: np.float64
+                      unit: gram
+                      description: brutto mass before the process step
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: gram
+                    atmosphere:
+                      type: str
+                      description: which atmosphere is choosen for th experiment
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    oven:
+                      type: str
+                      description: oven used in the experiment
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity

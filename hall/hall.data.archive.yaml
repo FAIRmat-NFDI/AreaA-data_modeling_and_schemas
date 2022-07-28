@@ -81,8 +81,6 @@ data:
             process_type: Process
             comment: Was a regrowth made for contact formation?
             method: growth, thickness, concentration, lift-off
-    giangiskan:
-      experiment_identifier: meicojoni
   # measurement_geometry:
   #   sample:
   #     GEOMETRY:
