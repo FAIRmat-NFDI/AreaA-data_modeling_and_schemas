@@ -28,7 +28,7 @@ data:
     current_source: Keithley 220 Programmable current source
     switch_matrix: Keithley 7001 Switch System
     software: Lake Shore Hall Measurement Software   
-  materials: #section name - not to be filled
+  samples: #section name - not to be filled
     layer:
       - method: experimental 
         epitaxy_type: Homoepitaxy
@@ -36,7 +36,8 @@ data:
         substrate:  "../upload/raw/Selenium.archive.yaml#data"
     bulk:
       - epitaxy_type: Homoepitaxy
-    contacts:
+  sample_history:
+    contacts_grafting:
       - metal_stack: 
         - name: material_1
           empirical_formula: Ti

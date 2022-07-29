@@ -240,6 +240,20 @@ definitions:
           m_annotations:
             eln:
           section: Sample
+    Measurement_geometry: 
+        quantities:
+          geometry:
+            type:
+              type_kind: Enum
+              type_data:
+                - Van_der_Pauw_square
+                - Van_der_Pauw_rectangular
+                - Van_der_Pauw_arbitrary
+                - Hall_bar_1221
+                - Hall_bar_1311
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
     Hall_measurement:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
@@ -332,7 +346,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        materials: 
+        samples: 
           section:
             m_annotations:
               eln:
@@ -376,7 +390,13 @@ definitions:
                       m_annotations:
                         eln:
                           component: RadioEnumEditQuantity
-              contacts:
+        sample_history:
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              contacts_grafting:
                 repeats: true
                 m_annotations:
                   eln:
@@ -397,40 +417,17 @@ definitions:
                           dict()
                       section: 
                         base_section: Process
-        measurement:
-          m_annotations:
-            eln:
-          section:
-            m_annotations:
-              eln:
-                dict()
-            sub_sections:
-              measurement_geometry: 
-                section:
-                  m_annotations:
-                    eln:
-                      dict()
-                  sub_sections:
-                    Van_der_Pauw:
-                      section:       
-                        test:
-                          type: str
-                          description: test quantity
-                          m_annotations:
-                            eln:
-                              component: StringEditQuantity
-                    Hall_bar:
-                      section:       
-                        test2:
-                          type: str
-                          description: test quantity
-                          m_annotations:
-                            eln:
-                              component: StringEditQuantity
               room_temperature_measurement:
                 section:
                   m_annotations:
                     eln:
+                  sub_sections:
+                    measurement_geometry:
+                      m_annotations:
+                        eln:
+                          dict()
+                      section: 
+                        base_section: Measurement_geometry
                   quantities:   
                     data_file:
                       type: str
