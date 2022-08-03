@@ -1,0 +1,61 @@
+General:
+    ChemFormular: "Si"  
+    MolecularWeight": 28.085
+    Aggregation_State: enum (Solid1 | Solid2 | liquid | gas | interface solid-liquid | interface solid-gas | interface liquid-gas)
+
+Structural_Data:
+    structure:
+    space_group:
+    lattice_constants:
+    density:
+    thermal_expansion:
+Thermal_radiation:
+    emissivity:
+    absorption_coefficient:
+    refraction_index:
+Thermal_properties:
+    heat_conductivity:
+    heat_capacity: # plot cp with citekey label
+        - Citekey: doi
+        M_mol:
+            value: 0.1
+            unit: kg/mol
+            type: float
+            description: Molar mass
+        cp_value: 2x+3
+        cp_formula:
+            unit: J/kg*K
+            x_array: [...]
+            x_unit: Temperature in K
+            y_array: [...]
+            y_unit: J/kg*K
+        cp:
+            value: 2x+3
+            type: formula
+            unit: J/kg*K
+            x_array: [...]
+            x_unit: Temperature in K
+            y_array: [...]
+            y_unit: J/kg*K
+        validity_of_cp_function_min:
+            value:
+            type:
+            unit:
+            description: 
+        validity_of_cp_function_max: 
+        -
+    thermal_expansion: # liquid
+    melting_point_temperature: # interface solid/liquid
+    latent_heat: # interface solid/liquid
+    boiling_point temperature: #interface liquid/gas
+    Boiling_heat: #interface liquid/gas
+Mechanical_properties:
+    elastic_stiffness:
+    critical_resolved_shear_stress:
+    viscosity: # not for solid!
+    surface_tension:
+    growth_angle:
+    thermocapillary_coefficient: # interface liquid/gas
+electro-magnetic_properties:
+    electrical_conductivity:
+    magnetic_susceptibility:
