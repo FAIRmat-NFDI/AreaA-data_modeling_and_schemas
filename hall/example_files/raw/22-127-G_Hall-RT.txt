@@ -1,0 +1,113 @@
+[Sample parameters]
+Sample Type:	van der Pauw
+Hall Factor =	1.0
+Thickness =	1.8 [µm]
+L =	15.0 [mm]
+Depletion Layer Correction:	Off
+22-127-G
+[Measurements]
+<Step 1: IV Curve Measurement>
+Start Time:	07/14/22 12:50:18
+Time Completed:	07/14/22 12:56:07
+Elapsed Time:	0:5:50
+
+Starting Current:	-100.0 [µA]
+Ending Current:	100.0 [µA]
+Current Step:	20.0 [µA]
+Resistance Range:	Low
+Dwell Time:	2.0 [Sec]
+
+Contact Sets:	R12,12
+Best Fit Resistance [ohm] =	1.6339E+4
+Best Fit Offset [V] =	-3.2015E-4
+Correlation =	1.E+0
+Current [A]	Voltage [V]	Field [G]	Temperature [K]
+-9.99400E-5	-1.63353E+0	-1.6760E+1	ERROR
+-7.99500E-5	-1.30674E+0	-1.6750E+1	ERROR
+-5.99600E-5	-9.80005E-1	-1.6770E+1	ERROR
+-3.99600E-5	-6.53168E-1	-1.6760E+1	ERROR
+-1.99700E-5	-3.26501E-1	-1.6750E+1	ERROR
+8.17000E-11	2.04072E-6	-1.6770E+1	ERROR
+2.00000E-5	3.26747E-1	-1.6760E+1	ERROR
+3.99900E-5	6.53264E-1	-1.6760E+1	ERROR
+5.99900E-5	9.79865E-1	-1.6760E+1	ERROR
+7.99800E-5	1.30629E+0	-1.6780E+1	ERROR
+9.99700E-5	1.63271E+0	-1.6770E+1	ERROR
+
+Contact Sets:	R23,23
+Best Fit Resistance [ohm] =	9.7068E+3
+Best Fit Offset [V] =	-2.251E-4
+Correlation =	1.E+0
+Current [A]	Voltage [V]	Field [G]	Temperature [K]
+-9.99400E-5	-9.70556E-1	-1.6760E+1	ERROR
+-7.99500E-5	-7.76377E-1	-1.6770E+1	ERROR
+-5.99600E-5	-5.82242E-1	-1.6770E+1	ERROR
+-3.99600E-5	-3.88055E-1	-1.6770E+1	ERROR
+-1.99700E-5	-1.93970E-1	-1.6760E+1	ERROR
+6.47000E-11	6.50581E-6	-1.6760E+1	ERROR
+2.00000E-5	1.94110E-1	-1.6770E+1	ERROR
+3.99900E-5	3.88078E-1	-1.6770E+1	ERROR
+5.99900E-5	5.82093E-1	-1.6790E+1	ERROR
+7.99800E-5	7.75998E-1	-1.6770E+1	ERROR
+9.99700E-5	9.69896E-1	-1.6760E+1	ERROR
+
+Contact Sets:	R34,34
+Best Fit Resistance [ohm] =	6.0665E+3
+Best Fit Offset [V] =	-1.2047E-4
+Correlation =	1.E+0
+Current [A]	Voltage [V]	Field [G]	Temperature [K]
+-9.99400E-5	-6.06521E-1	-1.6780E+1	ERROR
+-7.99500E-5	-4.85180E-1	-1.6780E+1	ERROR
+-5.99600E-5	-3.63868E-1	-1.6780E+1	ERROR
+-3.99600E-5	-2.42518E-1	-1.6750E+1	ERROR
+-1.99700E-5	-1.21231E-1	-1.6770E+1	ERROR
+6.30000E-11	-1.16562E-6	-1.6770E+1	ERROR
+2.00000E-5	1.21312E-1	-1.6760E+1	ERROR
+3.99900E-5	2.42545E-1	-1.6780E+1	ERROR
+5.99900E-5	3.63812E-1	-1.6770E+1	ERROR
+7.99800E-5	4.85016E-1	-1.6770E+1	ERROR
+9.99700E-5	6.06220E-1	-1.6760E+1	ERROR
+
+Contact Sets:	R41,41
+Best Fit Resistance [ohm] =	1.1648E+4
+Best Fit Offset [V] =	-1.2552E-4
+Correlation =	1.E+0
+Current [A]	Voltage [V]	Field [G]	Temperature [K]
+-9.99500E-5	-1.16426E+0	-1.6780E+1	ERROR
+-7.99500E-5	-9.31389E-1	-1.6760E+1	ERROR
+-5.99600E-5	-6.98541E-1	-1.6770E+1	ERROR
+-3.99600E-5	-4.65603E-1	-1.6760E+1	ERROR
+-1.99700E-5	-2.32762E-1	-1.6770E+1	ERROR
+6.64000E-11	-5.31938E-6	-1.6760E+1	ERROR
+2.00100E-5	2.32927E-1	-1.6780E+1	ERROR
+3.99900E-5	4.65731E-1	-1.6750E+1	ERROR
+5.99900E-5	6.98625E-1	-1.6770E+1	ERROR
+7.99800E-5	9.31420E-1	-1.6770E+1	ERROR
+9.99700E-5	1.16423E+0	-1.6770E+1	ERROR
+
+<Step 2: Variable Field Measurement>
+Start Time:	07/14/22 12:56:07
+Time Completed:	07/14/22 13:01:04
+Elapsed Time:	0:4:57
+
+Field profile:	Linear Sweep with Field Reversal
+Maximum Field:	3.0 [kG]
+Minimum Field:	3.0 [kG]
+Field Step:	3.0 [kG]
+Direction:	Positive to Negative
+Measurement Type:	Hall and Resistivity Measurement
+Excitation Current:	100.0 [µA]
+Resistance Range:	Low
+Dwell Time:	2.0 [Sec]
+Current Reversal:	On
+Geometry selection:	A and B
+
+Use Zero-field Resistivity to calculate Hall Mobility:	Yes
+Zero-field Resistivity [ohm cm] =	7.2284E-1
+at Field [G] =	-2.1250E-2
+at Temperature [K] = ERROR
+
+Field [G]	Resistivity [ohm cm]	Hall Coefficient [cm³/C]	Carrier Density [1/cm³]	Hall Mobility [cm²/(VS)]	Temperature [K]
+3.0000E+3	7.2239E-1	-1.0496E+2	-5.9475E+16	-1.4520E+2	ERROR
+
+

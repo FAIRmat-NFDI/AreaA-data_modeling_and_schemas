@@ -1,0 +1,14 @@
+sample name:;22-181-G;;sample geometry ;rectangular ;length [mm]:;10;width [mm]:;10;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+thickness [um];2.90E-01;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+user:;Palvan;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+comment:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Channel [No.];1;2;3;4;5;6;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+measurement range:;Autorange Off;Autorange Off;Autorange Off;Autorange Off;Autorange Off;Autorange Off;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Excitation Range:;1.00 uA;1.00 uA;1.00 uA;1.00 uA;1.00 uA;1.00 uA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Excitation Mode:;Current;Current;Current;Current;Current;Current;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Resistance Range:;6.32 kOhm;6.32 kOhm;6.32 kOhm;6.32 kOhm;6.32 kOhm;6.32 kOhm;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+time;date;time of measurement;T;T;specific resistance;conductance  ;mobility;charge carrier concentration;Hall constant ;R1 ;delta R1;T [R1];time;R2;delta R2;T [R2];time;R3;delta R3;T [R3];time;R4;delta R4;T [R4];time;f1;f2;f3;f4;;zero magnetic field;R5;delta R5;T [R5];time;R6;delta R6;T [R6];time;;positive magnetic field;R5;delta R5;T [R5];time;R6;delta R6;T [R6];time;; negative magnetic field;R5;delta R5;T [R5];time;R6;delta R6;T [R6];time;;;
+min;dd.mm.JJJJ;hh:mm:JJJJ;°C;K;cm*Ohm;cm*Ohm;cm^2/Vs;1/cm^3;cm^3/C;Ohm ;Ohm;°C;h:m:s;Ohm;Ohm;°C;h:m:s;Ohm;Ohm;°C;h:m:s;Ohm;Ohm;°C;h:m:s;;;;;;mT;Ohm;Ohm;°C;h:m:s;Ohm;Ohm;°C;h:m:s;;mT;Ohm;Ohm;°C;h:m:s;Ohm;Ohm;°C;h:m:s;;mT;Ohm;Ohm;°C;h:m:s;Ohm;Ohm;°C;h:m:s;;corr_factor_electric_conductivity;corr_electric_resistivity
+1.21E+01;21.07.2022;10:13:41;28.387833;301.487833;9.66E-02;1.04E+01;-1.02E+02;-6.33E+17;-9.88E+00;6.64E+02;5.40E-01;28.488515;10:02:38;7.63E+02;3.15E-01;28.437957;10:03:20;6.64E+02;5.45E-01;28.405293;10:04:03;7.64E+02;4.75E-01;28.383613;10:04:45;0.998314;0.998311;0.998284;0.998287;;0.00E+00;-1.02E+02;-8.90E-01;28.348299;10:05:27;1.02E+02;7.70E-01;28.366697;10:05:27;;5.01E+02;-1.21E+02;-1.03E+00;28.35035;10:07:14;8.72E+01;6.85E-01;28.357703;10:07:14;;-5.03E+02;-8.82E+01;-9.95E-01;28.335423;10:09:07;1.23E+02;7.65E-01;28.322452;10:09:07;0.969511;1.031448;
