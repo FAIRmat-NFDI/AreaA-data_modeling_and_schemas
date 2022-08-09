@@ -11,7 +11,7 @@ The schemes here implemented are compliant to the NOMAD data structure: the hier
 
 The users can follow the info in this repo to build their own schema for their experiment :thumbsup:.
 
-Each folder contains four categories of files, the user can try to drag and drop them in the upload page in nomad ([https://nomad-lab.eu/](https://nomad-lab.eu/)), they will be automatically parsed to create an "Entry" containing your experiment:
+Each folder contains four categories of files, the user can try to drag and drop the first three categories in the upload page in nomad ([https://nomad-lab.eu/](https://nomad-lab.eu/)), they will be automatically parsed to create an "Entry" containing the experimental data in a structured fashion:
 
 * schema file: it defines the structure that will host your data.
   The schema file has **.schema.archive.yaml** extension.
@@ -35,3 +35,4 @@ Epitaxial Growth | another epitaxy experiment | epitaxy
 Electric properties | Hall Measurements | hall
 Database | Material_db from IKZ | material_db_IKZ
 Transmission | Transmission measurements | transmission
+Variuos | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden
