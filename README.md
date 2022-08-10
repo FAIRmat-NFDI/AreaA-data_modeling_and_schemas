@@ -5,7 +5,7 @@
 
 - - - -
 
-This is a collection of blueprint schemas that include several kinds of experiment. 
+This is a collection of blueprint schemes that include several kinds of experiment. 
 
 The schemes here implemented are compliant to the NOMAD data structure: the hierarchy is composed by Sections, Subsections and Quantities (data fields).
 
@@ -28,11 +28,15 @@ Each folder contains four categories of files, the user can try to drag and drop
 category | experiment | folder name
 -|-|-|
 Crystal Growth | Float Zone| FZ_IKZ
-Crystal Growth | Melt Czochralski | melt_czochralski
+Crystal Growth | Melt Czochralski | melt_czochralski_Dadzis
+Crystal Growth | Melt Czochralski | melt_czochralski_Dropka
  ? | Oxide Powder Preparation | oxide_powder_preparation
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-STO) | movpe_STO
+Epitaxial Growth | Metalorganic vapour-phase epitaxy Gallium Oxide (MOVPE-Ga2O3) | movpe_Ga2O3
 Epitaxial Growth | another epitaxy experiment | epitaxy
+Macromolecular Self-assembly | Water-Air Interface Self-assembly | wai_synthesis
 Electric properties | Hall Measurements | hall
 Database | Material_db from IKZ | material_db_IKZ
+Spin coating | Spin coating | spin_coating_aachen
 Transmission | Transmission measurements | transmission
-Variuos | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden
+Various | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden
