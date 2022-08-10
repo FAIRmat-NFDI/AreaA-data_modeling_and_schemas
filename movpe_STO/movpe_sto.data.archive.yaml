@@ -1,0 +1,57 @@
+data:  
+  m_def: ../upload/raw/movpe_app-def_schema.archive.yaml#MovpeSto_schema 
+  users:
+    not_nomad_user:
+    - first_name: a
+      last_name: a
+    - first_name: b
+      last_name: b
+    # - role: Operator
+    #   name: Carlo
+    #   affiliation_institution: Leibniz Institut für Kristallzüchtung
+    #   affiliation_group: Model experiment
+    #   address:
+    #   email:
+    #   orcid:
+    #   telephone_number:
+    # - role: Responsible_person
+    #   name: Giangi
+    #   affiliation_institution: HZB
+    #   affiliation_group: Quantum sensing
+    #   address:
+    #   email:
+    #   orcid:
+    #   telephone_number:
+    # - name: Giovanna
+  # materials:
+  #   precursor:
+  #     comment: "the precursor is freshly prepared in the lab"
+  #   substrate:
+  #     composition:
+  #       - "../upload/raw/Copper_II_Selenide.archive.json#data"
+  #       - "../upload/raw/Zinc_Selenide.archive.yaml#data"
+  #     comment:
+  process:
+    data_file: ELAB-255.xlsx # OVERVIEW.csv #
+   # process_steps:
+   #   data_file: STEPS.csv
+      # - step_duration:
+      #   elapsed_time:
+      #   step_number: 2
+      #   step_title: 
+      #   step_comment:
+      #   step_annotation:
+      #   argon_flow:
+      #   oxygen_flow:
+      #   argon_push_titan:
+      #   argon_purge_titan:
+      #   vaporization_temperature_titan:
+      #   chamber_pressure:
+      #   substrate_temperature_filament: 101
+      #   shaft_temperature: 101
+      #   carrier_rotation:
+      #   peristaltic_pump_rotation_titan:
+      #   peristaltic_pump_rotation_strontium_lanthan:
+      #   vaporization_temperature_strontium_lanthan:
+      #   argon_push_strontium_lanthan: 2
+      #   argon_purge_strontium_lanthan: 3
