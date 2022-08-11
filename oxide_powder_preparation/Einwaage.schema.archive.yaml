@@ -74,16 +74,16 @@ definitions:
           description: CAS number
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
+              component: StringEditQuantity
         sku_number:
           type: str
           description: sku number
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
+              component: StringEditQuantity
     Process:
-      m_annotations:
-        eln:
+      #m_annotations:
+      #  eln:
       quantities:
         experiment_identifier:
           type: str
@@ -132,8 +132,8 @@ definitions:
       sub_sections:
         process_steps:
           repeats: true
-          m_annotations:
-            eln:
+          #m_annotations:
+          #  eln:
           section:
             quantities:
               process_type:
@@ -223,20 +223,20 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        created_by:
-          type: str #User
-          #shape: ['*']
-          description: my descr
-          m_annotations:
-            eln:
-              component: UserEditQuantity
-        created_by_test:
-          type: str #Author
-          #shape: ['*']
-          description: my descr
-          m_annotations:
-            eln:
-              component: AuthorEditQuantity
+        # created_by:
+        #   type: str #User
+        #   #shape: ['*']
+        #   description: my descr
+        #   m_annotations:
+        #     eln:
+        #       component: UserEditQuantity
+        # created_by_test:
+        #   type: str #Author
+        #   #shape: ['*']
+        #   description: my descr
+        #   m_annotations:
+        #     eln:
+        #       component: AuthorEditQuantity
         executed_by:
           type: str
           m_annotations:
@@ -266,8 +266,8 @@ definitions:
                 hide: []
         components: 
           repeats: true
-          m_annotations:
-            eln:
+          #m_annotations:
+          #  eln:
           section:
             quantities:
               name:
@@ -317,8 +317,8 @@ definitions:
                       # hide: ['children', 'parents', institute]
                       hide: []
               process: 
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   base_section: Process 
                   quantities:

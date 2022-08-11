@@ -1,0 +1,237 @@
+definitions:
+  name: 'Electronic Lab Notebook schema fot MOVPE-Ga2O3'
+  sections:  # Schemas consist of section definitions
+    MovpeGa2O3: 
+      base_sections:
+        - nomad.parsing.tabular.TableRow
+      m_annotations:
+        # We might not want to show all ElnBaseSection quantities.
+        eln:
+          dict()
+      sub_sections:
+        materials:
+          section:
+            quantities:
+              test:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: Recipe Name
+                  eln:
+                    component: StringEditQuantity
+            sub_sections:
+              SampleID:
+                section:
+                  base_sections:
+                    - 'nomad.datamodel.metainfo.eln.SampleID'
+                    - 'nomad.datamodel.data.EntryData'
+                  m_annotations:
+                    template: 
+                    eln: 
+                  quantities:
+                    sample_id:
+                      type: str
+                      m_annotations:
+                        tabular:
+                          name: Sample
+                        eln:
+                          component: StringEditQuantity
+        growth_recipe:
+          section:
+            quantities:
+              experiment_identifier:
+                type: str
+                m_annotations:
+                  # The tabular annotation defines a mapping to column headers used in
+                  # tabular data files
+                  # tabular:
+                  #   name: Overview/Experiment Identifier
+                  eln:
+                    component: StringEditQuantity
+              experiment_location:
+                type: str
+                m_annotations:
+                  # tabular:
+                  #   name: Overview/Experiment Location
+                  eln:
+                    component: StringEditQuantity
+              start_time:
+                type: Datetime
+                m_annotations:
+                  # tabular:
+                  #   name: Overview/Start Time
+                  eln:
+                    component: DateTimeEditQuantity
+              end_time:
+                type: Datetime
+                m_annotations:
+                  # tabular:
+                  #   name: Overview/End Time
+                  eln:
+                    component: DateTimeEditQuantity
+              process_category:
+                type: str
+                m_annotations:
+                  # tabular:
+                  #   name: Overview/Synthesis Category
+                  eln:
+                    component: StringEditQuantity
+              process_method:
+                type: str
+                m_annotations:
+                  # tabular:
+                  #   name: Overview/Synthesis Method
+                  eln:
+                    component: StringEditQuantity
+            sub_sections:
+              process_steps:
+                section:
+                  # repeats: true
+                  # base_section: nomad.parsing.tabular.TableData
+                  # m_annotations:
+                  #   eln:
+                    # plot:
+                    # - label: Vaporazation Temperature
+                    #   x: elapsed_time
+                    #   y:     
+                    #     - "./vaporization_temperature_titan"
+                    #     - "./vaporization_temperature_strontium_lanthan"
+                    #   lines:
+                    #   - mode: lines
+                    #     line:
+                    #       color: rgb(40, 80, 130)
+                    #   - mode: lines
+                    #     line:
+                    #       color: rgb(100, 0, 0)
+                    # - label: Peristalic Pump Rotation
+                    #   x: elapsed_time
+                    #   y:     
+                    #     - "./peristaltic_pump_rotation_titan"
+                    #     - "./peristaltic_pump_rotation_strontium_lanthan"
+                    #   lines:
+                    #   - mode: markers
+                    #     marker:
+                    #       color: rgb(40, 80, 130)
+                    #   - mode: markers
+                    #     marker:
+                    #       color: rgb(100, 0, 0)
+                    #   # layout:
+                    #   #   xaxis:
+                    #   #     title: time 
+                    #   #   yaxis:
+                    #   #     title: P (GPa)
+                    #   #     type: log
+                    
+                    # - label: Gas Flow
+                    #   x: elapsed_time
+                    #   y:
+                    #     - "./argon_flow"
+                    #     - "./oxygen_flow"
+                    #   lines:
+                    #   - mode: lines
+                    #     marker:
+                    #       color: rgb(40, 80, 130)
+                    #   - mode: lines
+                    #     line:
+                    #       color: rgb(100, 0, 0)
+                  quantities:
+                    process_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Pre-process
+                          - Process
+                          - Post-process
+                          - Measurement
+                          - Storage
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    step_duration:
+                      type: np.float64
+                      unit: minute
+                      #shape: ['*']
+                      description: Past time since process start
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Duration
+                        # eln:
+                        #   component: NumberEditQuantity #DateTimeEditQuantity
+                        #  defaultDisplayUnit: minute
+                    elapsed_time:
+                      type: np.float64
+                      unit: minute
+                      #shape: ['*']
+                      description: Duration of each step
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Timestamp
+                        #   unit: minute
+                        # eln:
+                        #   component: NumberEditQuantity
+                        #   defaultDisplayUnit: minute
+                    step_number:
+                      type: int
+                      #shape: ['*']
+                      description: sequential number of the step on going
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Step
+                    #     eln:
+                    #       component: NumberEditQuantity
+                    step_title: 
+                      type: str
+                      #shape: ['*']
+                      description: what this step consists of
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Reason
+                    #     eln:
+                    #       component: StringEditQuantity
+                    step_comment:
+                      type: str
+                      #shape: ['*']
+                      description: more verbose description of the step
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Description
+                    #     eln:
+                    #       component: StringEditQuantity 
+                    step_annotation:
+                      type: str
+                      #shape: ['*']
+                      description: final remarks on the step
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Annotations
+                    #     eln:
+                    #       component: StringEditQuantity 
+                    argon_flow:
+                      type: np.float64
+                      #shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: Argon process gas flow in to the reaction chamber
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Argon flow
+                        #   unit: centimeter ** 3 / minute 
+                        # plot:
+                        #   x: elapsed_time
+                        #   y: argon_flow
+                    #     eln:
+                    #       component: NumberEditQuantity
+                    #       defaultDisplayUnit: centimeter ** 3 / minute
+                    oxygen_flow:
+                      type: np.float64
+                      #shape: ['*']
+                      unit: centimeter ** 3 / minute
+                      description: Oxygen process gas flow in to the reaction chamber
+                      #m_annotations:
+                        # tabular:
+                        #   name: Processdata/Oxygen flow
+                        # plot:
+                        #   x: elapsed_time
+                        #   y: oxygen_flow
+                    #     eln:
+                    #       component: NumberEditQuantity
+                    #       defaultDisplayUnit: centimeter ** 3 / minute

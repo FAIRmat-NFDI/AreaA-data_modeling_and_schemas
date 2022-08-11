@@ -99,8 +99,8 @@ definitions:
                     component: StringEditQuantity
         users:
           repeats: true
-          m_annotations:
-            eln:
+          #m_annotations:
+          #  eln:
           section:
             quantities:
               executed_by:
@@ -108,20 +108,20 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              Name:
-                type: str #User
-                #shape: ['*']
-                description: my descr
-                m_annotations:
-                  eln:
-                    component: UserEditQuantity
-              Name_test:
-                type: str #Author
-                #shape: ['*']
-                description: my descr
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
+              #Name:
+              #  type: str #User
+              #  #shape: ['*']
+              #  description: my descr
+              #  m_annotations:
+              #    eln:
+              #      component: UserEditQuantity
+              #Name_test:
+              #  type: str #Author
+              #  #shape: ['*']
+              #  description: my descr
+              #  m_annotations:
+              #    eln:
+              #      component: AuthorEditQuantity
 
             # base_section: User
             # m_annotations:
@@ -196,8 +196,8 @@ definitions:
             sub_sections:
               gases:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     gas_name:
@@ -221,8 +221,8 @@ definitions:
                           overview: True
               dopants:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     dopant_name:
@@ -303,14 +303,14 @@ definitions:
                 dict()
         process:
           section:
-            m_annotations:
-              eln:
+            #m_annotations:
+            #  eln:
                 #dict()
             sub_sections:
               gas_ambient_settings:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     timestamp:
@@ -399,8 +399,8 @@ definitions:
                           component: EnumEditQuantity
               process_settings:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     timestamp:
@@ -797,8 +797,8 @@ definitions:
                           name: WinkelRe
               basic_crystal_characterization:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     diameter_target_crystal:
@@ -837,8 +837,8 @@ definitions:
                           component: RichTextEditQuantity
               resistivity:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     target_resistivity:
@@ -870,8 +870,8 @@ definitions:
                           component: RichTextEditQuantity
               lifetime:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section:
                   quantities:
                     average_lifetime_on_body:
@@ -889,8 +889,8 @@ definitions:
                           component: RichTextEditQuantity
               lateral_photovoltage_scanning:
                 repeats: true
-                m_annotations: 
-                  eln:
+                #m_annotations: 
+                #  eln:
                 section:
                   quantities:
                     interface_curvative:
