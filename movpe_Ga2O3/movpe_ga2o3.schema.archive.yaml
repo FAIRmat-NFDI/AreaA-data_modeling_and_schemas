@@ -1,14 +1,26 @@
 definitions:
-  name: 'Electronic Lab Notebook schema fot MOVPE-STO'
+  name: 'Electronic Lab Notebook schema fot MOVPE-Ga2O3'
   sections:  # Schemas consist of section definitions
     Substance:
       base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        composition:
+          repeats: true
+          # m_annotations:
+          #   eln:
+          section: Sample
       quantities:
-        id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         comment:
           type: str
           m_annotations:
@@ -68,243 +80,213 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-    MovpeSto_schema:  # This is the name of the first section
-      # Inheriting it from EntryData, makes this section a possible
-      # EntryArchive.data sub-section
+    Sample:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
-        users:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        composition:
+          repeats: true
+          # m_annotations:
+          #   eln:
+          section: Sample
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        method: 
+          type:
+            type_kind: Enum
+            type_data:
+              - experimental
+              - simulation
+              - declared_by_vendor
+              - nominal
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type:
+            type_kind: Enum
+            type_data:
+              - Homoepitaxy
+              - Heteroepitaxy
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orientation:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        creation_datetime:
+          type: Datetime
+          description: creation date
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        growth_method:
+          type:
+            type_kind: Enum
+            type_data:
+              - MOVPE
+              - what not
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        thickness:
+          type: np.float64
+          unit: nanometer
+          description: layer thickness
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+    MovpeGa2O3: 
+      base_sections: 
+      - nomad.datamodel.data.EntryData
+      - nomad.parsing.tabular.TableData
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
+      sub_sections:
+        global:
           section:
             quantities:
-              nomad_user:
+              experiment_identifier:
                 type: str
-                shape: ['*']
-                description: my descr
                 m_annotations:
                   eln:
-                    component: UserEditQuantity
-              not_nomad_user:
+                    component: StringEditQuantity
+              experiment_location:
                 type: str
-                shape: ['*']
-                description: my descr
                 m_annotations:
                   eln:
-                    component: AuthorEditQuantity
+                    component: StringEditQuantity
+              start_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              end_time:
+                type: Datetime
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              synthesis_category:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              synthesis_method:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        # users:
+        #   section:
+        #     quantities:
+        #       nomad_user:
+        #         type: User
+        #         shape: ['*']
+        #         description: my descr
+        #         m_annotations:
+        #           eln:
+        #             component: UserEditQuantity
+        #       not_nomad_user:
+        #         type: Author
+        #         shape: ['*']
+        #         description: my descr
+        #         m_annotations:
+        #           eln:
+        #             component: AuthorEditQuantity
         instrument:
           section:
             m_annotations:
               eln:
                 dict()
-        materials:
+        materials: 
           repeats: true
-          m_annotations:
-            eln:
+          # m_annotations:
+          #   eln:
             #  dict()
           section:
             m_annotations:
               eln:
                 dict()
             sub_sections:
-              substrate:
+              sample:
                 repeats: true
-                m_annotations:
-                  eln:
+                # m_annotations:
+                #   eln:
                 section: 
-                  base_sections:
-                        # We use ElnBaseSection here. This provides a few quantities (name, description, tags)
-                        # that are added to the search index. If we map table columns to these quantities,
-                        # we can make those cells available for search.
-                    # - nomad.datamodel.metainfo.eln.ElnBaseSection
-                        # Schemas that are used to directly parse table files (.csv, .xlsx), need to
-                        # have the first definition to extend nomad.parsing.tabular.TableRow.
-                    # - nomad.parsing.tabular.TableRow
-                    - nomad.datamodel.data.EntryData
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
-                    composition:
-                      repeats: true
-                      m_annotations:
-                        eln:
-                      section: Substance
+                  base_section: Sample
                   quantities:
-                    comment:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    supplier:
-                      type: str
-                      description: Sample preparation including orientating, polishing, cutting done by this company
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    orientation:
-                      type: str
-                      description: crystallographic orientation of the substrate in [hkl]
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    off_cut:
-                      type: np.float64
-                      unit: degrees
-                      description: Off-cut angle to the substrates surface
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                    doping_level:
-                      type: np.float64
-                      #unit: wt %
-                      description: Chemical doping level of electrically conductive substrates
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                    doping_species:
-                      type: str
-                      description: Doping species to obtain electrical conductivity in the substrates
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    charge:
-                      type: str
-                      description: Substrate charge ID given by fabrication company. Detailed information can be obtained from the company by requesting this charge ID
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    size:
-                      type: str
-                      description: Substrate dimensions
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    prepared:
-                      type: str
-                      description: Is the sample annealed, cleaned and etched for smooth stepped surface?
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    recycled:
-                      type: str
-                      description: Was the substrate deposited already and is recycled by polishing?
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-              precursor:                
-                repeats: true
-                m_annotations:
-                  eln:
-                section: 
-                  base_section: nomad.datamodel.data.EntryData
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
-                    composition:
-                      repeats: true
-                      m_annotations:
-                        eln:
-                      section: Substance
-                  quantities:
-                    method:
+                    epitaxy_type:
                       type:
                         type_kind: Enum
                         type_data:
-                          - Experimental
-                          - Simulation
-                          - Declared by Vendor
+                          - Homoepitaxy
+                          - Heteroepitaxy
                       m_annotations:
                         eln:
                           component: RadioEnumEditQuantity
-                    mass:
-                      type: np.float64
-                      unit: milligram
-                      description: Mass of the powder precursor weighted out in the glove box
+                    substrate:
+                      type: Sample
+                      # shape: ['*']
                       m_annotations:
                         eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: milligram
-                    amount:
-                      type: np.float64
-                      unit: millimole
-                      description: Amount of substance of precursor powder weighted out
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimole
-                    volume_solvent:
-                      type: np.float64
-                      unit: milliliter
-                      description: Volume of solvent used to solve the powder precursor
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: milliliter
-                    mass_concentration:
-                      type: np.float64
-                      unit: gram/liter
-                      description: Mass concentration of the prepared precursor-solvent solution
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: gram/liter
-                    concentration:
-                      type: np.float64
-                      unit: millimole/liter
-                      description: amount of substance concentration of the prepared precursor-solvent solution
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimole/liter
-                    flow:
-                      type: np.float64
-                      unit: milliliter/minute
-                      description: Velocity of the precursor solution flow adjusted by peristaltic pumps
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: milliliter/minute
-                    comment:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity   
-        process:
+                          component: ReferenceEditQuantity
+        growth_recipe:
           section:
-            base_section: nomad.parsing.tabular.TableData
             quantities:
-              data_file:
-                type: str
-                description: |
-                  A reference to an uploaded .xlsx
-                m_annotations:
-                  # The tabular_parser annotation, will treat the values of this
-                  # quantity as files. It will try to interpret the files and fill
-                  # quantities in this section (and sub_section) with the column
-                  # data of .csv or .xlsx files.
-                  tabular_parser:
-                    # sep: ','
-                    comment: '#'
-                  browser:
-                    adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-                  eln:
-                    component: FileEditQuantity  # A form field that allows to drop and select files.
               experiment_identifier:
                 type: str
                 m_annotations:
@@ -349,48 +331,6 @@ definitions:
                     name: Overview/Synthesis Method
                   eln:
                     component: StringEditQuantity
-              film:
-                type: str
-                description: Film material (Material:Dopant species)
-                m_annotations:
-                  tabular:
-                    name: Overview/Film
-                  eln:
-                    component: StringEditQuantity
-              substrate:
-                type: str
-                description: Substrates placed into the reactor for film growth. Details are shown in "Substrate"-folder
-                m_annotations:
-                  tabular:
-                    name: Overview/Substrate
-                  eln:
-                    component: StringEditQuantity
-              t_substrate:
-                type: np.float64
-                unit: celsius
-                description: Substrate temperature obtained by the Pyrometer on the samples surface
-                m_annotations:
-                  tabular:
-                    name: Overview/Substrate Temperature
-                  eln:
-                    component: NumberEditQuantity
-              o2_ar:
-                type: str
-                unit: ml
-                description: Gas flux ratio between oxygen and argon in the process gas
-                m_annotations:
-                  tabular:
-                    name: Overview/O2 Argon
-                  eln:
-                    component: StringEditQuantity                    
-              composition:
-                type: str
-                description: films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see folder "Precursor"
-                m_annotations:
-                  tabular:
-                    name: Overview/Composition
-                  eln:
-                    component: StringEditQuantity
             sub_sections:
               process_steps:
                 section:
@@ -398,50 +338,50 @@ definitions:
                   # base_section: nomad.parsing.tabular.TableData
                   m_annotations:
                     eln:
-                    plot:
-                    - label: Vaporazation Temperature
-                      x: elapsed_time
-                      y:     
-                        - "./vaporization_temperature_titan"
-                        - "./vaporization_temperature_strontium_lanthan"
-                      lines:
-                      - mode: lines
-                        line:
-                          color: rgb(40, 80, 130)
-                      - mode: lines
-                        line:
-                          color: rgb(100, 0, 0)
-                    - label: Peristalic Pump Rotation
-                      x: elapsed_time
-                      y:     
-                        - "./peristaltic_pump_rotation_titan"
-                        - "./peristaltic_pump_rotation_strontium_lanthan"
-                      lines:
-                      - mode: markers
-                        marker:
-                          color: rgb(40, 80, 130)
-                      - mode: markers
-                        marker:
-                          color: rgb(100, 0, 0)
-                      # layout:
-                      #   xaxis:
-                      #     title: time 
-                      #   yaxis:
-                      #     title: P (GPa)
-                      #     type: log
+                    # plot:
+                    # - label: Vaporazation Temperature
+                    #   x: elapsed_time
+                    #   y:     
+                    #     - "./vaporization_temperature_titan"
+                    #     - "./vaporization_temperature_strontium_lanthan"
+                    #   lines:
+                    #   - mode: lines
+                    #     line:
+                    #       color: rgb(40, 80, 130)
+                    #   - mode: lines
+                    #     line:
+                    #       color: rgb(100, 0, 0)
+                    # - label: Peristalic Pump Rotation
+                    #   x: elapsed_time
+                    #   y:     
+                    #     - "./peristaltic_pump_rotation_titan"
+                    #     - "./peristaltic_pump_rotation_strontium_lanthan"
+                    #   lines:
+                    #   - mode: markers
+                    #     marker:
+                    #       color: rgb(40, 80, 130)
+                    #   - mode: markers
+                    #     marker:
+                    #       color: rgb(100, 0, 0)
+                    #   # layout:
+                    #   #   xaxis:
+                    #   #     title: time 
+                    #   #   yaxis:
+                    #   #     title: P (GPa)
+                    #   #     type: log
                     
-                    - label: Gas Flow
-                      x: elapsed_time
-                      y:
-                        - "./argon_flow"
-                        - "./oxygen_flow"
-                      lines:
-                      - mode: lines
-                        marker:
-                          color: rgb(40, 80, 130)
-                      - mode: lines
-                        line:
-                          color: rgb(100, 0, 0)
+                    # - label: Gas Flow
+                    #   x: elapsed_time
+                    #   y:
+                    #     - "./argon_flow"
+                    #     - "./oxygen_flow"
+                    #   lines:
+                    #   - mode: lines
+                    #     marker:
+                    #       color: rgb(40, 80, 130)
+                    #   - mode: lines
+                    #     line:
+                    #       color: rgb(100, 0, 0)
                   quantities:
                     process_type:
                       type:
@@ -631,185 +571,6 @@ definitions:
                     #     eln:
                     #       component: NumberEditQuantity
                     #       defaultDisplayUnit: rpm
-                    peristaltic_pump_rotation_strontium_lanthan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: rpm
-                      description: Pumping velocity of the peristaltic pump of Sr/La
-                      m_annotations:
-                        tabular:
-                          name: Processdata/Peristaltic pump rotation Sr La
-                    #     eln:
-                    #       component: NumberEditQuantity
-                    #       defaultDisplayUnit: rpm
-                    vaporization_temperature_strontium_lanthan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: celsius
-                      description: Temperature in the flash evaporation to vaporize the Sr/La precursor solution
-                      m_annotations:
-                        tabular:
-                          name: Processdata/Vaporization temperature Sr La
-                    #     eln:
-                    #       component: NumberEditQuantity
-                    #       defaultDisplayUnit: celsius
-                    argon_push_strontium_lanthan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: centimeter ** 3 / minute
-                      description: SCCM Argon gas in the flash evaporator used to push Sr/La-Precursor into the reaction chamber
-                      m_annotations:
-                        tabular:
-                          name: Processdata/Argon push Sr La
-                    #     eln:
-                    #       component: NumberEditQuantity
-                    #       defaultDisplayUnit: centimeter ** 3 / minute
-                    argon_purge_strontium_lanthan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: centimeter ** 3 / minute
-                      description: SCCM Argon gas in the flash evaporator used to purge Sr/La-Precursor
-                      m_annotations:
-                        tabular:
-                          name: Processdata/Argon purge Sr La
-                    #     eln:
-                    #       component: NumberEditQuantity
-                    #       defaultDisplayUnit: centimeter ** 3 / minute
-              deposition_control_steps:
-                section:
-                  quantities:
-                    timestamp:
-                      type: np.float64
-                      shape: ['*']
-                      unit: minute
-                      description: Past time since process start
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Timestamp
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    pyrotemperature:
-                      type: np.float64
-                      shape: ['*']
-                      unit: celsius
-                      description: Temperature that is controlled by the pyrometer on the substartes surface
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Pyrotemperature
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    vaporization_titan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: celsius
-                      description: Vaporization temperature of the Ti flash evaporator
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Vaporization Ti
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    vaporization_strontium_lanthan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: celsius
-                      description: Vaporization temperature of the Sr/La flash evaporator
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Vaporization Sr La
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    o2_temperature:
-                      type: np.float64
-                      shape: ['*']
-                      unit: celsius
-                      description: Oxygen process gas temperature
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/O2 temperature
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    backpressure_titanium:
-                      type: np.float64
-                      shape: ['*']
-                      unit: millibar
-                      description: Backpressure in the Ti evaporation line controlling the vapor pressure of this line
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Backpressure Ti
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    backpressure_strontium_lanthan:
-                      type: np.float64
-                      shape: ['*']
-                      unit: millibar
-                      description: Backpressure in the Sr/La evaporation line controlling the vapor pressure of this line
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Backpressure Sr La
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    throttle_valve:
-                      type: np.float64
-                      shape: ['*']
-                      # unit: percent
-                      description: Opening level of the throttle valve at the turbo pump used to apply the chamber pressure 
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Throttle valve
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    chamber_pressure:
-                      type: np.float64
-                      shape: ['*']
-                      unit: millibar
-                      description: chamber pressure in the reaction chamber
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Chamber pressure
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    rotation:
-                      type: np.float64
-                      shape: ['*']
-                      unit: rpm
-                      description: carrier rottaion velocity
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Rotation
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    voltage:
-                      type: np.float64
-                      shape: ['*']
-                      unit: volt
-                      description: Voltage control of the heating system
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Voltage
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
-                    current:
-                      type: np.float64
-                      shape: ['*']
-                      unit: milliampere
-                      description: Current control of the heating system
-                      m_annotations:
-                        tabular:
-                          name: Deposition Control/Current
-                    #   eln:
-                    #     component: NumberEditQuantity
-                    #     defaultDisplayUnit:
               HR_XRD_measurements:
                 section:
                   quantities:
