@@ -53,18 +53,10 @@ definitions:
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section 
       base_section: nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          dict()
       sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
         global:
           section:
             m_annotations:
@@ -193,12 +185,17 @@ definitions:
                           defaultDisplayUnit: mm
         materials:
           section:
+            m_annotations:
+              eln:
+                dict()
             sub_sections:
               gases:
                 repeats: true
                 #m_annotations:
                 #  eln:
                 section:
+                  m_annotations:
+                    eln:
                   quantities:
                     gas_name:
                       type: 
@@ -212,18 +209,25 @@ definitions:
                       m_annotations:
                         eln:
                           component: EnumEditQuantity
-                    gas_id:
-                      type: str
-                      description: "what is the gas id?"
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                          overview: True
+                  sub_sections:
+                    SampleID:
+                      section:
+                        base_sections:
+                          - 'nomad.datamodel.metainfo.eln.SampleID'
+                          - 'nomad.datamodel.data.EntryData'
+                        m_annotations:
+                          template: 
+                          eln: 
+                            # hide: ['children', 'parents']
+                            # hide: ['children', 'parents', institute]
+                            hide: []
               dopants:
                 repeats: true
                 #m_annotations:
                 #  eln:
                 section:
+                  m_annotations:
+                    eln:
                   quantities:
                     dopant_name:
                       type:
@@ -246,6 +250,18 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
+                  sub_sections:
+                    SampleID:
+                      section:
+                        base_sections:
+                          - 'nomad.datamodel.metainfo.eln.SampleID'
+                          - 'nomad.datamodel.data.EntryData'
+                        m_annotations:
+                          template: 
+                          eln: 
+                            # hide: ['children', 'parents']
+                            # hide: ['children', 'parents', institute]
+                            hide: []
               feed_rod:
                 section:
                   quantities:
@@ -298,9 +314,18 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mm
-            m_annotations:
-              eln:
-                dict()
+                  sub_sections:
+                    SampleID:
+                      section:
+                        base_sections:
+                          - 'nomad.datamodel.metainfo.eln.SampleID'
+                          - 'nomad.datamodel.data.EntryData'
+                        m_annotations:
+                          template: 
+                          eln: 
+                            # hide: ['children', 'parents']
+                            # hide: ['children', 'parents', institute]
+                            hide: []
         process:
           section:
             #m_annotations:
