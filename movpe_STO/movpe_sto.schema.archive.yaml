@@ -72,6 +72,9 @@ definitions:
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
       base_section: nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          dict()
       sub_sections:
         # users:
         #   section:
@@ -94,16 +97,18 @@ definitions:
           section:
             m_annotations:
               eln:
-                dict()
+            quantities:
+              comment:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
         materials:
           repeats: true
-          m_annotations:
-            eln:
-              dict()
           section:
-            # m_annotations:
-            #   eln:
-            #     dict()
+            m_annotations:
+              eln:
+                dict()
             sub_sections:
               substrate:
                 repeats: true

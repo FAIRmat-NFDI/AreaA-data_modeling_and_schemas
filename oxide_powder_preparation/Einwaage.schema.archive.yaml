@@ -133,8 +133,8 @@ definitions:
           #m_annotations:
           #  eln:
           section:
-            # m_annotations:
-            #   eln:
+            m_annotations:
+              eln:
             quantities:
               process_type:
                 type:
