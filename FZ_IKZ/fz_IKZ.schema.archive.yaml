@@ -328,15 +328,15 @@ definitions:
                             hide: []
         process:
           section:
-            #m_annotations:
-            #  eln:
-                #dict()
+            m_annotations:
+              eln:
+                dict()
             sub_sections:
               gas_ambient_settings:
                 repeats: true
-                #m_annotations:
-                #  eln:
                 section:
+                  # m_annotations:
+                  #   eln:
                   quantities:
                     timestamp:
                       type: Datetime
@@ -424,9 +424,9 @@ definitions:
                           component: EnumEditQuantity
               process_settings:
                 repeats: true
-                #m_annotations:
-                #  eln:
                 section:
+                  # m_annotations:
+                  #   eln:
                   quantities:
                     timestamp:
                       type: Datetime
@@ -822,9 +822,9 @@ definitions:
                           name: WinkelRe
               basic_crystal_characterization:
                 repeats: true
-                #m_annotations:
-                #  eln:
                 section:
+                  # m_annotations:
+                  #   eln:
                   quantities:
                     diameter_target_crystal:
                       type: np.float64
@@ -862,9 +862,9 @@ definitions:
                           component: RichTextEditQuantity
               resistivity:
                 repeats: true
-                #m_annotations:
-                #  eln:
                 section:
+                  # m_annotations:
+                  #   eln:
                   quantities:
                     target_resistivity:
                       type: np.float64
@@ -895,9 +895,9 @@ definitions:
                           component: RichTextEditQuantity
               lifetime:
                 repeats: true
-                #m_annotations:
-                #  eln:
                 section:
+                  # m_annotations:
+                  #   eln:
                   quantities:
                     average_lifetime_on_body:
                       type: np.float64
@@ -914,9 +914,9 @@ definitions:
                           component: RichTextEditQuantity
               lateral_photovoltage_scanning:
                 repeats: true
-                #m_annotations: 
-                #  eln:
                 section:
+                  # m_annotations: 
+                  #   eln:
                   quantities:
                     interface_curvative:
                       type: np.float64
