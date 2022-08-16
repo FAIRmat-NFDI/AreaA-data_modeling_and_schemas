@@ -73,23 +73,23 @@ definitions:
       # EntryArchive.data sub-section
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
-        users:
-          section:
-            quantities:
-              nomad_user:
-                type: str
-                shape: ['*']
-                description: my descr
-                m_annotations:
-                  eln:
-                    component: UserEditQuantity
-              not_nomad_user:
-                type: str
-                shape: ['*']
-                description: my descr
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
+        # users:
+        #   section:
+        #     quantities:
+        #       nomad_user:
+        #         type: str
+        #         shape: ['*']
+        #         description: my descr
+        #         m_annotations:
+        #           eln:
+        #             component: UserEditQuantity
+        #       not_nomad_user:
+        #         type: str
+        #         shape: ['*']
+        #         description: my descr
+        #         m_annotations:
+        #           eln:
+        #             component: AuthorEditQuantity
         instrument:
           section:
             m_annotations:
@@ -97,8 +97,8 @@ definitions:
                 dict()
         materials:
           repeats: true
-          m_annotations:
-            eln:
+          #m_annotations:
+          #  eln:
             #  dict()
           section:
             m_annotations:
@@ -107,8 +107,8 @@ definitions:
             sub_sections:
               substrate:
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section: 
                   base_sections:
                         # We use ElnBaseSection here. This provides a few quantities (name, description, tags)
@@ -133,8 +133,8 @@ definitions:
                             hide: []
                     composition:
                       repeats: true
-                      m_annotations:
-                        eln:
+                      #m_annotations:
+                      #  eln:
                       section: Substance
                   quantities:
                     comment:
@@ -200,8 +200,8 @@ definitions:
                           component: StringEditQuantity
               precursor:                
                 repeats: true
-                m_annotations:
-                  eln:
+                #m_annotations:
+                #  eln:
                 section: 
                   base_section: nomad.datamodel.data.EntryData
                   sub_sections:
@@ -218,8 +218,8 @@ definitions:
                             hide: []
                     composition:
                       repeats: true
-                      m_annotations:
-                        eln:
+                      #m_annotations:
+                      #  eln:
                       section: Substance
                   quantities:
                     method:

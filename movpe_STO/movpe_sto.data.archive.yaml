@@ -1,11 +1,11 @@
 data:  
-  m_def: ../upload/raw/movpe_app-def_schema.archive.yaml#MovpeSto_schema 
-  users:
-    not_nomad_user:
-    - first_name: a
-      last_name: a
-    - first_name: b
-      last_name: b
+  m_def: ../upload/raw/movpe_sto.schema.archive.yaml#MovpeSto_schema 
+  # users:
+  #   not_nomad_user:
+  #   - first_name: a
+  #     last_name: a
+  #   - first_name: b
+  #     last_name: b
     # - role: Operator
     #   name: Carlo
     #   affiliation_institution: Leibniz Institut für Kristallzüchtung
