@@ -97,13 +97,13 @@ definitions:
                 dict()
         materials:
           repeats: true
-          #m_annotations:
-          #  eln:
-            #  dict()
+          m_annotations:
+            eln:
+              dict()
           section:
-            m_annotations:
-              eln:
-                dict()
+            # m_annotations:
+            #   eln:
+            #     dict()
             sub_sections:
               substrate:
                 repeats: true
