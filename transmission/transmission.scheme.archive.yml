@@ -30,7 +30,7 @@ definitions:
                 m_annotations:
                   tabular_parser:
                     sep: '\s*,\s*'
-                    comment: '#'
+                    comment: "#"
                   browser:
                     adaptor: RawFileAdaptor
                   eln:
@@ -38,17 +38,17 @@ definitions:
               wavelength:
                 type: np.float64
                 unit: nm
-                shape: ['*']
+                shape: ["*"]
                 m_annotations:
                   tabular:
                     name: nm
                     unit: nm
               transmission:
                 type: np.float64
-                shape: ['*']
+                shape: ["*"]
                 m_annotations:
                   tabular:
-                    name: '%T'
+                    name: "%T"
         User:
           section:
             m_annotations:
@@ -175,7 +175,7 @@ definitions:
                 type: bool
                 m_annotations:
                   eln:
-                    component: BooleanEditQuantity
+                    component: BoolEditQuantity
               polarizer:
                 type: int
                 unit: degree
