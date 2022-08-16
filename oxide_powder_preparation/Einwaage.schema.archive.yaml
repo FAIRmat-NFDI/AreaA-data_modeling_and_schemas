@@ -88,45 +88,43 @@ definitions:
         experiment_identifier:
           type: str
           m_annotations:
-            # The tabular annotation defines a mapping to column headers used in
-            # tabular data files
-            tabular:
-              name: Overview/Experiment Identifier
+            # tabular:
+            #   name: Overview/Experiment Identifier
             eln:
               component: StringEditQuantity
         experiment_location:
           type: str
           m_annotations:
-            tabular:
-              name: Overview/Experiment Location
+            # tabular:
+            #   name: Overview/Experiment Location
             eln:
               component: StringEditQuantity
         start_time:
           type: Datetime
           m_annotations:
-            tabular:
-              name: Overview/Start Time
+            # tabular:
+            #   name: Overview/Start Time
             eln:
               component: DateTimeEditQuantity
         end_time:
           type: Datetime
           m_annotations:
-            tabular:
-              name: Overview/End Time
+            # tabular:
+            #   name: Overview/End Time
             eln:
               component: DateTimeEditQuantity
         process_category:
           type: str
           m_annotations:
-            tabular:
-              name: Overview/Synthesis Category
+            # tabular:
+            #   name: Overview/Synthesis Category
             eln:
               component: StringEditQuantity
         process_method:
           type: str
           m_annotations:
-            tabular:
-              name: Overview/Synthesis Method
+            # tabular:
+            #   name: Overview/Synthesis Method
             eln:
               component: StringEditQuantity
       sub_sections:
@@ -135,6 +133,8 @@ definitions:
           #m_annotations:
           #  eln:
           section:
+            # m_annotations:
+            #   eln:
             quantities:
               process_type:
                 type:
@@ -193,17 +193,17 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: minute
-              temperature_increase_rate:
-                type: np.float64
-                unit: celsius / hour
-                description: temperature increase rate
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: celsius / hour
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius / hour
+              # temperature_increase_rate:
+              #   type: np.float64
+              #   unit: celsius/hour
+              #   description: temperature increase rate
+              #   m_annotations:
+              #     # tabular:
+              #     #   name: Processdata/Timestamp
+              #     #   unit: celsius / hour
+              #     eln:
+              #       component: NumberEditQuantity
+              #       defaultDisplayUnit: celsius / hour
               temperature:
                 type: np.float64
                 unit: celsius
