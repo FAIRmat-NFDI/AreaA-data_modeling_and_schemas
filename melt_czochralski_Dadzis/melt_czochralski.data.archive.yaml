@@ -1,5 +1,5 @@
 data:  
-  m_def: ../upload/raw/melt_czochralski_app-def_schema.archive.yaml#MeltCzochralski
+  m_def: ../upload/raw/melt_czochralski.schema.archive.yaml#MeltCzochralski
   users: #section name - not to be filled
     - role: Operator
       name: Josef Pal
@@ -142,22 +142,22 @@ data:
     multimeter: Keithley
     software: multilog vXXX
     sampling_time: 1000
-  synthesis: #section name - not to be filled
+  process: #section name - not to be filled
     experiment_identifier:
     experiment_location:
     start_time: 2021-03-04 10:15:00+01
     end_time: 2021-03-04 10:15:00+01
     synthesis_category: melt
     synthesis_method: Czochralski
-    synthesis_step: #section name - not to be filled
-      pre_process: #section name - not to be filled
-        timestamp: 2021-03-04 10:15:00+01
-      process: #section name - not to be filled
-        timestamp: 2021-03-04 10:30:00+01
-        crystal_diameter:
-        fan:
-        pump:
-        sensors:
-      post_process: #section name - not to be filled
-        timestamp: 2021-03-04 10:45:00+01
-        test_quantity:
+    # process_steps: #section name - not to be filled
+    #   pre_process: #section name - not to be filled
+    #     timestamp: 2021-03-04 10:15:00+01
+    #   process: #section name - not to be filled
+    #     timestamp: 2021-03-04 10:30:00+01
+    #     crystal_diameter:
+    #     fan:
+    #     pump:
+    #     sensors:
+    #   post_process: #section name - not to be filled
+    #     timestamp: 2021-03-04 10:45:00+01
+    #     test_quantity:
