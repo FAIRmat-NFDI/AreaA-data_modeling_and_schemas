@@ -23,6 +23,10 @@ Each folder contains four categories of files, the user can try to drag and drop
 * data revision: each user should collect and organize their own data structure as a guideline before starting to implement a schema. These helper files are placed in a subfolder.
 
 - - - -
+
+In the subfolders a dedicated README documents the file set present for each use case.
+
+- - - -
 ## The Structured Use Cases:
 
 category | experiment | folder name
@@ -31,7 +35,7 @@ Crystal Growth | Float Zone| FZ_IKZ
 Crystal Growth | Melt Czochralski | melt_czochralski_Dadzis
 Crystal Growth | Melt Czochralski | melt_czochralski_Dropka
  ? | Oxide Powder Preparation | oxide_powder_preparation
-Epitaxial Growth | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-STO) | movpe_STO
+Epitaxial Growth | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-SrTiO) | movpe_STO
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Gallium Oxide (MOVPE-Ga2O3) | movpe_Ga2O3
 Epitaxial Growth | another epitaxy experiment | epitaxy
 Macromolecular Self-assembly | Water-Air Interface Self-assembly | wai_synthesis
@@ -40,3 +44,14 @@ Database | Material_db from IKZ | material_db_IKZ
 Spin coating | Spin coating | spin_coating_aachen
 Transmission | Transmission measurements | transmission
 Various | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden
+
+- - - -
+
+## A Schema Prototype
+
+#### Main Sections
+
+* User
+* Instrument
+* Materials
+* Process

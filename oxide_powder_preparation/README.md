@@ -1,4 +1,4 @@
-# Float Zone experiment
+# Oxide Powder Preparation experiment
 
 
 list of files in folder:
@@ -21,6 +21,6 @@ list of files in folder:
 * ## data set 
   #### drag and drop these file, together to "schema" and "data" files into the nomad upload page
 
-  FZ.xlsx
+ files are in preparation
 
 * ## data revision subfolder
