@@ -1,0 +1,247 @@
+global:
+  date:
+    description: date  of the growth run
+    unit: dd.mm.yyyy
+    type: datetime
+    value: 23.08.2019
+  sample:
+    description: sample ID
+    unit: internal name
+    type: string
+    value: m82936
+  grower:
+    description: initials of grower(s)
+    unit: XY, ZY, ...
+    type: string[ ,string]
+    value: MB
+  experiments:
+    description: in-situ characterization during growth
+    unit: null
+    type: string[, string]
+    value: RHD, LR
+materials:
+  substrate:
+    substrate_material:
+      description: substrate material
+      unit: null
+      type: string
+      value: Al2O3
+    orientation:
+      description: crystallographic orientation of substrate surface
+      unit: null
+      type: int int int [int]
+      value: 0 0 0 1
+    shape:
+      description: shape of substrate
+      unit: null
+      type: string
+      value: 2
+  film:
+    description: film material
+    unit: null
+    type: string
+    value: SnO
+instrument:
+  holder:
+  description: substrate holder
+  unit: null
+  type: string
+  value: null
+
+process:
+  film_growth_step: # main step of process
+    film: # could also go to materials
+      description: film material
+      unit: null
+      type: string
+      value: SnO
+    O2 sccm:
+      description: O2 gas flow
+      unit: sccm
+      type: float
+      value: 0.18
+    gas2 sccm:
+      description: secondary gas type and flow
+      unit: gas, sccm
+      type: string, float
+      value: null
+    p_GCGP (mbar):
+      description: pressure in growth chamber during growth
+      unit: mbar
+      type: float
+      value: null
+    P_Plasma (W):
+      description: plasma power
+      unit: W
+      type: float
+      value: 300
+    T_Me (°C):
+      description: effusion cell temperature of open cell1
+      unit: \xB0C
+      type: float
+      value: 1158
+    BEP1 [mbar]:
+      description: open cell 1 flux (beam equivalent pressure)
+      unit: mbar
+      type: float
+      value: 1,13E-07
+    T_Me2 [°C]:
+      description: for ternaries: second open effusion cell temperatue
+      unit: \xB0C
+      type: float
+      value: null
+    BEP2 [mbar]:
+      description: second cell flux flux (BEP)
+      unit: mbar
+      type: float
+      value: null
+    T_Me3[°C]:
+      description: third open effusion cell temperature
+      unit: \xB0C
+      type: null
+      value: null
+    subTC (°C):
+      description: substrate temperture measure by thermocouple
+      unit: \xB0C
+      type: float
+      value: 400
+    Tsub_py (°C):
+      description: substrate temperature measured by pyrometer
+      unit: \xB0C
+      type: float
+      value: null
+    O off (°C):
+      description: subTC at which O-flux was shut down during colldown after growth
+      unit: null
+      type: float
+      value: null
+    rot_speed:
+      description: rotation speed of sample during growth
+      unit: arb. units from instrument (needs to be converted to rpm or Hz to be meaningful)
+      type: float
+      value: 1170
+    time(s):
+      description: time that the cell shutters were open to grow the layer
+      unit: s
+      type: float
+      value: 2400
+    rate(Angström/s):
+      description: growth rate determined by LR (thickness/time)
+      unit: A\xB0/s
+      type: float
+      value: null
+    thick.(nm) [LR]:  # could also go to final_sample
+      description: thickness of layer determined by in-situ laser reflectometry
+      unit: nm
+      type: float
+      value: ~ 208
+    Comments:
+      description: comments (important observations during growth or purpose of sample,
+        more details on growth)
+      unit: null
+      type: string
+      value: null
+  characterization_step: # rename  
+    thick_exsitu (nm):
+      description: layer thickness determined ex-situ # by XRD?
+      unit: nm
+      type: null
+      value: null
+    th.mtd._exsitu:
+      description: ex-situ method used to determine thickness #how?
+      unit: method
+      type: string
+      value: null
+  process_log:
+    timestamp:
+      description: index column in log files, # should be the same for all files!?
+    pressure_growth_chamber:
+      col_name: GC.IG.PG.MV
+      description:	pressure in growth chamber
+    pressure:load_lock:
+      data_column: LL.IG.PG.MV
+      description:	pressure in load lock (from loading/unloading samples)
+    pressure_middle_chamber:
+      data_column: MC.IG.PG.MV
+      description: pressure in middle chamber (between load lock and growth chamber)
+    Messages:
+      data_column: Messages
+      description: includes information on loading/moving samples within MBE (Location Tab ...), could be extended to contain user name, sample name, timestamps for begin/end of sample pre-treatment and sample growth
+    flux_gauge:
+      data_column: MIG.PG.MV
+      description: reading of flux gauge (for BEP measurements)
+    plasma_light:
+      data_column: O-Light	
+      description: plasma light sensor
+    O2_flow:
+      data_column: O.MF.MV
+      description: measured O2 flow (sccm)
+    T_substrate_pyrometer:
+      data_column: Pyro
+      description: pyrometer reading of substrte T (°C)
+    shutter_status:
+      data_column: Shutters
+      description: shutter open/close
+    Sn_cell_temperature:
+      data_column: Sn.PID.PV	
+      description: measured Sn cell temperature (°C)
+    Sn_cell_power:
+      data_column: Sn.PID.wOP
+      description: Sn cell power
+    T_substrate_thermocouple:
+      data_column: Sub.PID.MV
+      description: measured Substrate temperatue (thermocouple)
+    substrate_heating_power:
+      data_column: Sub.PID.wOP
+      description:	substrate heating power (%)
+
+
+handwritten_protocol: # what is documented / what not?
+  substrate: (c-plane Al2O3) # already in xlsx!?
+  on holder: (M4)  # already in xlsx!?
+  and shape: (2" diameter) # already in xlsx!?
+  
+  sample ID: # already in xlsx!?
+  
+  date: # already in xlsx!?
+
+  growth chamber background pressure: (before growth, before starting gas flow). It oscillated due to periodic temperature changes in the cryo shroud.
+
+  time: # start of process?
+
+  T_ramp_Sn_source: ramp Sn source to 1175°C # manual step? or also in log file?
+
+  BEP_Sn_measurement: results of BEP (flux) measurments of Sn at different cell temperatures # also in log?
+
+  T_ramp_substrate: ramp substrate to 700°C (thermocouple), pyrometer showed 691°C # also in log?
+
+  substrate_rotation: turned on substrate rotation to 1700 (arb units) # manual step? also in log?
+
+  substrate treatment: substrate treatment with O-plasma in GC prior to growth, 0.5 sccm O2, 300W plasma power, 30minutes (at 700°C) # manual step?
+
+  T_ramp_substrate: ramp substrate to 400°C thermocouple # see above
+
+  O2_flow_set: decrease O2 flow to 0.18sccm # manual step? also in log?
+
+  layer growth: O2 flow 0.18sccm and plasma power 300W, resulting growth chamber pressure 7.7e-7 mbar, substrate temperature 400C, Sn cell temperatuzre 1158°C, for 40min (Sn shutter open time) # summary of main growth step?
+
+  #timestamp: time stamp in the recorded 
+  timestamp_LR: laser reflectometry, 
+  timestamp_QMS: line-of-sight quadrupole mass spectrometer
+  timestamp_RHD: RHEED video at which growth started (Sn shutter was opened)
+
+  comment: observations during growth and first growth rate estimate from LR # see xlsx file?!
+
+  layer_growth_termination: layer growth was terminated by closing Sn shutter and O2-flow + turning off plasma. # manual step? also in log?
+
+  T_ramp_substrate: ramp substrate down (to 100°C) # see above
+
+  sample_unloaded: remove sample (from MBE into lab for analysis) # are there other options?
+
+  Sn_flux: Sn flux measured again after growth # also in log?
+
+  chamber_loading: load a 2" Si wafer on holder M3 # after treatment of chamber? Dummy Si wafer?
+
+  T_ramp_Sn_source: ramp Sn for standby to 300°C # see above
+
+  bakeout_step: bakeout loaded holder in loadlock for water desorption. # logged?

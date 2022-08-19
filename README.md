@@ -37,7 +37,7 @@ Crystal Growth | Melt Czochralski | melt_czochralski_Dropka
  ? | Oxide Powder Preparation | oxide_powder_preparation
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-SrTiO) | movpe_STO
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Gallium Oxide (MOVPE-Ga2O3) | movpe_Ga2O3
-Epitaxial Growth | another epitaxy experiment | epitaxy
+Epitaxial Growth | Molecular Beam Epitaxy (MBE) | mbe_epitaxy
 Macromolecular Self-assembly | Water-Air Interface Self-assembly | wai_synthesis
 Electric properties | Hall Measurements | hall
 Database | Material_db from IKZ | material_db_IKZ
