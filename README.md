@@ -24,7 +24,7 @@ Each folder contains four categories of files, the user can try to drag and drop
 
 - - - -
 
-In the subfolders a dedicated README documents the file set present for each use case.
+In the subfolders, a dedicated README documents the file set for each use case.
 
 - - - -
 ## The Structured Use Cases:
@@ -51,7 +51,33 @@ Various | Experiments permormed in Max Planck Institute for Chemical Physics of 
 
 #### Main Sections
 
-* User
-* Instrument
-* Materials
-* Process
+These section haven't got an a priori inheritance and the user can decide whether to place some of them inside others. As an example: a process can describe a sample history (synthesis and preparation) or also an instrument history (substitued components or consumables)
+
+* **User**
+
+* **Instrument**
+
+* **Materials**
+
+  a list of all the ID-labeled samples used or produced during experiment. This list should include:
+  
+  *  reagents for synthesis steps
+  *  products of synthesis steps
+  *  gas or liquid carriers that may be employed in a deposition
+  *  substrates where a deposition happens
+  *  even more kind of samples that the user may want to keep track of
+
+* **Process**
+  
+  a list of steps describing the key actions performed during sample preparation. 
+  
+  More generally, an history of what happened to the sample, or to the instrument, ecc
+
+  Several categories were envisioned:
+
+  *  pre-process (annealing, polishing, ...)
+  *  process (synthesis, sintering, evaporation, ...)
+  *  post-process (annealing, cutting, ...)
+  *  measurement (characterization after or during sample preparation)
+  *  storage
+  *  even more action shall be included here

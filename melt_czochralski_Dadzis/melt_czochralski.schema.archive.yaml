@@ -89,7 +89,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: second
-    MeltCzochralski:  # This is the name of the first section
+    MeltCzochralski:  
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
       base_section: nomad.datamodel.data.EntryData
