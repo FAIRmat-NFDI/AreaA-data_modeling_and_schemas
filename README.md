@@ -49,9 +49,9 @@ Various | Experiments permormed in Max Planck Institute for Chemical Physics of 
 
 ## A Schema Prototype
 
-#### Main Sections
+### Main Sections:
 
-These section haven't got an a priori inheritance and the user can decide whether to place some of them inside others. As an example: a process can describe a sample history (synthesis and preparation) or also an instrument history (substitued components or consumables)
+These section haven't got an <em>a priori</em> inheritance and the user can decide whether to place some of them inside others. As an example: a process can describe a sample history (synthesis and preparation) or also an instrument history (substitued components or consumables to keep track of instrument status)
 
 * **User**
 
