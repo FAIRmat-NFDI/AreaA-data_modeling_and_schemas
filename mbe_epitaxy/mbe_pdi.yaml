@@ -19,128 +19,148 @@ global:
     unit: null
     type: string[, string]
     value: RHD, LR
-materials:
-  substrate:
-    substrate_material:
+  substrate_material:
       description: substrate material
       unit: null
       type: string
       value: Al2O3
-    orientation:
-      description: crystallographic orientation of substrate surface
-      unit: null
-      type: int int int [int]
-      value: 0 0 0 1
-    shape:
-      description: shape of substrate
-      unit: null
-      type: string
-      value: 2
   film:
     description: film material
     unit: null
     type: string
     value: SnO
-instrument:
-  holder:
-  description: substrate holder
-  unit: null
-  type: string
-  value: null
+materials:
+  substrate: # description of a substrate, i.e., a single crystalline wafer used in e.g., epitaxy. May also be amorphous (e.g. glass)
+    - crystal: # such that substrate can be derived from crystal
+    - thickness: # typically given in mm
+    - shape: # e.g., 2" dia, 10mm x 10mm or piece, e.g., 1/4 2" or 3mm x 5mm
+    - polishing: # 1sp = single sided, 2sp = double sided
+    - rms roughness: # or other descriptors of the surface polishing
+    - vendor: # text
+    - wafer id: # text, e.g. batch and individual wafer or whatever the ID the vendor provides 
+    - epiready: yes/no #can the substrate be used as delivered
+    - pretreatment: #only for epiready_no, describe treatment of substrate done by grower prior to deposition	
+  layer: # 	howto allow for non-single crystallinity (texture/domain structure, polyxtalline, mixture of diff. xtal structures, microstructure such as dislocations)
+	- CRYSTAL: # possible multiple if layer consists of different domains, crystal structures ...
+	- thickness: # typically given in nm or ML (ML=monolayer, ML thickness depends on crystal structure and orientation)
+	- growth: # a reference to the growth/synthesis (?) this is essential
+  source_materials:
+    substance or mixture of substances
+  gases:
+    oxygen (precursor)
+    Ar (secondary gas)
 
+instrument: # instrument history needs to be stored somehow!
+  holder:
+    description: substrate holder
+    unit: null
+    type: string
+    value: null
+  gas_system:
+    description: 3 lines, 2 mfc, Ar, O2, O2
+  plasma_source:
+  effusion_cells:
+    description: holds materials that gets vaporized
+  geometry:
+    description: sources with respect to substrate, for each source
+  crucibles:
+    description: part of the effusion cell
 process:
-  film_growth_step: # main step of process
-    film: # could also go to materials
-      description: film material
-      unit: null
-      type: string
-      value: SnO
-    O2 sccm:
-      description: O2 gas flow
-      unit: sccm
-      type: float
-      value: 0.18
-    gas2 sccm:
-      description: secondary gas type and flow
-      unit: gas, sccm
-      type: string, float
-      value: null
-    p_GCGP (mbar):
-      description: pressure in growth chamber during growth
-      unit: mbar
-      type: float
-      value: null
-    P_Plasma (W):
-      description: plasma power
-      unit: W
-      type: float
-      value: 300
-    T_Me (°C):
-      description: effusion cell temperature of open cell1
-      unit: \xB0C
-      type: float
-      value: 1158
-    BEP1 [mbar]:
-      description: open cell 1 flux (beam equivalent pressure)
-      unit: mbar
-      type: float
-      value: 1,13E-07
-    T_Me2 [°C]:
-      description: for ternaries: second open effusion cell temperatue
-      unit: \xB0C
-      type: float
-      value: null
-    BEP2 [mbar]:
-      description: second cell flux flux (BEP)
-      unit: mbar
-      type: float
-      value: null
-    T_Me3[°C]:
-      description: third open effusion cell temperature
-      unit: \xB0C
-      type: null
-      value: null
-    subTC (°C):
-      description: substrate temperture measure by thermocouple
-      unit: \xB0C
-      type: float
-      value: 400
-    Tsub_py (°C):
-      description: substrate temperature measured by pyrometer
-      unit: \xB0C
-      type: float
-      value: null
-    O off (°C):
-      description: subTC at which O-flux was shut down during colldown after growth
-      unit: null
-      type: float
-      value: null
-    rot_speed:
-      description: rotation speed of sample during growth
-      unit: arb. units from instrument (needs to be converted to rpm or Hz to be meaningful)
-      type: float
-      value: 1170
-    time(s):
-      description: time that the cell shutters were open to grow the layer
-      unit: s
-      type: float
-      value: 2400
-    rate(Angström/s):
-      description: growth rate determined by LR (thickness/time)
-      unit: A\xB0/s
-      type: float
-      value: null
-    thick.(nm) [LR]:  # could also go to final_sample
-      description: thickness of layer determined by in-situ laser reflectometry
-      unit: nm
-      type: float
-      value: ~ 208
-    Comments:
-      description: comments (important observations during growth or purpose of sample,
-        more details on growth)
-      unit: null
-      type: string
-      value: null
+  process_steps:
+    flux_measurement:
+    substrate_plasma_cleaning:
+    film_growth_step: # main step of process
+      film: # could also go to materials
+        description: film material
+        unit: null
+        type: string
+        value: SnO
+      O2 sccm:
+        description: O2 gas flow
+        unit: sccm
+        type: float
+        value: 0.18
+      gas2 sccm:
+        description: secondary gas type and flow
+        unit: gas, sccm
+        type: string, float
+        value: null
+      p_GCGP (mbar):
+        description: pressure in growth chamber during growth
+        unit: mbar
+        type: float
+        value: null
+      P_Plasma (W):
+        description: plasma power
+        unit: W
+        type: float
+        value: 300
+      T_Me (°C):
+        description: effusion cell temperature of open cell1
+        unit: \xB0C
+        type: float
+        value: 1158
+      BEP1 [mbar]:
+        description: open cell 1 flux (beam equivalent pressure)
+        unit: mbar
+        type: float
+        value: 1,13E-07
+      T_Me2 [°C]:
+        description: for ternaries: second open effusion cell temperatue
+        unit: \xB0C
+        type: float
+        value: null
+      BEP2 [mbar]:
+        description: second cell flux flux (BEP)
+        unit: mbar
+        type: float
+        value: null
+      T_Me3[°C]:
+        description: third open effusion cell temperature
+        unit: \xB0C
+        type: null
+        value: null
+      subTC (°C):
+        description: substrate temperture measure by thermocouple
+        unit: \xB0C
+        type: float
+        value: 400
+      Tsub_py (°C):
+        description: substrate temperature measured by pyrometer
+        unit: \xB0C
+        type: float
+        value: null
+      O off (°C):
+        description: subTC at which O-flux was shut down during colldown after growth
+        unit: null
+        type: float
+        value: null
+      rot_speed:
+        description: rotation speed of sample during growth
+        unit: arb. units from instrument (needs to be converted to rpm or Hz to be meaningful)
+        type: float
+        value: 1170
+      time(s):
+        description: time that the cell shutters were open to grow the layer
+        unit: s
+        type: float
+        value: 2400
+      rate(Angström/s):
+        description: growth rate determined by LR (thickness/time)
+        unit: A\xB0/s
+        type: float
+        value: null
+      thick.(nm) [LR]:  # could also go to final_sample
+        description: thickness of layer determined by in-situ laser reflectometry
+        unit: nm
+        type: float
+        value: ~ 208
+      Comments:
+        description: comments (important observations during growth or purpose of sample,
+          more details on growth)
+        unit: null
+        type: string
+        value: null
   characterization_step: # rename  
     thick_exsitu (nm):
       description: layer thickness determined ex-situ # by XRD?
