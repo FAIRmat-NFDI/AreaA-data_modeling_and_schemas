@@ -35,7 +35,7 @@ materials:
 	  CRYSTAL: # possible multiple if layer consists of different domains, crystal structures ...
 	  thickness: # typically given in nm or ML (ML=monolayer, ML thickness depends on crystal structure and orientation)
 	  growth: # a reference to the growth/synthesis (?) this is essential
-  source_materials:
+  source_materials: # efussion cells
     substance or mixture of substances
     oxygen (precursor)
   carrier_gases:
@@ -60,7 +60,8 @@ instrument: # instrument history needs to be stored somehow!
   gas_system:
     description: 3 lines, 2 mfc, Ar, O2, O2
   plasma_source:
-    effusion_cells:
+
+  effusion_cells:
       description: holds materials that gets vaporized
     geometry:
       description: sources with respect to substrate, for each source
@@ -125,7 +126,7 @@ process:
     film_growth_step: # main step of process
       step_type: main-process
       timestamp:
-      comment:
+      comment: layer2
       parameter_not_in_log_1:
       parameter_not_in_log_2:
       reagents:
