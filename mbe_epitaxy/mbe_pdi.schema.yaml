@@ -68,19 +68,73 @@ instrument: # instrument history needs to be stored somehow!
       description: part of the effusion cell
 process:
   process_steps:
+    process_log: # process log from self-written MBE control software, logs all machine settings, no targeted values
+      timestamp:
+        description: index column in log files, # should be the same for all files!?
+      pressure_growth_chamber:
+        col_name: GC.IG.PG.MV
+        description:	pressure in growth chamber
+      pressure:load_lock:
+        data_column: LL.IG.PG.MV
+        description:	pressure in load lock (from loading/unloading samples)
+      pressure_middle_chamber:
+        data_column: MC.IG.PG.MV
+        description: pressure in middle chamber (between load lock and growth chamber)
+      Messages:
+        data_column: Messages
+        description: includes information on loading/moving samples within MBE (Location Tab ...), could be extended to contain user name, sample name, timestamps for begin/end of sample pre-treatment and sample growth
+      flux_gauge:
+        data_column: MIG.PG.MV
+        description: reading of flux gauge (for BEP measurements)
+      plasma_light:
+        data_column: O-Light	
+        description: plasma light sensor
+      O2_flow:
+        data_column: O.MF.MV
+        description: measured O2 flow (sccm)
+      T_substrate_pyrometer:
+        data_column: Pyro
+        description: pyrometer reading of substrte T (°C)
+      shutter_status:
+        data_column: Shutters
+        description: shutter open/close
+      Sn_cell_temperature:
+        data_column: Sn.PID.PV	
+        description: measured Sn cell temperature (°C)
+      Sn_cell_power:
+        data_column: Sn.PID.wOP
+        description: Sn cell power
+      T_substrate_thermocouple:
+        data_column: Sub.PID.MV
+        description: measured Substrate temperatue (thermocouple)
+      substrate_heating_power:
+        data_column: Sub.PID.wOP
+        description:	substrate heating power (%)
     flux_measurement:
       step_type: pre-process
+      timestamp:
+      comment:
+      parameter_not_in_log_1:
+      parameter_not_in_log_2:
     substrate_plasma_cleaning:
       step_type: pre-process
+      timestamp:
+      comment:
+      parameter_not_in_log_1:
+      parameter_not_in_log_2:
     film_growth_step: # main step of process
-      step_type: pre-process
+      step_type: main-process
+      timestamp:
+      comment:
+      parameter_not_in_log_1:
+      parameter_not_in_log_2:
       reagents:
         film: LINK
       O2 sccm:
         description: O2 gas flow
         unit: sccm
         type: float
-        value: 0.18
+        value: from digital protocol
       gas2 sccm:
         description: secondary gas type and flow
         unit: gas, sccm
@@ -162,61 +216,27 @@ process:
         unit: null
         type: string
         value: null
-    characterization: # rename  
+    
+    thickness_exsitu: # rename
+      timestamp:  
       process_type: measurement
       thick_exsitu (nm):
         description: layer thickness determined ex-situ # by XRD?
         unit: nm
         type: null
         value: null
+    th.mtd._exsitu: # rename
+      timestamp:  
+      process_type: measurement
       th.mtd._exsitu:
         description: ex-situ method used to determine thickness #how?
         unit: method
         type: string
         value: null
-    process_log:
+    RHEED_measurement:
       timestamp:
-        description: index column in log files, # should be the same for all files!?
-      pressure_growth_chamber:
-        col_name: GC.IG.PG.MV
-        description:	pressure in growth chamber
-      pressure:load_lock:
-        data_column: LL.IG.PG.MV
-        description:	pressure in load lock (from loading/unloading samples)
-      pressure_middle_chamber:
-        data_column: MC.IG.PG.MV
-        description: pressure in middle chamber (between load lock and growth chamber)
-      Messages:
-        data_column: Messages
-        description: includes information on loading/moving samples within MBE (Location Tab ...), could be extended to contain user name, sample name, timestamps for begin/end of sample pre-treatment and sample growth
-      flux_gauge:
-        data_column: MIG.PG.MV
-        description: reading of flux gauge (for BEP measurements)
-      plasma_light:
-        data_column: O-Light	
-        description: plasma light sensor
-      O2_flow:
-        data_column: O.MF.MV
-        description: measured O2 flow (sccm)
-      T_substrate_pyrometer:
-        data_column: Pyro
-        description: pyrometer reading of substrte T (°C)
-      shutter_status:
-        data_column: Shutters
-        description: shutter open/close
-      Sn_cell_temperature:
-        data_column: Sn.PID.PV	
-        description: measured Sn cell temperature (°C)
-      Sn_cell_power:
-        data_column: Sn.PID.wOP
-        description: Sn cell power
-      T_substrate_thermocouple:
-        data_column: Sub.PID.MV
-        description: measured Substrate temperatue (thermocouple)
-      substrate_heating_power:
-        data_column: Sub.PID.wOP
-        description:	substrate heating power (%)
-
+      comment:
+      ...:
 
 handwritten_protocol: # what is documented / what not?
   substrate: (c-plane Al2O3) # already in xlsx!?
