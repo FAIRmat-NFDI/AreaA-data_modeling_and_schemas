@@ -11,6 +11,8 @@ The schemes here implemented are compliant to the NOMAD data structure: the hier
 
 The users can follow the info in this repo to build their own schema for their experiment :thumbsup:.
 
+Some further explanation on NOMAD Metainfo and Archive: https://nomad-lab.eu/prod/v1/staging/docs/archive.html#custom-metainfo-schemas-eg-for-elns
+
 Each folder contains four categories of files, the user can try to drag and drop the first three categories in the upload page in nomad ([https://nomad-lab.eu/](https://nomad-lab.eu/)), they will be automatically parsed to create an "Entry" containing the experimental data in a structured fashion:
 
 * schema file: it defines the structure that will host your data.
@@ -38,7 +40,7 @@ Crystal Growth | Melt Czochralski | melt_czochralski_Dropka
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-SrTiO) | movpe_STO
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Gallium Oxide (MOVPE-Ga2O3) | movpe_Ga2O3
 Epitaxial Growth | Molecular Beam Epitaxy (MBE) | mbe_epitaxy
-Macromolecular Self-assembly | Water-Air Interface Self-assembly | wai_synthesis
+Sol-Gel Synthesis | Aerogels | wai_synthesis
 Electric properties | Hall Measurements | hall
 Database | Material_db from IKZ | material_db_IKZ
 Spin coating | Spin coating | spin_coating_aachen
