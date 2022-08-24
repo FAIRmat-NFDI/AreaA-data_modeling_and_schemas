@@ -44,13 +44,30 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        supplier:
+        vendor:
           type: str
           description: Fabricating company
           m_annotations:
             eln:
               component: StringEditQuantity
         purity:
+          type:
+            type_kind: Enum
+            type_data:
+              - ACS grade
+              - Reagent grade,
+              - USP grade
+              - NF grade
+              - BP grade
+              - JP grade
+              - Laboratory grade
+              - Purified grade 
+              - Technical grade
+          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+
           type: str
           description: Purity of the Chemical
           m_annotations:
@@ -68,14 +85,21 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-    Substrate:
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+    Sample:
       base_section: nomad.datamodel.data.EntryData
       quantities:
-        id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         comment:
           type: str
           m_annotations:
@@ -93,7 +117,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        supplier:
+        vendor:
           type: str
           description: Fabricating company
           m_annotations:
@@ -105,6 +129,28 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
+        polishing:
+          type:
+            type_kind: Enum
+            type_data:
+              - 1sp
+              - 2sp
+          description: 1sp = single sided, 2sp = double sided
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        rms_roughness:
+          type: np.float64
+          description: other descriptors of the surface polishing
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        epiready:
+          type: bool
+          description: can the substrate be used as delivered
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
       sub_sections:
         SampleID:
           section:
@@ -230,6 +276,18 @@ definitions:
           #m_annotations:
           #  eln:
           section: Substance
+        sample_history:
+          repeats: true
+          section:
+            m_annotations:
+              eln:
+            quantities:
+              test:
+                type: str
+                description: test
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
     MBE_PDI:
       m_annotations:
         eln:
@@ -317,58 +375,53 @@ definitions:
             sub_sections:
               substrate:
                 repeats: true
-                section: Substrate
-#   substrate: # description of a substrate, i.e., a single crystalline wafer used in e.g., epitaxy. May also be amorphous (e.g. glass)
-#     crystal: # such that substrate can be derived from crystal
-#     thickness: # typically given in mm
-#     shape: # e.g., 2" dia, 10mm x 10mm or piece, e.g., 1/4 2" or 3mm x 5mm
-#     polishing: # 1sp = single sided, 2sp = double sided
-#     rms roughness: # or other descriptors of the surface polishing
-#     vendor: # text
-#     wafer id: # text, e.g. batch and individual wafer or whatever the ID the vendor provides 
-#     epiready: yes/no #can the substrate be used as delivered
-#     pretreatment: LINK to process step # only for epiready_no, describe treatment of substrate done by grower prior to deposition
-#     composition:
-#       substrate_material:
-#           description: substrate material
-#           unit: null
-#           type: string
-#           value: Al2O3
-#   layer: # howto allow for non-single crystallinity (texture/domain structure, polyxtalline, mixture of diff. xtal structures, microstructure such as dislocations)
-# 	  CRYSTAL: # possible multiple if layer consists of different domains, crystal structures ...
-# 	  thickness: # typically given in nm or ML (ML=monolayer, ML thickness depends on crystal structure and orientation)
-# 	  growth: # a reference to the growth/synthesis (?) this is essential
-#   source_materials:
-#     substance or mixture of substances
-#     oxygen (precursor)
-#   carrier_gases:
-#     Ar (secondary gas)
-#   film:
-#     description: film material
-#     unit: null
-#     type: string
-#     value: SnO
-#   sample:
-#     sample_ID:
-#     composition:
-#       substrate:
-#       layer_1:
-#       layer_2:
-# instrument: # instrument history needs to be stored somehow!
-#   holder:
-#     description: substrate holder
-#     unit: null
-#     type: string
-#     value: null
-#   gas_system:
-#     description: 3 lines, 2 mfc, Ar, O2, O2
-#   plasma_source:
-#     effusion_cells:
-#       description: holds materials that gets vaporized
-#     geometry:
-#       description: sources with respect to substrate, for each source
-#     crucibles:
-#       description: part of the effusion cell
+                section: Sample
+              layer:
+                repeats: true
+                section: Sample
+              final_sample:
+                repeats: true
+                section: Sample
+        instrument:
+          section:
+            quantities:
+              holder:
+                type: str
+                description: substrate holder
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              gas_system:
+                type: str
+                description: doc
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              plasma_source:
+                type: str
+                description: doc
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              plasma_source_geometry:
+                type: str
+                description: doc
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              effusion_cells:
+                type: str
+                description: doc
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              crucibles:
+                type: str
+                description: doc
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                
 # process:
 #   process_steps:
 #     flux_measurement:

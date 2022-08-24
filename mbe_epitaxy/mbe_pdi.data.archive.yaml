@@ -1,7 +1,9 @@
 data:  
   m_def: ../upload/raw/mbe_pdi.schema.archive.yaml#MBE_PDI
-  data_file: GC.IG.PG.MV.txt
+  data_file: GC.IG.PG.MV.csv
   experiment_method: Molecular Beam Epitaxy
-  materials:
-    substrate:
-      - thickness: 1
+  # materials:
+  #   substrate:
+  #     - geometry:
+  #         parallelepiped:
+  #           length: 2
