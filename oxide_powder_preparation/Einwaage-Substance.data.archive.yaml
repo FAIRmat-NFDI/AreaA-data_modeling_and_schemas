@@ -1,0 +1,14 @@
+data:
+  m_def: ../upload/raw/Einwaage-Substance.schema.archive.yaml#Powder
+    name: component_1 #component_1:
+    SampleID:
+      institute: IKZ
+      sample_owner: ganschow
+      creation_datetime: 2022-12-31
+      sample_short_name: mypowder
+    formula: Li2CO3 #formula
+    chemicals: "../upload/raw/Zinc_Selenide.archive.yaml#data"
+    target_mass: 67.254
+    actual_mass: null
+    notes: null
+
