@@ -1,0 +1,18 @@
+data:
+  m_def: ../upload/raw/Einwaage-Substance.schema.archive.yaml#Substance
+  SampleID:
+    institute: IKZ
+    sample_owner: ganschow
+    creation_datetime: 2022-12-31
+    sample_short_name: mypowder
+  name: component_1
+  empirical_formula: Li2CO3 
+  iupac_name: Lithium carbonate
+  state_or_phase: powder
+  supplier: Aldrich
+  purity: Technical grade
+  buying_date: 2019-12-31 10:20+01
+  opening_date: 2019-12-31 10:20+01
+  cas_number: 333
+  sku_number: 444
+  comment: this chemical is a blueprint for building your own Substance database

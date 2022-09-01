@@ -67,12 +67,6 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-
-          type: str
-          description: Purity of the Chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         buying_date:
           type: Datetime
           description: Date of the Invoice Mail

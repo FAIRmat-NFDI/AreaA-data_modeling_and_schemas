@@ -1,5 +1,5 @@
 definitions:
-  name: 'Substance entry'
+  name: 'Substance entry 7'
   sections:
     Substance:
       base_section: nomad.datamodel.data.EntryData
@@ -52,11 +52,22 @@ definitions:
             eln:
               component: StringEditQuantity
         purity:
-          type: str
-          description: Purity of the Chemical
+          type:
+            type_kind: Enum
+            type_data:
+              - ACS grade
+              - Reagent grade,
+              - USP grade
+              - NF grade
+              - BP grade
+              - JP grade
+              - Laboratory grade
+              - Purified grade 
+              - Technical grade
+          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: EnumEditQuantity
         buying_date:
           type: Datetime
           description: Date of the Invoice Mail
