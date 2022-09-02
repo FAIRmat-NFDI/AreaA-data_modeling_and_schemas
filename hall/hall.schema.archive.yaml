@@ -1,14 +1,21 @@
 definitions:
-  name: 'Electrony Lab Notebook for Hall'
+  name: 'Electrony Lab Notebok for Hall'
   sections:  # Schemas consist of section definitions
     Substance:
       base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
       quantities:
-        id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         comment:
           type: str
           m_annotations:
@@ -17,6 +24,12 @@ definitions:
         name:
           type: str
           description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          description: chemical formula
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -39,11 +52,22 @@ definitions:
             eln:
               component: StringEditQuantity
         purity:
-          type: str
-          description: Purity of the Chemical
+          type:
+            type_kind: Enum
+            type_data:
+              - ACS grade
+              - Reagent grade,
+              - USP grade
+              - NF grade
+              - BP grade
+              - JP grade
+              - Laboratory grade
+              - Purified grade 
+              - Technical grade
+          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: EnumEditQuantity
         buying_date:
           type: Datetime
           description: Date of the Invoice Mail
@@ -256,6 +280,9 @@ definitions:
                 component: EnumEditQuantity
     Hall_measurement:
       base_section: nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          dict()
       sub_sections:
         global:
           section:

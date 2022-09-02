@@ -118,8 +118,10 @@ definitions:
           type: str
           description: pdf files containing certificate and other documentation
           m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
-              component: RichTextEditQuantity
+              component: FileEditQuantity  # A form field that allows to drop and select files.
     Process:
       #m_annotations:
       #  eln:
@@ -291,6 +293,12 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        components_test:
+          type: Substance
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
       sub_sections:
         SampleID:
           section:
