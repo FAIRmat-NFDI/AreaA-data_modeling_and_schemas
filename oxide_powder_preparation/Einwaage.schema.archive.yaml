@@ -52,11 +52,26 @@ definitions:
             eln:
               component: StringEditQuantity
         purity:
-          type: str
-          description: Purity of the Chemical
+          type:
+            type_kind: Enum
+            type_data:
+              - Puratronic 99.995%
+              - Puratronic 99.999%
+              - REacton 99.995%
+              - REacton 99.999%
+              - ACS grade
+              - Reagent grade,
+              - USP grade
+              - NF grade
+              - BP grade
+              - JP grade
+              - Laboratory grade
+              - Purified grade 
+              - Technical grade
+          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: EnumEditQuantity
         buying_date:
           type: Datetime
           description: Date of the Invoice Mail
@@ -69,6 +84,12 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
+        batch_number:
+          type: str
+          description: batch number of chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         cas_number:
           type: str
           description: CAS number
@@ -81,6 +102,24 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
     Process:
       #m_annotations:
       #  eln:
@@ -193,17 +232,17 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: minute
-              # temperature_increase_rate:
-              #   type: np.float64
-              #   unit: celsius/hour
-              #   description: temperature increase rate
-              #   m_annotations:
-              #     # tabular:
-              #     #   name: Processdata/Timestamp
-              #     #   unit: celsius / hour
-              #     eln:
-              #       component: NumberEditQuantity
-              #       defaultDisplayUnit: celsius / hour
+              temperature_increase_rate:
+                type: np.float64
+                unit: celsius/hour
+                description: temperature increase rate
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: celsius / hour
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: celsius / hour
               temperature:
                 type: np.float64
                 unit: celsius
@@ -269,19 +308,8 @@ definitions:
           #m_annotations:
           #  eln:
           section:
+            base_section: Substance
             quantities:
-              name:
-                type: str
-                description: The name of the chemical that is typically used in literature
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              chemicals:
-                type: Substance
-                # shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
               target_mass:
                 type: np.float64
                 unit: gram
@@ -298,12 +326,6 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: gram
-              notes:
-                type: str
-                description: notes
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
             sub_sections:
               SampleID:
                 section:
@@ -316,51 +338,51 @@ definitions:
                       # hide: ['children', 'parents']
                       # hide: ['children', 'parents', institute]
                       hide: []
-              process: 
-                #m_annotations:
-                #  eln:
-                section:
-                  base_section: Process 
-                  quantities:
-                    net_mass_before:
-                      type: np.float64
-                      unit: gram
-                      description: net mass before the process step
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: gram
-                    crucible_model:
-                      type: str
-                      description: The name of the chemical that is typically used in literature
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    crucible_mass:
-                      type: np.float64
-                      unit: gram
-                      description: crucible mass
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: gram
-                    brutto_mass_before:
-                      type: np.float64
-                      unit: gram
-                      description: brutto mass before the process step
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: gram
-                    atmosphere:
-                      type: str
-                      description: which atmosphere is choosen for th experiment
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    oven:
-                      type: str
-                      description: oven used in the experiment
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
+        process: 
+          #m_annotations:
+          #  eln:
+          section:
+            base_section: Process 
+            quantities:
+              net_mass_before:
+                type: np.float64
+                unit: gram
+                description: net mass before the process step
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: gram
+              crucible_model:
+                type: str
+                description: The name of the chemical that is typically used in literature
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              crucible_mass:
+                type: np.float64
+                unit: gram
+                description: crucible mass
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: gram
+              brutto_mass_before:
+                type: np.float64
+                unit: gram
+                description: brutto mass before the process step
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: gram
+              atmosphere:
+                type: str
+                description: which atmosphere is choosen for th experiment
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              oven:
+                type: str
+                description: oven used in the experiment
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity

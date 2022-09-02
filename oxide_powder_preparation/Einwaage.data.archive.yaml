@@ -15,7 +15,7 @@ data:
     creation_datetime: 2022-12-31
     sample_short_name: mypowder
   components:
-    - name: component_1 #component_1:
+    - name: component_1 
       SampleID:
         institute: IKZ
         sample_owner: ganschow
@@ -26,7 +26,7 @@ data:
       target_mass: 67.254
       actual_mass: null
       notes: null
-    - name: component_2  #component_2:
+    - name: component_2  
       formula: Al2O3 #formula
       target_mass: 92.803
       actual_mass: null
