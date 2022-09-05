@@ -1,6 +1,6 @@
 definitions:
   name: 'Electrony Lab Notebok for Hall'
-  sections:  # Schemas consist of section definitions
+  sections:  # Schemes consist of section definitions
     Substance:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
@@ -279,7 +279,15 @@ definitions:
               eln:
                 component: EnumEditQuantity
     Hall_measurement:
-      base_section: nomad.datamodel.data.EntryData
+      base_sections:
+        - "nomad.datamodel.metainfo.eln.NexusParser"
+        - "nomad.datamodel.data.EntryData"
+      m_annotations:
+        template:
+          reader: hall
+          nxdl: NXroot.nxdl
+        eln:
+          hide: []
       m_annotations:
         eln:
           dict()
