@@ -1,0 +1,170 @@
+definitions:
+  name: 'Sensor List'
+  sections:
+    Sensor:
+      quantities:
+        model:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: "name for the sensor"
+        short_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: "Short name of sensor used e.g. on monitor display program"
+        attached_to:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: your port or channel where sensor is attached
+        measured_property:
+          type:
+            type_kind: Enum
+            type_data:
+              - temperature
+              - pH
+              - magnetic_field
+              - electric_field
+              - conductivity
+              - resistance
+              - voltage
+              - pressure
+              - flow
+              - stress
+              - strain
+              - shear
+              - surface_pressure
+          description: "name for measured signal"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        type:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: |
+            The type of hardware used for the measurement.
+            Examples (suggestions but not restrictions):
+            Temperature: J | K | T | E | R | S | Pt100 | Rh/Fe
+            pH: Hg/Hg2Cl2 | Ag/AgCl | ISFET
+            Ion selective electrode: specify species; e.g. Ca2+
+            Magnetic field: Hall
+            Surface pressure: wilhelmy plate
+        # KEEP LISTING HERE ALL THE QUANTITIES PRESENT IN ALL THE SENSORS
+    Sensors:
+      base_sections:
+      - nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .csv
+          m_annotations:
+            tabular_parser:
+              sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+      sub_sections:
+        temperature_sensor_1:
+          section:
+            base_section: Sensor  # INHERITING FROM SENSOR BUT YOU CAN EXTEND IT WITH OTHER SENSOR-SPECIFIC QUANTITIES (like these tabular parsed coulmns)
+            quantities:
+              value:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: my_header_1
+                description: |
+                  For each point in the scan space, either the nominal
+                  setpoint of an independently scanned controller
+                  or a representative average value of a measurement sensor is registered.
+              value_log:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: my_header_2
+                description: Time history of sensor readings. May differ from setpoint
+              value_timestamp:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: my_header_3
+                description: |
+                  Timestamp for when the values provided in the value field were registered.
+                  Individual readings can be stored with their timestamps under value_log.
+                  This is to timestamp the nominal setpoint or
+                  average reading values listed above in the value field.
+        pyrosensor_2:
+          section:
+            base_section: Sensor # INHERITING FROM SENSOR BUT YOU CAN EXTEND IT WITH OTHER SENSOR-SPECIFIC QUANTITIES (like these tabular parsed coulmns and t90, emission, etc)
+            quantities:
+              emission:
+                type: int
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+                    maxValue: 100
+                description: "Emission percentage value set in pyrometer"
+              transmission:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+                    maxValue: 100
+                description: "Transmission percentage value set in pyrometer"
+              t90:
+                type: np.float64
+                description: "FILL THE DESCRIPTION"
+                unit: seconds
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: second
+              value:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: my_header_4
+                description: |
+                  For each point in the scan space, either the nominal
+                  setpoint of an independently scanned controller
+                  or a representative average value of a measurement sensor is registered.
+              value_log:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: my_header_5
+                description: Time history of sensor readings. May differ from setpoint
+              value_timestamp:
+                type: np.float64
+                shape: ['*']
+                m_annotations:
+                  tabular:
+                    name: my_header_6
+                description: |
+                  Timestamp for when the values provided in the value field were registered.
+                  Individual readings can be stored with their timestamps under value_log.
+                  This is to timestamp the nominal setpoint or
+                  average reading values listed above in the value field.
+        # KEEP LISTING HERE ALL THE SENSORS YOU HAVE

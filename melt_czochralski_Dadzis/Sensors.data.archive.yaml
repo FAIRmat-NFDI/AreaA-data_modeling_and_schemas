@@ -1,0 +1,23 @@
+data:
+  m_def: "../upload/raw/Sensors.schema.archive.yaml#definitions/section_definitions/Sensors"
+  data_file: test.csv
+  temperature_sensor_1:
+    model: your_field_here
+    name: your_field_here
+    short_name: your_field_here
+    attached_to: your_field_here
+    measured_property: your_field_here
+    type: your_field_here
+    emission: your_field_here
+    transmission: your_field_here
+    t90: your_field_here
+  pyrosensor_2:
+    model: your_field_here
+    name: your_field_here
+    short_name: your_field_here
+    attached_to: your_field_here
+    measured_property: your_field_here
+    type: your_field_here
+    emission: your_field_here
+    transmission: your_field_here
+    t90: your_field_here
