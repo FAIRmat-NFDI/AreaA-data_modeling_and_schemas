@@ -18,6 +18,6 @@ data:
     attached_to: your_field_here
     measured_property: your_field_here
     type: your_field_here
-    emission: your_field_here
+    emission: 1
     transmission: your_field_here
     t90: your_field_here
