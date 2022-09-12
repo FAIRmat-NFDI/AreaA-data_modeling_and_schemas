@@ -55,6 +55,10 @@ definitions:
           type:
             type_kind: Enum
             type_data:
+              - Puratronic 99.995%
+              - Puratronic 99.999%
+              - REacton 99.995%
+              - REacton 99.999%
               - ACS grade
               - Reagent grade,
               - USP grade
@@ -80,6 +84,12 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
+        batch_number:
+          type: str
+          description: batch number of chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         cas_number:
           type: str
           description: CAS number
@@ -92,6 +102,26 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
     Sample:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:

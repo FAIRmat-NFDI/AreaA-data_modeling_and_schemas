@@ -3,20 +3,33 @@ definitions:
   sections: 
     Substance:
       base_section: nomad.datamodel.data.EntryData
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
       quantities:
-        id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         comment:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
-        chemical_name:
+        name:
           type: str
           description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          description: chemical formula
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -26,25 +39,13 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        phase:
+        state_or_phase:
           type: str
           description: Phase of the chemical in the bottle
           m_annotations:
             eln:
               component: StringEditQuantity
-        vendor:
+        supplier:
           type: str
           description: Fabricating company
           m_annotations:
@@ -54,6 +55,10 @@ definitions:
           type:
             type_kind: Enum
             type_data:
+              - Puratronic 99.995%
+              - Puratronic 99.999%
+              - REacton 99.995%
+              - REacton 99.999%
               - ACS grade
               - Reagent grade,
               - USP grade
@@ -79,18 +84,44 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
+        batch_number:
+          type: str
+          description: batch number of chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        cas_number:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sku_number:
+          type: str
+          description: sku number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
     Sample:
       base_section: nomad.datamodel.data.EntryData
       quantities:
