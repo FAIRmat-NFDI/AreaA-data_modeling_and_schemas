@@ -43,10 +43,10 @@ Epitaxial Growth | Molecular Beam Epitaxy (MBE) | mbe_epitaxy
 Sol-Gel Synthesis | Aerogels | wai_synthesis
 Electric properties | Hall Measurements | hall
 Database | Material_db from IKZ | material_db_IKZ
-Spin-coating | Surface Coating | surface_coating_methods
-Dip-coating | Surface Coating | surface_coating_methods
-Sputtering | Surface Coating | surface_coating_methods
-Evaporation | Surface Coating | surface_coating_methods
+Surface Coating | Spin-coating | surface_coating_methods
+Surface Coating | Dip-coating | surface_coating_methods
+Surface Coating | Sputtering | surface_coating_methods
+Surface Coating | Evaporation | surface_coating_methods
 Transmission | Transmission measurements | transmission
 Various | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden
 
