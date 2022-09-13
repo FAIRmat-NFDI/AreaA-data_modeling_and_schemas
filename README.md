@@ -36,14 +36,17 @@ category | experiment | folder name
 Crystal Growth | Float Zone| FZ_IKZ
 Crystal Growth | Melt Czochralski | melt_czochralski_Dadzis
 Crystal Growth | Melt Czochralski | melt_czochralski_Dropka
- ? | Oxide Powder Preparation | oxide_powder_preparation
+Precursor Preparation | Oxide Powder | oxide_powder_preparation
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-SrTiO) | movpe_STO
 Epitaxial Growth | Metalorganic vapour-phase epitaxy Gallium Oxide (MOVPE-Ga2O3) | movpe_Ga2O3
 Epitaxial Growth | Molecular Beam Epitaxy (MBE) | mbe_epitaxy
 Sol-Gel Synthesis | Aerogels | wai_synthesis
 Electric properties | Hall Measurements | hall
 Database | Material_db from IKZ | material_db_IKZ
-Spin coating | Spin coating | spin_coating_aachen
+Spin-coating | Surface Coating | surface_coating_methods
+Dip-coating | Surface Coating | surface_coating_methods
+Sputtering | Surface Coating | surface_coating_methods
+Evaporation | Surface Coating | surface_coating_methods
 Transmission | Transmission measurements | transmission
 Various | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden
 

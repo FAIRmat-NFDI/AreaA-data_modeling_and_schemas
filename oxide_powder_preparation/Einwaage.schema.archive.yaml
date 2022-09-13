@@ -1,7 +1,228 @@
 definitions:
   name: 'Set your name here'
   sections:
+    Process:
+      quantities:
+        comment:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: temperature 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
+        method:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        experiment_identifier:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Identifier
+            eln:
+              component: StringEditQuantity
+        experiment_location:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Location
+            eln:
+              component: StringEditQuantity
+        start_time:
+          type: Datetime
+          m_annotations:
+            # tabular:
+            #   name: Overview/Start Time
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          type: Datetime
+          m_annotations:
+            # tabular:
+            #   name: Overview/End Time
+            eln:
+              component: DateTimeEditQuantity
+        process_category:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Synthesis Category
+            eln:
+              component: StringEditQuantity
+        process_method:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Synthesis Method
+            eln:
+              component: StringEditQuantity
+        net_mass_before:
+          type: np.float64
+          unit: gram
+          description: net mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_mass:
+          type: np.float64
+          unit: gram
+          description: crucible mass
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        brutto_mass_before:
+          type: np.float64
+          unit: gram
+          description: brutto mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        atmosphere:
+          type: str
+          description: which atmosphere is choosen for th experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        oven:
+          type: str
+          description: oven used in the experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        process_steps:
+          repeats: true
+          #m_annotations:
+          #  eln:
+          section:
+            m_annotations:
+              eln:
+            # sub_sections:
+            #   reagents:
+            #     repeats: true
+            #     # m_annotations:
+            #     #   eln:
+            #     section: Sample
+            #   products:
+            #     repeats: true
+            #     # m_annotations:
+            #     #   eln:
+            #     section: Sample
+            quantities:
+              process_type:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Pre-process
+                    - Process
+                    - Post-process
+                    - Measurement
+                    - Storage
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
+              name: 
+                type: str
+                description: what this step consists of
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Reason
+                  eln:
+                    component: StringEditQuantity
+              step_number:
+                type: int
+                description: sequential number of the step on going
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Step
+                  eln:
+                    component: NumberEditQuantity
+              step_comment:
+                type: str
+                description: more verbose description of the step
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Description
+                  eln:
+                    component: StringEditQuantity 
+              step_duration:
+                type: np.float64
+                unit: minute
+                description: Past time since process start
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Duration
+                  eln:
+                    component: NumberEditQuantity #DateTimeEditQuantity
+                    defaultDisplayUnit: minute
+              elapsed_time:
+                type: np.float64
+                unit: minute
+                description: Duration of each step
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: minute
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: minute
+              timestamp:
+                type: Datetime
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: DateTimeEditQuantity
+              temperature_increase_rate:
+                type: np.float64
+                unit: celsius/hour
+                description: temperature increase rate
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: celsius / hour
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: celsius / hour
+              temperature:
+                type: np.float64
+                unit: celsius
+                description: Duration of each step
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: celsius
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: celsius
     Substance:
+      m_annotations:
+        eln:
       base_section: nomad.datamodel.data.EntryData
       sub_sections:
         SampleID:
@@ -40,11 +261,15 @@ definitions:
             eln:
               component: StringEditQuantity
         state_or_phase:
-          type: str
-          description: Phase of the chemical in the bottle
+          type:
+            type_kind: Enum
+            type_data:
+              - cristalline solid
+              - microcristalline solid
+              - powder
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: RadioEnumEditQuantity
         supplier:
           type: str
           description: Fabricating company
@@ -119,186 +344,11 @@ definitions:
           description: pdf files containing certificate and other documentation
           m_annotations:
             browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+              adaptor: RawFileAdaptor  
             eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-    Process:
-      #m_annotations:
-      #  eln:
-      quantities:
-        experiment_identifier:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Identifier
-            eln:
-              component: StringEditQuantity
-        experiment_location:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Location
-            eln:
-              component: StringEditQuantity
-        start_time:
-          type: Datetime
-          m_annotations:
-            # tabular:
-            #   name: Overview/Start Time
-            eln:
-              component: DateTimeEditQuantity
-        end_time:
-          type: Datetime
-          m_annotations:
-            # tabular:
-            #   name: Overview/End Time
-            eln:
-              component: DateTimeEditQuantity
-        process_category:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Category
-            eln:
-              component: StringEditQuantity
-        process_method:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Method
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        process_steps:
-          repeats: true
-          #m_annotations:
-          #  eln:
-          section:
-            m_annotations:
-              eln:
-            quantities:
-              process_type:
-                type:
-                  type_kind: Enum
-                  type_data:
-                    - Pre-process
-                    - Process
-                    - Post-process
-                    - Measurement
-                    - Storage
-                m_annotations:
-                  eln:
-                    component: EnumEditQuantity
-              name: 
-                type: str
-                description: what this step consists of
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Reason
-                  eln:
-                    component: StringEditQuantity
-              step_number:
-                type: int
-                description: sequential number of the step on going
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Step
-                  eln:
-                    component: NumberEditQuantity
-              step_comment:
-                type: str
-                description: more verbose description of the step
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Description
-                  eln:
-                    component: StringEditQuantity 
-              step_duration:
-                type: np.float64
-                unit: minute
-                description: Past time since process start
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Duration
-                  eln:
-                    component: NumberEditQuantity #DateTimeEditQuantity
-                    defaultDisplayUnit: minute
-              elapsed_time:
-                type: np.float64
-                unit: minute
-                description: Duration of each step
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: minute
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: minute
-              temperature_increase_rate:
-                type: np.float64
-                unit: celsius/hour
-                description: temperature increase rate
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: celsius / hour
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius / hour
-              temperature:
-                type: np.float64
-                unit: celsius
-                description: Duration of each step
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: celsius
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius
-    Powder:
+              component: FileEditQuantity
+    Sample:
       base_section: nomad.datamodel.data.EntryData
-      quantities:
-        creation_date:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        # created_by:
-        #   type: str #User
-        #   #shape: ['*']
-        #   description: my descr
-        #   m_annotations:
-        #     eln:
-        #       component: UserEditQuantity
-        # created_by_test:
-        #   type: str #Author
-        #   #shape: ['*']
-        #   description: my descr
-        #   m_annotations:
-        #     eln:
-        #       component: AuthorEditQuantity
-        executed_by:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        execution_date:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        final_sample:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        components_test:
-          type: Substance
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
       sub_sections:
         SampleID:
           section:
@@ -311,86 +361,236 @@ definitions:
                 # hide: ['children', 'parents']
                 # hide: ['children', 'parents', institute]
                 hide: []
-        components: 
-          repeats: true
-          #m_annotations:
-          #  eln:
+        geometry:
           section:
-            base_section: Substance
-            quantities:
-              target_mass:
-                type: np.float64
-                unit: gram
-                description: Mass of the precursor
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: gram
-              actual_mass:
-                type: np.float64
-                unit: gram
-                description: Mass of the precursor
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: gram
+            m_annotations:
+              eln:
+                dict()
             sub_sections:
-              SampleID:
+              parallelepiped:
                 section:
-                  base_sections:
-                    - 'nomad.datamodel.metainfo.eln.SampleID'
-                    - 'nomad.datamodel.data.EntryData'
-                  m_annotations:
-                    template: 
-                    eln: 
-                      # hide: ['children', 'parents']
-                      # hide: ['children', 'parents', institute]
-                      hide: []
-        process: 
-          #m_annotations:
-          #  eln:
-          section:
-            base_section: Process 
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    width:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    length:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+              cylinder:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    lower_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    upper_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    cap_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    lateral_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+        sample_history:
+          #repeats: true
+          section: 
+            base_section: Process
+            m_annotations:
+              eln:
             quantities:
-              net_mass_before:
-                type: np.float64
-                unit: gram
-                description: net mass before the process step
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: gram
-              crucible_model:
+              test:
                 type: str
-                description: The name of the chemical that is typically used in literature
+                description: test
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              crucible_mass:
-                type: np.float64
-                unit: gram
-                description: crucible mass
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: gram
-              brutto_mass_before:
-                type: np.float64
-                unit: gram
-                description: brutto mass before the process step
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: gram
-              atmosphere:
-                type: str
-                description: which atmosphere is choosen for th experiment
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              oven:
-                type: str
-                description: oven used in the experiment
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        method: 
+          type:
+            type_kind: Enum
+            type_data:
+              - experimental
+              - simulation
+              - declared_by_vendor
+              - nominal
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        synthesis_method:
+          type:
+            type_kind: Enum
+            type_data:
+              - MOVPE
+              - what not
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type:
+            type_kind: Enum
+            type_data:
+              - cristalline solid
+              - microcristalline solid
+              - powder
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orientation:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        preparation_date:
+          type: str
+          description: creation date
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        components:
+          type: Substance
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Powder_mixture:
+      base_section: Sample
+      # quantities:
+      #   creation_date:
+      #     type: Datetime
+      #     m_annotations:
+      #       eln:
+      #         component: DateTimeEditQuantity
+      #   # created_by:
+      #   #   type: str #User
+      #   #   #shape: ['*']
+      #   #   description: my descr
+      #   #   m_annotations:
+      #   #     eln:
+      #   #       component: UserEditQuantity
+      #   # created_by_test:
+      #   #   type: str #Author
+      #   #   #shape: ['*']
+      #   #   description: my descr
+      #   #   m_annotations:
+      #   #     eln:
+      #   #       component: AuthorEditQuantity
+      #   executed_by:
+      #     type: str
+      #     m_annotations:
+      #       eln:
+      #         component: StringEditQuantity
+      #   execution_date:
+      #     type: Datetime
+      #     m_annotations:
+      #       eln:
+      #         component: DateTimeEditQuantity
+      #   final_sample:
+      #     type: str
+      #     m_annotations:
+      #       eln:
+      #         component: StringEditQuantity

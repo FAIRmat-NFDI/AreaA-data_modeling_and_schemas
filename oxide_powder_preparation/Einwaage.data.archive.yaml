@@ -1,33 +1,39 @@
 data:
-  m_def: ../upload/raw/Einwaage.schema.archive.yaml#Powder
-  creation_date: 2022-07-05 10:00+01 #25.07.2022
-  # created_by: ganschow
-  execution_date: null
-  # created_by: Andrea
-  # created_by_test: Andrea
-  executed_by: null
-  final_sample: LiAlO2 #formula
-  total_mass: 120.0
-  notes: null
+  m_def: ../upload/raw/Einwaage.schema.archive.yaml#definitions/section_definitions/Sample #Powder_mixture
+  # preparation_date: 2022-07-05 10:00+01 #25.07.2022
+  # # # created_by: ganschow
+  # # execution_date: null
+  # # # created_by: Andrea
+  # # # created_by_test: Andrea
+  # # executed_by: null
+  # # final_sample: LiAlO2 #formula
+  # # total_mass: 120.0
+  # # notes: null
+  # SampleID:
+  #   institute: IKZ
+  #   sample_owner: ganschow
+  #   creation_datetime: 2022-12-31
+  #   sample_short_name: mypowder
+  # components:
+  #   - "../upload/raw/Zinc_Selenide.archive.yaml#data"
+  # sample_history:
+  #   comment: testy
+  name: a
+  method: simulation
+  synthesis_method: MOVPE
+  comment: a
+  iupac_name: a
+  empirical_formula: a
+  state_or_phase: cristalline solid
+  supplier: a
   SampleID:
-    institute: IKZ
-    sample_owner: ganschow
-    creation_datetime: 2022-12-31
-    sample_short_name: mypowder
-  components:
-    - name: component_1 
-      SampleID:
-        institute: IKZ
-        sample_owner: ganschow
-        creation_datetime: 2022-12-31
-        sample_short_name: mypowder
-      formula: Li2CO3 #formula
-      chemicals: "../upload/raw/Zinc_Selenide.archive.yaml#data"
-      target_mass: 67.254
-      actual_mass: null
-      notes: null
-    - name: component_2  
-      formula: Al2O3 #formula
-      target_mass: 92.803
-      actual_mass: null
-      notes: null
+    sample_id: fffffff
+  sample_history:
+    comment: a
+    method: a
+    dose: 2
+    experiment_identifier: '222'
+    process_steps:
+    - process_type: Process
+      name: pop
+      step_number: 1

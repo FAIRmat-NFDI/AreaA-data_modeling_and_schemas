@@ -136,11 +136,126 @@ definitions:
                 # hide: ['children', 'parents']
                 # hide: ['children', 'parents', institute]
                 hide: []
-        composition:
+        geometry:
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              parallelepiped:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    width:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    length:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+              cylinder:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    lower_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    upper_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    cap_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    lateral_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+        sample_history:
           repeats: true
-          # m_annotations:
-          #   eln:
-          section: Sample
+          section: Process
+            m_annotations:
+              eln:
+            quantities:
+              test:
+                type: str
+                description: test
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
       quantities:
         name:
           type: str
@@ -194,13 +309,13 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        creation_datetime:
+        preparation_date:
           type: str
           description: creation date
           m_annotations:
             eln:
               component: StringEditQuantity
-        growth_method:
+        synthesis_method:
           type:
             type_kind: Enum
             type_data:
@@ -209,14 +324,6 @@ definitions:
           m_annotations:
             eln:
               component: RadioEnumEditQuantity
-        thickness:
-          type: np.float64
-          unit: nanometer
-          description: layer thickness
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: nanometer
     Process:
       quantities:
         name:
