@@ -1,4 +1,4 @@
-# MOVPE SrTiO experiment
+# Surface Coating Methods
 
 list of folders:
 * spin-coating technique
