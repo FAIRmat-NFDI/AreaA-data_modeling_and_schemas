@@ -1,6 +1,6 @@
 data:
   #m_def: ../upload/raw/chemical_schema.archive.yaml#/definitions/section_definitions/0
-  m_def: ../upload/raw/hall.schema.archive.yaml#/definitions/section_definitions/1
+  m_def: ../upload/raw/hall.schema.archive.yaml#/definitions/section_definitions/Sample
   name: ZnSe
   iupac_name: Zinc Selenide
   supplier: Sigma Aldrich

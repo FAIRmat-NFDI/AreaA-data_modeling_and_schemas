@@ -115,111 +115,105 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-      sub_sections:
-        process_steps:
-          repeats: true
-          #m_annotations:
-          #  eln:
-          section:
-            m_annotations:
-              eln:
-            # sub_sections:
-            #   reagents:
-            #     repeats: true
-            #     # m_annotations:
-            #     #   eln:
-            #     section: Sample
-            #   products:
-            #     repeats: true
-            #     # m_annotations:
-            #     #   eln:
-            #     section: Sample
-            quantities:
-              process_type:
-                type:
-                  type_kind: Enum
-                  type_data:
-                    - Pre-process
-                    - Process
-                    - Post-process
-                    - Measurement
-                    - Storage
-                m_annotations:
-                  eln:
-                    component: EnumEditQuantity
-              name: 
-                type: str
-                description: what this step consists of
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Reason
-                  eln:
-                    component: StringEditQuantity
-              step_number:
-                type: int
-                description: sequential number of the step on going
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Step
-                  eln:
-                    component: NumberEditQuantity
-              step_comment:
-                type: str
-                description: more verbose description of the step
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Description
-                  eln:
-                    component: StringEditQuantity 
-              step_duration:
-                type: np.float64
-                unit: minute
-                description: Past time since process start
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Duration
-                  eln:
-                    component: NumberEditQuantity #DateTimeEditQuantity
-                    defaultDisplayUnit: minute
-              elapsed_time:
-                type: np.float64
-                unit: minute
-                description: Duration of each step
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: minute
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: minute
-              timestamp:
-                type: Datetime
-                description: my descr
-                m_annotations:
-                  eln:
-                    component: DateTimeEditQuantity
-              temperature_increase_rate:
-                type: np.float64
-                unit: celsius/hour
-                description: temperature increase rate
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: celsius / hour
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius / hour
-              temperature:
-                type: np.float64
-                unit: celsius
-                description: Duration of each step
-                m_annotations:
-                  # tabular:
-                  #   name: Processdata/Timestamp
-                  #   unit: celsius
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius
+    Process_step:
+      base_section: nomad.datamodel.data.EntryData
+      # sub_sections:
+      #   reagents:
+      #     repeats: true
+      #     # m_annotations:
+      #     #   eln:
+      #     section: Sample
+      #   products:
+      #     repeats: true
+      #     # m_annotations:
+      #     #   eln:
+      #     section: Sample
+      quantities:
+        process_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        name: 
+          type: str
+          description: what this step consists of
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Reason
+            eln:
+              component: StringEditQuantity
+        step_number:
+          type: int
+          description: sequential number of the step on going
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Step
+            eln:
+              component: NumberEditQuantity
+        step_comment:
+          type: str
+          description: more verbose description of the step
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Description
+            eln:
+              component: StringEditQuantity 
+        step_duration:
+          type: np.float64
+          unit: minute
+          description: Past time since process start
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Duration
+            eln:
+              component: NumberEditQuantity #DateTimeEditQuantity
+              defaultDisplayUnit: minute
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: Duration of each step
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Timestamp
+            #   unit: minute
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+        timestamp:
+          type: Datetime
+          description: my descr
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        temperature_increase_rate:
+          type: np.float64
+          unit: celsius/hour
+          description: temperature increase rate
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Timestamp
+            #   unit: celsius / hour
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius / hour
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: Duration of each step
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Timestamp
+            #   unit: celsius
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
     Substance:
       m_annotations:
         eln:
@@ -470,7 +464,7 @@ definitions:
                           component: NumberEditQuantity
                           defaultDisplayUnit: millimeter ** 3
         sample_history:
-          #repeats: true
+          repeats: true
           section: 
             base_section: Process
             m_annotations:
@@ -482,6 +476,12 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
+            sub_sections:
+              process_steps:
+                repeats: true
+                #m_annotations:
+                #  eln:
+                section: Process_step
       quantities:
         name:
           type: str
@@ -533,18 +533,6 @@ definitions:
           m_annotations:
             eln:
               component: RadioEnumEditQuantity
-        supplier:
-          type: str
-          description: Sample preparation including orientating, polishing, cutting done by this company
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        orientation:
-          type: str
-          description: crystallographic orientation of the substrate in [hkl]
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         preparation_date:
           type: str
           description: creation date
