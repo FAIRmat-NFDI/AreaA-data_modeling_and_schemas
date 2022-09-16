@@ -1,0 +1,386 @@
+# data revision first, rough draft by Sebastian after discussion with Natasha on 6.09.2022. Mainly based on Manual_protocol "G1_IKZ_NSI_23_Protokoll new.docx" and machine log (csv digital protocol)
+
+directional_solidification:
+  global: #header in docs
+    protocol_file: G1_IKZ_NSI_23_Protokoll new.docx
+    process_ID: NSI-G1-23
+    process_based_on: NSI-G1-17
+    date: 19.03.2018
+    operator: Kie, IB, ND
+    goal: Prozessrezeptur nach NSI-G1-17 mit markers und Wackerfeedstock
+  instrument:
+    setup_notes: Wieder ausgebaute, niedrigere Suszeptor Wände + TiC-Deckel aus NSI-22 + neues Saphirfenster +Tiegelscherben ELKEM_02 zur Befestigung, # could be structured in subsections propably!?
+    vacuum_before_gas_inlet: < 3 x 10-3 mbar
+    crucible:
+      crucible_id: EW02057 M1744002039  
+      crucible_weight: 7811.5 g
+      crucible_name: VESUVIUS 
+      crucible_coating: coated at IKZ mit HC Stark
+      crucible_pretreatment: Tiegel mit Druckluft ausgepustet	
+    magnetic_field_settings:
+      field_direction: (f1 = 20 Hz: aufwärts Hz4 270°, Hz5: 0°, Hz6: 90° mit 40 A, f2 = 200 Hz: abwärts) # what is f1, Hz4 etc. Are these global settings or will they be changed later?
+    gas_settings:
+      Argon_gas_flow: 5,9 l/min, 
+      Argon_pressure: 600 mbar
+      N2_gas_flow: 0,0 l/min
+  materials:
+    gases:
+       Argon_source: ...
+       N2_source: Neue N2-Flasche
+    Feedstock: #see oxide powder preparation schema from Steffen
+      - feedstock_name: Feedstock Size 1
+        feedstock_id:
+        type: sg-Si
+        supplier: Wacker  
+        #weight: 500,0 g 
+      - feedstock_name: Feedstock Size 2
+        feedstock_id:
+        type: 
+        supplier: Wacker  
+        #weight: 3100.0 g 
+      - feedstock_name:
+        feedstock_id:
+        type: Cz- Si:P 
+        supplier:
+        #weight: 1.5029 g
+      - feedstock_name: Feedstock Size 4 
+        feedstock_id:
+        type:
+        supplier: Wacker 
+        #weight: 10400.0 g
+      #total_weight: 14000 g)
+  process:
+    Einwaage: #see oxide powder preparation schema from Steffen
+      timestamp: 
+      sample_id:
+      process_type: preprocess
+      Notes:
+      components:
+      - component_1:
+        feedstock: Wacker Feedstock Size 1 
+        weight: 500,0 g 
+      - component_2:
+        feedstock: Wacker Feedstock Size 2 
+        weight: 3100.0 g 
+      - component_3:
+        feedstock: Cz- Si:P 
+        weight: 1.5029 g
+      - component_4:
+        feedstock: Wacker Feedstock Size 4 
+        weight: 10400.0 g
+      total_weight: 14000 g # from components
+    DS_process_manual_protocol: #from table in "G1_IKZ_NSI_23_Protokoll new.docx"
+      timestamp: col1
+      process_type: preprocess / main / postprocess
+      segment: col2 # refers to recipe steps, see "G1_IKZ_NSI_23-Rezeptur.docx" ?
+      pressure: col3, setpoint, mbar 
+      Ar_flow: col3, setpoint, l/h
+      N2_flow: col3, setpoint, l/h # not in column header
+      magnetic_field_frequence_set_point: col4, setpoint, Hz # when are the different fx used? what is CO and NO in that column?
+      magnetic_field_phase_shift_set_point: col5, setpoint, grad # difficult to match the values to the according keys!
+      I_AC_heaters_set_point: col7, setpoint, A, 3x3 Matrix, # what is Sym and Trafo in values?
+      I_total_heaters_current_value: col8, read-out, A, 3x3 Matrix
+      Power_heaters_set_point: col9, setpoint, 3x3 Matrix
+      Temperature_heaters_current_value: col10, read-out, °C, 3x3 Matrix
+      Temperature_T_xy_at_different_positions_current_value: col11, read-out, °C # what is T_B in values at beginning of process?
+      Temperature_T_TP_current_value: col11, read-out, °C
+      Temperature_pyrometer_T_pyr_current_value: col11, read-out, °C
+      Notes: col12 # what is noted? is it also in digital protocol? can notes be strucutred? -> pN2, Pges, Marker no., heat ramp K/h, Leckrate
+    basic_characterization: #box near the end of table in "G1_IKZ_NSI_23_Protokoll new.docx", is it necessary to cut the crystal for the measurements? If so, cutting would be an additional process step.
+      timestamp:
+      process_type: postprocess
+      Kopfmaße: # how to translate?
+        B: 227 # B = W-O; -> description of B? see "Cutting _scheme_NSI_23.pdf"?
+        L: 227 #in Mitte, L = N-S can L and B be difenied differently or is i always like this?
+      Bodenmaße: # bottom dimensions? 
+        B: 220 
+        L: 219 #in Mitte
+      Weight: 14001.0 g
+      height_north_in_middle: 119
+      heigth_south: 120
+      height_east: 120
+      height_west: 120
+      surface_inspection: Glänzende Oberfläche mit SiC-Partikeln
+    digital_protocol: #from "G1_IKZ_NSI_23.csv", is this the machine log? is this containing all digitally stored data? can quantities from manual protocol be omitted when linking timestamps?
+      timestamp: T Ist H1 Time # every second column is a time column, they are all the same!?
+      T_H2_current_value: T Ist H2 ValueY
+      T_H3_current_value: T Ist H3 ValueY
+      T_H4_current_value: T Ist H4 ValueY
+      T_H5_current_value: T Ist H5 ValueY
+      T_H6_current_value: T Ist H6 ValueY
+      T_H7_current_value: T Ist H7 ValueY
+      T_H8_current_value: T Ist H8 ValueY
+      T_H9_current_value: T Ist H9 ValueY
+      P_H1_current_value: P Ist H1 ValueY
+      P_H2_current_value: P Ist H2 ValueY
+      P_H3_current_value: P Ist H3 ValueY
+      P_H4_current_value: P Ist H4 ValueY
+      P_H5_current_value: P Ist H5 ValueY
+      P_H6_current_value: P Ist H6 ValueY
+      P_H7_current_value: P Ist H7 ValueY
+      P_H9_current_value: P Ist H9 ValueY
+      P_H8_current_value: P Ist H8 ValueY
+      I_DC_H1_current_value: I DC Ist H1 ValueY
+      I_DC_H2_current_value: I DC Ist H2 ValueY
+      I_DC_H3_current_value: I DC Ist H3 ValueY
+      I_DC_H4_current_value: I DC Ist H4 ValueY
+      I_DC_H5_current_value: I DC Ist H5 ValueY
+      I_DC_H6_current_value: I DC Ist H6 ValueY
+      I_DC_H7_current_value: I DC Ist H7 ValueY
+      I_DC_H8_current_value: I DC Ist H8 ValueY
+      I_DC_H9_current_value: I DC Ist H9 ValueY
+      AC_F1_H1: AC_F1 H1 ValueY
+      AC_F2_H1: AC_F2 H1 ValueY
+      AC_F1_H2: AC_F1 H2 ValueY
+      AC_F2_H2: AC_F2 H2 ValueY
+      AC_F1_H3: AC_F1 H3 ValueY
+      AC_F2_H3: AC_F2 H3 ValueY
+      AC_F1_H4: AC_F1 H4 ValueY
+      AC_F2_H4: AC_F2 H4 ValueY
+      AC_F1_H5: AC_F1 H5 ValueY
+      AC_F2_H5: AC_F2 H5 ValueY
+      AC_F1_H6: AC_F1 H6 ValueY
+      AC_F2_H6: AC_F2 H6 ValueY
+      AC_F1_H7: AC_F1 H7 ValueY
+      AC_F2_H7: AC_F2 H7 ValueY
+      AC_F1_H8: AC_F1 H8 ValueY
+      AC_F2_H8: AC_F2 H8 ValueY
+      AC_F1_H9: AC_F1 H9 ValueY
+      AC_F2_H9: AC_F2 H9 ValueY
+      I_sum_H1: I Summe H1 ValueY
+      I_sum_H2: I Summe H2 ValueY
+      I_sum_H3: I Summe H3 ValueY
+      I_sum_H4: I Summe H4 ValueY
+      I_sum_H5: I Summe H5 ValueY
+      I_sum_H6: I Summe H6 ValueY
+      I_sum_H7: I Summe H7 ValueY
+      I_sum_H8: I Summe H8 ValueY
+      I_sum_H9: I Summe H9 ValueY
+      Trafo_1_M: Trafo 1 M ValueY
+      Trafo_1_P: Trafo 1 P ValueY
+      Trafo_2_M: Trafo 2 M ValueY
+      Trafo_2_P: Trafo 2 P ValueY
+      Pressure_recipient: Druck Rezipient ValueY
+      PP1: PP1 ValueY
+      gas_flow_DF2: Gasfluss DF2 ValueY
+      gas_flow_DF3: Gasfluss DF3 ValueY
+      gas_flow_DF4: Gasfluss DF4 ValueY
+      F1: F1 ValueY
+      F2: F2 ValueY
+      Phase_F1/H1: Phase F1/H1 ValueY
+      Phase_F2/H1: Phase F2/H1 ValueY
+      Phase_F1/H2: Phase F1/H2 ValueY
+      Phase_F2/H2: Phase F2/H2 ValueY
+      Phase_F1/H3: Phase F1/H3 ValueY
+      Phase_F2/H3: Phase F2/H3 ValueY
+      Phase_F1/H4: Phase F1/H4 ValueY
+      Phase_F2/H4: Phase F2/H4 ValueY
+      Phase_F1/H5: Phase F1/H5 ValueY
+      Phase_F2/H5: Phase F2/H5 ValueY
+      Phase_F1/H6: Phase F1/H6 ValueY
+      Phase_F2/H6: Phase F2/H6 ValueY
+      CO_measurement_in_ppm: CO-Messwert [ppm] ValueY
+      CO_measurement_in_vol_percentage: CO-Messwert [Vol %] ValueY
+      crucible_bottom:  Tiegelboden ValueY
+      T12: T12 ValueY
+      T13: T13 ValueY
+      T14: T14 ValueY
+      Resistance_Hz_4: Widerstand Hz_4 ValueY
+      Resistance_Hz_5: Widerstand Hz_5 ValueY
+      T_Pyrometer: T_Pyrometer ValueY
+      NO_Measurement: NO Messwert ppm ValueY
+      Resistance_Hz_6: Widerstand_Hz_6 ValueY
+
+# from TF meeting:
+instrument:
+  Crucible_Support_shape:
+    - graphite thick
+    - graphite thin
+		Crucible_Top_cover:
+      - slot oppening
+      - plate
+			Top_cover_material:
+        - SiC
+        - TiC
+      Top_cover_mass:
+        - ... g
+        - ... g
+  Suszeptor:
+    Suszeptor_material:
+    Suszeptor_mass:
+  Bottom_plate:
+    Bottom_plate_material:
+      Bottom_plate_mass:
+  Saphire_plate:
+  Dummy:
+    Dummy_material:
+    Dummy_mass:
+
+  Crucible:	
+		Crucible producer:
+		Crucible type:
+		Crucible code:
+		Coating date: # Coating seems to be a preprocess 
+		coating producer:
+		coating type:
+		coating layers number:
+		Crucible Mass:
+		Quartz ring mass in kg:
+
+  Charge: # -> Einwaage
+		Charge preparation date:
+		Charge mass:
+		Feedstock size 1:
+		Mass 1:
+		Feedstock size 2:
+		Mass 2:
+		Feedstock size 3:
+		Mass 3:
+  Dopant :
+		Dopant type:
+		Dopant  mass:
+		Dopant placement:
+
+Recipe:		
+  Pressure: 
+		gas 1:
+      gas type:
+      gas flow rate at start: 	
+			gas flow rate at 1st reduction:  
+			time of gasflow at 1st reduction:
+			gas flow at 2nd reduction:
+			time of gasflow at 2nd reduction:
+		gas 2:
+      gas type:
+      gas flow rate:
+  process start:
+    time at start of heating:
+    power of heaters at start:
+      H1:
+      H2:  
+      H3:  
+      H4:  
+      H5:  
+      H6:  
+      H7:  
+      H8:  
+      H9:  
+    magnetic fields at start:
+      f1:
+      f2:
+    ac/dc ratio at start:
+      H4:
+      H5:
+      H6:
+    phase shift at start:
+      H4-phi1:
+      H4-phi2:
+      H5-phi1:
+      H5-phi2:
+      H6-phi1:
+      H6-phi2:
+  melting step:
+    power of heaters during melting:
+      H1:
+			H2:  
+			H3:  
+			H4:  
+			H5:  
+			H6:  
+			H7:  
+			H8:  
+			H9:  
+    magnetic fields during melting:
+      f1:
+			f2:
+    ac/dc ratio  during melting:
+      H4:
+      H5:
+      H6:
+    phase shift during melting:
+      H4-phi1:
+      H4-phi2:
+      H5-phi1:
+      H5-phi2:
+      H6-phi1:
+      H6-phi2:
+    time of first melt:
+    time of all molten:
+  homogenisation step:
+    time of homogenisation start:
+    power of heaters during homogenisation:
+      H1:
+			H2:  
+			H3:  
+			H4:  
+			H5:  
+			H6:  
+			H7:  
+			H8:  
+			H9:  
+    magnetic fields during homogenisation:
+      f1:
+			f2:
+    ac/dc ratio  during homogenisation:
+      H4:
+      H5:
+      H6:
+    phase shift during homogenisation:
+      H4-phi1:
+      H4-phi2:
+      H5-phi1:
+      H5-phi2:
+      H6-phi1:
+      H6-phi2:
+    time of pyro peak:
+  crystalisation step:
+    time of crystalisation start:
+    power of heaters during crystalisation:
+      H1:
+      H2:  
+			H3:  
+			H4:  
+			H5:  
+			H6:  
+			H7:  
+			H8:  
+			H9:  
+    magnetic fields during crystalisation:
+      f1:
+			f2:
+    ac/dc ratio  during crystalisation:
+      H4:
+      H5:
+      H6:
+    phase shift during crystalisation:
+      H4-phi1:
+      H4-phi2:
+      H5-phi1:
+      H5-phi2:
+      H6-phi1:
+      H6-phi2:
+		marker 1:
+      time at marker 1:
+      H4 AC at marker 1:
+			H5 AC at marker 1:
+			H6 AC at marker 1:
+		marker 2: 
+      time at marker 2:
+      H4 AC at marker 2:
+			H5 AC at marker 2:
+			H6 AC at marker 2:
+                 time of crystalisation end:
+	     cooling down step:
+                 time of cooling down start:
+                 power of heaters during cooling down :
+                        H1:
+			H2:  
+			H3:  
+			H4:  
+			H5:  
+			H6:  
+			H7:  
+			H8:  
+			H9:
+                 time of cooling down end: 
+                 comments: 
