@@ -9,23 +9,29 @@ directional_solidification:
     operator: Kie, IB, ND
     goal: Prozessrezeptur nach NSI-G1-17 mit markers und Wackerfeedstock
   instrument:
+    permanent_setup:
+      ...
+    actual_setup: #process_setup
+      # location and type and age of temperature sensors
+      ...
     setup_notes: Wieder ausgebaute, niedrigere Suszeptor Wände + TiC-Deckel aus NSI-22 + neues Saphirfenster +Tiegelscherben ELKEM_02 zur Befestigung, # could be structured in subsections propably!?
+    furnace_ID: G1_Si_furnace 
     vacuum_before_gas_inlet: < 3 x 10-3 mbar
     crucible:
       crucible_id: EW02057 M1744002039  
       crucible_weight: 7811.5 g
       crucible_name: VESUVIUS 
-      crucible_coating: coated at IKZ mit HC Stark
+      crucible_coating: coated at IKZ mit HC Stark # extra schema -> preprocess!
       crucible_pretreatment: Tiegel mit Druckluft ausgepustet	
     magnetic_field_settings:
-      field_direction: (f1 = 20 Hz: aufwärts Hz4 270°, Hz5: 0°, Hz6: 90° mit 40 A, f2 = 200 Hz: abwärts) # what is f1, Hz4 etc. Are these global settings or will they be changed later?
-    gas_settings:
+      field_direction: (f1 = 20 Hz: aufwärts Hz4 270°, Hz5: 0°, Hz6: 90° mit 40 A, f2 = 200 Hz: abwärts) # what is f1, Hz4 etc. Are these global settings or will they be changed later? -> summary of most important settings of process (Kristalliasation)
+    gas_settings: # settings for main process part (see column 3 in protocol)
       Argon_gas_flow: 5,9 l/min, 
       Argon_pressure: 600 mbar
       N2_gas_flow: 0,0 l/min
   materials:
     gases:
-       Argon_source: ...
+       Argon_source: ... # add info here
        N2_source: Neue N2-Flasche
     Feedstock: #see oxide powder preparation schema from Steffen
       - feedstock_name: Feedstock Size 1
@@ -50,6 +56,9 @@ directional_solidification:
         #weight: 10400.0 g
       #total_weight: 14000 g)
   process:
+    preparation_of_setup_parts:
+      ... # Deckel: Zustand von Deckel muss getrackt werden: Alter, Prozesse etc. GIlt auch für alle Graphitteile
+      # location of temperature sensors
     Einwaage: #see oxide powder preparation schema from Steffen
       timestamp: 
       sample_id:
@@ -69,23 +78,28 @@ directional_solidification:
         feedstock: Wacker Feedstock Size 4 
         weight: 10400.0 g
       total_weight: 14000 g # from components
+    Feedstock_filling: # on basis of Einwaage
+      stacking_order:
+      Notes:  
     DS_process_manual_protocol: #from table in "G1_IKZ_NSI_23_Protokoll new.docx"
       timestamp: col1
       process_type: preprocess / main / postprocess
-      segment: col2 # refers to recipe steps, see "G1_IKZ_NSI_23-Rezeptur.docx" ?
+      segment: col2 # refers to recipe steps, see "G1_IKZ_NSI_23-Rezeptur.docx" ? yes
       pressure: col3, setpoint, mbar 
       Ar_flow: col3, setpoint, l/h
       N2_flow: col3, setpoint, l/h # not in column header
-      magnetic_field_frequence_set_point: col4, setpoint, Hz # when are the different fx used? what is CO and NO in that column?
+      magnetic_field_frequence_set_point: col4, setpoint, Hz # when are the different fx used? what is CO and NO in that column? messwerte von Gerät
       magnetic_field_phase_shift_set_point: col5, setpoint, grad # difficult to match the values to the according keys!
       I_AC_heaters_set_point: col7, setpoint, A, 3x3 Matrix, # what is Sym and Trafo in values?
       I_total_heaters_current_value: col8, read-out, A, 3x3 Matrix
       Power_heaters_set_point: col9, setpoint, 3x3 Matrix
       Temperature_heaters_current_value: col10, read-out, °C, 3x3 Matrix
-      Temperature_T_xy_at_different_positions_current_value: col11, read-out, °C # what is T_B in values at beginning of process?
+      Temperature_T_xy_at_different_positions_current_value: col11, read-out, °C # what is T_B in values at beginning of process? Boden Thermoelement
       Temperature_T_TP_current_value: col11, read-out, °C
       Temperature_pyrometer_T_pyr_current_value: col11, read-out, °C
       Notes: col12 # what is noted? is it also in digital protocol? can notes be strucutred? -> pN2, Pges, Marker no., heat ramp K/h, Leckrate
+    crystal_cutting:
+      ... # see pdf
     basic_characterization: #box near the end of table in "G1_IKZ_NSI_23_Protokoll new.docx", is it necessary to cut the crystal for the measurements? If so, cutting would be an additional process step.
       timestamp:
       process_type: postprocess
@@ -227,19 +241,19 @@ instrument:
 		Crucible Mass:
 		Quartz ring mass in kg:
 
-  Charge: # -> Einwaage
-		Charge preparation date:
-		Charge mass:
-		Feedstock size 1:
-		Mass 1:
-		Feedstock size 2:
-		Mass 2:
-		Feedstock size 3:
-		Mass 3:
-  Dopant :
-		Dopant type:
-		Dopant  mass:
-		Dopant placement:
+Charge: # -> Einwaage
+  Charge preparation date:
+  Charge mass:
+  Feedstock size 1:
+  Mass 1:
+  Feedstock size 2:
+  Mass 2:
+  Feedstock size 3:
+  Mass 3:
+Dopant :
+  Dopant type:
+  Dopant  mass:
+  Dopant placement:
 
 Recipe:		
   Pressure: 
@@ -359,7 +373,7 @@ Recipe:
       H5-phi2:
       H6-phi1:
       H6-phi2:
-		marker 1:
+		marker 1: # artificial distortion /marking which is later visible in the crystal -> measure crystal growth rate 
       time at marker 1:
       H4 AC at marker 1:
 			H5 AC at marker 1:
