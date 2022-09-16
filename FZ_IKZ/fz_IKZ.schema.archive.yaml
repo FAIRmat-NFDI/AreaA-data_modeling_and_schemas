@@ -127,8 +127,8 @@ definitions:
                 type: 
                   type_kind: Enum
                   type_data:
-                    - 1505/1  
-                    - 1505/2 
+                    - "1505/1"  
+                    - "1505/2"
                 description: "Furnace description"
                 m_annotations:
                   eln:
@@ -413,11 +413,11 @@ definitions:
                       type: 
                         type_kind: Enum
                         type_data:
-                          - 0
-                          - 1 
-                          - 10
-                          - 100
-                          - 500
+                          - "0"
+                          - "1" 
+                          - "10"
+                          - "100"
+                          - "500"
                       description: "applied doping concentration in ppm"
                       m_annotations:
                         eln:
