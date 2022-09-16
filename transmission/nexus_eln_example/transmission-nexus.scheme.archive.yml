@@ -1,0 +1,51 @@
+definitions:
+  name: "Transmission ELN Example"
+  sections:
+    Transmission:
+      base_sections:
+        - "nomad.datamodel.metainfo.eln.NexusParser"
+        - "nomad.datamodel.data.EntryData"
+      m_annotations:
+        template:
+          reader: transmission
+          nxdl: NXtransmission.nxdl
+        eln:
+          hide: []
+      sub_sections:
+        operator:
+          section:
+            m_annotations:
+              eln:
+                overview: true
+            quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              affiliation:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              address:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              email:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        Sample:
+          section:
+            m_annotations:
+              eln:
+                overview: true
+            quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
