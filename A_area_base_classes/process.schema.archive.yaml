@@ -1,0 +1,118 @@
+definitions:
+  name: 'process'
+  sections:  # Schemes consist of section definitions
+    Process:
+      quantities:
+        comment:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: temperature 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
+        method:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        experiment_identifier:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Identifier
+            eln:
+              component: StringEditQuantity
+        experiment_location:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Location
+            eln:
+              component: StringEditQuantity
+        start_time:
+          type: Datetime
+          m_annotations:
+            # tabular:
+            #   name: Overview/Start Time
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          type: Datetime
+          m_annotations:
+            # tabular:
+            #   name: Overview/End Time
+            eln:
+              component: DateTimeEditQuantity
+        process_category:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Synthesis Category
+            eln:
+              component: StringEditQuantity
+        process_method:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Synthesis Method
+            eln:
+              component: StringEditQuantity
+        net_mass_before:
+          type: np.float64
+          unit: gram
+          description: net mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_mass:
+          type: np.float64
+          unit: gram
+          description: crucible mass
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        brutto_mass_before:
+          type: np.float64
+          unit: gram
+          description: brutto mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        atmosphere:
+          type: str
+          description: which atmosphere is choosen for th experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        oven:
+          type: str
+          description: oven used in the experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              

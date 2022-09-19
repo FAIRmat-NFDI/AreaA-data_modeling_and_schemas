@@ -1,0 +1,586 @@
+definitions:
+  name: 'process step'
+  sections:  # Schemes consist of section definitions
+    Process_step:
+      base_section: nomad.datamodel.data.EntryData
+      # sub_sections:
+      #   reagents:
+      #     repeats: true
+      #     # m_annotations:
+      #     #   eln:
+      #     section: Sample
+      #   products:
+      #     repeats: true
+      #     # m_annotations:
+      #     #   eln:
+      #     section: Sample
+      quantities:
+        process_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        name: 
+          type: str
+          description: what this step consists of
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Reason
+            eln:
+              component: StringEditQuantity
+        step_number:
+          type: int
+          description: sequential number of the step on going
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Step
+            eln:
+              component: NumberEditQuantity
+        step_comment:
+          type: str
+          description: more verbose description of the step
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Description
+            eln:
+              component: StringEditQuantity 
+        step_duration:
+          type: np.float64
+          unit: minute
+          description: Past time since process start
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Duration
+            eln:
+              component: NumberEditQuantity #DateTimeEditQuantity
+              defaultDisplayUnit: minute
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: Duration of each step
+          m_annotations:
+            # tabular:
+            #   name: Processdata/Timestamp
+            #   unit: minute
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+        timestamp:
+          type: Datetime
+          description: my descr
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+    Measurement_geometry: 
+        quantities:
+          geometry:
+            type:
+              type_kind: Enum
+              type_data:
+                - Van_der_Pauw_square
+                - Van_der_Pauw_rectangular
+                - Van_der_Pauw_arbitrary
+                - Hall_bar_1221
+                - Hall_bar_1311
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+    Hall_measurement:
+      base_sections:
+        - "nomad.datamodel.metainfo.eln.NexusParser"
+        - "nomad.datamodel.data.EntryData"
+      m_annotations:
+        template:
+          reader: hall
+          nxdl: NXroot.nxdl
+        eln:
+          hide: []
+      m_annotations:
+        eln:
+          dict()
+      sub_sections:
+        # users:
+        #   section:
+        #     quantities:
+        #       nomad_user:
+        #         type: User
+        #         # shape: ['*']
+        #         description: my descr
+        #         m_annotations:
+        #           eln:
+        #             component: UserEditQuantity
+        #       not_nomad_user:
+        #         type: 'Author'
+        #         # shape: ['*']
+        #         description: my descr
+        #         m_annotations:
+        #           eln:
+        #             component: AuthorEditQuantity
+        instrument: 
+          section:
+            quantities:
+              model: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              voltmeter: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              amperemeter: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              current_source:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              switch_matrix: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              software: 
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        samples: 
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              layer:
+                repeats: true
+                # m_annotations:
+                #   eln:
+                section: 
+                  base_section: Sample
+                  quantities:
+                    epitaxy_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Homoepitaxy
+                          - Heteroepitaxy
+                      m_annotations:
+                        eln:
+                          component: RadioEnumEditQuantity
+                    substrate:
+                      type: Sample
+                      # shape: ['*']
+                      m_annotations:
+                        eln:
+                          component: ReferenceEditQuantity
+              bulk:
+                repeats: true
+                # m_annotations:
+                #   eln:
+                section: 
+                  base_section: Sample
+                  quantities:
+                    epitaxy_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Homoepitaxy
+                          - Heteroepitaxy
+                      m_annotations:
+                        eln:
+                          component: RadioEnumEditQuantity
+              final_sample:
+                repeats: true
+                m_annotations:
+                  eln:
+                    dict()
+                section: 
+                  base_section: Sample
+                  sub_sections:
+                    sample_history:
+                      repeats: true
+                      section: 
+                        base_section: Process
+                        m_annotations:
+                          eln:
+                            dict()
+                        sub_sections:
+                          process_steps:
+                            repeats: true
+                            #m_annotations:
+                            #  eln:
+                            section: Process_step
+                          contacts_grafting:
+                            repeats: true
+                            m_annotations:
+                              eln:
+                                dict()
+                            section: 
+                              sub_sections:
+                                metal_stack:
+                                  repeats: true
+                                  m_annotations:
+                                    eln:
+                                      dict()
+                                  section: 
+                                    base_section: Sample
+                                process_steps:
+                                  repeats: true
+                                  m_annotations:
+                                    eln:
+                                      dict()
+                                  section: 
+                                    base_section: Process_step
+                          room_temperature_measurement:
+                            section:
+                              # m_annotations:
+                              #   eln:
+                              sub_sections:
+                                measurement_geometry:
+                                  m_annotations:
+                                    eln:
+                                      dict()
+                                  section: 
+                                    base_section: Measurement_geometry
+                              quantities:   
+                                data_file:
+                                  type: str
+                                  description: |
+                                    A reference to an uploaded .xlsx
+                                  m_annotations:
+                                    # The tabular_parser annotation, will treat the values of this
+                                    # quantity as files. It will try to interpret the files and fill
+                                    # quantities in this section (and sub_section) with the column
+                                    # data of .csv or .xlsx files.
+                                    tabular_parser:
+                                      # sep: ','
+                                      comment: '#'
+                                    browser:
+                                      adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                                    eln:
+                                      component: FileEditQuantity  # A form field that allows to drop and select files.
+                          temperature_dependent_hall_measurement:
+                            section:
+                              # m_annotations:
+                              #   eln:
+                              quantities:   
+                                data_file:
+                                  type: str
+                                  description: |
+                                    A reference to an uploaded .xlsx
+                                  m_annotations:
+                                    # The tabular_parser annotation, will treat the values of this
+                                    # quantity as files. It will try to interpret the files and fill
+                                    # quantities in this section (and sub_section) with the column
+                                    # data of .csv or .xlsx files.
+                                    tabular_parser:
+                                      # sep: ','
+                                      comment: '#'
+                                    browser:
+                                      adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                                    eln:
+                                      component: FileEditQuantity  # A form field that allows to drop and select files.
+                              
+                                
+#     description: #choose between those two possible set-up geometries
+#     value: Van der Pauw/Hall bar
+#     unit: no unit
+#     type: boolean
+#     data_input: manually written
+#     otional: False # Mandatory!
+#     If_Van_der_Pauw: #If sample measurement geometry = Van der Pauw
+#         sample_shape: 
+#             description: #choose between those three shapes
+#             value: square/rectangular/arbitrary
+#             unit: no unit
+#             type: boolean
+#             data_input: manually written
+#             otional: True
+#             If_square: #If sample shape = square
+#                 edge_length: 
+#                     description: #length of the edge of the square shaped sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True
+#             If_rectangular: #If sample shape = rectangular
+#                 edge_length_a: 
+#                     description: #length of the horizontal edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True                 
+#                 edge_length_b: 
+#                     description: #length of the vertical edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True                 
+#                 data_input: manually
+#                 optional: True
+#             If_arbitrary: #If sample shape = arbitrary
+#                 shape_discription: 
+#                     description: #describe the shape of the sample
+#                     value: like a kidney
+#                     unit: no unit
+#                     type: string
+#                     data_input: manually written
+#                     otional: True         
+#                 edge_length_a: 
+#                     description: #approximate length of the horizontal edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True                 
+#                 edge_length_b: 
+#                     description: #approximate length of the vertical edge of the sample
+#                     value: 10
+#                     unit: mm
+#                     type: float
+#                     data_input: manually written
+#                     otional: True
+#     If_Hall_bar:
+#         sample_shape: 
+#             description: #choose between those three shapes
+#             value: 1-2-2-1/1-3-1-1
+#             unit: no unit
+#             type: boolean
+#             data_input: manually written
+#             otional: True
+#         Hall_bar_length:
+#             description: #distance between the Voltage probe lines. Value will be used to calculate Resistivity.
+#             value: 10
+#             unit: µm
+#             type: float
+#             data_input: manually written
+#             otional: True
+#         Hall_bar_width:
+#             description: #width of the Hall bar. Value will be used to calculate Resistivity.
+#             value: 10
+#             unit: µm
+#             type: float
+#             data_input: manually written
+#             otional: True
+# measurement:
+#     room_temperature_measurement:
+#         data_file: 22-127-G_Hall-RT_TT-Halter.txt
+#         data:
+#             2_point_resistance_1-2:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 1 to 2
+#                 value: 1.87e4
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True
+#             2_point_resistance_2-3:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 2 to 3
+#                 value: 1.05e4
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True
+#             2_point_resistance_3-4:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 3 to 4
+#                 value: 6.38e3
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True
+#             2_point_resistance_4-1:
+#                 description: #2-point resistance measurement to check ohmic behavior contact 4 to 1
+#                 value: 1.34e4
+#                 unit: Ohm
+#                 type: float
+#                 data_input: fit from .txt file
+#                 otional: True                
+#             Hall_excitation_current:
+#                 description: #applied current for the Hall measurement
+#                 value: 2.0
+#                 unit: µA
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!  
+#             magnetic_field:
+#                 description: #applied magnetic field for the Hall measurements
+#                 value: 3.0e3
+#                 unit: G
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!            
+#             resistivity:
+#                 description: #4-point Resistivity measurement
+#                 value: 7.12e-1
+#                 unit: Ohm*cm
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!
+#             Hall_coefficient:
+#                 description: #4-point Hall coefficient measurement. Negative means electrons and positive means holes are the majority charge carrier.
+#                 value: -1.07e2
+#                 unit: cm³/C
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!                
+#             Charge_carrier_concentration:
+#                 description: #charge carrier concentration from Hall measurement. Negative means electrons and positive means holes are the majority charge carrier. Calculated using the single type conductivity model.
+#                 value: -5.81e16
+#                 unit: 1/cm³
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory!                
+#             Hall_mobility:
+#                 description: #Hall mobility from Hall measurement. Negative means electron mobility and positive means hole mobility. Calculated using the single type conductivity model.
+#                 value: -1.51e2
+#                 unit: cm²/Vs
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: False #Mandatory! 
+#         Ambient:
+#             temperature:
+#                 description: #What was the temperature during the measurement?
+#                 value: 295.12
+#                 unit: K
+#                 type: float
+#                 data_input: extracted from .txt file
+#                 otional: True            
+#             atmosphere:
+#                 description: #What was the atmosphere during the measurement?
+#                 value: Air
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#             illumination:
+#                 description: #What were the lighting conditions during the measurement?
+#                 value: dark
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#     temperature_dependent_hall_measurement:           
+#         cryostat: 
+#             description: #Which cryostat was used for the measurement?
+#             value: Closed cycle refrigerator
+#             unit: no unit
+#             type: string
+#             data_input: manually written
+#             otional: True
+#         Ambient:
+#             temperature_range:
+#                 temperature_min:
+#                     description: #What was the minimum/starting temperature of the measurement?
+#                     value: 20
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True
+#                 temperature_max:
+#                     description: #What was the maximum/final temperature of the measurement?
+#                     value: 320
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True                         
+#             atmosphere:
+#                 description: #What was the atmosphere during the measurement?
+#                 value: Helium
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#             illumination:
+#                 description: #What were the lighting conditions during the measurement?
+#                 value: dark
+#                 unit: no unit
+#                 type: string
+#                 data_input: manually written
+#                 otional: True
+#         data:
+#             data_file: 22-127-G_20K-320K_TT-Halter_WDH_060722.txt
+#             temperature_range_of_reliable_data:
+#                 description: #Points for which the Hall Voltage scales lineary with magnetic field (+/-)
+#                 temperature_min_of_reliable_data:
+#                     description: #What is the lowest temperature point of a reliable Hall measurement?
+#                     value: 30
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True
+#                 temperature_max_of_reliable_data:
+#                     description: #What is the highest temperature point of a reliable Hall measurement?
+#                     value: 320
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: True
+#             data_matrix: #Loop over data from temperature_min_of_reliable_data to temperature_max_of_reliable_data               
+#                 temperature:
+#                     description: #measured temperature
+#                     value: 20.741
+#                     unit: K
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!  
+#                 Hall_excitation_current:
+#                     description: #applied current for the Hall measurement
+#                     value: 1.0
+#                     unit: nA
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!  
+#                 magnetic_field:
+#                     description: #applied magnetic field for the Hall measurements
+#                     value: 3.0e3
+#                     unit: G
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!            
+#                 resistivity:
+#                     description: #4-point Resistivity measurement
+#                     value: 1.03e4
+#                     unit: Ohm*cm
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!
+#                 Hall_coefficient:
+#                     description: #4-point Hall coefficient measurement. Negative means electrons and positive means holes are the majority charge carrier.
+#                     value: -4.73e5
+#                     unit: cm³/C
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!                
+#                 Charge_carrier_concentration:
+#                     description: #charge carrier concentration from Hall measurement. Negative means electrons and positive means holes are the majority charge carrier. Calculated using the single type conductivity model.
+#                     value: -1.32e13
+#                     unit: 1/cm³
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!                
+#                 Hall_mobility:
+#                     description: #Hall mobility from Hall measurement. Negative means electron mobility and positive means hole mobility. Calculated using the single type conductivity model.
+#                     value: -4.71e1
+#                     unit: cm²/Vs
+#                     type: float
+#                     data_input: extracted from .txt file
+#                     otional: False #Mandatory!
