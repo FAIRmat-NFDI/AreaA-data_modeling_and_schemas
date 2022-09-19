@@ -5,46 +5,15 @@
 # Sample description itself belongs to the application definition
 #
 category: base
-doc: "Draft base class to describe spin coating experiments"
+doc: "Draft base class to describe metal evaporation based coating experiments"
 
 (NXspin_coating):
   name:
     doc: "Name used in the chain of experiments or as element of the larger system"
   model:
-    doc: "The actual model name and number of the device, e.g. Laurel-VS650SZ"
+    doc: "The actual model name and number of the device if any, or house made"
   serial_number:
     doc: "Serial number of the device"
   description:
     doc: "Description of the experiment done with the device"
-  STEP(NXsubentry):
-    doc: "A spin coating process may contain several steps, each of them are
-          having their parameter set. Here is the grouping of these parameters"
-    rotation_speed(NX_NUMBER):
-      exists: required
-      doc: "The targeted rotation speed of coating, in 1/s or 1/min units"
-      unit: NX_FREQUENCY
-    rotation_acceleration(NX_NUMBER):
-      exists: required
-      doc: "acceleration rate in 1/min/s or similar unit"
-      unit: NX_FREQUENCY/NX_TIME
-    rotation_duration(NX_NUMBER):
-      exists: required
-      doc: "how long was the sample rotated, usually this is accelerateion and rotation together"
-      unit: NX_TIME
-
-    sample:
-      doc: "Describe the solution used for the coating"
-    substrate:
-      doc: "name the substrate material used"
-    substrate_size(NX_NUMBER):
-      doc: "if the substrate is circular, use this as diameter. If not, use the next two fields"
-      unit: NX_LENGTH
-    substrate_width(NX_NUMBER):
-      doc: "for a rectangular substrate, use this for one dimension"
-      unit: NX_LENGTH
-    substrate_length(NX_NUMBER):
-      doc: "for a rectangular substrate, use this for one dimension"
-      unit: NX_LENGTH
-    sample_volume(NX_NUMBER):
-      doc: "amount of sample added to the surface"
-      unit: NX_VOLUME
+# to be continued...
