@@ -1,94 +1,6 @@
 definitions:
   name: 'Electronic Lab Notebook' 
   sections:  # Schemas consist of section definitions
-    Temperature_sensor:
-      # repeats: true
-      # m_annotations:
-      #   eln:
-        #base_sections: 
-        #  - nomad.metainfo.metainfo.Section
-        #m_def: label_quantity='sensor_alias'
-        quantities:
-          sensor_type:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          sensor_description:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          sensor_alias:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          channel:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-          measured_property:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-    Pyro_sensor:
-      # repeats: true
-      # m_annotations:
-      #   eln:
-      # base_section: nomad.metainfo.metainfo.Section
-      quantities:
-        sensor_type:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sensor_description:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sensor_alias:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        channel:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        measured_property:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        emission:
-          type: int
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              minValue: 0
-              maxValue: 100
-          description: "Emission percentage value set in pyrometer"
-        transmission:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              minValue: 0
-              maxValue: 100
-          description: "Transmission percentage value set in pyrometer"
-        t90:
-          type: np.float64
-          description: "FILL THE DESCRIPTION"
-          unit: seconds
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: second
     MeltCzochralski:  
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
@@ -149,30 +61,15 @@ definitions:
                           component: StringEditQuantity
               sensors:
                 section:
-                  base_sections: 
-                    - nomad.parsing.tabular.TableData
-                    - nomad.datamodel.data.EntryData
                   m_annotation:
                     eln:
-                    plot:
-                      title: Sensors for growth monitoring
-                      x: time
-                      y: 
-                        - TE_1_front
-                        - TE_2_vessel
+                    # plot:
+                    #   title: Sensors for growth monitoring
+                    #   x: time
+                    #   y: 
+                    #     - TE_1_front
+                    #     - TE_2_vessel
                   quantities:
-                    data_file:
-                      type: str
-                      description: |
-                        A reference to an uploaded .csv
-                      m_annotations:
-                        tabular_parser:
-                          sep: ','
-                          comment: '#'
-                        browser:
-                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-                        eln:
-                          component: FileEditQuantity  # A form field that allows to drop and select files.
                     sensors_locations:
                       type: str
                       description: Picture of sensor locations
@@ -181,151 +78,9 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity
-                    time:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: time
-                    timestamp:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: timestamp
-                    TE_1_front:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '101' 
-                        plot:
-                          x: time
-                          y: TE_1_front         
-                    TE_2_vessel:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '102'
-                        plot:
-                          x: time
-                          y: TE_2_vessel 
-                    TE_3_left:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '103'  
-                    TE_4_rear:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '104'   
-                    TE_5_right:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '105'   
-                    TE_HF:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '106'   
-                    TE_6_room:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '119'   
-                    TE_7_melt:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '120'   
-                    Rogowski:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '201'   
-                    PT_100_1_rear:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '206'   
-                    PT_1000_1_above:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '208'   
-                    Pyro_1_IGA_6_23:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '501'   
-                    Pyro_2_IGAR_6:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '502'  
-                    Pyro_h1:
-                      type: np.float64
-                      shape: ['*']
-                      m_annotations:
-                        tabular:
-                          name: '2001'    
-                  sub_sections:
-                    TE_1_front_info:
-                      section:
-                        base_section: Temperature_sensor
-                    TE_2_vessel_info:
-                      section:
-                        base_section: Temperature_sensor
-                    TE_3_left_info:
-                      section:
-                        base_section: Temperature_sensor  
-                    TE_4_rear_info:
-                      section:
-                        base_section: Temperature_sensor 
-                    TE_5_right_info:
-                      section:
-                        base_section: Temperature_sensor 
-                    TE_HF_info:
-                      section:
-                        base_section: Temperature_sensor 
-                    TE_6_room_info:
-                      section:
-                        base_section: Temperature_sensor 
-                    TE_7_melt_info:
-                      section:
-                        base_section: Temperature_sensor  
-                    Rogowski_info:
-                      section:
-                        base_section: Temperature_sensor  
-                    PT_100_1_rear_info:
-                      section:
-                        base_section: Temperature_sensor  
-                    PT_1000_1_above_info:
-                      section:
-                        base_section: Temperature_sensor 
-                    Pyro_1_IGA_6_23_info:
-                      section:
-                        base_section: Pyro_sensor  
-                    Pyro_2_IGAR_6_info:
-                      section:
-                        base_section: Pyro_sensor   
-                    Pyro_h1_info:   
-                      section:
-                        base_section: Pyro_sensor      
+                    sensors_list:
+                      type: ../upload/raw/Sensors.archive.yaml#Sensors_list
+                      #shape: ['*']
         data_processing:
           section:
             quantities:
