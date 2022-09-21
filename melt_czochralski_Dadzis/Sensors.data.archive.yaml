@@ -4,20 +4,17 @@ data:
   temperature_sensor_1:
     model: your_field_here
     name: your_field_here
-    short_name: your_field_here
+    sensor_id: your_field_here
     attached_to: your_field_here
     measured_property: your_field_here
     type: your_field_here
-    emission: your_field_here
-    transmission: your_field_here
-    t90: your_field_here
   pyrosensor_2:
     model: your_field_here
     name: your_field_here
-    short_name: your_field_here
+    sensor_id: your_field_here
     attached_to: your_field_here
     measured_property: your_field_here
     type: your_field_here
     emission: 1
-    transmission: your_field_here
+    transmission: 1
     t90: your_field_here
