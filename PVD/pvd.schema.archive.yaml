@@ -1,0 +1,117 @@
+definitions:
+  name: PVDProcess
+  sections:
+    Activity:
+      description: |
+        A base class for any activity in relation to an enitity.
+      quantities:
+        start_time:
+          description: |
+            The starting date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          description: |
+            The ending date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+    Entity:
+      description: |
+        A base class for any enitity which can be related to an activity.
+    Process:
+      base_section: Activity
+      description: |
+        A base class for a process which modifies an enitity.
+    Synthesis:
+      base_section: Process
+      description: |
+        A base class for a synthesis which creates or adds to a sample entity.
+    PVD:
+      base_section: Synthesis
+      description: |
+        A base class for a Physical Vapor Deposition (PVD) synthesis process.
+      quantities:
+        mean_chamber_pressure:
+          description: |
+            The mean pressure in the chamber during the deposition.
+          type: np.float64
+          unit: hPa
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+    PvdThermal:
+      base_section: PVD
+      description: |
+        A base class for a thermal PVD synthesis process.
+      quantities:
+        mean_source_temperatures:
+          description: |
+            The mean temperature of the sources during the deposition.
+          type: np.float64
+          unit: degC
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+    HzbUnoldLabPvdThermal:
+      base_sections: [Activity, PvdThermal, nomad.datamodel.data.EntryData]  # TODO: Remove implicit Activity inheritence when grandchild reference works
+      description: |
+        A schema for a PVD process in the Unold group at HZB.
+      m_annotations:
+        eln:
+    SampleID:
+      base_section: nomad.datamodel.metainfo.eln.SampleID
+      description: |
+        Base class for constructing and indexing the ID of a sample.
+    Sample:
+      base_section: Entity
+      description: |
+        A base class for a sample.
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        sample_id:
+          section:
+            base_section: SampleID
+            m_annotations:
+              eln:
+        sample_history:
+          section:
+            quantities:
+              activity_on_sample:
+                type: Activity
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+    InstrumentID:
+      base_section: nomad.datamodel.metainfo.eln.SampleID  # TODO: Implement InstrumentID python class
+      description: |
+        Base class for constructing and indexing the ID of an instrument.
+    Instrument:
+      base_section: Entity
+      description: |
+        A base class for any instrument which is used to perform an activity.
+      sub_sections:
+        InstrumentID:
+          section:
+            base_section: InstrumentID
+    ThinFilm:
+      base_section: Sample
+      description: |
+        A base class for a thin films sample.
+    HZBUnoldLabThinFilm:
+      base_sections: [ThinFilm, nomad.datamodel.data.EntryData]
+      description: |
+        A schema for a thin film fabricated in the Unold group at HZB.
+      m_annotations:
+        eln:
+    
