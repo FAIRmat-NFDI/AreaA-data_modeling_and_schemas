@@ -12,20 +12,12 @@ definitions:
         users:
           section:
             quantities:
-              nomad_user:
-                type: str
+              user:
+                type: User
                 shape: ['*']
-                description: my descr
                 m_annotations:
                   eln:
-                    component: StringEditQuantity
-              not_nomad_user:
-                type: str
-                shape: ['*']
-                description: my descr
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
+                    component: UserEditQuantity
         instrument:
           section:
             m_annotations:

@@ -1,6 +1,0 @@
-definitions:
-  name: 'Entity Base Class'
-  sections:  # Schemas consist of section definitions
-    Entity:
-      base_sections:
-        - nomad.datamodel.data.EntryData

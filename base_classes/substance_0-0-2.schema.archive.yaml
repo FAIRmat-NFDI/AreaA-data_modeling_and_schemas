@@ -2,7 +2,7 @@ definitions:
   name: 'Substance Base Class'
   sections:  # Schemas consist of section definitions
     Substance:
-      base_section: ../upload/raw/entity_0-0-1.schema.archive.yaml#Entity
+      base_section: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
       more:
         label_quantity: iupac_name
       sub_sections:

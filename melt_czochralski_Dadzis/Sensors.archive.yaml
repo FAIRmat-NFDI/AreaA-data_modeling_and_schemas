@@ -18,6 +18,24 @@ definitions:
               adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
+        value_timestamp_rel: 
+          type: np.float64
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: time_rel
+          description: Relative time
+        value_timestamp_abs:
+          type: Datetime
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: time_abs
+          description: |
+            Timestamp for when the values provided in the value field were registered.
+            Individual readings can be stored with their timestamps under value_log.
+            This is to timestamp the nominal setpoint or
+            average reading values listed above in the value field.
       sub_sections:
         temperature_sensor_1:
           section:
@@ -31,23 +49,9 @@ definitions:
                     name: TE_1_K air 155 mm over crucible
                 description: Time history of sensor readings. May differ from setpoint
               value_timestamp_rel: 
-                type: np.float64
-                shape: ['*']
-                m_annotations:
-                  tabular:
-                    name: time_rel
-                description: Relative time
+                type: '#/definitions/section_definitions/0/quantities/0'
               value_timestamp_abs:
-                type: Datetime
-                shape: ['*']
-                m_annotations:
-                  tabular:
-                    name: time_abs
-                description: |
-                  Timestamp for when the values provided in the value field were registered.
-                  Individual readings can be stored with their timestamps under value_log.
-                  This is to timestamp the nominal setpoint or
-                  average reading values listed above in the value field.
+                type: '#/definitions/section_definitions/0/quantities/1'
         pyrosensor_2:
           section:
             base_section: ../upload/raw/Sensor.schema.archive.yaml#Sensor  
@@ -79,24 +83,6 @@ definitions:
                   tabular:
                     name: my_header_5
                 description: Time history of sensor readings. May differ from setpoint
-              value_timestamp_rel: 
-                type: np.float64
-                shape: ['*']
-                m_annotations:
-                  tabular:
-                    name: time_rel
-                description: Relative time
-              value_timestamp_abs:
-                type: Datetime
-                shape: ['*']
-                m_annotations:
-                  tabular:
-                    name: time_abs
-                description: |
-                  Timestamp for when the values provided in the value field were registered.
-                  Individual readings can be stored with their timestamps under value_log.
-                  This is to timestamp the nominal setpoint or
-                  average reading values listed above in the value field.
         # KEEP LISTING HERE SCHEMES FOR ALL THE SENSORS YOU HAVE
 data:
   m_def: Sensors_list
@@ -109,6 +95,7 @@ data:
     measured_property: your_field_here
     type: your_field_here
     notes: "TE_1_K air 155 mm over crucible"
+    value_timestamp_rel: '#/data/Sensors_list'
   pyrosensor_2:
     model: your_field_here
     name: your_field_here

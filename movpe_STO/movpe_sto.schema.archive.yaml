@@ -1,136 +1,9 @@
 definitions:
-  name: 'Electronic Lab Notebook schema fot MOVPE-STO'
+  name: 'Electronic Lab Notebook schema for MOVPE-STO'
   sections:  # Schemas consist of section definitions
-    Entity:
-      quantities:
-        test:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    Substance:
-      base_sections: 
-      - nomad.datamodel.data.EntryData
-      - Entity
-      more:
-        label_quantity: iupac_name
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
-      quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        empirical_formula:
-          type: str
-          description: chemical formula
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          description: the IUPAC nomenclature of the chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        state_or_phase:
-          type: str
-          description: Phase of the chemical in the bottle
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        supplier:
-          type: str
-          description: Fabricating company
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        purity:
-          type:
-            type_kind: Enum
-            type_data:
-              - Puratronic 99.995%
-              - Puratronic 99.999%
-              - REacton 99.995%
-              - REacton 99.999%
-              - ACS grade
-              - Reagent grade
-              - USP grade
-              - NF grade
-              - BP grade
-              - JP grade
-              - Laboratory grade
-              - Purified grade 
-              - Technical grade
-          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        buying_date:
-          type: Datetime
-          description: Date of the Invoice Mail
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        opening_date:
-          type: Datetime
-          description: Date of Opening the Chemical bottle in the Glove box
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        batch_number:
-          type: str
-          description: batch number of chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        documentation: 
-          type: str
-          description: pdf files containing certificate and other documentation
-          m_annotations:
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity
     Substrate:
       base_sections:
-        - nomad.datamodel.data.EntryData
-        - Entity
+        - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
       sub_sections:
         SampleID:
           section:
@@ -147,7 +20,7 @@ definitions:
           repeats: true
           #m_annotations:
           #  eln:
-          section: AmountOfEntity
+          section: ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#EntityAndAmount
       quantities:
         comment:
           type: str
@@ -210,51 +83,31 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    AmountOfEntity:
-      quantities:
-        substance:
-          type: Entity
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-        mass:
-          type: np.float64
-          unit: mg
-          doc: |
-            Mass of the powder precursor weighted out in the glove box
-        amount:
-          type: np.float64
-          unit: mmol
-          doc: |
-            Amount of substance of precursor powder weighted out
-        volume_solvent:
-          type: np.float64
-          unit: ml
-          doc: |
-            Volume of solvent used to solve the powder precursor
-        mass_concentration:
-          type: np.float64
-          unit: g/L
-          doc: |
-            Mass concentration of the prepared precursor-solvent solution
-        molar_concentration:
-          type: np.float64
-          doc: |
-            Amount of substance concentration of the prepared precursor-solvent solution
-          unit: mmol/L
-        flow:
-          type: np.float64
-          unit: mL/minute
-          doc: |
-            Velocity of the precursor solution flow adjusted by peristaltic pumps
     MovpeSto_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
-      base_section: nomad.datamodel.data.EntryData
+      base_sections: 
+      - nomad.datamodel.data.EntryData
+      - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
-          dict()
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
       sub_sections:
         users:
           section:
@@ -276,7 +129,6 @@ definitions:
                   eln:
                     component: StringEditQuantity
         materials:
-          repeats: true
           section:
             m_annotations:
               eln:
@@ -300,28 +152,66 @@ definitions:
                 repeats: true
                 #m_annotations:
                 #  eln:
-                section: AmountOfEntity
+                section: 
+                  base_section: ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#EntityAndAmount
+                  quantities:           
+                    mass:
+                      type: np.float64
+                      unit: mg
+                      description: |
+                        Mass of the powder precursor weighted out in the glove box
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mg
+                    amount:
+                      type: np.float64
+                      unit: mmol
+                      description: |
+                        Amount of substance of precursor powder weighted out
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mmol
+                    volume_solvent:
+                      type: np.float64
+                      unit: ml
+                      description: |
+                        Volume of solvent used to solve the powder precursor
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: ml
+                    mass_concentration:
+                      type: np.float64
+                      unit: g/L
+                      description: |
+                        Mass concentration of the prepared precursor-solvent solution
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: g/L
+                    molar_concentration:
+                      type: np.float64
+                      unit: mmol/L
+                      description: |
+                        Amount of substance concentration of the prepared precursor-solvent solution
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mmol/L
+                    flow:
+                      type: np.float64
+                      unit: mL/minute
+                      description: |
+                        Velocity of the precursor solution flow adjusted by peristaltic pumps
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mL/minute
         process:
           section:
-            base_sections: 
-            - nomad.parsing.tabular.TableData
             quantities:
-              data_file:
-                type: str
-                description: |
-                  A reference to an uploaded .xlsx
-                m_annotations:
-                  # The tabular_parser annotation, will treat the values of this
-                  # quantity as files. It will try to interpret the files and fill
-                  # quantities in this section (and sub_section) with the column
-                  # data of .csv or .xlsx files.
-                  tabular_parser:
-                    # sep: ','
-                    comment: '#'
-                  browser:
-                    adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-                  eln:
-                    component: FileEditQuantity  # A form field that allows to drop and select files.
               experiment_identifier:
                 type: str
                 m_annotations:
