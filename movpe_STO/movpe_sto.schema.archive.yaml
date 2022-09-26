@@ -1,28 +1,97 @@
 definitions:
   name: 'Electronic Lab Notebook schema fot MOVPE-STO'
   sections:  # Schemas consist of section definitions
-    Substance:
-      base_section: nomad.datamodel.data.EntryData
+    Entity:
       quantities:
-        id:
+        test:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
+    Substance:
+      base_sections: 
+      - nomad.datamodel.data.EntryData
+      - Entity
+      more:
+        label_quantity: iupac_name
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+      quantities:
         comment:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
-        chemical_name:
+        empirical_formula:
           type: str
-          description: The name of the chemical that is typically used in literature
+          description: chemical formula
           m_annotations:
             eln:
               component: StringEditQuantity
         iupac_name:
           type: str
           description: the IUPAC nomenclature of the chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type: str
+          description: Phase of the chemical in the bottle
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        supplier:
+          type: str
+          description: Fabricating company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        purity:
+          type:
+            type_kind: Enum
+            type_data:
+              - Puratronic 99.995%
+              - Puratronic 99.999%
+              - REacton 99.995%
+              - REacton 99.999%
+              - ACS grade
+              - Reagent grade
+              - USP grade
+              - NF grade
+              - BP grade
+              - JP grade
+              - Laboratory grade
+              - Purified grade 
+              - Technical grade
+          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        buying_date:
+          type: Datetime
+          description: Date of the Invoice Mail
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        opening_date:
+          type: Datetime
+          description: Date of Opening the Chemical bottle in the Glove box
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        batch_number:
+          type: str
+          description: batch number of chemical
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -38,36 +107,147 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        phase:
+        smiles:
           type: str
-          description: Phase of the chemical in the bottle
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
+    Substrate:
+      base_sections:
+        - nomad.datamodel.data.EntryData
+        - Entity
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        composition:
+          repeats: true
+          #m_annotations:
+          #  eln:
+          section: AmountOfEntity
+      quantities:
+        comment:
+          type: str
           m_annotations:
             eln:
               component: StringEditQuantity
         supplier:
           type: str
-          description: Fabricating company
+          description: Sample preparation including orientating, polishing, cutting done by this company
           m_annotations:
             eln:
               component: StringEditQuantity
-        purity:
+        orientation:
           type: str
-          description: Purity of the Chemical
+          description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity
-        buying_date:
-          type: Datetime
-          description: Date of the Invoice Mail
+        off_cut:
+          type: np.float64
+          unit: degrees
+          description: Off-cut angle to the substrates surface
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
-        opening_date:
-          type: Datetime
-          description: Date of Opening the Chemical bottle in the Glove box
+              component: NumberEditQuantity
+        doping_level:
+          type: np.float64
+          #unit: wt %
+          description: Chemical doping level of electrically conductive substrates
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
+              component: NumberEditQuantity
+        doping_species:
+          type: str
+          description: Doping species to obtain electrical conductivity in the substrates
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        charge:
+          type: str
+          description: Substrate charge ID given by fabrication company. Detailed information can be obtained from the company by requesting this charge ID
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        size:
+          type: str
+          description: Substrate dimensions
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        prepared:
+          type: str
+          description: Is the sample annealed, cleaned and etched for smooth stepped surface?
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        recycled:
+          type: str
+          description: Was the substrate deposited already and is recycled by polishing?
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    AmountOfEntity:
+      quantities:
+        substance:
+          type: Entity
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        mass:
+          type: np.float64
+          unit: mg
+          doc: |
+            Mass of the powder precursor weighted out in the glove box
+        amount:
+          type: np.float64
+          unit: mmol
+          doc: |
+            Amount of substance of precursor powder weighted out
+        volume_solvent:
+          type: np.float64
+          unit: ml
+          doc: |
+            Volume of solvent used to solve the powder precursor
+        mass_concentration:
+          type: np.float64
+          unit: g/L
+          doc: |
+            Mass concentration of the prepared precursor-solvent solution
+        molar_concentration:
+          type: np.float64
+          doc: |
+            Amount of substance concentration of the prepared precursor-solvent solution
+          unit: mmol/L
+        flow:
+          type: np.float64
+          unit: mL/minute
+          doc: |
+            Velocity of the precursor solution flow adjusted by peristaltic pumps
     MovpeSto_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
@@ -76,23 +256,15 @@ definitions:
         eln:
           dict()
       sub_sections:
-        # users:
-        #   section:
-        #     quantities:
-        #       nomad_user:
-        #         type: str
-        #         shape: ['*']
-        #         description: my descr
-        #         m_annotations:
-        #           eln:
-        #             component: UserEditQuantity
-        #       not_nomad_user:
-        #         type: str
-        #         shape: ['*']
-        #         description: my descr
-        #         m_annotations:
-        #           eln:
-        #             component: AuthorEditQuantity
+        users:
+          section:
+            quantities:
+              user:
+                type: User
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: UserEditQuantity
         instrument:
           section:
             m_annotations:
@@ -112,187 +284,27 @@ definitions:
             sub_sections:
               substrate:
                 repeats: true
-                #m_annotations:
-                #  eln:
                 section: 
-                  base_sections:
-                        # We use ElnBaseSection here. This provides a few quantities (name, description, tags)
-                        # that are added to the search index. If we map table columns to these quantities,
-                        # we can make those cells available for search.
-                    # - nomad.datamodel.metainfo.eln.ElnBaseSection
-                        # Schemas that are used to directly parse table files (.csv, .xlsx), need to
-                        # have the first definition to extend nomad.parsing.tabular.TableRow.
-                    # - nomad.parsing.tabular.TableRow
-                    - nomad.datamodel.data.EntryData
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
-                    composition:
-                      repeats: true
-                      #m_annotations:
-                      #  eln:
-                      section: Substance
-                  quantities:
-                    comment:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    supplier:
-                      type: str
-                      description: Sample preparation including orientating, polishing, cutting done by this company
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    orientation:
-                      type: str
-                      description: crystallographic orientation of the substrate in [hkl]
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    off_cut:
+                  base_section: Substrate
+                  quantities: 
+                    t_substrate:
                       type: np.float64
-                      unit: degrees
-                      description: Off-cut angle to the substrates surface
+                      unit: celsius
+                      description: Substrate temperature obtained by the Pyrometer on the samples surface
                       m_annotations:
+                        tabular:
+                          name: Overview/Substrate Temperature
                         eln:
                           component: NumberEditQuantity
-                    doping_level:
-                      type: np.float64
-                      #unit: wt %
-                      description: Chemical doping level of electrically conductive substrates
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                    doping_species:
-                      type: str
-                      description: Doping species to obtain electrical conductivity in the substrates
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    charge:
-                      type: str
-                      description: Substrate charge ID given by fabrication company. Detailed information can be obtained from the company by requesting this charge ID
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    size:
-                      type: str
-                      description: Substrate dimensions
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    prepared:
-                      type: str
-                      description: Is the sample annealed, cleaned and etched for smooth stepped surface?
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    recycled:
-                      type: str
-                      description: Was the substrate deposited already and is recycled by polishing?
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
               precursor:                
                 repeats: true
                 #m_annotations:
                 #  eln:
-                section: 
-                  base_section: nomad.datamodel.data.EntryData
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
-                    composition:
-                      repeats: true
-                      #m_annotations:
-                      #  eln:
-                      section: Substance
-                  quantities:
-                    method:
-                      type:
-                        type_kind: Enum
-                        type_data:
-                          - Experimental
-                          - Simulation
-                          - Declared by Vendor
-                      m_annotations:
-                        eln:
-                          component: RadioEnumEditQuantity
-                    mass:
-                      type: np.float64
-                      unit: milligram
-                      description: Mass of the powder precursor weighted out in the glove box
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: milligram
-                    amount:
-                      type: np.float64
-                      unit: millimole
-                      description: Amount of substance of precursor powder weighted out
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimole
-                    volume_solvent:
-                      type: np.float64
-                      unit: milliliter
-                      description: Volume of solvent used to solve the powder precursor
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: milliliter
-                    mass_concentration:
-                      type: np.float64
-                      unit: gram/liter
-                      description: Mass concentration of the prepared precursor-solvent solution
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: gram/liter
-                    concentration:
-                      type: np.float64
-                      unit: millimole/liter
-                      description: amount of substance concentration of the prepared precursor-solvent solution
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimole/liter
-                    flow:
-                      type: np.float64
-                      unit: milliliter/minute
-                      description: Velocity of the precursor solution flow adjusted by peristaltic pumps
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: milliliter/minute
-                    comment:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity   
+                section: AmountOfEntity
         process:
           section:
-            base_section: nomad.parsing.tabular.TableData
+            base_sections: 
+            - nomad.parsing.tabular.TableData
             quantities:
               data_file:
                 type: str
@@ -362,23 +374,6 @@ definitions:
                     name: Overview/Film
                   eln:
                     component: StringEditQuantity
-              substrate:
-                type: str
-                description: Substrates placed into the reactor for film growth. Details are shown in "Substrate"-folder
-                m_annotations:
-                  tabular:
-                    name: Overview/Substrate
-                  eln:
-                    component: StringEditQuantity
-              t_substrate:
-                type: np.float64
-                unit: celsius
-                description: Substrate temperature obtained by the Pyrometer on the samples surface
-                m_annotations:
-                  tabular:
-                    name: Overview/Substrate Temperature
-                  eln:
-                    component: NumberEditQuantity
               o2_ar:
                 type: str
                 unit: ml
