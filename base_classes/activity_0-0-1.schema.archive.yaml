@@ -1,0 +1,20 @@
+definitions:
+  name: 'Activity Base Class'
+  sections:  # Schemas consist of section definitions
+    Activity:
+      base_section: "nomad.datamodel.data.EntryData"
+      quantities:
+        start_time:
+          description: |
+            The starting date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          description: |
+            The ending date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity

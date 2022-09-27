@@ -129,13 +129,7 @@ definitions:
             base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
             m_annotations:
               eln:
-            quantities:
-              test:
-                type: str
-                description: test
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
+                dict()
             sub_sections:
               process_steps:
                 repeats: true

@@ -2,6 +2,7 @@ definitions:
   name: 'process'
   sections:  # Schemes consist of section definitions
     Process:
+      base_section:  ../upload/raw/base_classes/activity_0-0-1.schema.archive.yaml#Activity
       quantities:
         comment:
           type: str
@@ -37,20 +38,6 @@ definitions:
             #   name: Overview/Experiment Location
             eln:
               component: StringEditQuantity
-        start_time:
-          type: Datetime
-          m_annotations:
-            # tabular:
-            #   name: Overview/Start Time
-            eln:
-              component: DateTimeEditQuantity
-        end_time:
-          type: Datetime
-          m_annotations:
-            # tabular:
-            #   name: Overview/End Time
-            eln:
-              component: DateTimeEditQuantity
         process_category:
           type: str
           m_annotations:

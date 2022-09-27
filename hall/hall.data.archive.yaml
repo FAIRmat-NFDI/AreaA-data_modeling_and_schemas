@@ -1,15 +1,8 @@
 data:  
   m_def: ../upload/raw/hall.schema.archive.yaml#Hall_measurement
-  global:  #section name - not to be filled
-    description: test
-    experiment_identifier: test 
-    experiment_location: test
-    start_time: 2022-07-06 15:15+01
-    end_time: 2022-07-06 15:15+01
-    synthesis_category: test
-    synthesis_method: test
   users:  #section name - not to be filled
-    user: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+    user: 
+      - 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
     # - name: Andreas Fiedler 
     #   role: Operator
     #   affiliation_institution: Leibniz Institut für Kristallzüchtung
@@ -47,19 +40,19 @@ data:
           empirical_formula: Ra
           thickness: 7500
         process_steps:
-          - name: Post-annealing
+          - step_name: Post-annealing
             # timestamp:
             elapsed_time: 1
-            process_type: Pre-process
-            comment: Was there a post-annealing step?
+            step_type: Pre-process
+            step_comment: Was there a post-annealing step?
             temperature: 470
             atmosphere: Nitrogen
             method: RTA
-          - name: Pre-treatment
+          - step_name: Pre-treatment
             # timestamp:
             elapsed_time: 5
-            process_type: Pre-process
-            comment: | 
+            step_type: Pre-process
+            step_comment: | 
               Was there a pre-treatment of the surface? 
             temperature: 25
             atmosphere: Nitrogen
@@ -68,17 +61,17 @@ data:
               + rinsing in DI water
             reagents:
               - name: Acqua Regia
-          - name: implantation
+          - step_name: implantation
             # timestamp:
             # elapsed_time: 1
-            process_type: Pre-process
-            comment: Was an implatation made for contact formation?
+            step_type: Pre-process
+            step_comment: Was an implatation made for contact formation?
             method: dose, duration, annealing
-          - name: regrowth
+          - step_name: regrowth
             # timestamp:
             # elapsed_time: 1
-            process_type: Process
-            comment: Was a regrowth made for contact formation?
+            step_type: Process
+            step_comment: Was a regrowth made for contact formation?
             method: growth, thickness, concentration, lift-off
   # measurement_geometry:
   #   sample:

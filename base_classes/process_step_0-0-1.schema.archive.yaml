@@ -2,7 +2,7 @@ definitions:
   name: 'process step'
   sections: 
     Process_step:
-      base_section: nomad.datamodel.data.EntryData
+      base_section: ../upload/raw/base_classes/activity_0-0-1.schema.archive.yaml#Activity
       # sub_sections:
       #   reagents:
       #     repeats: true
@@ -14,8 +14,16 @@ definitions:
       #     # m_annotations:
       #     #   eln:
       #     section: Sample
+      more:
+        label_quantity: 'step_name'
       quantities:
-        process_type:
+        step_name: 
+          type: str
+          description: what this step consists of
+          m_annotations:
+              eln:
+                component: StringEditQuantity
+        step_type:
           type:
             type_kind: Enum
             type_data:
@@ -27,25 +35,12 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        name: 
-          type: str
-          description: what this step consists of
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         step_number:
           type: int
           description: sequential number of the step on going
           m_annotations:
             eln:
               component: NumberEditQuantity
-        step_title: 
-          type: str
-          shape: ['*']
-          description: what this step consists of
-        #  m_annotations:
-        #     eln:
-        #       component: StringEditQuantity
         step_comment:
           type: str
           description: more verbose description of the step
@@ -68,9 +63,3 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-        timestamp:
-          type: Datetime
-          description: my descr
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity

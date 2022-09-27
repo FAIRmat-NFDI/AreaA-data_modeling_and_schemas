@@ -1,7 +1,7 @@
 definitions:
   name: 'Electronic Lab Notebook for Hall'
   sections:  # Schemes consist of section definitions
-    Process:
+    Process_hall:
       base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
       quantities:
         dose:
@@ -182,7 +182,7 @@ definitions:
                         eln:
                           dict()
                       section: 
-                        base_section: Process
+                        base_section: Process_hall
                         sub_sections:
                           metal_stack:
                             repeats: true
