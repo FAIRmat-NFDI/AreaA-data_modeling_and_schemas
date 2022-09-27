@@ -58,7 +58,7 @@ definitions:
             eln:
               component: NumberEditQuantity
     HzbUnoldLabPvdThermal:
-      base_sections: [Activity, PvdThermal, nomad.datamodel.data.EntryData]  # TODO: Remove implicit Activity inheritence when grandchild reference works
+      base_sections: [PvdThermal, nomad.datamodel.data.EntryData]  # TODO: Remove implicit Activity inheritence when grandchild reference works
       description: |
         A schema for a PVD process in the Unold group at HZB.
       m_annotations:
@@ -93,7 +93,7 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity
     InstrumentID:
-      base_section: nomad.datamodel.metainfo.eln.SampleID  # TODO: Implement InstrumentID python class
+      base_section: nomad.datamodel.metainfo.eln.SampleID
       description: |
         Base class for constructing and indexing the ID of an instrument.
     Instrument:
