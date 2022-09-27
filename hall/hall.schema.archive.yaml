@@ -1,333 +1,8 @@
 definitions:
-  name: 'Electrony Lab Notebok for Hall'
+  name: 'Electronic Lab Notebook for Hall'
   sections:  # Schemes consist of section definitions
-    Substance:
-      base_section: nomad.datamodel.data.EntryData
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
-      quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        name:
-          type: str
-          description: The name of the chemical that is typically used in literature
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        empirical_formula:
-          type: str
-          description: chemical formula
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          description: the IUPAC nomenclature of the chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        state_or_phase:
-          type: str
-          description: Phase of the chemical in the bottle
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        supplier:
-          type: str
-          description: Fabricating company
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        purity:
-          type:
-            type_kind: Enum
-            type_data:
-              - Puratronic 99.995%
-              - Puratronic 99.999%
-              - REacton 99.995%
-              - REacton 99.999%
-              - ACS grade
-              - Reagent grade,
-              - USP grade
-              - NF grade
-              - BP grade
-              - JP grade
-              - Laboratory grade
-              - Purified grade 
-              - Technical grade
-          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        buying_date:
-          type: Datetime
-          description: Date of the Invoice Mail
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        opening_date:
-          type: Datetime
-          description: Date of Opening the Chemical bottle in the Glove box
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        batch_number:
-          type: str
-          description: batch number of chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        documentation: 
-          type: str
-          description: pdf files containing certificate and other documentation
-          m_annotations:
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity
-    Sample:
-      base_section: nomad.datamodel.data.EntryData
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
-        geometry:
-          section:
-            m_annotations:
-              eln:
-                dict()
-            sub_sections:
-              parallelepiped:
-                section:
-                  quantities:
-                    height:
-                      type: np.float64
-                      unit: nanometer
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    width:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    length:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    volume:
-                      type: np.float64
-                      unit: millimeter ** 3
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 3
-              cylinder:
-                section:
-                  quantities:
-                    height:
-                      type: np.float64
-                      unit: nanometer
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    lower_cap_radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    upper_cap_radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    cap_surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    lateral_surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    volume:
-                      type: np.float64
-                      unit: millimeter ** 3
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 3
-        sample_history:
-          repeats: true
-          section: 
-            base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
-            m_annotations:
-              eln:
-            quantities:
-              test:
-                type: str
-                description: test
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-            sub_sections:
-              process_steps:
-                repeats: true
-                #m_annotations:
-                #  eln:
-                section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        method: 
-          type:
-            type_kind: Enum
-            type_data:
-              - experimental
-              - simulation
-              - declared_by_vendor
-              - nominal
-          m_annotations:
-            eln:
-              component: RadioEnumEditQuantity
-        synthesis_method:
-          type:
-            type_kind: Enum
-            type_data:
-              - MOVPE
-              - what not
-          m_annotations:
-            eln:
-              component: RadioEnumEditQuantity
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        empirical_formula:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        state_or_phase:
-          type:
-            type_kind: Enum
-            type_data:
-              - cristalline solid
-              - microcristalline solid
-              - powder
-          m_annotations:
-            eln:
-              component: RadioEnumEditQuantity
-        preparation_date:
-          type: str
-          description: creation date
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        components:
-          type: Substance
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
     Process:
-      base_sections: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
       quantities:
         dose:
           type: np.float64
@@ -401,29 +76,21 @@ definitions:
         #template:
           #reader: hall
           #nxdl: NXroot.nxdl
-        eln:
-          hide: []
-      m_annotations:
+      #   eln:
+      #     hide: []
+      # m_annotations:
         eln:
           dict()
       sub_sections:
-        # users:
-        #   section:
-        #     quantities:
-        #       nomad_user:
-        #         type: User
-        #         # shape: ['*']
-        #         description: my descr
-        #         m_annotations:
-        #           eln:
-        #             component: UserEditQuantity
-        #       not_nomad_user:
-        #         type: 'Author'
-        #         # shape: ['*']
-        #         description: my descr
-        #         m_annotations:
-        #           eln:
-        #             component: AuthorEditQuantity
+        users:
+          section:
+            quantities:
+              user:
+                type: User
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: UserEditQuantity
         instrument: 
           section:
             quantities:
@@ -474,7 +141,7 @@ definitions:
                 # m_annotations:
                 #   eln:
                 section: 
-                  base_section: Sample
+                  base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
                   quantities:
                     epitaxy_type:
                       type:
@@ -485,18 +152,12 @@ definitions:
                       m_annotations:
                         eln:
                           component: RadioEnumEditQuantity
-                    substrate:
-                      type: Sample
-                      # shape: ['*']
-                      m_annotations:
-                        eln:
-                          component: ReferenceEditQuantity
               bulk:
                 repeats: true
                 # m_annotations:
                 #   eln:
                 section: 
-                  base_section: Sample
+                  base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
                   quantities:
                     epitaxy_type:
                       type:
@@ -509,97 +170,83 @@ definitions:
                           component: RadioEnumEditQuantity
               final_sample:
                 repeats: true
-                m_annotations:
-                  eln:
-                    dict()
                 section: 
-                  base_section: Sample
+                  base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+                  m_annotations:
+                    eln:
+                      dict()
                   sub_sections:
-                    sample_history:
+                    contacts_grafting:
                       repeats: true
+                      m_annotations:
+                        eln:
+                          dict()
                       section: 
-                        base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
-                        m_annotations:
-                          eln:
-                            dict()
+                        base_section: Process
                         sub_sections:
-                          process_steps:
-                            repeats: true
-                            #m_annotations:
-                            #  eln:
-                            section: base_sections: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
-                          contacts_grafting:
+                          metal_stack:
                             repeats: true
                             m_annotations:
                               eln:
                                 dict()
                             section: 
-                              sub_sections:
-                                metal_stack:
-                                  repeats: true
-                                  m_annotations:
-                                    eln:
-                                      dict()
-                                  section: 
-                                    base_section: Sample
-                                process_steps:
-                                  repeats: true
-                                  m_annotations:
-                                    eln:
-                                      dict()
-                                  section: 
-                                    base_section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
-                          room_temperature_measurement:
-                            section:
-                              # m_annotations:
-                              #   eln:
-                              sub_sections:
-                                measurement_geometry:
-                                  m_annotations:
-                                    eln:
-                                      dict()
-                                  section: 
-                                    base_section: Measurement_geometry
-                              quantities:   
-                                data_file:
-                                  type: str
-                                  description: |
-                                    A reference to an uploaded .xlsx
-                                  m_annotations:
-                                    # The tabular_parser annotation, will treat the values of this
-                                    # quantity as files. It will try to interpret the files and fill
-                                    # quantities in this section (and sub_section) with the column
-                                    # data of .csv or .xlsx files.
-                                    tabular_parser:
-                                      # sep: ','
-                                      comment: '#'
-                                    browser:
-                                      adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-                                    eln:
-                                      component: FileEditQuantity  # A form field that allows to drop and select files.
-                          temperature_dependent_hall_measurement:
-                            section:
-                              # m_annotations:
-                              #   eln:
-                              quantities:   
-                                data_file:
-                                  type: str
-                                  description: |
-                                    A reference to an uploaded .xlsx
-                                  m_annotations:
-                                    # The tabular_parser annotation, will treat the values of this
-                                    # quantity as files. It will try to interpret the files and fill
-                                    # quantities in this section (and sub_section) with the column
-                                    # data of .csv or .xlsx files.
-                                    tabular_parser:
-                                      # sep: ','
-                                      comment: '#'
-                                    browser:
-                                      adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-                                    eln:
-                                      component: FileEditQuantity  # A form field that allows to drop and select files.
-                              
-                                
+                              base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+                          process_steps:
+                            repeats: true
+                            m_annotations:
+                              eln:
+                                dict()
+                            section: 
+                              base_section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
+                    room_temperature_measurement:
+                      section:
+                        m_annotations:
+                          eln:
+                        sub_sections:
+                          measurement_geometry:
+                            m_annotations:
+                              eln:
+                                dict()
+                            section: 
+                              base_section: Measurement_geometry
+                        quantities:   
+                          data_file:
+                            type: str
+                            description: |
+                              A reference to an uploaded .xlsx
+                            m_annotations:
+                              # The tabular_parser annotation, will treat the values of this
+                              # quantity as files. It will try to interpret the files and fill
+                              # quantities in this section (and sub_section) with the column
+                              # data of .csv or .xlsx files.
+                              tabular_parser:
+                                # sep: ','
+                                comment: '#'
+                              browser:
+                                adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                              eln:
+                                component: FileEditQuantity  # A form field that allows to drop and select files.
+                    temperature_dependent_hall_measurement:
+                      section:
+                        # m_annotations:
+                        #   eln:
+                        quantities:   
+                          data_file:
+                            type: str
+                            description: |
+                              A reference to an uploaded .xlsx
+                            m_annotations:
+                              # The tabular_parser annotation, will treat the values of this
+                              # quantity as files. It will try to interpret the files and fill
+                              # quantities in this section (and sub_section) with the column
+                              # data of .csv or .xlsx files.
+                              tabular_parser:
+                                # sep: ','
+                                comment: '#'
+                              browser:
+                                adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                              eln:
+                                component: FileEditQuantity  # A form field that allows to drop and select files.                          
 #     description: #choose between those two possible set-up geometries
 #     value: Van der Pauw/Hall bar
 #     unit: no unit

@@ -9,10 +9,7 @@ data:
     synthesis_category: test
     synthesis_method: test
   users:  #section name - not to be filled
-    not_nomad_user:
-      first_name: aa
-      last_name: bb
-    nomad_user: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+    user: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
     # - name: Andreas Fiedler 
     #   role: Operator
     #   affiliation_institution: Leibniz Institut für Kristallzüchtung
@@ -32,57 +29,57 @@ data:
     layer:
       - method: experimental 
         epitaxy_type: Homoepitaxy
-        thickness: 2.2
-        substrate:  "../upload/raw/Selenium.archive.yaml#data"
+        #######thickness: 2.2 #### fix this
+        components:  
+          - "../upload/raw/Substrate1.data.archive.yaml#data"
     # bulk:
     #   - epitaxy_type: Homoepitaxy
     final_sample:
-    - sample_history:
-      - contacts_grafting:
-        - metal_stack: 
-          - name: material_1
-            empirical_formula: Ti
-            thickness: 50
-          - name: material_2
-            empirical_formula: Au
-            thickness: 100
-          - name: material_3
-            empirical_formula: Ra
-            thickness: 7500
-          process_steps:
-            - name: Post-annealing
-              # timestamp:
-              elapsed_time: 1
-              process_type: Pre-process
-              comment: Was there a post-annealing step?
-              temperature: 470
-              atmosphere: Nitrogen
-              method: RTA
-            - name: Pre-treatment
-              # timestamp:
-              elapsed_time: 5
-              process_type: Pre-process
-              comment: | 
-                Was there a pre-treatment of the surface? 
-              temperature: 25
-              atmosphere: Nitrogen
-              method: |
-                Aqua regia cleaning for 5 min @ room temperature 
-                + rinsing in DI water
-              reagents:
-                - name: Acqua Regia
-            - name: implantation
-              # timestamp:
-              # elapsed_time: 1
-              process_type: Pre-process
-              comment: Was an implatation made for contact formation?
-              method: dose, duration, annealing
-            - name: regrowth
-              # timestamp:
-              # elapsed_time: 1
-              process_type: Process
-              comment: Was a regrowth made for contact formation?
-              method: growth, thickness, concentration, lift-off
+    - contacts_grafting:
+      - metal_stack: 
+        - name: material_1
+          empirical_formula: Ti
+          thickness: 50
+        - name: material_2
+          empirical_formula: Au
+          thickness: 100
+        - name: material_3
+          empirical_formula: Ra
+          thickness: 7500
+        process_steps:
+          - name: Post-annealing
+            # timestamp:
+            elapsed_time: 1
+            process_type: Pre-process
+            comment: Was there a post-annealing step?
+            temperature: 470
+            atmosphere: Nitrogen
+            method: RTA
+          - name: Pre-treatment
+            # timestamp:
+            elapsed_time: 5
+            process_type: Pre-process
+            comment: | 
+              Was there a pre-treatment of the surface? 
+            temperature: 25
+            atmosphere: Nitrogen
+            method: |
+              Aqua regia cleaning for 5 min @ room temperature 
+              + rinsing in DI water
+            reagents:
+              - name: Acqua Regia
+          - name: implantation
+            # timestamp:
+            # elapsed_time: 1
+            process_type: Pre-process
+            comment: Was an implatation made for contact formation?
+            method: dose, duration, annealing
+          - name: regrowth
+            # timestamp:
+            # elapsed_time: 1
+            process_type: Process
+            comment: Was a regrowth made for contact formation?
+            method: growth, thickness, concentration, lift-off
   # measurement_geometry:
   #   sample:
   #     GEOMETRY:

@@ -2,7 +2,7 @@ definitions:
   name: 'sample'
   sections:  # Schemes consist of section definitions
     Sample:
-      base_section: nomad.datamodel.data.EntryData
+      base_section: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
       sub_sections:
         SampleID:
           section:
@@ -126,7 +126,7 @@ definitions:
         sample_history:
           repeats: true
           section: 
-            base_section: Process
+            base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
             m_annotations:
               eln:
             quantities:
@@ -141,7 +141,7 @@ definitions:
                 repeats: true
                 #m_annotations:
                 #  eln:
-                section: Process_step
+                section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
       quantities:
         name:
           type: str
@@ -200,7 +200,7 @@ definitions:
             eln:
               component: StringEditQuantity
         components:
-          type: Substance
+          type: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
           shape: ['*']
           m_annotations:
             eln:
