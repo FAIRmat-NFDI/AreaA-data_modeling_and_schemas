@@ -1,0 +1,85 @@
+definitions:
+  name: 'Substrate'
+  sections:  # Schemes consist of section definitions
+    Substrate:
+      base_sections:
+        - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        composition:
+          repeats: true
+          #m_annotations:
+          #  eln:
+          section: ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#EntityAndAmount
+      quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orientation:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        off_cut:
+          type: np.float64
+          unit: degrees
+          description: Off-cut angle to the substrates surface
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        doping_level:
+          type: np.float64
+          #unit: wt %
+          description: Chemical doping level of electrically conductive substrates
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        doping_species:
+          type: str
+          description: Doping species to obtain electrical conductivity in the substrates
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        charge:
+          type: str
+          description: Substrate charge ID given by fabrication company. Detailed information can be obtained from the company by requesting this charge ID
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        size:
+          type: str
+          description: Substrate dimensions
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        prepared:
+          type: str
+          description: Is the sample annealed, cleaned and etched for smooth stepped surface?
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        recycled:
+          type: str
+          description: Was the substrate deposited already and is recycled by polishing?
+          m_annotations:
+            eln:
+              component: StringEditQuantity

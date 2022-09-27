@@ -247,7 +247,7 @@ definitions:
         sample_history:
           repeats: true
           section: 
-            base_section: Process
+            base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
             m_annotations:
               eln:
             quantities:
@@ -262,7 +262,7 @@ definitions:
                 repeats: true
                 #m_annotations:
                 #  eln:
-                section: Process_step
+                section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
       quantities:
         name:
           type: str
@@ -327,21 +327,8 @@ definitions:
             eln:
               component: ReferenceEditQuantity
     Process:
+      base_sections: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
       quantities:
-        comment:
-          type: str
-          description: my descr
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        temperature:
-          type: np.float64
-          unit: celsius
-          description: temperature 
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: celsius
         dose:
           type: np.float64
           # unit: celsius
@@ -350,54 +337,6 @@ definitions:
             eln:
               component: NumberEditQuantity
               # defaultDisplayUnit: celsius
-        method:
-          type: str
-          description: my descr
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        experiment_identifier:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Identifier
-            eln:
-              component: StringEditQuantity
-        experiment_location:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Location
-            eln:
-              component: StringEditQuantity
-        start_time:
-          type: Datetime
-          m_annotations:
-            # tabular:
-            #   name: Overview/Start Time
-            eln:
-              component: DateTimeEditQuantity
-        end_time:
-          type: Datetime
-          m_annotations:
-            # tabular:
-            #   name: Overview/End Time
-            eln:
-              component: DateTimeEditQuantity
-        process_category:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Category
-            eln:
-              component: StringEditQuantity
-        process_method:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Method
-            eln:
-              component: StringEditQuantity
         net_mass_before:
           type: np.float64
           unit: gram
@@ -440,83 +379,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Process_step:
-      base_section: nomad.datamodel.data.EntryData
-      # sub_sections:
-      #   reagents:
-      #     repeats: true
-      #     # m_annotations:
-      #     #   eln:
-      #     section: Sample
-      #   products:
-      #     repeats: true
-      #     # m_annotations:
-      #     #   eln:
-      #     section: Sample
-      quantities:
-        process_type:
-          type:
-            type_kind: Enum
-            type_data:
-              - Pre-process
-              - Process
-              - Post-process
-              - Measurement
-              - Storage
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        name: 
-          type: str
-          description: what this step consists of
-          m_annotations:
-            # tabular:
-            #   name: Processdata/Reason
-            eln:
-              component: StringEditQuantity
-        step_number:
-          type: int
-          description: sequential number of the step on going
-          m_annotations:
-            # tabular:
-            #   name: Processdata/Step
-            eln:
-              component: NumberEditQuantity
-        step_comment:
-          type: str
-          description: more verbose description of the step
-          m_annotations:
-            # tabular:
-            #   name: Processdata/Description
-            eln:
-              component: StringEditQuantity 
-        step_duration:
-          type: np.float64
-          unit: minute
-          description: Past time since process start
-          m_annotations:
-            # tabular:
-            #   name: Processdata/Duration
-            eln:
-              component: NumberEditQuantity #DateTimeEditQuantity
-              defaultDisplayUnit: minute
-        elapsed_time:
-          type: np.float64
-          unit: minute
-          description: Duration of each step
-          m_annotations:
-            # tabular:
-            #   name: Processdata/Timestamp
-            #   unit: minute
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: minute
-        timestamp:
-          type: Datetime
-          description: my descr
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
     Measurement_geometry: 
         quantities:
           geometry:
@@ -533,12 +395,12 @@ definitions:
                 component: EnumEditQuantity
     Hall_measurement:
       base_sections:
-        - "nomad.datamodel.metainfo.eln.NexusParser"
+        #- "nomad.datamodel.metainfo.eln.NexusParser"
         - "nomad.datamodel.data.EntryData"
       m_annotations:
-        template:
-          reader: hall
-          nxdl: NXroot.nxdl
+        #template:
+          #reader: hall
+          #nxdl: NXroot.nxdl
         eln:
           hide: []
       m_annotations:
@@ -656,7 +518,7 @@ definitions:
                     sample_history:
                       repeats: true
                       section: 
-                        base_section: Process
+                        base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
                         m_annotations:
                           eln:
                             dict()
@@ -665,7 +527,7 @@ definitions:
                             repeats: true
                             #m_annotations:
                             #  eln:
-                            section: Process_step
+                            section: base_sections: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
                           contacts_grafting:
                             repeats: true
                             m_annotations:
@@ -686,7 +548,7 @@ definitions:
                                     eln:
                                       dict()
                                   section: 
-                                    base_section: Process_step
+                                    base_section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
                           room_temperature_measurement:
                             section:
                               # m_annotations:

@@ -1,11 +1,12 @@
 # Area A: sample preparation data
 
-## Keywords: 
+## Keywords:  
+
 ### Electronic Lab Notebook (ELN) / Application definition / Schemes / Data structures  
 
 - - - -
 
-This is a collection of blueprint schemes that include several kinds of experiment. 
+This is a collection of blueprint schemes that include several kinds of experiment.  
 
 The schemes here implemented are compliant to the NOMAD data structure: the hierarchy is composed by Sections, Subsections and Quantities (data fields).
 
@@ -13,7 +14,7 @@ The users can follow the info in this repo to build their own schema for their e
 
 Some further explanation on NOMAD Metainfo and Archive: https://nomad-lab.eu/prod/v1/staging/docs/archive.html#custom-metainfo-schemas-eg-for-elns
 
-Each folder contains four categories of files, the user can try to drag and drop the first three categories in the upload page in nomad ([https://nomad-lab.eu/](https://nomad-lab.eu/)), they will be automatically parsed to create an "Entry" containing the experimental data in a structured fashion:
+Each folder contains four categories of files, the user can try to drag and drop all of them in the upload page in nomad ([https://nomad-lab.eu/](https://nomad-lab.eu/)), they will be automatically parsed to create an "Entry" containing the experimental data in a structured fashion:
 
 * schema file: it defines the structure that will host your data.
   The schema file has **.schema.archive.yaml** extension.
@@ -22,7 +23,7 @@ Each folder contains four categories of files, the user can try to drag and drop
 
 * data set: depending on the outcomes of the experiment, the user will have one or more files where the monitored parameters and metadata are stored. The data set files have **.txt.**, **.dat**, **.csv** or **.xlsx** extension.
 
-* data revision: each user should collect and organize their own data structure as a guideline before starting to implement a schema. These helper files are placed in a subfolder.
+* base classes: sections with fixed structure collected in base_classes folder, the user will find a zipped copy of this base_classes folder that must be included in the upload.
 
 - - - -
 
