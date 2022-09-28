@@ -2,8 +2,9 @@ definitions:
   name: 'Electronic Lab Notebook' 
   sections:  # Schemas consist of section definitions
     EntityAndAmount:
+      base_section: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
       quantities:
-        entity:
+        component:
           type: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
           m_annotations:
             eln:

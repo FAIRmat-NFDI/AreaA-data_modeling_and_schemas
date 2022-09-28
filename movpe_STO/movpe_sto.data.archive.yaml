@@ -5,6 +5,6 @@ data:
     substrate:
       - t_substrate: 300
     precursor:
-      - entity: ../upload/raw/Substance1.data.archive.yaml#data
+      - component: ../upload/raw/Substance1.data.archive.yaml#data
         mass: 999
         amount: 666

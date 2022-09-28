@@ -1,0 +1,23 @@
+data:
+  m_def: ../upload/raw/base_classes/substance_0-0-2.schema.archive.yaml#Substance
+  SampleID:
+    institute: IKZ
+    sample_owner: Giorgio
+    creation_datetime: 2022-09-26
+    sample_short_name: my_sample
+    #sample_id:
+  chemical_name: test
+  empirical_formula: test
+  iupac_name: test
+  state_or_phase: test
+  supplier: test
+  purity: Laboratory grade
+  buying_date: 2022-09-12
+  opening_date: 2022-09-13
+  batch_number: 23
+  cas_number: 34
+  sku_number: 45
+  smiles: 56
+  inchi: 67
+  documentation: documentation.pdf
+  
