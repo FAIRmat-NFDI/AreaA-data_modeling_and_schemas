@@ -123,7 +123,7 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: millimeter ** 3
-        sample_history:
+        history:
           repeats: true
           section: 
             base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process

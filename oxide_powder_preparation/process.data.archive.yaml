@@ -1,0 +1,10 @@
+data:
+  m_def: ../upload/raw/Einwaage.schema.archive.yaml#Process_einwaage
+  comment: my comment
+  temperature: 24.850000000000023
+  experiment_identifier: '666'
+  start_time: '2022-09-21T13:33:00+00:00'
+  end_time: '2022-09-22T13:33:00+00:00'
+  net_mass_before: 55
+  crucible_model: ay75
+  brutto_mass_before: 78
