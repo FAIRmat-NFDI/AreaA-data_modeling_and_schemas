@@ -1,4 +1,4 @@
-# Float Zone experiment
+# Hall Measurement experiment
 
 which files are in this folder:
  ## schema file (.schema.archive.yaml)

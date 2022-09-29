@@ -55,35 +55,8 @@ Various | Experiments permormed in Max Planck Institute for Chemical Physics of 
 
 ## A Schema Prototype
 
-### Main Sections:
+### Base Sections (or Base Classes):
 
-These section haven't got an <em>a priori</em> inheritance and the user can decide whether to place some of them inside others. As an example: a process can describe a sample history (synthesis and preparation) or also an instrument history (substitued components or consumables to keep track of instrument status)
+![Base Classes](https://box.hu-berlin.de/f/4582a93e93314b5b8dbd/?dl=1)
 
-* **User**
-
-* **Instrument**
-
-* **Materials**
-
-  a list of all the ID-labeled samples used or produced during experiment. This list should include:
-  
-  *  reagents for synthesis steps
-  *  products of synthesis steps
-  *  gas or liquid carriers that may be employed in a deposition
-  *  substrates where a deposition happens
-  *  even more kind of samples that the user may want to keep track of
-
-* **Process**
-  
-  a list of steps describing the key actions performed during sample preparation. 
-  
-  More generally, an history of what happened to the sample, or to the instrument, ecc
-
-  Several categories were envisioned:
-
-  *  pre-process (annealing, polishing, ...)
-  *  process (synthesis, sintering, evaporation, ...)
-  *  post-process (annealing, cutting, ...)
-  *  measurement (characterization after or during sample preparation)
-  *  storage
-  *  even more action shall be included here
+These base section have got an <em>a priori</em> **inheritance** structure. The user can further decide how to put together this bricks by means of **referencing**. 
