@@ -1,8 +1,8 @@
 definitions:
-  name: 'Process Base Class 0.0.1'
+  name: 'Experiment Base Class 0.0.1'
   sections:  # Schemes consist of section definitions
-    Process:
-      base_section:  ../upload/raw/base_classes/activity_0-0-1.schema.archive.yaml#Activity
+    Experiment:
+      base_section:  ../upload/raw/base_classes/activity_0-0-2.schema.archive.yaml#Activity
       quantities:
         comment:
           type: str
@@ -38,14 +38,14 @@ definitions:
             #   name: Overview/Experiment Location
             eln:
               component: StringEditQuantity
-        process_category:
+        experiment_category:
           type: str
           m_annotations:
             # tabular:
             #   name: Overview/Synthesis Category
             eln:
               component: StringEditQuantity
-        process_method:
+        experiment_method:
           type: str
           m_annotations:
             # tabular:

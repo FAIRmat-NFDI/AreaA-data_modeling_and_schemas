@@ -1,5 +1,5 @@
 data:
-  m_def: ../upload/raw/base_classes/substance_0-0-2.schema.archive.yaml#Substance
+  m_def: ../upload/raw/base_classes/substance_0-0-3.schema.archive.yaml#Substance
   SampleID:
     institute: IKZ
     sample_owner: Giorgio

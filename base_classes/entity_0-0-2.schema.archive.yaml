@@ -1,0 +1,28 @@
+definitions:
+  name: 'Entity Base Class 0.0.2'
+  sections:  # Schemes consist of section definitions
+    Entity:
+      base_sections:
+        - nomad.datamodel.data.EntryData
+      sub_sections:
+        responsible_person:
+          section:
+            quantities:
+              user:
+                type: User
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: UserEditQuantity
+        history:
+          section: 
+            m_annotations:
+              eln:
+            quantities:
+              activities:
+                type: ../upload/raw/base_classes/activity_0-0-2.schema.archive.yaml#Activity
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+          

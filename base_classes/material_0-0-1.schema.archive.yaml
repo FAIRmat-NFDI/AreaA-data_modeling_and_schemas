@@ -1,0 +1,5 @@
+definitions:
+  name: 'Material Base Class 0.0.1'
+  sections:  # Schemes consist of section definitions
+    Material:
+      base_section: ../upload/raw/base_classes/entity_0-0-2.schema.archive.yaml#Entity

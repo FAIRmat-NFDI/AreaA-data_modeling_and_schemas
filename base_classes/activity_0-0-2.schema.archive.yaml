@@ -1,5 +1,5 @@
 definitions:
-  name: 'Activity Base Class 0.0.1'
+  name: 'Activity Base Class 0.0.2'
   sections:  # Schemes consist of section definitions
     Activity:
       base_section: "nomad.datamodel.data.EntryData"
@@ -18,3 +18,15 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
+        input_material:
+          type: ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        output_material:
+          type: ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity

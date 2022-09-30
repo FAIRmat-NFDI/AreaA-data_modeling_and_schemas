@@ -1,6 +1,6 @@
 definitions:
-  name: 'Sensor Base Class' 
-  sections: 
+  name: 'Sensor Base Class 0.0.1' 
+  sections: # Schemes consist of section definitions
     Sensor:
       quantities:
         model:

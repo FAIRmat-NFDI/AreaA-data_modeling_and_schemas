@@ -1,8 +1,10 @@
 definitions:
-  name: 'Substance Base Class 0.0.1'
+  name: 'Substance Base Class 0.0.3'
   sections:  # Schemes consist of section definitions
     Substance:
-      base_section: nomad.datamodel.data.EntryData
+      base_section: ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
+      more:
+        label_quantity: iupac_name
       sub_sections:
         SampleID:
           section:
@@ -18,12 +20,6 @@ definitions:
       quantities:
         comment:
           type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        name:
-          type: str
-          description: The name of the chemical that is typically used in literature
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -60,7 +56,7 @@ definitions:
               - REacton 99.995%
               - REacton 99.999%
               - ACS grade
-              - Reagent grade,
+              - Reagent grade
               - USP grade
               - NF grade
               - BP grade
@@ -122,4 +118,3 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-              

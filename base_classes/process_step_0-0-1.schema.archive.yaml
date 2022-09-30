@@ -1,5 +1,5 @@
 definitions:
-  name: 'process step'
+  name: 'Process step Base Class 0.0.1'
   sections: 
     Process_step:
       base_section: ../upload/raw/base_classes/activity_0-0-1.schema.archive.yaml#Activity

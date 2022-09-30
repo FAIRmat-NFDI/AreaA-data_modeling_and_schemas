@@ -82,15 +82,6 @@ definitions:
         eln:
           dict()
       sub_sections:
-        users:
-          section:
-            quantities:
-              user:
-                type: User
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: UserEditQuantity
         instrument: 
           section:
             quantities:

@@ -1,11 +1,11 @@
 definitions:
-  name: 'Entity Amount Base Class 0.0.1' 
+  name: 'Entity Amount Base Class 0.0.1'  
   sections:  # Schemes consist of section definitions
     EntityAndAmount:
-      base_section: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
+      base_section: ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
       quantities:
         component:
-          type: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
+          type: ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
           m_annotations:
             eln:
               component: ReferenceEditQuantity

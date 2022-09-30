@@ -1,6 +1,6 @@
 definitions:
-  name: 'Substance Base Class'
-  sections:  # Schemas consist of section definitions
+  name: 'Substance Base Class 0.0.2'
+  sections:  # Schemes consist of section definitions
     Substance:
       base_section: ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
       more:

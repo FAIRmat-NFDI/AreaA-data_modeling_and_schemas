@@ -1,9 +1,9 @@
 definitions:
-  name: 'Substrate'
+  name: 'Substrate Base Class 0.0.1'
   sections:  # Schemes consist of section definitions
     Substrate:
       base_sections:
-        - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
+        - ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
       sub_sections:
         SampleID:
           section:

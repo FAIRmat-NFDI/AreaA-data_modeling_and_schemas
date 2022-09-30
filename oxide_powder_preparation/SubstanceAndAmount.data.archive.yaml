@@ -1,5 +1,5 @@
 data:
-  m_def: ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#EntityAndAmount
+  m_def: ../upload/raw/base_classes/entity_amount_0-0-2.schema.archive.yaml#EntityAndAmount
   component: ../upload/raw/Substance1.data.archive.yaml#data
   mass: 999
   amount: 34
