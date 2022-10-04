@@ -1,0 +1,482 @@
+definitions:
+  name: 'Entity, Material, and Activity Base Class'
+  sections:  # Schemes consist of section definitions
+    Entity:
+      m_annotations:
+        eln:
+          dict()
+      base_sections:
+        - nomad.datamodel.data.EntryData
+      sub_sections:
+        responsible_person:
+          section:
+            quantities:
+              users:
+                type: Author
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
+        history:
+          section: 
+            m_annotations:
+              eln:
+            quantities:
+              activities:
+                type: Activity
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity  
+    Material:
+      base_section: '#/Entity'
+      quantities:
+        test:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Sample:
+      base_section: '#/Material'
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        geometry:
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              parallelepiped:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    width:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    length:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+              cylinder:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    lower_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    upper_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    cap_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    lateral_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        method: 
+          type:
+            type_kind: Enum
+            type_data:
+              - experimental
+              - simulation
+              - declared_by_vendor
+              - nominal
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        synthesis_method:
+          type:
+            type_kind: Enum
+            type_data:
+              - MOVPE
+              - what not
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type:
+            type_kind: Enum
+            type_data:
+              - cristalline solid
+              - microcristalline solid
+              - powder
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        preparation_date:
+          type: str
+          description: creation date
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        components:
+          type: '#/Material'
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Activity:
+      base_section: "nomad.datamodel.data.EntryData"
+      quantities:
+        start_time:
+          description: |
+            The starting date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          description: |
+            The ending date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        input_material:
+          type: Material
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        output_material:
+          type: Material
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Process:
+      base_section:  '#/Activity'
+      quantities:
+        comment:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: temperature 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        method:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        experiment_identifier:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Identifier
+            eln:
+              component: StringEditQuantity
+        experiment_location:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Location
+            eln:
+              component: StringEditQuantity
+        process_category:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Synthesis Category
+            eln:
+              component: StringEditQuantity
+        process_method:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Synthesis Method
+            eln:
+              component: StringEditQuantity
+    Substance:
+      base_section: '#/Material'
+      more:
+        label_quantity: iupac_name
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+      quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          description: chemical formula
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          description: the IUPAC nomenclature of the chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type: str
+          description: Phase of the chemical in the bottle
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        supplier:
+          type: str
+          description: Fabricating company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        purity:
+          type:
+            type_kind: Enum
+            type_data:
+              - Puratronic 99.995%
+              - Puratronic 99.999%
+              - REacton 99.995%
+              - REacton 99.999%
+              - ACS grade
+              - Reagent grade
+              - USP grade
+              - NF grade
+              - BP grade
+              - JP grade
+              - Laboratory grade
+              - Purified grade 
+              - Technical grade
+          description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        buying_date:
+          type: Datetime
+          description: Date of the Invoice Mail
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        opening_date:
+          type: Datetime
+          description: Date of Opening the Chemical bottle in the Glove box
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        batch_number:
+          type: str
+          description: batch number of chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        cas_number:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sku_number:
+          type: str
+          description: sku number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
+    EntityAndAmount:
+      base_section: '#/Material'
+      quantities:
+        component:
+          type: Material
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        mass:
+          type: np.float64
+          unit: mg
+          description: |
+            Mass of the powder precursor weighted out in the glove box
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mg
+        amount:
+          type: np.float64
+          unit: mmol
+          description: |
+            Amount of substance of precursor powder weighted out
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mmol
+        volume_solvent:
+          type: np.float64
+          unit: ml
+          description: |
+            Volume of solvent used to solve the powder precursor
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ml
+        mass_concentration:
+          type: np.float64
+          unit: g/L
+          description: |
+            Mass concentration of the prepared precursor-solvent solution
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: g/L
+        molar_concentration:
+          type: np.float64
+          unit: mmol/L
+          description: |
+            Amount of substance concentration of the prepared precursor-solvent solution
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mmol/L
+        flow:
+          type: np.float64
+          unit: mL/minute
+          description: |
+            Velocity of the precursor solution flow adjusted by peristaltic pumps
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mL/minute

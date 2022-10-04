@@ -2,7 +2,8 @@ definitions:
   name: 'Set your name here'
   sections:
     Process_einwaage:
-      base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
+      # base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
       quantities:
         dose:
           type: np.float64
@@ -56,8 +57,10 @@ definitions:
               component: StringEditQuantity
     Substance_einwaage:
       base_sections: 
-       - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
-       - ../upload/raw/base_classes/substance_0-0-2.schema.archive.yaml#Substance
+      #  - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
+      #  - ../upload/raw/base_classes/substance_0-0-2.schema.archive.yaml#Substance
+      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Entity
+      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Substance
       sub_sections:
         history:
           repeats: true
@@ -73,8 +76,10 @@ definitions:
                     component: ReferenceEditQuantity
     EntityAndAmount_einwaage:
       base_sections: 
-       - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
-       - ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#EntityAndAmount
+      #  - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
+      #  - ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#Substance
+      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Entity
+      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#EntityAndAmount
       sub_sections:
         history:
           repeats: true
@@ -89,20 +94,9 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity
     Powder_mixture:
-      base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
-      m_annotations:
-        eln:
-          dict()
-      sub_sections:
-        users:
-          section:
-            quantities:
-              user:
-                type: User
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: UserEditQuantity
+      # base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
+
       # quantities:
       #   creation_date:
       #     type: Datetime

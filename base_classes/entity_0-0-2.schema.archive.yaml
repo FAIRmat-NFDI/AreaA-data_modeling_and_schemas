@@ -9,11 +9,11 @@ definitions:
           section:
             quantities:
               user:
-                type: User
+                type: Author
                 shape: ['*']
                 m_annotations:
                   eln:
-                    component: UserEditQuantity
+                    component: AuthorEditQuantity
         history:
           section: 
             m_annotations:
