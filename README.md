@@ -12,14 +12,25 @@ The schemes here implemented are compliant to the NOMAD data structure: the hier
 
 The users can follow the info in this repo to build their own schema for their experiment :thumbsup:.
 
-Some further explanation on NOMAD Metainfo and Archive: https://nomad-lab.eu/prod/v1/staging/docs/archive.html#custom-metainfo-schemas-eg-for-elns
+Some further explanation on NOMAD Metainfo and Archive [here](https://nomad-lab.eu/prod/v1/staging/docs/archive.html#custom-metainfo-schemas-eg-for-elns)
 
-Each folder contains four categories of files, the user can try to drag and drop all of them in the upload page in nomad ([https://nomad-lab.eu/](https://nomad-lab.eu/)), they will be automatically parsed to create an "Entry" containing the experimental data in a structured fashion:
+Each folder contains four categories of files, the user can try to drag and drop all of them in the upload page in [Nomad](https://nomad-lab.eu/), they will be automatically parsed to create an "Entry" containing the experimental data in a structured fashion:
 
 * schema file: it defines the structure that will host your data.
   The schema file has **.schema.archive.yaml** extension.
 
+  Sections, subsections and quantities are the elements that compose the hierarchical structure of data. 
+
+  An important part in the schema is the **annotations** section, enabling the available ELN features such as: 
+    * [editability of quantities](https://nomad-lab.eu/prod/v1/staging/gui/dev/editquantity)
+    * [automatic plot of quantities](https://nomad-lab.eu/prod/v1/staging/gui/dev/plot)
+    * inheritance from specific Nomad base classes (ReferenceEditQuantity, AuthorEditQuantity)
+    * drag and drop features for file upload (RawFileAdaptor)
+    * more (overview: True, repeats: True, hide: ['..', '..'], template)
+
 * data file: based on the schema file, it contains the actual data or links to metadata files, logfiles, dataset from instrument that will be parsed into your experiment Entry. The data file has **.data.archive.yaml** extension.
+
+  It lacks the "infrastructural" lines such as the sections and subsections labels or the annotations, types and units of quantities, pesent in the schema file. It is used to avoid manual filling of data into ELN when they are repeated among multiple experiments. It also points to data files, metadata files, log files etc. where the actual number are stored. 
 
 * data set: depending on the outcomes of the experiment, the user will have one or more files where the monitored parameters and metadata are stored. The data set files have **.txt.**, **.dat**, **.csv** or **.xlsx** extension.
 

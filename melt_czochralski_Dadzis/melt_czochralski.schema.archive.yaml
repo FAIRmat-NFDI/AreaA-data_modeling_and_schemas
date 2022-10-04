@@ -17,7 +17,7 @@ definitions:
                 shape: ['*']
                 m_annotations:
                   eln:
-                    component: UserEditQuantity
+                    component: AuthorEditQuantity
         instrument:
           section:
             m_annotations:
