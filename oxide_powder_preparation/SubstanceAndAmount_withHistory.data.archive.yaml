@@ -1,9 +1,0 @@
-data:
-  m_def: ../upload/raw/Einwaage.schema.archive.yaml#EntityAndAmount_einwaage
-  component: ../upload/raw/Substance1.data.archive.yaml#data
-  mass: 999
-  amount: 34
-  volume_solvent: 0.1
-  mass_concentration: 3
-  molar_concentration: 0.4
-  

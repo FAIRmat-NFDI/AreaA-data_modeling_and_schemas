@@ -55,44 +55,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Substance_einwaage:
-      base_sections: 
-      #  - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
-      #  - ../upload/raw/base_classes/substance_0-0-2.schema.archive.yaml#Substance
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Entity
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Substance
-      sub_sections:
-        history:
-          repeats: true
-          section: 
-            m_annotations:
-              eln:
-            quantities: 
-              process_einwaage:
-                type: Process_einwaage #../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-    EntityAndAmount_einwaage:
-      base_sections: 
-      #  - ../upload/raw/base_classes/entity_0-0-1.schema.archive.yaml#Entity
-      #  - ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#Substance
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Entity
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#EntityAndAmount
-      sub_sections:
-        history:
-          repeats: true
-          section: 
-            m_annotations:
-              eln:
-            quantities: 
-              process_einwaage:
-                type: Process_einwaage #../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
     Powder_mixture:
       # base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
       base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample

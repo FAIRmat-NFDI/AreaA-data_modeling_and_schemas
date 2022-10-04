@@ -1,5 +1,5 @@
 data:
-  m_def: ../upload/raw/base_classes/sample_0-0-2.schema.archive.yaml#Sample
+  m_def: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
   SampleID:
     institute: IKZ
     sample_owner: Giorgio

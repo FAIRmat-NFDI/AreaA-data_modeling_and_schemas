@@ -1,5 +1,5 @@
 data:
-  m_def: ../upload/raw/base_classes/substance_0-0-3.schema.archive.yaml#Substance
+  m_def: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Substance
   SampleID:
     institute: IKZ
     sample_owner: Giorgio
@@ -20,4 +20,7 @@ data:
   smiles: 56
   inchi: 67
   documentation: documentation.pdf
+  history: 
+    activities: 
+      - ../upload/raw/Thermal_treatment.data.archive.yaml#data 
   
