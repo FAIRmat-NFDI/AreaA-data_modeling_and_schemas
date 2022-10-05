@@ -5,10 +5,10 @@ definitions:
       base_sections:
         - nomad.datamodel.data.EntryData
       sub_sections:
-        responsible_person:
+        users:
           section:
             quantities:
-              user:
+              responsible_person:
                 type: Author
                 shape: ['*']
                 m_annotations:

@@ -1,10 +1,4 @@
 data:  
   m_def: ../upload/raw/movpe_sto.schema.archive.yaml#MovpeSto_schema 
-  data_file: ELAB-255.xlsx 
-  materials:
-    substrate:
-      - t_substrate: 300
-    precursor:
-      - component: ../upload/raw/Substance1.data.archive.yaml#data
-        mass: 999
-        amount: 666
+  activities: 
+    - ../upload/raw/process.archive.yaml#data

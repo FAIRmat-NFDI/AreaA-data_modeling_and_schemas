@@ -1,17 +1,17 @@
 definitions:
   name: 'Entity, Material, and Activity Base Class'
   sections:  # Schemes consist of section definitions
-    Entity:
+    Entity: # THIS IS 0.0.2
       m_annotations:
         eln:
           dict()
       base_sections:
         - nomad.datamodel.data.EntryData
       sub_sections:
-        responsible_person:
+        users:
           section:
             quantities:
-              users:
+              responsible_person:
                 type: Author
                 shape: ['*']
                 m_annotations:
@@ -28,7 +28,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity  
-    Material:
+    Material: # THIS IS 0.0.1
       base_section: '#/Entity'
       quantities:
         test:
@@ -36,7 +36,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Sample:
+    Sample: # THIS IS 0.0.2
       base_section: '#/Material'
       sub_sections:
         SampleID:
@@ -221,7 +221,7 @@ definitions:
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-    Activity:
+    Activity: # THIS IS 0.0.4
       base_section: "nomad.datamodel.data.EntryData"
       quantities:
         start_time:
@@ -238,19 +238,128 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        input_material:
+        input_materials:
           type: Material
           shape: ['*']
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-        output_material:
+        output_materials:
           type: Material
           shape: ['*']
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-    Process:
+        category:
+          type:
+            type_kind: Enum
+            type_data:
+              - crystal growth synthesis
+              - sample preparation synthesis
+              - epitaxial growth synthesis
+              - sol-gel synthesis
+              - surface coating synthesis
+              - measurement experiment
+          description: |
+            A phenomenon by which change takes place in a system. 
+            In physiological systems, a process may be 
+            chemical, physical or both. 
+            [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        method_or_technique:
+          type: 
+            type_kind: Enum
+            type_data:
+              - ALL THE TECHNIQUES HERE
+          description: |
+            a method is a series of steps for performing a function or accomplishing a result.
+
+            Or
+
+            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+        activity_identifier:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Identifier
+            eln:
+              component: StringEditQuantity
+        location:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Location
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        users:
+          section:
+            quantities:
+              responsible_person:
+                type: Author
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
+              operator:
+                type: Author
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
+    Procedure_step:  # THIS IS 0.0.1
+      more:
+        label_quantity: 'step_name'
+      quantities:
+        step_name: 
+          type: str
+          description: what this step consists of
+          m_annotations:
+              eln:
+                component: StringEditQuantity
+        # step_type:
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - Pre-process
+        #       - Process
+        #       - Post-process
+        #       - Measurement
+        #       - Storage
+        #   m_annotations:
+        #     eln:
+        #       component: EnumEditQuantity
+        step_number:
+          type: int
+          description: sequential number of the step on going
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        step_comment:
+          type: str
+          description: more verbose description of the step
+          m_annotations:
+            eln:
+              component: StringEditQuantity 
+        step_duration:
+          type: np.float64
+          unit: minute
+          description: Past time since process start
+          m_annotations:
+            eln:
+              component: NumberEditQuantity 
+              defaultDisplayUnit: minute
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: Duration of each step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+    Process: # THIS IS 0.0.2
       base_section:  '#/Activity'
       quantities:
         comment:
@@ -259,49 +368,11 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        temperature:
-          type: np.float64
-          unit: celsius
-          description: temperature 
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: celsius
-        method:
-          type: str
-          description: my descr
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        experiment_identifier:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Identifier
-            eln:
-              component: StringEditQuantity
-        experiment_location:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Location
-            eln:
-              component: StringEditQuantity
-        process_category:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Category
-            eln:
-              component: StringEditQuantity
-        process_method:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Method
-            eln:
-              component: StringEditQuantity
-    Substance:
+      sub_sections:
+        procedure:
+          repeats: true
+          section: '#/Procedure_step'
+    Substance: # THIS IS 0.0.3
       base_section: '#/Material'
       more:
         label_quantity: iupac_name
@@ -418,7 +489,7 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-    EntityAndAmount:
+    EntityAndAmount: # THIS IS 0.0.2
       base_section: '#/Material'
       quantities:
         component:

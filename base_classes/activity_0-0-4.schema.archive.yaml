@@ -1,0 +1,75 @@
+definitions:
+  name: 'Activity Base Class 0.0.2'
+  sections:  # Schemes consist of section definitions
+    Activity:
+      base_section: "nomad.datamodel.data.EntryData"
+      quantities:
+        start_time:
+          description: |
+            The starting date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          description: |
+            The ending date and time of the activity.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        input_materials:
+          type: Material
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        output_materials:
+          type: Material
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        category:
+          type:
+            type_kind: Enum
+            type_data:
+              - crystal growth synthesis
+              - sample preparation synthesis
+              - epitaxial growth synthesis
+              - sol-gel synthesis
+              - surface coating synthesis
+              - measurement experiment
+          description: |
+            A phenomenon by which change takes place in a system. 
+            In physiological systems, a process may be 
+            chemical, physical or both. 
+            [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        method_or_technique:
+          type: 
+            type_kind: Enum
+            type_data:
+              - ALL THE TECHNIQUES HERE
+          description: |
+            a method is a series of steps for performing a function or accomplishing a result.
+
+            Or
+
+            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+        activity_identifier:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Identifier
+            eln:
+              component: StringEditQuantity
+        location:
+          type: str
+          m_annotations:
+            # tabular:
+            #   name: Overview/Experiment Location
+            eln:
+              component: StringEditQuantity

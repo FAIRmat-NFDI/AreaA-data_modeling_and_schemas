@@ -1,0 +1,376 @@
+definitions:
+  name: 'Process base class for MOVPE-STO'
+  sections:  # Schemas consist of section definitions
+    Process_movpesto:
+      section:
+        base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Activity
+        quantities:
+          data_file:
+            type: str
+            description: |
+              A reference to an uploaded .xlsx
+            m_annotations:
+              # The tabular_parser annotation, will treat the values of this
+              # quantity as files. It will try to interpret the files and fill
+              # quantities in this section (and sub_section) with the column
+              # data of .csv or .xlsx files.
+              tabular_parser:
+                # sep: ','
+                comment: '#'
+              browser:
+                adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+              eln:
+                component: FileEditQuantity  # A form field that allows to drop and select files.
+          activity_identifier:
+            type: str
+            m_annotations:
+              tabular:
+                name: Overview/Experiment Identifier
+              eln:
+                component: StringEditQuantity
+          location:
+            type: str
+            m_annotations:
+              tabular:
+                name: Overview/Experiment Location
+              eln:
+                component: StringEditQuantity
+          start_time:
+            type: Datetime
+            m_annotations:
+              tabular:
+                name: Overview/Start Time
+              eln:
+                component: DateTimeEditQuantity
+          end_time:
+            type: Datetime
+            m_annotations:
+              tabular:
+                name: Overview/End Time
+              eln:
+                component: DateTimeEditQuantity
+          category:
+            type: str
+            m_annotations:
+              tabular:
+                name: Overview/Synthesis Category
+              eln:
+                component: StringEditQuantity
+          method_or_technique:
+            type: str
+            m_annotations:
+              tabular:
+                name: Overview/Synthesis Method
+              eln:
+                component: StringEditQuantity
+          film:
+            type: str
+            description: Film material (Material:Dopant species)
+            m_annotations:
+              tabular:
+                name: Overview/Film
+              eln:
+                component: StringEditQuantity
+          o2_ar:
+            type: str
+            unit: ml
+            description: Gas flux ratio between oxygen and argon in the process gas
+            m_annotations:
+              tabular:
+                name: Overview/O2 Argon
+              eln:
+                component: StringEditQuantity                    
+          composition:
+            type: str
+            description: films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see folder "Precursor"
+            m_annotations:
+              tabular:
+                name: Overview/Composition
+              eln:
+                component: StringEditQuantity
+        sub_sections:
+          procedure:
+            section:
+              repeats: true
+              base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Procedure_step
+              m_annotations:
+                eln:
+                plot:
+                - label: Vaporazation Temperature
+                  x: elapsed_time
+                  y:     
+                    - "./vaporization_temperature_titan"
+                    - "./vaporization_temperature_strontium_lanthan"
+                  lines:
+                  - mode: lines
+                    line:
+                      color: rgb(40, 80, 130)
+                  - mode: lines
+                    line:
+                      color: rgb(100, 0, 0)
+                - label: Peristalic Pump Rotation
+                  x: elapsed_time
+                  y:     
+                    - "./peristaltic_pump_rotation_titan"
+                    - "./peristaltic_pump_rotation_strontium_lanthan"
+                  lines:
+                  - mode: markers
+                    marker:
+                      color: rgb(40, 80, 130)
+                  - mode: markers
+                    marker:
+                      color: rgb(100, 0, 0)
+                  # layout:
+                  #   xaxis:
+                  #     title: time 
+                  #   yaxis:
+                  #     title: P (GPa)
+                  #     type: log
+                - label: Gas Flow
+                  x: elapsed_time
+                  y:
+                    - "./argon_flow"
+                    - "./oxygen_flow"
+                  lines:
+                  - mode: lines
+                    marker:
+                      color: rgb(40, 80, 130)
+                  - mode: lines
+                    line:
+                      color: rgb(100, 0, 0)
+              quantities:
+                step_type:
+                  type:
+                    type_kind: Enum
+                    type_data:
+                      - Pre-process
+                      - Process
+                      - Post-process
+                      - Measurement
+                      - Storage
+                  m_annotations:
+                    eln:
+                      component: EnumEditQuantity
+                step_duration:
+                  type: np.float64
+                  unit: minute
+                  shape: ['*']
+                  description: Past time since process start
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Duration
+                    # eln:
+                    #   component: NumberEditQuantity #DateTimeEditQuantity
+                    #  defaultDisplayUnit: minute
+                elapsed_time:
+                  type: np.float64
+                  unit: minute
+                  shape: ['*']
+                  description: Duration of each step
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Timestamp
+                      unit: minute
+                    # eln:
+                    #   component: NumberEditQuantity
+                    #   defaultDisplayUnit: minute
+                step_number:
+                  type: int
+                  shape: ['*']
+                  description: sequential number of the step on going
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Step
+                #     eln:
+                #       component: NumberEditQuantity
+                step_name: 
+                  type: str
+                  shape: ['*']
+                  description: what this step consists of
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Reason
+                #     eln:
+                #       component: StringEditQuantity
+                step_comment:
+                  type: str
+                  shape: ['*']
+                  description: more verbose description of the step
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Description
+                #     eln:
+                #       component: StringEditQuantity 
+                step_annotation:
+                  type: str
+                  shape: ['*']
+                  description: final remarks on the step
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Annotations
+                #     eln:
+                #       component: StringEditQuantity 
+                argon_flow:
+                  type: np.float64
+                  shape: ['*']
+                  unit: centimeter ** 3 / minute
+                  description: Argon process gas flow in to the reaction chamber
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Argon flow
+                      unit: centimeter ** 3 / minute 
+                    plot:
+                      x: elapsed_time
+                      y: argon_flow
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: centimeter ** 3 / minute
+                oxygen_flow:
+                  type: np.float64
+                  shape: ['*']
+                  unit: centimeter ** 3 / minute
+                  description: Oxygen process gas flow in to the reaction chamber
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Oxygen flow
+                    plot:
+                      x: elapsed_time
+                      y: oxygen_flow
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: centimeter ** 3 / minute
+                argon_push_titan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: centimeter ** 3 / minute
+                  description: Argon gas in the flash evaporator used to push Ti-Precursor into the reaction chamber
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Argon push Titan
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: centimeter ** 3 / minute
+                argon_purge_titan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: centimeter ** 3 / minute
+                  description: Argon gas in the flash evaporator used to purge Ti-Precursor
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Argon purge Titan
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: centimeter ** 3 / minute
+                vaporization_temperature_titan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: celsius
+                  description: Temperature in the flash evaporation to vaporize the Ti-precursor solution
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Vaporization temperature Titan
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: celsius
+                chamber_pressure:
+                  type: np.float64
+                  shape: ['*']
+                  unit: millibar
+                  description: Pressure applied in the reaction chamber
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Chamber pressure
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: millibar
+                substrate_temperature_filament:
+                  type: np.float64
+                  shape: ['*']
+                  unit: celsius
+                  description: Temperature applied on the filament in the reaction chamber 
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Substrate temperature
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: celsius
+                shaft_temperature:
+                  type: np.float64
+                  shape: ['*']
+                  unit: celsius
+                  description: Temperature applied on the shaft in the reaction chamber 
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Shaft temperature 
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: celsius
+                carrier_rotation:
+                  type: np.float64
+                  shape: ['*']
+                  unit: rpm
+                  description: Rotation velocity of the carrier with substrates
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Carrier rotation
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: rpm
+                peristaltic_pump_rotation_titan: 
+                  type: np.float64
+                  shape: ['*']
+                  unit: rpm
+                  description: Pumping velocity of the peristaltic pump of Ti
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Peristaltic pump rotation Titan
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: rpm
+                peristaltic_pump_rotation_strontium_lanthan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: rpm
+                  description: Pumping velocity of the peristaltic pump of Sr/La
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Peristaltic pump rotation Sr La
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: rpm
+                vaporization_temperature_strontium_lanthan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: celsius
+                  description: Temperature in the flash evaporation to vaporize the Sr/La precursor solution
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Vaporization temperature Sr La
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: celsius
+                argon_push_strontium_lanthan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: centimeter ** 3 / minute
+                  description: SCCM Argon gas in the flash evaporator used to push Sr/La-Precursor into the reaction chamber
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Argon push Sr La
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: centimeter ** 3 / minute
+                argon_purge_strontium_lanthan:
+                  type: np.float64
+                  shape: ['*']
+                  unit: centimeter ** 3 / minute
+                  description: SCCM Argon gas in the flash evaporator used to purge Sr/La-Precursor
+                  m_annotations:
+                    tabular:
+                      name: Processdata/Argon purge Sr La
+                #     eln:
+                #       component: NumberEditQuantity
+                #       defaultDisplayUnit: centimeter ** 3 / minute
+data:
+  m_def: Process_movpesto
+  data_file: ELAB-255.xlsx

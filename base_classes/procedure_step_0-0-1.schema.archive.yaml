@@ -1,19 +1,7 @@
 definitions:
-  name: 'Process step Base Class 0.0.1'
+  name: 'Procedure step Base Class 0.0.1'
   sections: 
-    Process_step:
-      base_section: ../upload/raw/base_classes/activity_0-0-1.schema.archive.yaml#Activity
-      # sub_sections:
-      #   reagents:
-      #     repeats: true
-      #     # m_annotations:
-      #     #   eln:
-      #     section: Sample
-      #   products:
-      #     repeats: true
-      #     # m_annotations:
-      #     #   eln:
-      #     section: Sample
+    Procedure_step:
       more:
         label_quantity: 'step_name'
       quantities:
@@ -23,18 +11,18 @@ definitions:
           m_annotations:
               eln:
                 component: StringEditQuantity
-        step_type:
-          type:
-            type_kind: Enum
-            type_data:
-              - Pre-process
-              - Process
-              - Post-process
-              - Measurement
-              - Storage
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
+        # step_type:
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - Pre-process
+        #       - Process
+        #       - Post-process
+        #       - Measurement
+        #       - Storage
+        #   m_annotations:
+        #     eln:
+        #       component: EnumEditQuantity
         step_number:
           type: int
           description: sequential number of the step on going

@@ -1,0 +1,16 @@
+definitions:
+  name: 'Process Base Class 0.0.1'
+  sections:  # Schemes consist of section definitions
+    Process:
+      base_section:  ../upload/raw/base_classes/activity_0-0-1.schema.archive.yaml#Activity
+      quantities:
+        comment:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        procedure:
+          repeats: true
+          section: '#/Procedure_step'

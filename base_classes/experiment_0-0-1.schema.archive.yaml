@@ -10,14 +10,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        temperature:
-          type: np.float64
-          unit: celsius
-          description: temperature 
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: celsius
         method:
           type: str
           description: my descr
