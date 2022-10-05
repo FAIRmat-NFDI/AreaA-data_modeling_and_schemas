@@ -4,14 +4,12 @@ definitions:
     MovpeSto_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
-      base_sections: 
-      - nomad.datamodel.data.EntryData
-      - nomad.parsing.tabular.TableData
+      base_section: nomad.datamodel.data.EntryData
       m_annotations:
         eln:
       quantities:
         activities:
-          type: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Activity #../upload/raw/process.archive.yaml#Process_movpesto
+          type: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Activity 
           shape: ['*']
       sub_sections:
         instrument:

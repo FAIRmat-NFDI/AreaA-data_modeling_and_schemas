@@ -279,6 +279,9 @@ definitions:
             Or
 
             any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
         activity_identifier:
           type: str
           m_annotations:
