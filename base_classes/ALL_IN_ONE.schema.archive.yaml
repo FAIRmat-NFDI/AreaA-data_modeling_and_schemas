@@ -28,6 +28,8 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity  
+    Experiment: # THIS IS 0.0.1
+      base_section:  '#/Entity'
     Material: # THIS IS 0.0.1
       base_section: '#/Entity'
       quantities:

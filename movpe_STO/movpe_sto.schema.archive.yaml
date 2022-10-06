@@ -4,13 +4,10 @@ definitions:
     MovpeSto_schema:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
-      base_section: nomad.datamodel.data.EntryData
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
-      quantities:
-        activities:
-          type: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Activity 
-          shape: ['*']
+          dict()
       sub_sections:
         instrument:
           section:
@@ -22,25 +19,6 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        # materials:
-        #   section:
-        #     m_annotations:
-        #       eln:
-        #         dict()
-        #     quantities:
-        #       substrate:
-        #         type: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Material
-        #         shape: ['*']
-        #         m_annotations:
-        #           eln:
-        #             component: ReferenceEditQuantity
-        #       precursor:
-        #         type: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#EntityAndAmount
-        #         shape: ['*']
-        #         m_annotations:
-        #           eln:
-        #             component: ReferenceEditQuantity
-        
 
               # deposition_control_steps:
               #   section:

@@ -2,45 +2,4 @@ definitions:
   name: 'Experiment Base Class 0.0.1'
   sections:  # Schemes consist of section definitions
     Experiment:
-      base_section:  ../upload/raw/base_classes/activity_0-0-2.schema.archive.yaml#Activity
-      quantities:
-        comment:
-          type: str
-          description: my descr
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        method:
-          type: str
-          description: my descr
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        experiment_identifier:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Identifier
-            eln:
-              component: StringEditQuantity
-        experiment_location:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Location
-            eln:
-              component: StringEditQuantity
-        experiment_category:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Category
-            eln:
-              component: StringEditQuantity
-        experiment_method:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Synthesis Method
-            eln:
-              component: StringEditQuantity
+      base_section:  ../upload/raw/base_classes/entity_0-0-2.schema.archive.yaml#Entity

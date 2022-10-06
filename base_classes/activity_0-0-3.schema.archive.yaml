@@ -1,5 +1,5 @@
 definitions:
-  name: 'Activity Base Class 0.0.2'
+  name: 'Activity Base Class 0.0.3'
   sections:  # Schemes consist of section definitions
     Activity:
       base_section: "nomad.datamodel.data.EntryData"

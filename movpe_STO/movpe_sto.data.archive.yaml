@@ -1,4 +1,5 @@
 data:  
   m_def: ../upload/raw/movpe_sto.schema.archive.yaml#MovpeSto_schema 
-  activities: 
+  history: 
+    activities:
     - ../upload/raw/process.archive.yaml#data
