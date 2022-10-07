@@ -1,9 +1,9 @@
 definitions:
-  name: 'Process base class for MOVPE-STO'
+  name: 'Process for MOVPE-STO'
   sections:  # Schemas consist of section definitions
     Process_movpesto:
       base_sections: 
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Activity
+      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
       -  nomad.parsing.tabular.TableData
       quantities:
         data_file:
@@ -26,14 +26,14 @@ definitions:
           type: str
           m_annotations:
             tabular:
-              name: Overview/Experiment Identifier
+              name: Overview/Activity Identifier
             eln:
               component: StringEditQuantity
         location:
           type: str
           m_annotations:
             tabular:
-              name: Overview/Experiment Location
+              name: Overview/Activity Location
             eln:
               component: StringEditQuantity
         start_time:
@@ -50,18 +50,18 @@ definitions:
               name: Overview/End Time
             eln:
               component: DateTimeEditQuantity
-        category:
+        activity_category:
           type: str
           m_annotations:
             tabular:
-              name: Overview/Synthesis Category
+              name: Overview/Activity Category
             eln:
               component: StringEditQuantity
-        method_or_technique:
+        activity_method:
           type: str
           m_annotations:
             tabular:
-              name: Overview/Synthesis Method
+              name: Overview/Activity Method
             eln:
               component: StringEditQuantity
         film:
@@ -373,4 +373,4 @@ definitions:
               #       defaultDisplayUnit: centimeter ** 3 / minute
 data:
   m_def: Process_movpesto
-  data_file: ELAB-255.xlsx
+  data_file: datafile.xlsx

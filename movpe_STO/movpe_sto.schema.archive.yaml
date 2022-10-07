@@ -1,7 +1,7 @@
 definitions:
   name: 'Electronic Lab Notebook schema for MOVPE-STO'
   sections:  # Schemas consist of section definitions
-    MovpeSto_schema:  # This is the name of the first section
+    MovpeSto_experiment:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
       base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Experiment 
@@ -19,7 +19,6 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-
               # deposition_control_steps:
               #   section:
               #     base_section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
@@ -157,29 +156,6 @@ definitions:
               #       #   eln:
               #       #     component: NumberEditQuantity
               #       #     defaultDisplayUnit:
-              # HR_XRD_measurements:
-              #   section:
-              #     quantities:
-              #       thickness:
-              #         type: np.float64
-              #         unit: nanometer
-              #         description: Film thickness obtained from HRXRD
-              #         m_annotations:
-              #           tabular:
-              #             name: HR XRD/Thickness
-              #           eln:
-              #             component: NumberEditQuantity
-              #             defaultDisplayUnit: nanometer
-              #       d_vert:
-              #         type: np.float64
-              #         unit: angstrom
-              #         description: "Vertical lattice parameter d_vert obtained from HRXRD"
-              #         m_annotations:
-              #           tabular:
-              #             name: HR XRD/d Vertical
-              #           eln:
-              #             component: NumberEditQuantity
-              #             defaultDisplayUnit: angstrom
               # AFM_measurements:
               #   section:
               #     quantities:
