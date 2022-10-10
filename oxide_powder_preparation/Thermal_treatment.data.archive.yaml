@@ -5,10 +5,10 @@ data:
   end_time: 2022-09-01 10:01+01
   temperature: 25
   method: test2
-  experiment_identifier: test3
-  experiment_location: test4
-  process_category: test5
-  process_method: test6
+  activity_identifier: test3
+  activity_location: test4
+  activity_category: test5
+  activity_method: test6
   dose: 43
   net_mass_before: 45
   crucible_model: mymodel

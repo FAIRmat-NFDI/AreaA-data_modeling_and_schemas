@@ -166,26 +166,26 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        method: 
-          type:
-            type_kind: Enum
-            type_data:
-              - experimental
-              - simulation
-              - declared_by_vendor
-              - nominal
-          m_annotations:
-            eln:
-              component: RadioEnumEditQuantity
-        synthesis_method:
-          type:
-            type_kind: Enum
-            type_data:
-              - MOVPE
-              - what not
-          m_annotations:
-            eln:
-              component: RadioEnumEditQuantity
+        # method: 
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - experimental
+        #       - simulation
+        #       - declared_by_vendor
+        #       - nominal
+        #   m_annotations:
+        #     eln:
+        #       component: RadioEnumEditQuantity
+        # synthesis_method:
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - MOVPE
+        #       - what not
+        #   m_annotations:
+        #     eln:
+        #       component: RadioEnumEditQuantity
         comment:
           type: str
           m_annotations:

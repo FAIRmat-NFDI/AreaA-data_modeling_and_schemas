@@ -15,4 +15,4 @@ data:
       volume: 670000
   components:
     - ../upload/raw/Substance1.data.archive.yaml#data 
-    - ../upload/raw/SubstanceWithAmount.data.archive.yaml#data 
+    - ../upload/raw/SubstanceAndAmount.data.archive.yaml#data 
