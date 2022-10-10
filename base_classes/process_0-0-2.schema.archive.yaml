@@ -6,7 +6,7 @@ definitions:
       quantities:
         comment:
           type: str
-          description: my descr
+          description: a comment to the current procedure step 
           m_annotations:
             eln:
               component: StringEditQuantity

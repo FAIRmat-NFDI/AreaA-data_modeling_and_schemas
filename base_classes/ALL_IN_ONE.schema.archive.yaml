@@ -30,6 +30,13 @@ definitions:
                     component: ReferenceEditQuantity  
     Experiment: # THIS IS 0.0.1
       base_section:  '#/Entity'
+      quantities:
+        experiment_goal:
+          type: str
+          description: indicate here the goal aimed with this experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     Material: # THIS IS 0.0.1
       base_section: '#/Entity'
       quantities:
