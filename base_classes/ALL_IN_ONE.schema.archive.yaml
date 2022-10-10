@@ -168,12 +168,7 @@ definitions:
                           component: NumberEditQuantity
                           defaultDisplayUnit: millimeter ** 3
       quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        # method: 
+        # data_source: 
         #   type:
         #     type_kind: Enum
         #     type_data:
