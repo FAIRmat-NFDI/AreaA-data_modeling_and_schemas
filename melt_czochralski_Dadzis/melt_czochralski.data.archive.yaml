@@ -15,12 +15,12 @@ data:
     software: multilog vXXX
     sampling_time: 1000
   process: #section name - not to be filled
-    experiment_identifier:
-    experiment_location:
+    activity_identifier: my_id
+    location: Berlin
     start_time: 2021-03-04 10:15:00+01
     end_time: 2021-03-04 10:15:00+01
-    synthesis_category: melt
-    synthesis_method: Czochralski
+    activity_category: crystal growth synthesis
+    activity_method: Melt Czochralski
     # process_steps: #section name - not to be filled
     #   pre_process: #section name - not to be filled
     #     timestamp: 2021-03-04 10:15:00+01

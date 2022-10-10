@@ -275,6 +275,7 @@ definitions:
             type_kind: Enum
             type_data:
               - ALL THE TECHNIQUES HERE
+              - Melt Czochralski
           description: |
             a method is a series of steps for performing a function or accomplishing a result.
 

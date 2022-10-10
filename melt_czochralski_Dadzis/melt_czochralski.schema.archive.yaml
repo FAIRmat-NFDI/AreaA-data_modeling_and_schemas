@@ -98,129 +98,13 @@ definitions:
                 description: "Time between sampled points"
         process:
           section:
-            #m_annotations:
-            #  eln:
-            quantities:
-              experiment_identifier:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              experiment_location:
-                type: str
-                m_annotations:
-                  #tabular:
-                  #  name: Overview/Start Time
-                  eln:
-                    component: StringEditQuantity
-              start_time:
-                type: Datetime
-                m_annotations:
-                  #tabular:
-                  #  name: Overview/Start Time
-                  eln:
-                    component: DateTimeEditQuantity
-              end_time:
-                type: Datetime
-                m_annotations:
-                  #tabular:
-                  #  name: Overview/Start Time
-                  eln:
-                    component: DateTimeEditQuantity
-              process_category:
-                type: str
-                m_annotations:
-                  #tabular:
-                  #  name: Overview/Start Time
-                  eln:
-                    component: StringEditQuantity
-              process_method:
-                type: str
-                m_annotations:
-                  #tabular:
-                  #  name: Overview/Start Time
-                  eln:
-                    component: StringEditQuantity
+            base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process 
             sub_sections:
-              process_steps:
+              procedure:
                 repeats: true
-                section:
-                  # repeats: true
-                  # base_section: nomad.parsing.tabular.TableData
-                  #m_annotations:
-                  #  eln:
+                section: 
+                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Procedure_step
                   quantities:
-                    process_type:
-                      type:
-                        type_kind: Enum
-                        type_data:
-                          - Pre-process
-                          - Process
-                          - Post-process
-                          - Measurement
-                          - Storage
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                    step_duration:
-                      type: np.float64
-                      unit: minute
-                      shape: ['*']
-                      description: Past time since process start
-                      m_annotations:
-                        #tabular:
-                        #  name: Processdata/Duration
-                        eln:
-                          component: NumberEditQuantity #DateTimeEditQuantity
-                        #  defaultDisplayUnit: minute
-                    elapsed_time:
-                      type: np.float64
-                      unit: minute
-                      shape: ['*']
-                      description: Duration of each step
-                      m_annotations:
-                        #tabular:
-                        #  name: Processdata/Timestamp
-                        #  unit: minute
-                        eln:
-                          component: NumberEditQuantity
-                        #   defaultDisplayUnit: minute
-                    step_number:
-                      type: int
-                      shape: ['*']
-                      description: sequential number of the step on going
-                      m_annotations:
-                        #tabular:
-                        #  name: Processdata/Step
-                        eln:
-                          component: NumberEditQuantity
-                    step_title: 
-                      type: str
-                      shape: ['*']
-                      description: what this step consists of
-                      m_annotations:
-                        #tabular:
-                        #  name: Processdata/Reason
-                        eln:
-                          component: StringEditQuantity
-                    step_comment:
-                      type: str
-                      shape: ['*']
-                      description: more verbose description of the step
-                      m_annotations:
-                        #tabular:
-                        #  name: Processdata/Description
-                        eln:
-                          component: StringEditQuantity 
-                    step_annotation:
-                      type: str
-                      shape: ['*']
-                      description: final remarks on the step
-                      m_annotations:
-                        #tabular:
-                        #  name: Processdata/Annotations
-                        eln:
-                          component: StringEditQuantity 
                     crystal_diameter:
                       type: str
                       m_annotations:

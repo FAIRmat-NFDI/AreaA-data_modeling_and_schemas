@@ -30,7 +30,7 @@ definitions:
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-        category:
+        activity_category:
           type:
             type_kind: Enum
             type_data:
@@ -48,7 +48,7 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        method_or_technique:
+        activity_method:
           type: 
             type_kind: Enum
             type_data:
