@@ -55,7 +55,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Powder_mixture:
+    Powder_sample:
       # base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
       base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
 

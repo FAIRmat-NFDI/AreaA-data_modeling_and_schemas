@@ -6,6 +6,9 @@ definitions:
       quantities:
         component:
           type: ../upload/raw/base_classes/material_0-0-1.schema.archive.yaml#Material
+          description: |
+            Note: this is not a list, 
+            it is a sigle Material entity connected to a specified amount during an activity
           m_annotations:
             eln:
               component: ReferenceEditQuantity
