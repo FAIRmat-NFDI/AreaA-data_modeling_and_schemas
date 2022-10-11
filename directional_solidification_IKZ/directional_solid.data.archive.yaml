@@ -1,0 +1,9 @@
+data:  
+  m_def: ../upload/raw/directional_solid.schema.archive.yaml#DirSol_experiment 
+  users:
+    responsible_person:
+      - user_id: "8e6f6796-d4f0-409a-85d2-1b8810c8c3a1"
+  history: 
+    activities:
+      - ../upload/raw/einwaage.data.archive.yaml#data
+      - ../upload/raw/process.archive.yaml#data

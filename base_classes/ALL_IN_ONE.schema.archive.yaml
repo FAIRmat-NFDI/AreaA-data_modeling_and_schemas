@@ -1,5 +1,5 @@
 definitions:
-  name: 'Entity, Material, and Activity Base Class'
+  name: 'Multiple Base Class'
   sections:  # Schemes consist of section definitions
     Entity: # THIS IS 0.0.2
       m_annotations:
@@ -243,13 +243,13 @@ definitions:
             eln:
               component: DateTimeEditQuantity
         input_materials:
-          type: Material
+          type: '#/Material'
           shape: ['*']
           m_annotations:
             eln:
               component: ReferenceEditQuantity
         output_materials:
-          type: Material
+          type: '#/Material'
           shape: ['*']
           m_annotations:
             eln:

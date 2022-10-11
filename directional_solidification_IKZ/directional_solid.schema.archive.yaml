@@ -1,0 +1,220 @@
+definitions:
+  name: 'Directional Solidification Scheme'
+  sections:  # Schemas consist of section definitions
+    DirSol_experiment:  # This is the name of the first section
+      # Inheriting it from EntryData, makes this section a possible
+      # EntryArchive.data sub-section
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Experiment 
+      m_annotations:
+        eln:
+          dict()
+      sub_sections:
+        instrument:
+          section:
+            m_annotations:
+              eln:
+            quantities:
+              setup_notes:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              furnace_id:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              vacuum_before_gas_inlet:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+            sub_sections:
+              permanent_setup:
+                section:
+                  quantities:
+                    test1:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              actual_setup:
+                section:
+                  quantities:
+                    test2:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              crucible:
+                section:
+                  quantities:
+                    crucible_id:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    crucible_weight:
+                      type: np.float64
+                      unit: gram
+                      description: weight in grams of crucible
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: gram
+                    crucible_name:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    crucible_coating:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    crucible_pretreatment:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              magnetic_field_settings:
+                section:
+                  quantities:
+                    test3:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              gas_settings:
+                repeats: true
+                section:  
+                  quantities:
+                    gas:
+                      type: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Material
+                      m_annotations:
+                        eln:
+                          component: ReferenceEditQuantity
+                    flow:
+                      type: np.float64
+                      unit: L/minute
+                      description: Velocity of gas flow
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: L/minute
+                    pressure:
+                      type: np.float64
+                      unit: mbar
+                      description: Pressure of gas
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mbar
+    Process_einwaage:
+      # base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
+      quantities:
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
+        net_mass_before:
+          type: np.float64
+          unit: gram
+          description: net mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_mass:
+          type: np.float64
+          unit: gram
+          description: crucible mass
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        brutto_mass_before:
+          type: np.float64
+          unit: gram
+          description: brutto mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        atmosphere:
+          type: str
+          description: which atmosphere is choosen for th experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        oven:
+          type: str
+          description: oven used in the experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Process_DS_manual_protocol:
+      # base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
+      quantities:
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
+        net_mass_before:
+          type: np.float64
+          unit: gram
+          description: net mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_mass:
+          type: np.float64
+          unit: gram
+          description: crucible mass
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        brutto_mass_before:
+          type: np.float64
+          unit: gram
+          description: brutto mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        atmosphere:
+          type: str
+          description: which atmosphere is choosen for th experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        oven:
+          type: str
+          description: oven used in the experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
