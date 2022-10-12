@@ -642,3 +642,91 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mL/minute
+    Sensor:
+      quantities:
+        model:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: "name for the sensor"
+        sensor_id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: "ID of the applied sensor"
+        attached_to:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: your port or channel where sensor is attached
+        measured_property:
+          type:
+            type_kind: Enum
+            type_data:
+              - temperature
+              - pH
+              - magnetic_field
+              - electric_field
+              - conductivity
+              - resistance
+              - voltage
+              - pressure
+              - flow
+              - stress
+              - strain
+              - shear
+              - surface_pressure
+          description: "name for measured signal"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        type:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: |
+            The type of hardware used for the measurement.
+            Examples (suggestions but not restrictions):
+            Temperature: J | K | T | E | R | S | Pt100 | Rh/Fe
+            pH: Hg/Hg2Cl2 | Ag/AgCl | ISFET
+            Ion selective electrode: specify species; e.g. Ca2+
+            Magnetic field: Hall
+            Surface pressure: wilhelmy plate
+        notes:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: "Notes or comments for the sensor"
+        value_set:
+          type: np.float64
+          shape: ['*']
+          description: |
+            For each point in the scan space, either the nominal
+            setpoint of an independently scanned controller
+            or a representative average value of a measurement sensor is registered.
+        value_log:
+          type: np.float64
+          shape: ['*']
+          description: Time history of sensor readings. May differ from setpoint
+        value_timestamp_rel:
+          type: np.float64
+          shape: ['*']
+          description: Relative time in measurement series.
+        value_timestamp_abs:
+          type: Datetime
+          shape: ['*']
+          description: |
+            Timestamp for when the values provided in the value field were registered.
+            Individual readings can be stored with their timestamps under value_log.
+            This is to timestamp the nominal setpoint or
+            average reading values listed above in the value field.
