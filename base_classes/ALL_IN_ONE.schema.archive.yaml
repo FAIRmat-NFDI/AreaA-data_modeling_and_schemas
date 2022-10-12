@@ -63,7 +63,7 @@ definitions:
           repeats: true
           #m_annotations:
           #  eln:
-          section: ../upload/raw/base_classes/entity_amount_0-0-1.schema.archive.yaml#EntityAndAmount
+          section: '#/EntityAndAmount'
       quantities:
         comment:
           type: str
