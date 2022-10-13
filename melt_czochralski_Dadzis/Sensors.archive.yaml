@@ -55,7 +55,7 @@ definitions:
                 - label: My test plot label 1
                   x: value_timestamp_rel
                   y: value_log
-            base_section: ../upload/raw/base_classes/sensor_0-0-1.schema.archive.yaml#Sensor  
+            base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sensor  
             quantities:
               value_log:  # The one we actually measure
                 type: np.float64  # TODO try if that can be removed, it's already present in parent class
@@ -79,7 +79,7 @@ definitions:
                 - label: My test plot label 1
                   x: value_timestamp_rel
                   y: value_log
-            base_section: ../upload/raw/base_classes/sensor_0-0-1.schema.archive.yaml#Sensor  
+            base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sensor  
             quantities:
               emission:
                 type: int
