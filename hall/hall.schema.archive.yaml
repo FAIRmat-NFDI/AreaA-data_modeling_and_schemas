@@ -2,7 +2,7 @@ definitions:
   name: 'Electronic Lab Notebook for Hall'
   sections:  # Schemes consist of section definitions
     Process_hall:
-      base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
       quantities:
         dose:
           type: np.float64
@@ -70,15 +70,9 @@ definitions:
                 component: EnumEditQuantity
     Hall_measurement:
       base_sections:
-        #- "nomad.datamodel.metainfo.eln.NexusParser"
+        - "nomad.datamodel.metainfo.eln.NexusParser"
         - "nomad.datamodel.data.EntryData"
       m_annotations:
-        #template:
-          #reader: hall
-          #nxdl: NXroot.nxdl
-      #   eln:
-      #     hide: []
-      # m_annotations:
         eln:
           dict()
       sub_sections:
@@ -132,7 +126,7 @@ definitions:
                 # m_annotations:
                 #   eln:
                 section: 
-                  base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
                   quantities:
                     epitaxy_type:
                       type:
@@ -148,7 +142,7 @@ definitions:
                 # m_annotations:
                 #   eln:
                 section: 
-                  base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
                   quantities:
                     epitaxy_type:
                       type:
@@ -162,7 +156,7 @@ definitions:
               final_sample:
                 repeats: true
                 section: 
-                  base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
                   m_annotations:
                     eln:
                       dict()
@@ -181,14 +175,14 @@ definitions:
                               eln:
                                 dict()
                             section: 
-                              base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
+                              base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
                           process_steps:
                             repeats: true
                             m_annotations:
                               eln:
                                 dict()
                             section: 
-                              base_section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
+                              base_section: ../upload/raw/base_classes/procedure_step_0-0-1.schema.archive.yaml#Procedure_step
                     room_temperature_measurement:
                       section:
                         m_annotations:

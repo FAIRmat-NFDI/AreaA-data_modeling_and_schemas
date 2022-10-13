@@ -1,5 +1,7 @@
 data:  
   m_def: ../upload/raw/hall.schema.archive.yaml#Hall_measurement
+  reader: hall
+  nxdl: NXroot
   users:  #section name - not to be filled
     user: 
       - 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
