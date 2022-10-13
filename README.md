@@ -6,6 +6,14 @@
 
 - - - -
 
+## Base Classes Hierarchy:
+
+![Base Classes](https://box.hu-berlin.de/f/4582a93e93314b5b8dbd/?dl=1)
+
+These base section have got an <em>a priori</em> **inheritance** structure. The user can further decide how to put together this bricks by means of **referencing**. 
+
+## About this repo:
+
 This is a collection of blueprint schemes that include several kinds of experiment.  
 
 The schemes here implemented are compliant to the NOMAD data structure: the hierarchy is composed by Sections, Subsections and Quantities (data fields).
@@ -64,10 +72,3 @@ Various | Experiments permormed in Max Planck Institute for Chemical Physics of 
 
 - - - -
 
-## A Schema Prototype
-
-### Base Sections (or Base Classes):
-
-![Base Classes](https://box.hu-berlin.de/f/609490a1c373425babdb/?dl=1)
-
-These base section have got an <em>a priori</em> **inheritance** structure. The user can further decide how to put together this bricks by means of **referencing**. 
