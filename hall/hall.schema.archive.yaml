@@ -2,7 +2,7 @@ definitions:
   name: 'Electronic Lab Notebook for Hall'
   sections:  # Schemes consist of section definitions
     Process_hall:
-      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
       quantities:
         dose:
           type: np.float64
@@ -126,7 +126,7 @@ definitions:
                 # m_annotations:
                 #   eln:
                 section: 
-                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
                   quantities:
                     epitaxy_type:
                       type:
@@ -142,7 +142,7 @@ definitions:
                 # m_annotations:
                 #   eln:
                 section: 
-                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
                   quantities:
                     epitaxy_type:
                       type:
@@ -156,7 +156,7 @@ definitions:
               final_sample:
                 repeats: true
                 section: 
-                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
                   m_annotations:
                     eln:
                       dict()
@@ -175,7 +175,7 @@ definitions:
                               eln:
                                 dict()
                             section: 
-                              base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
+                              base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
                           process_steps:
                             repeats: true
                             m_annotations:

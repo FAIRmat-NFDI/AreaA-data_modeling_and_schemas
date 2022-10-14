@@ -1,5 +1,5 @@
 data:
-  m_def: ../upload/raw/base_classes/substrate_0-0-1.schema.archive.yaml#Substrate
+  m_def: ../upload/raw/base_classes.schema.archive.yaml#Substrate
   SampleID:
     institute: IKZ
     sample_owner: Mohamed

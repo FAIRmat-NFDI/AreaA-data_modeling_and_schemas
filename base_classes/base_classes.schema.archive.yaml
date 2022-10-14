@@ -1,7 +1,7 @@
 definitions:
   name: 'Multiple Base Class'
   sections:  # Schemes consist of section definitions
-    Entity: # THIS IS 0.0.2
+    Entity:
       m_annotations:
         eln:
           dict()
@@ -28,7 +28,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity  
-    Experiment: # THIS IS 0.0.1
+    Experiment: 
       base_section:  '#/Entity'
       quantities:
         experiment_goal:
@@ -37,7 +37,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Material: # THIS IS 0.0.1
+    Material: 
       base_section: '#/Entity'
       quantities:
         test:
@@ -45,7 +45,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Substrate:
+    Substrate: 
       base_section: '#/Material'
       sub_sections:
         SampleID:
@@ -126,7 +126,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Sample: # THIS IS 0.0.2
+    Sample: 
       base_section: '#/Material'
       sub_sections:
         SampleID:
@@ -306,7 +306,7 @@ definitions:
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-    Activity: # THIS IS 0.0.4
+    Activity: 
       base_section: "nomad.datamodel.data.EntryData"
       quantities:
         start_time:
@@ -398,9 +398,9 @@ definitions:
                 m_annotations:
                   eln:
                     component: AuthorEditQuantity
-    Measurement:  # THIS IS 0.0.1
+    Measurement:  
       base_section:  '#/Activity'
-    Procedure_step:  # THIS IS 0.0.1
+    Procedure_step:  
       more:
         label_quantity: 'step_name'
       quantities:
@@ -450,7 +450,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    Process: # THIS IS 0.0.2
+    Process:
       base_section:  '#/Activity'
       quantities:
         comment:
@@ -463,7 +463,7 @@ definitions:
         procedure:
           repeats: true
           section: '#/Procedure_step'
-    Substance: # THIS IS 0.0.3
+    Substance: 
       base_section: '#/Material'
       more:
         label_quantity: iupac_name
@@ -580,7 +580,7 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-    EntityAndAmount: # THIS IS 0.0.2
+    EntityAndAmount: 
       base_section: '#/Material'
       quantities:
         component:

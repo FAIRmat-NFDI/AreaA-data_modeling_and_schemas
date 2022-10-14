@@ -3,5 +3,5 @@ definitions:
   sections:  # Schemas consist of section definitions
     Process_deposition_control_movpesto:
       base_sections: 
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
+      - ../upload/raw/base_classes.schema.archive.yaml#Process
       -  nomad.parsing.tabular.TableData

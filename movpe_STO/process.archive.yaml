@@ -3,7 +3,7 @@ definitions:
   sections:  # Schemas consist of section definitions
     Process_movpesto:
       base_sections: 
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
+      - ../upload/raw/base_classes.schema.archive.yaml#Process
       -  nomad.parsing.tabular.TableData
       quantities:
         data_file:
@@ -92,7 +92,7 @@ definitions:
         procedure:
           section:
             repeats: true
-            base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Procedure_step
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
             m_annotations:
               eln:
               plot:

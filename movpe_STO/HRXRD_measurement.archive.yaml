@@ -3,7 +3,7 @@ definitions:
   sections:  # Schemas consist of section definitions
     Measurement_hrxrd:
       base_sections: 
-      - ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Measurement
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
       -  nomad.parsing.tabular.TableData 
       quantities:
         data_file:

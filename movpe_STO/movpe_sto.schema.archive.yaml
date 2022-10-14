@@ -4,7 +4,7 @@ definitions:
     MovpeSto_experiment:  # This is the name of the first section
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
-      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Experiment 
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
           dict()

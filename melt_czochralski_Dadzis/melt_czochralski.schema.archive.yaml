@@ -98,12 +98,12 @@ definitions:
                 description: "Time between sampled points"
         process:
           section:
-            base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process 
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Process 
             sub_sections:
               procedure:
                 repeats: true
                 section: 
-                  base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Procedure_step
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
                   quantities:
                     crystal_diameter:
                       type: str

@@ -3,7 +3,7 @@ definitions:
   sections:
     Process_einwaage:
       # base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
-      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
       quantities:
         dose:
           type: np.float64
@@ -57,7 +57,7 @@ definitions:
               component: StringEditQuantity
     Powder_sample:
       # base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
-      base_section: ../upload/raw/base_classes/ALL_IN_ONE.schema.archive.yaml#Sample
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
 
       # quantities:
       #   creation_date:
