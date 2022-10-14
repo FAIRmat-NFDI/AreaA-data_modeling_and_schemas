@@ -16,6 +16,6 @@ a yaml file built with the corresponding schema file structure.
 
 files are in preparation
 
- ## base classes subfolder
+## base classes file
 
-this folder is placed in the root level of the repo, the user have to zip it and drag and drop together to the other files. The user finds a zipped copy of base_classes in each experiment folder.
+this file is placed in the base_classes folder in the root level of the repo, the user will find a copy of it in her/his folder and have to drag and drop it together to the other files when starting an upload.

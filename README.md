@@ -42,7 +42,7 @@ Each folder contains four categories of files, the user can try to drag and drop
 
 * data set: depending on the outcomes of the experiment, the user will have one or more files where the monitored parameters and metadata are stored. The data set files have **.txt.**, **.dat**, **.csv** or **.xlsx** extension.
 
-* base classes: sections with fixed structure collected in base_classes folder, the user will find a zipped copy of this base_classes folder that must be included in the upload.
+* base classes: sections with fixed structure collected in base_classes folder, the user will find a copy of this base_classes file that must be included in the upload.
 
 - - - -
 
