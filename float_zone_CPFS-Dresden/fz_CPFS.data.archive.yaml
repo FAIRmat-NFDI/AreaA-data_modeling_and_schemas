@@ -1,0 +1,46 @@
+data:  
+  m_def: ../upload/raw/fz_CPFS.schema.archive.yaml#Float_zone_experiment
+  users:  #section name - not to be filled
+    responsible_person: 
+      - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+  instrument:  #section name - not to be filled
+    furnace:
+      name: B1.2.3.2
+      manufacturer: HeaterPower
+      melting_type: Induction
+    rod:
+      rod_preparation: text 
+      seed_rod_diameter: 12
+      feed_rod_diameter: 12
+      feed_rod_crystal_diameter: 001
+  # history:
+  #   activities:
+  #    - "../upload/raw/process.data.archive.yaml#data"
+  process:
+    users:  
+      responsible_person: 
+        - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+      operator:
+        - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+    target_material: NaCl
+    start_time: 2022-10-14 10:00+02
+    activity_category: crystal growth synthesis
+    activity_method: float zone
+    activity_identifier: xyz456
+    location: Dresden
+    input_materials:
+     - ../upload/raw/SubstanceAndAmount1.data.archive.yaml#data 
+     - ../upload/raw/SubstanceAndAmount2.data.archive.yaml#data 
+    output_materials:
+     - ../upload/raw/Sample.data.archive.yaml#data 
+    procedure:
+      - step_name: synthesis
+        step_number: 1
+        step_comment: my_comment
+        step_duration: 2
+        elapsed_time: 2
+        melting_power: 13
+        growth_power: 14
+        rotation_speed: 11
+        rotation_direction: text
+        pulling_rate: 10

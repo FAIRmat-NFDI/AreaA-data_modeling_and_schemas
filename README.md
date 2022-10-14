@@ -8,7 +8,7 @@
 
 ## Base Classes Hierarchy:
 
-![Base Classes](https://box.hu-berlin.de/f/4582a93e93314b5b8dbd/?dl=1)
+![Base Classes](https://box.hu-berlin.de/f/609490a1c373425babdb/?dl=1)
 
 These base section have got an <em>a priori</em> **inheritance** structure. The user can further decide how to put together this bricks by means of **referencing**. 
 
@@ -53,7 +53,9 @@ In the subfolders, a dedicated README documents the file set for each use case.
 
 category | experiment | folder name
 -|-|-|
-Crystal Growth | Float Zone| FZ_IKZ
+Crystal Growth | Float Zone | float_zone_IKZ
+Crystal Growth | Float Zone | float_zone_CPFS
+Crystal Growth | Flux growth | flux_growth_CPFS
 Crystal Growth | Melt Czochralski | melt_czochralski_Dadzis
 Crystal Growth | Melt Czochralski | melt_czochralski_Dropka
 Sinterization (Precursor Preparation) | Oxide Powder | oxide_powder_preparation

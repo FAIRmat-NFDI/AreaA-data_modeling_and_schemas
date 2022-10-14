@@ -1,0 +1,120 @@
+definitions:
+  name: 'Electronic Lab Notebook for Float Zone'
+  sections:  # Schemes consist of section definitions
+    Float_zone_experiment:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment      
+      m_annotations:
+        eln:
+          dict()
+      sub_sections:
+        instrument:
+          section:
+            m_annotations:
+              eln:
+            sub_sections:
+              furnace:
+                section:
+                  quantities:
+                    name: 
+                      type: str
+                      description: my descr
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    manufacturer: 
+                      type: str
+                      description: my descr
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    melting_type: 
+                      type: str
+                      description: my descr
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              rod:
+                section:
+                  quantities:
+                    rod_preparation: 
+                      type: str
+                      description: my descr
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    seed_rod_diameter:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    feed_rod_diameter:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    feed_rod_crystal_diameter:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+        process:
+          section:
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+            quantities:
+              target_material:
+                type: str
+                description: SET DESCRIPTION
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+            sub_sections:
+              procedure:
+                repeats: true
+                section: 
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+                  quantities:
+                    melting_power:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    growth_power:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    rotation_speed:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    rotation_direction:
+                      type: str
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    pulling_rate:
+                      type: np.float64
+                      #unit: SET THE UNIT
+                      description: SET DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    
+
+
+# QUESTIONS:
+# is the rod an instrument or a material?

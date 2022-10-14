@@ -1,0 +1,8 @@
+data:
+  m_def: ../upload/raw/base_classes.schema.archive.yaml#EntityAndAmount
+  component: ../upload/raw/Substance1.data.archive.yaml#data
+  mass: 999
+  amount: 34
+  volume_solvent: 0.1
+  mass_concentration: 3
+  molar_concentration: 0.4

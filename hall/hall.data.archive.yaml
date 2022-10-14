@@ -3,16 +3,8 @@ data:
   reader: hall
   nxdl: NXroot
   users:  #section name - not to be filled
-    user: 
-      - 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
-    # - name: Andreas Fiedler 
-    #   role: Operator
-    #   affiliation_institution: Leibniz Institut für Kristallzüchtung
-    #   affiliation_group: Transport and Electrical Properties
-    #   address: test
-    #   email: test
-    #   orcid: test
-    #   telephone_number: test
+    responsible_person: 
+      - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
   instrument:  #section name - not to be filled
     model: Lake Shore Hall Measurement System
     voltmeter: Keithley 2182 Nanovoltmeter
