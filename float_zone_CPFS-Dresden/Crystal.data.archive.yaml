@@ -1,11 +1,12 @@
 data:
-  m_def: ../upload/raw/base_classes.schema.archive.yaml#Sample
+  m_def: ../upload/raw/base_classes.schema.archive.yaml#Crystal
   SampleID:
     institute: IKZ
     sample_owner: Giorgio
     creation_datetime: 2022-09-26
     sample_short_name: my_sample
     #sample_id:
+  orientation: 010
   geometry:
     parallelepiped:
       height: 54

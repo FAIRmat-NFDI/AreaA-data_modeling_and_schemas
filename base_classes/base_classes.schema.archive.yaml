@@ -50,7 +50,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Substrate: 
+    Sample: 
       base_section: '#/Material'
       sub_sections:
         SampleID:
@@ -64,11 +64,55 @@ definitions:
                 # hide: ['children', 'parents']
                 # hide: ['children', 'parents', institute]
                 hide: []
-        composition:
-          repeats: true
-          #m_annotations:
-          #  eln:
-          section: '#/EntityAndAmount'
+        geometry:
+          section: '#/Geometry'
+      quantities:
+        preparation_date:
+          type: str
+          description: creation date
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        iupac_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_of_matter:
+          type:
+            type_kind: Enum
+            type_data:
+              - single crystal
+              - policrystalline
+              - microcristalline powder
+              - amorphous solid
+              - liquid
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        safety_reactivity:
+          type:
+            type_kind: Enum
+            type_data:
+              - air sensitive
+              - poisonous
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        components:
+          type: '#/Material'
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Substrate: 
+      base_section: '#/Sample'
       quantities:
         supplier:
           type: str
@@ -108,199 +152,27 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        size:
-          type: str
-          description: Substrate dimensions
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         prepared:
-          type: str
+          type: bool
           description: Is the sample annealed, cleaned and etched for smooth stepped surface?
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: BoolEditQuantity
         recycled:
-          type: str
+          type: bool
           description: Was the substrate deposited already and is recycled by polishing?
           m_annotations:
             eln:
-              component: StringEditQuantity
-    Sample: 
-      base_section: '#/Material'
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
-        geometry:
-          section:
-            m_annotations:
-              eln:
-                dict()
-            sub_sections:
-              parallelepiped:
-                section:
-                  quantities:
-                    height:
-                      type: np.float64
-                      unit: nanometer
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    width:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    length:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    volume:
-                      type: np.float64
-                      unit: millimeter ** 3
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 3
-              cylinder:
-                section:
-                  quantities:
-                    height:
-                      type: np.float64
-                      unit: nanometer
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    lower_cap_radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    upper_cap_radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    cap_surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    lateral_surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    volume:
-                      type: np.float64
-                      unit: millimeter ** 3
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 3
+              component: BoolEditQuantity
+    Crystal: 
+      base_section: '#/Sample'
       quantities:
-        # data_source: 
-        #   type:
-        #     type_kind: Enum
-        #     type_data:
-        #       - experimental
-        #       - simulation
-        #       - declared_by_vendor
-        #       - nominal
-        #   m_annotations:
-        #     eln:
-        #       component: RadioEnumEditQuantity
-        # synthesis_method:
-        #   type:
-        #     type_kind: Enum
-        #     type_data:
-        #       - MOVPE
-        #       - what not
-        #   m_annotations:
-        #     eln:
-        #       component: RadioEnumEditQuantity
-        iupac_name:
+        orientation:
           type: str
+          description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity
-        empirical_formula:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        state_or_phase:
-          type:
-            type_kind: Enum
-            type_data:
-              - cristalline solid
-              - microcristalline solid
-              - powder
-          m_annotations:
-            eln:
-              component: RadioEnumEditQuantity
-        preparation_date:
-          type: str
-          description: creation date
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        components:
-          type: '#/Material'
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
     Activity: 
       base_section: "nomad.datamodel.data.EntryData"
       quantities:
@@ -722,3 +594,110 @@ definitions:
             Individual readings can be stored with their timestamps under value_log.
             This is to timestamp the nominal setpoint or
             average reading values listed above in the value field.
+    Geometry:
+      m_annotations:
+        eln:
+          dict()
+      sub_sections:
+        parallelepiped:
+          section:
+            quantities:
+              height:
+                type: np.float64
+                unit: nanometer
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nanometer
+              width:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              length:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              volume:
+                type: np.float64
+                unit: millimeter ** 3
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 3
+        cylinder:
+          section:
+            quantities:
+              height:
+                type: np.float64
+                unit: nanometer
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nanometer
+              radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              lower_cap_radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              upper_cap_radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              cap_surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              lateral_surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              volume:
+                type: np.float64
+                unit: millimeter ** 3
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 3

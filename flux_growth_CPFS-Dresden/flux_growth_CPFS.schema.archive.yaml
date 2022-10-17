@@ -1,5 +1,5 @@
 definitions:
-  name: 'Electronic Lab Notebook for Float Zone'
+  name: 'Electronic Lab Notebook for Flux Growth'
   sections:  # Schemes consist of section definitions
     Float_zone_experiment:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment      
@@ -33,36 +33,44 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              rod:
+              crucible:
                 section:
                   quantities:
-                    rod_preparation: 
+                    material: 
                       type: str
                       description: my descr
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    seed_rod_diameter:
+                    diameter:
                       type: np.float64
                       #unit: SET THE UNIT
                       description: SET DESCRIPTION
                       m_annotations:
                         eln:
                           component: NumberEditQuantity
-                    feed_rod_diameter:
+              tube:
+                section:
+                  quantities:
+                    material: 
+                      type: str
+                      description: my descr
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    diameter:
                       type: np.float64
                       #unit: SET THE UNIT
                       description: SET DESCRIPTION
                       m_annotations:
                         eln:
                           component: NumberEditQuantity
-                    feed_rod_crystal_diameter:
-                      type: np.float64
-                      #unit: SET THE UNIT
-                      description: SET DESCRIPTION
+                    filling: 
+                      type: str
+                      description: my descr
                       m_annotations:
                         eln:
-                          component: NumberEditQuantity
+                          component: StringEditQuantity
         process:
           section:
             base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
