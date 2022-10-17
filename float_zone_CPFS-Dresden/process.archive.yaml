@@ -90,9 +90,11 @@ definitions:
               component: StringEditQuantity
       sub_sections:
         procedure:
+          repeats: true
           section:
-            repeats: true
             base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+            more:
+              label_quantity: step_name
             m_annotations:
               eln:
               plot:
@@ -139,6 +141,15 @@ definitions:
                   line:
                     color: rgb(100, 0, 0)
             quantities:
+              step_name: 
+                type: str
+                shape: ['*']
+                description: what this step consists of
+                m_annotations:
+                  tabular:
+                    name: Processdata/Reason
+              #     eln:
+              #       component: StringEditQuantity
               step_type:
                 type:
                   type_kind: Enum
@@ -183,15 +194,6 @@ definitions:
                     name: Processdata/Step
               #     eln:
               #       component: NumberEditQuantity
-              step_name: 
-                type: str
-                shape: ['*']
-                description: what this step consists of
-                m_annotations:
-                  tabular:
-                    name: Processdata/Reason
-              #     eln:
-              #       component: StringEditQuantity
               step_comment:
                 type: str
                 shape: ['*']

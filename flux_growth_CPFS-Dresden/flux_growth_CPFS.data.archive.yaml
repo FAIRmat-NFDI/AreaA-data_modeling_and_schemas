@@ -1,5 +1,6 @@
 data:  
   m_def: ../upload/raw/flux_growth_CPFS.schema.archive.yaml#Float_zone_experiment
+  experiment_goal: synthesis of NaCl
   users:  #section name - not to be filled
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44

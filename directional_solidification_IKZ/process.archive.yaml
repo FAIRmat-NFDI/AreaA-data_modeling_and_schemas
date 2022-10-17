@@ -1,3 +1,6 @@
+data:
+  m_def: Process_movpesto
+  data_file: datafile.xlsx
 definitions:
   name: 'Process for MOVPE-STO'
   sections:  # Schemas consist of section definitions
@@ -90,9 +93,11 @@ definitions:
               component: StringEditQuantity
       sub_sections:
         procedure:
+          repeats: true
           section:
-            repeats: true
             base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+            more: 
+              label_quantity: step_name
             m_annotations:
               eln:
               plot:
@@ -371,6 +376,3 @@ definitions:
               #     eln:
               #       component: NumberEditQuantity
               #       defaultDisplayUnit: centimeter ** 3 / minute
-data:
-  m_def: Process_movpesto
-  data_file: datafile.xlsx

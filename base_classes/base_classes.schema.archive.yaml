@@ -274,8 +274,8 @@ definitions:
     Measurement:  
       base_section:  '#/Activity'
     Procedure_step:  
-      more:
-        label_quantity: 'step_name'
+      m_annotations:
+        eln:
       quantities:
         step_name: 
           type: str
@@ -331,7 +331,10 @@ definitions:
       sub_sections:
         procedure:
           repeats: true
-          section: '#/Procedure_step'
+          section: 
+            base_section: '#/Procedure_step'
+            more:
+              label_quantity: step_name # together to repeats: true
     Substance: 
       base_section: '#/Material'
       more:
