@@ -1,125 +1,12 @@
-# example data file for Float zone process at IKZ
 definitions:
-  name: 'FZ schema 20220727' # mandatory!?
-  sections:  # Schemas consist of section definitions
-    # User:
-    #   base_section: nomad.datamodel.data.EntryData # neccessary or not?
-    #   quantities:
-    #     role:
-    #       type:
-    #         type_kind: Enum
-    #         type_data:
-    #           - Operator
-    #           - Responsible_person
-    #       m_annotations:
-    #         eln:
-    #           component: EnumEditQuantity
-    #     name:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    #     affiliation_institution:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    #     affiliation_group:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    #     address:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    #     email:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    #     orcid:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    #     telephone_number:
-    #       type: str
-    #       m_annotations:
-    #         eln:
-    #           component: StringEditQuantity
-    FZ_IKZ_schema:  # This is the name of the first section
-      # Inheriting it from EntryData, makes this section a possible
-      # EntryArchive.data sub-section 
-      base_section: nomad.datamodel.data.EntryData
+  name: 'Float Zone schema' 
+  sections: 
+    FZ_IKZ_process: 
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
       m_annotations:
         eln:
           dict()
       sub_sections:
-        global:
-          section:
-            m_annotations:
-              eln:
-                overview: True
-            quantities:
-              tags:
-                type: str
-                shape: [('*')]
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              start_time:
-                type: Datetime
-                m_annotations:
-                  eln:
-                    component: DateTimeEditQuantity
-              end_time:
-                type: Datetime
-                m_annotations:
-                  eln:
-                    component: DateTimeEditQuantity
-              synthesis_category:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              synthesis_method:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-        users:
-          repeats: true
-          #m_annotations:
-          #  eln:
-          section:
-            quantities:
-              executed_by:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              #Name:
-              #  type: str #User
-              #  #shape: ['*']
-              #  description: my descr
-              #  m_annotations:
-              #    eln:
-              #      component: UserEditQuantity
-              #Name_test:
-              #  type: str #Author
-              #  #shape: ['*']
-              #  description: my descr
-              #  m_annotations:
-              #    eln:
-              #      component: AuthorEditQuantity
-
-            # base_section: User
-            # m_annotations:
-            #   eln:
-            #     overview: True
-            #     hide: ['affiliation_institution', 'affiliation_group','address','email','orcid','telephone_number' ]
         instrument:
           section:
             quantities:

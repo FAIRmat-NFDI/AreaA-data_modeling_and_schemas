@@ -4,9 +4,14 @@ definitions:
     Entity:
       m_annotations:
         eln:
-          dict()
       base_sections:
         - nomad.datamodel.data.EntryData
+      quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
       sub_sections:
         users:
           section:
@@ -65,11 +70,6 @@ definitions:
           #  eln:
           section: '#/EntityAndAmount'
       quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         supplier:
           type: str
           description: Sample preparation including orientating, polishing, cutting done by this company
@@ -269,11 +269,6 @@ definitions:
         #   m_annotations:
         #     eln:
         #       component: RadioEnumEditQuantity
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         iupac_name:
           type: str
           m_annotations:
@@ -309,6 +304,11 @@ definitions:
     Activity: 
       base_section: "nomad.datamodel.data.EntryData"
       quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         start_time:
           description: |
             The starting date and time of the activity.
@@ -358,7 +358,8 @@ definitions:
             type_kind: Enum
             type_data:
               - ALL THE TECHNIQUES HERE
-              - Melt Czochralski
+              - float zone
+              - melt czochralski
           description: |
             a method is a series of steps for performing a function or accomplishing a result.
 
@@ -452,13 +453,9 @@ definitions:
               defaultDisplayUnit: minute
     Process:
       base_section:  '#/Activity'
-      quantities:
-        comment:
-          type: str
-          description: my descr
-          m_annotations:
-            eln:
-              component: StringEditQuantity
+      m_annotations:
+        eln:
+          dict()
       sub_sections:
         procedure:
           repeats: true
@@ -480,11 +477,6 @@ definitions:
                 # hide: ['children', 'parents', institute]
                 hide: []
       quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         empirical_formula:
           type: str
           description: chemical formula
