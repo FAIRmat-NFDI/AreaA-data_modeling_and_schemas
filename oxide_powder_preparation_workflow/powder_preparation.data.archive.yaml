@@ -1,0 +1,32 @@
+data:
+  m_def: ../upload/raw/powder_preparation.schema.archive.yaml#PowderPreparation
+  total_mass: 50
+  formula: NaCl
+  comment: test1
+  start_time: 2022-09-01 10:00+01
+  end_time: 2022-09-01 10:01+01
+  activity_identifier: test3
+  activity_location: test4
+  activity_category: test5
+  activity_method: test6
+  inputs:
+    - name: component_1
+      section: ../upload/raw/Substance1.data.archive.yaml#data 
+    - name: component_2
+      section: ../upload/raw/SubstanceAndAmount.data.archive.yaml#data  
+  outputs:
+    - name: powder_sample
+      section: ../upload/raw/Sample.data.archive.yaml#data  
+  tasks:
+    - name: thermal treatment component 1
+      inputs: 
+        - name: component_1
+          section: ../upload/raw/Substance1.data.archive.yaml#data 
+      tasks:
+        - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference # ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
+          task: ../upload/raw/Thermal_treatment.data.archive.yaml#data 
+    - name: thermal treatment component 2
+      inputs: 
+        - name: component_2
+          section: ../upload/raw/Substance1.data.archive.yaml#data 
+      

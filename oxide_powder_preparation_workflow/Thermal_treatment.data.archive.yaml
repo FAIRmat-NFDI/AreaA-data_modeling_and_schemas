@@ -1,0 +1,23 @@
+data:
+  m_def: ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
+  comment: test1
+  start_time: 2022-09-01 10:00+01
+  end_time: 2022-09-01 10:01+01
+  temperature: 25
+  method: test2
+  activity_identifier: test3
+  activity_location: test4
+  activity_category: test5
+  activity_method: test6
+  dose: 43
+  net_mass_before: 45
+  crucible_model: mymodel
+  crucible_mass: 876
+  brutto_mass_before: 47
+  atmosphere: mystring
+  oven: test7
+  tasks:
+    - step_number:
+      step_comment:
+      step_duration:
+      elapsed_time:
