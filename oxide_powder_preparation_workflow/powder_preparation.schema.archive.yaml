@@ -2,7 +2,9 @@ definitions:
   name: 'Set your name here'
   sections:
     PowderPreparation:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment
+      base_sections: 
+        - ../upload/raw/base_classes.schema.archive.yaml#Experiment
+        - "nomad.datamodel.data.EntryData"
       quantities:
         total_mass:
           type: np.float64
