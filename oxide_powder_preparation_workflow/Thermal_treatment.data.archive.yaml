@@ -21,3 +21,8 @@ data:
       step_comment:
       step_duration:
       elapsed_time:
+    - step_number:
+      step_comment:
+      step_duration:
+      elapsed_time:
+
