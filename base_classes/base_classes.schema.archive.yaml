@@ -466,6 +466,11 @@ definitions:
     SubstanceBatch: 
       base_section: '#/Material'
       quantities:
+        component:
+          type: Material
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
         state_or_phase:
           type: str
           description: Phase of the chemical in the bottle
