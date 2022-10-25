@@ -40,7 +40,8 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity  
     Experiment: 
-      base_section:  '#/Entity'
+      base_sections:  
+       - '#/Activity'
       quantities:
         experiment_goal:
           type: str
@@ -48,6 +49,71 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+    Link:
+      description: |
+        Instances of Link are used to represent either a single input or single
+        output of a Task. Using a separate section for links allows to put
+        additional information (e.g. a name) on an input or output.
+      base_section: nomad.datamodel.data.ArchiveSection
+      m_annotations:
+        eln:
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        section:
+          type: '#/Entity' # nomad.datamodel.data.ArchiveSection 
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Task:
+      description: |
+        Instances of Task are used to represent an activity that happened during workflow
+        execution and that was acting on inputs to produce outputs.
+      base_section: nomad.datamodel.data.ArchiveSection
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        inputs:
+          repeats: True
+          section: '#/Link'
+        outputs:
+          repeats: True
+          section: '#/Link'
+    TaskReference:
+      description: |
+        A proxy section that can be used to compose a workflow of tasks that are contained
+        in a different entry or workflow.
+      base_section: '#/Task'
+      quantities:
+        task:
+          description: |
+            A reference to the task that this section is a proxy for.
+          type: '#/Task'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Workflow:
+      description: |
+        Instances of Workflow are used to represent a set of Tasks that connect input and
+        output data objects to produce a provenance graph for those data.
+
+        Workflows themselves can be tasks. This allows to build nested workflows where some
+        of the workflow tasks are workflows themselves.
+      base_section: '#/Task'
+      sub_sections:
+        tasks:
+          description: |
+            The tasks of this workflow as a repeating sub section. Use TaskReference if
+            tasks cannot be contained.
+          repeats: True
+          section: '#/Task'
     Material: 
       base_section: '#/Entity'
       quantities:
@@ -180,7 +246,8 @@ definitions:
             eln:
               component: StringEditQuantity
     Activity: 
-      base_section: "nomad.datamodel.data.EntryData"
+      base_sections: 
+       - '#/Workflow'
       quantities:
         comment:
           type: str
@@ -201,18 +268,18 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        input_materials:
-          type: '#/Material'
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-        output_materials:
-          type: '#/Material'
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
+        # input_materials:
+        #   type: '#/Material'
+        #   shape: ['*']
+        #   m_annotations:
+        #     eln:
+        #       component: ReferenceEditQuantity
+        # output_materials:
+        #   type: '#/Material'
+        #   shape: ['*']
+        #   m_annotations:
+        #     eln:
+        #       component: ReferenceEditQuantity
         activity_category:
           type:
             type_kind: Enum
@@ -255,7 +322,7 @@ definitions:
             #   name: Overview/Experiment Identifier
             eln:
               component: StringEditQuantity
-        location:
+        activity_location:
           type: str
           m_annotations:
             # tabular:
@@ -281,6 +348,7 @@ definitions:
     Measurement:  
       base_section:  '#/Activity'
     Procedure_step:  
+      base_section:  '#/Task'
       m_annotations:
         eln:
       quantities:
@@ -371,6 +439,33 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        cas_number:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sku_number:
+          type: str
+          description: sku number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    SubstanceBatch: 
+      base_section: '#/Material'
+      quantities:
         state_or_phase:
           type: str
           description: Phase of the chemical in the bottle
@@ -422,30 +517,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         documentation: 
           type: str
           description: pdf files containing certificate and other documentation
@@ -454,7 +525,7 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-    EntityAndAmount: 
+    AmountOfMaterial: 
       base_section: '#/Material'
       quantities:
         component:

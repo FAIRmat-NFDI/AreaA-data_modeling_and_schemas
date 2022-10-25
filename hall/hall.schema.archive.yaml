@@ -70,7 +70,7 @@ definitions:
               component: EnumEditQuantity
     Hall_measurement:
       base_sections:
-        - "nomad.datamodel.metainfo.eln.NexusDataConverter"
+        #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
         - "nomad.datamodel.data.EntryData"
       m_annotations:
         eln: dict()

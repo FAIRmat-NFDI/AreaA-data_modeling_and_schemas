@@ -439,6 +439,33 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        cas_number:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sku_number:
+          type: str
+          description: sku number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    SubstanceBatch: 
+      base_section: '#/Material'
+      quantities:
         state_or_phase:
           type: str
           description: Phase of the chemical in the bottle
@@ -490,30 +517,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         documentation: 
           type: str
           description: pdf files containing certificate and other documentation
@@ -522,7 +525,7 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-    EntityAndAmount: 
+    AmountOfMaterial: 
       base_section: '#/Material'
       quantities:
         component:
