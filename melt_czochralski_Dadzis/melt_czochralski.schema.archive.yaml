@@ -4,10 +4,12 @@ definitions:
     MeltCzochralski:  
       # Inheriting it from EntryData, makes this section a possible
       # EntryArchive.data sub-section
-      base_section: nomad.datamodel.data.EntryData
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.ElnBaseSection
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
-          dict()
+          hide: [name, description]
       sub_sections:
         users:
           section:
@@ -51,6 +53,13 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
+              ir_cameras:
+                section:
+                  m_annotation:
+                    eln:
+                  quantities:
+                    ir_cameras_list:
+                      type: ../upload/raw/IRcameras.archive.yaml#IR_cameras
               sensors:
                 section:
                   m_annotation:

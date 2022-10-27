@@ -1,0 +1,45 @@
+definitions:
+  name: 'IR cameras data'
+  sections:
+    IR_camera:
+      base_sections:
+        - nomad.datamodel.metainfo.eln.ElnBaseSection
+      m_annotations:
+        eln:
+          hide: [lab_id, description]
+      quantities:
+        image: 
+          type: str
+          description: png visualization of heat map matrix
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  
+            eln:
+              component: FileEditQuantity
+        heat_map: 
+          type: str
+          description: heat map matrix 
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor 
+            eln:
+              component: FileEditQuantity
+    IR_cameras:
+      base_sections:
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+          dict()
+      sub_sections:
+        ir_camera:
+          repeats: true
+          section: '#/IR_camera'
+data:
+  m_def: IR_cameras
+  ir_camera:
+  - name: test1
+    image: test1.png
+    heat_map: test1.dat
+  - name: test2
+    image: test2.png
+    heat_map: test2.dat

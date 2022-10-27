@@ -6,6 +6,8 @@ data:
     heating: #section name - not to be filled
       heater_type: 
       heater_id: vXXX
+    ir_cameras: 
+      ir_cameras_list: ../upload/raw/IRcameras.archive.yaml#data
     sensors: #section name - not to be filled
       data_file: Melt_Cz_test.csv
       sensors_locations: sensor_geometry.png
