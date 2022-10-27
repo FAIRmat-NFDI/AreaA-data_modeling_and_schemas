@@ -542,7 +542,7 @@ definitions:
           description: pdf files containing certificate and other documentation
           m_annotations:
             browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+              adaptor: RawFileAdaptor  
             eln:
               component: FileEditQuantity
     AmountOfMaterial: 

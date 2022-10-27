@@ -10,6 +10,7 @@ definitions:
       m_annotations:
         eln:
           hide: [name, description]
+          lane_width: 200px
       sub_sections:
         users:
           section:
@@ -24,10 +25,13 @@ definitions:
           section:
             m_annotations:
               eln:
-                dict()
+                lane_width: 200px
             sub_sections:
               furnace:
                 section:
+                  m_annotations:
+                    eln:
+                      lane_width: 200px
                   quantities:
                     furnace_type:
                       type: str
@@ -37,6 +41,9 @@ definitions:
                           component: StringEditQuantity
               heating:
                 section:
+                  m_annotations:
+                    eln:
+                      lane_width: 200px
                   quantities:
                     heater_type:
                       type:
@@ -55,15 +62,17 @@ definitions:
                           component: StringEditQuantity
               ir_cameras:
                 section:
-                  m_annotation:
+                  m_annotations:
                     eln:
+                      lane_width: 200px
                   quantities:
                     ir_cameras_list:
                       type: ../upload/raw/IRcameras.archive.yaml#IR_cameras
               sensors:
                 section:
-                  m_annotation:
+                  m_annotations:
                     eln:
+                      lane_width: 200px
                     # plot:
                     #   title: Sensors for growth monitoring
                     #   x: time

@@ -65,7 +65,7 @@ definitions:
             eln:
               component: StringEditQuantity
         section:
-          type: nomad.datamodel.data.ArchiveSection 
+          type: '#/Entity' # nomad.datamodel.data.ArchiveSection 
           m_annotations:
             eln:
               component: ReferenceEditQuantity

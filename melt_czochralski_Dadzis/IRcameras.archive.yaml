@@ -29,7 +29,7 @@ definitions:
         - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
-          dict()
+          lane_width: 200px
       sub_sections:
         ir_camera:
           repeats: true
