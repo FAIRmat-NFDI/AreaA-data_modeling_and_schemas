@@ -1,0 +1,221 @@
+definitions:
+  name: "Electronic Lab Notebook for Hall"
+  sections: # Schemes consist of section definitions
+    Process_hall:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+      quantities:
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
+        net_mass_before:
+          type: np.float64
+          unit: gram
+          description: net mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_mass:
+          type: np.float64
+          unit: gram
+          description: crucible mass
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        brutto_mass_before:
+          type: np.float64
+          unit: gram
+          description: brutto mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        atmosphere:
+          type: str
+          description: which atmosphere is choosen for th experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        oven:
+          type: str
+          description: oven used in the experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Measurement_geometry:
+      quantities:
+        geometry:
+          type:
+            type_kind: Enum
+            type_data:
+              - Van_der_Pauw_square
+              - Van_der_Pauw_rectangular
+              - Van_der_Pauw_arbitrary
+              - Hall_bar_1221
+              - Hall_bar_1311
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+    Hall_measurement:
+      base_sections:
+        #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
+        - "nomad.datamodel.data.EntryData"
+      m_annotations:
+        eln: dict()
+      sub_sections:
+        instrument:
+          section:
+            quantities:
+              model:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              voltmeter:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              amperemeter:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              current_source:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              switch_matrix:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              software:
+                type: str
+                description: my descr
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        samples:
+          section:
+            m_annotations:
+              eln: dict()
+            sub_sections:
+              layer:
+                repeats: true
+                # m_annotations:
+                #   eln:
+                section:
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
+                  quantities:
+                    epitaxy_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Homoepitaxy
+                          - Heteroepitaxy
+                      m_annotations:
+                        eln:
+                          component: RadioEnumEditQuantity
+              bulk:
+                repeats: true
+                # m_annotations:
+                #   eln:
+                section:
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
+                  quantities:
+                    epitaxy_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - Homoepitaxy
+                          - Heteroepitaxy
+                      m_annotations:
+                        eln:
+                          component: RadioEnumEditQuantity
+              final_sample:
+                repeats: true
+                section:
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
+                  m_annotations:
+                    eln: dict()
+                  sub_sections:
+                    contacts_grafting:
+                      repeats: true
+                      m_annotations:
+                        eln: dict()
+                      section:
+                        base_section: Process_hall
+                        sub_sections:
+                          metal_stack:
+                            repeats: true
+                            m_annotations:
+                              eln: dict()
+                            section:
+                              base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
+                          process_steps:
+                            repeats: true
+                            m_annotations:
+                              eln: dict()
+                            section:
+                              base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+                    room_temperature_measurement:
+                      section:
+                        m_annotations:
+                          eln:
+                        sub_sections:
+                          measurement_geometry:
+                            m_annotations:
+                              eln: dict()
+                            section:
+                              base_section: Measurement_geometry
+                        quantities:
+                          data_file:
+                            type: str
+                            description: |
+                              A reference to an uploaded .xlsx
+                            m_annotations:
+                              tabular_parser:
+                                # sep: ','
+                                comment: "#"
+                              browser:
+                                adaptor: RawFileAdaptor
+                              eln:
+                                component: FileEditQuantity 
+                    temperature_dependent_hall_measurement:
+                      section:
+                        # m_annotations:
+                        #   eln:
+                        quantities:
+                          data_file:
+                            type: str
+                            description: |
+                              A reference to an uploaded .xlsx
+                            m_annotations:
+                              tabular_parser:
+                                # sep: ','
+                                comment: "#"
+                              browser:
+                                adaptor: RawFileAdaptor 
+                              eln:
+                                component: FileEditQuantity 
+        measurement:
+          section: 'nomad.datamodel.metainfo.eln.ikz_hall.HallData'

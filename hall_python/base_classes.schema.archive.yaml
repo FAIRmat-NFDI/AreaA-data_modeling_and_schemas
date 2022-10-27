@@ -1,5 +1,5 @@
 definitions:
-  name: 'Multiple Base Classes for Experiments'
+  name: 'Multiple Base Class'
   sections:  # Schemes consist of section definitions
     Entity:
       m_annotations:
@@ -40,9 +40,8 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity  
     Experiment: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
+      base_sections:  
+       - '#/Activity'
       quantities:
         experiment_goal:
           type: str
@@ -65,7 +64,7 @@ definitions:
             eln:
               component: StringEditQuantity
         section:
-          type: nomad.datamodel.data.ArchiveSection 
+          type: '#/Entity' # nomad.datamodel.data.ArchiveSection 
           m_annotations:
             eln:
               component: ReferenceEditQuantity
@@ -185,9 +184,7 @@ definitions:
             eln:
               component: ReferenceEditQuantity
     Substrate: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      base_section: '#/Sample'
       quantities:
         supplier:
           type: str
@@ -240,9 +237,7 @@ definitions:
             eln:
               component: BoolEditQuantity
     Crystal: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      base_section: '#/Sample'
       quantities:
         orientation:
           type: str
@@ -351,13 +346,9 @@ definitions:
                   eln:
                     component: AuthorEditQuantity
     Measurement:  
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
+      base_section:  '#/Activity'
     Procedure_step:  
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Task'
+      base_section:  '#/Task'
       m_annotations:
         eln:
       quantities:
@@ -408,9 +399,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
     Process:
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
+      base_section:  '#/Activity'
       m_annotations:
         eln:
           dict()
@@ -422,9 +411,7 @@ definitions:
             more:
               label_quantity: step_name # together to repeats: true
     Substance: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      base_section: '#/Material'
       more:
         label_quantity: iupac_name
       sub_sections:
@@ -477,15 +464,8 @@ definitions:
             eln:
               component: StringEditQuantity
     SubstanceBatch: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      base_section: '#/Material'
       quantities:
-        component:
-          type: Material
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
         state_or_phase:
           type: str
           description: Phase of the chemical in the bottle
@@ -546,9 +526,7 @@ definitions:
             eln:
               component: FileEditQuantity
     AmountOfMaterial: 
-      base_sections:
-      - nomad.datamodel.metainfo.eln.ElnBaseSection 
-      - '#/Material'
+      base_section: '#/Material'
       quantities:
         component:
           type: Material
@@ -610,8 +588,6 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: mL/minute
     Sensor:
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
       quantities:
         model:
           type: str
