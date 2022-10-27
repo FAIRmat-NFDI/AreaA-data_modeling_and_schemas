@@ -9,7 +9,6 @@ data:
     ir_cameras: 
       ir_cameras_list: ../upload/raw/IRcameras.archive.yaml#data
     sensors: #section name - not to be filled
-      data_file: Melt_Cz_test.csv
       sensors_locations: sensor_geometry.png
       sensors_list: ../upload/raw/Sensors.archive.yaml#data
   data_processing: #section name - not to be filled

@@ -31,12 +31,12 @@ definitions:
         eln: 
           lane_width: 200px
       sub_sections:
-        ir_camera:
+        ir_cameras_list:
           repeats: true
           section: '#/IR_camera'
 data:
   m_def: IR_cameras
-  ir_camera:
+  ir_cameras_list:
   - name: test1
     image: test1.png
     heat_map: test1.dat
