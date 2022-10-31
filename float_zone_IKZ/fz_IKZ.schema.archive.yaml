@@ -1,11 +1,372 @@
 definitions:
   name: 'Float Zone schema' 
   sections: 
-    FZ_IKZ_process: 
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+    Assembly:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        datetime:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Pumping:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        datetime:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        vacuum:
+          type: np.float64
+          unit: mbar
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+          description: "Pressure"
+        furnace_leak_rate:
+          type: 
+            type_kind: Enum
+            type_data:
+              - good
+              - bad
+          description: "Furnace leak rate"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Filling:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        datetime:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        pressure:
+          type: np.float64
+          unit: bar
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: bar
+          description: "Pressure"
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Annealing:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        datetime:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        method:
+          type:
+            type_kind: Enum
+            type_data:
+              - IR
+              - Other
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        power:
+          type: np.float64
+          unit: watt
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: watt
+          description: "FILL THE DESCRIPTION"
+        duration:
+          type: np.float64
+          unit: minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+          description: "FILL THE DESCRIPTION"
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Preheating:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        datetime:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        method:
+          type:
+            type_kind: Enum
+            type_data:
+              - IR
+              - Shell
+              - Other
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        rod_position:
+          type: np.float64
+          description: "position of rod during preheating"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        power:
+          type: np.float64
+          unit: watt
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: watt
+          description: "FILL THE DESCRIPTION"
+        voltage:
+          type: np.float64
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+          description: "FILL THE DESCRIPTION"
+        duration:
+          type: np.float64
+          unit: minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+          description: "FILL THE DESCRIPTION"
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Gas:
+      repeats: true
+      #m_annotations:
+      #  eln:
+      section:
+        base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
+        m_annotations:
+          eln:
+        quantities:
+          name:
+            type: 
+              type_kind: Enum
+              type_data:
+                - Ar from bottle
+                - Ar from pipeline
+                - N2 from bottle
+                - N2 from pipeline
+                - H2
+                - Other
+            description: "name/type of gas"
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+    Dopant:
+      repeats: true
+      #m_annotations:
+      #  eln:
+      section:
+        base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
+        m_annotations:
+          eln:
+        quantities:
+          name:
+            type:
+              type_kind: Enum
+              type_data:
+                - PH3
+                - Boron
+            description: "name/type of dopant"
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+    Feed_rod:
+      section:
+        quantities:
+          material: 
+            type: 
+              type_kind: Enum
+              type_data:
+                - Wacker
+                - ASIMI 
+                - REC 
+                - other                        
+            description: "feed rod material options"
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+          diameter:
+            type: np.float64
+            description: "diameter of feed rod"
+            unit: mm
+            m_annotations:
+              eln:
+                component: NumberEditQuantity
+                defaultDisplayUnit: mm
+          rod_surface: 
+            type: 
+              type_kind: Enum
+              type_data:
+                - round grinded
+                - raw
+            description: "rod surface condition"
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+          rod_pretreatment:
+            type: 
+              type_kind: Enum
+              type_data:
+                - etched
+                - raw
+                - US cleaned
+            description: "rod pretreatment"
+            m_annotations:
+              eln:
+                component: EnumEditQuantity
+        sub_sections:
+          SampleID:
+            section:
+              base_sections:
+                - 'nomad.datamodel.metainfo.eln.SampleID'
+                - 'nomad.datamodel.data.EntryData'
+              m_annotations:
+                template: 
+                eln: 
+                  # hide: ['children', 'parents']
+                  # hide: ['children', 'parents', institute]
+                  hide: []
+    FZ_IKZ_experiment: 
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment
       m_annotations:
         eln:
-          dict()
+          hide: ['description', 'name']
+      quantities:
+        tags:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        activity_category:
+          type:
+            type_kind: Enum
+            type_data:
+              - crystal growth synthesis
+              - sample preparation synthesis
+              - epitaxial growth synthesis
+              - sol-gel synthesis
+              - surface coating synthesis
+              - measurement experiment
+          description: |
+            A phenomenon by which change takes place in a system. 
+            In physiological systems, a process may be 
+            chemical, physical or both. 
+            [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
+          default: ['crystal growth synthesis']
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        activity_method:
+          type: 
+            type_kind: Enum
+            type_data:
+              - float zone
+              - pedestal
+          description: |
+            a method is a series of steps for performing a function or accomplishing a result.
+
+            Or
+
+            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
       sub_sections:
         instrument:
           section:
@@ -16,203 +377,207 @@ definitions:
                   type_data:
                     - "1505/1"  
                     - "1505/2"
+                    - "1520"
+                    - "FZ30"
                 description: "Furnace description"
                 m_annotations:
                   eln:
                     component: EnumEditQuantity
-              vacuum_before_process_HV:
-                type: np.float64
-                unit: mbar
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-                description: "Pressure"
-              furnace_leak_rate:
-                type: 
-                  type_kind: Enum
-                  type_data:
-                    - good
-                    - bad
-                description: "Furnace leak rate"
-                m_annotations:
-                  eln:
-                    component: EnumEditQuantity
             sub_sections:
-              inductor:
+              coil:
                 section:
                   quantities:
-                    inductor_id:
+                    coil_id:
                       type: str
-                      description: "what is the inductor id?"
+                      description: "what is the coil id?"
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    inductor_drawing: 
+                    coil_drawing: 
                       type: str
-                      description: "Drawing of inductor"
+                      description: "Drawing of coil"
                       m_annotations:
                         eln:
                           component: RichTextEditQuantity
+                    comment:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    coil_drawing: 
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+              pre_heater:
+                repeats: true
+                section:
+                  quantities:
+                    pre_heater_id:
+                      type: str
+                      description: "what is the pre_heater id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    pre_heater_type:
+                      type: 
+                        type_kind: Enum
+                        type_data:
+                          - "IR"  
+                          - "Graphite Shell"
+                          - "Ta Shell"
+                          - "Mo Shell"
+                          - "Other"
+                      description: "Pre heater description"
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    pre_heater_position:
+                      type: 
+                        type_kind: Enum
+                        type_data:
+                          - "up"
+                          - "down"
+                      description: "Pre heater position"
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    comment:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    pre_heater_drawing: 
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
               reflector:
+                repeats: true
                 section:
                   quantities:
                     reflector_id:
                       type: str
-                      description: "what is the inductor id?"
+                      description: "what is the reflector id?"
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    reflector_inductor_position:
+                    reflector_diameter:
+                      type: np.float64
+                      unit: millimeter
+                      description: reflector diameter in mm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity 
+                          defaultDisplayUnit: millimeter
+                    reflector_coil_position:
                       type: np.float64
                       unit: mm
                       m_annotations:
                         eln:
                           component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-        materials:
-          section:
-            m_annotations:
-              eln:
-                dict()
-            sub_sections:
-              gases:
-                repeats: true
-                #m_annotations:
-                #  eln:
-                section:
-                  m_annotations:
-                    eln:
-                  quantities:
-                    gas_name:
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - Ar 
-                          - N2 from pipeline
-                          - N2 from balloon
-                          - H2
-                      description: "name/type of gas"
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
-              dopants:
-                repeats: true
-                #m_annotations:
-                #  eln:
-                section:
-                  m_annotations:
-                    eln:
-                  quantities:
-                    dopant_name:
-                      type:
-                        type_kind: Enum
-                        type_data:
-                          - PH3
-                          - Boron
-                      description: "name/type of dopant"
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
+                          defaultDisplayUnit: mm   
+                    comment:
                       type: str
-                      description: "name/type of dopant"
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    dopant_id:
+                    reflector_drawing: 
                       type: str
-                      description: "what is the dopant id?"
+                      description: pdf files containing certificate and other documentation
                       m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
-                          component: StringEditQuantity
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
-              feed_rod:
+                          component: FileEditQuantity    
+              after_heater:
+                repeats: true
                 section:
                   quantities:
-                    material: 
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - Wacker
-                          - ASIMI 
-                          - REC 
-                          - other                        
-                      description: "feed rod material options"
+                    after_heater_id:
+                      type: str
+                      description: "what is the after_heater id?"
                       m_annotations:
                         eln:
-                          component: EnumEditQuantity
-                    diameter:
+                          component: StringEditQuantity
+                    after_heater_diameter:
                       type: np.float64
-                      description: "diameter of feed rod"
+                      unit: millimeter
+                      description: after_heater diameter in mm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity 
+                          defaultDisplayUnit: millimeter
+                    after_heater_coil_position:
+                      type: np.float64
                       unit: mm
                       m_annotations:
                         eln:
                           component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                    rod_surface: 
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - round grinded
-                          - raw
-                      description: "rod surface condition"
+                          defaultDisplayUnit: mm   
+                    comment:
+                      type: str
                       m_annotations:
                         eln:
-                          component: EnumEditQuantity
-                    rod_pretreatment:
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - etched
-                          - raw
-                          - US cleaned
-                      description: "rod pretreatment"
+                          component: StringEditQuantity
+                    after_heater_drawing: 
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity    
+              rod_holder:
+                section:
+                  quantities:
+                    rod_holder_id:
+                      type: str
+                      description: "what is the after_heater id?"
                       m_annotations:
                         eln:
-                          component: EnumEditQuantity
-                    rod_position_during_preheating:
-                      type: np.float64
-                      description: "position of rod during preheating"
-                      unit: mm
+                          component: StringEditQuantity
+                    comment:
+                      type: str
                       m_annotations:
                         eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                  sub_sections:
-                    SampleID:
-                      section:
-                        base_sections:
-                          - 'nomad.datamodel.metainfo.eln.SampleID'
-                          - 'nomad.datamodel.data.EntryData'
-                        m_annotations:
-                          template: 
-                          eln: 
-                            # hide: ['children', 'parents']
-                            # hide: ['children', 'parents', institute]
-                            hide: []
+                          component: StringEditQuantity
+                    rod_holder_drawing: 
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity    
+              seed_holder:
+                section:
+                  quantities:
+                    seed_holder_id:
+                      type: str
+                      description: "what is the seed_holder id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    comment:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    seed_holder_drawing: 
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity      
         process:
           section:
             m_annotations:

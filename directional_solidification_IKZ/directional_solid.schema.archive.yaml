@@ -1,9 +1,7 @@
 definitions:
-  name: 'Directional Solidification Scheme'
+  name: 'Directional Solidification ELN'
   sections:  # Schemas consist of section definitions
-    DirSol_experiment:  # This is the name of the first section
-      # Inheriting it from EntryData, makes this section a possible
-      # EntryArchive.data sub-section
+    DirSol_experiment:  
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
@@ -111,7 +109,6 @@ definitions:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mbar
     Process_einwaage:
-      # base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
       quantities:
         dose:
