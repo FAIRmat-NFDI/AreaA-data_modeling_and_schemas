@@ -24,7 +24,7 @@ data:
       name: Crystal Support
     - m_def: ../upload/raw/fz_IKZ.schema.archive.yaml#Digital_protocol_1520
       name: Digital Protocol 1520
-      data_file: FZ.csv
+      data_file: FZ.xlsx
     - m_def: ../upload/raw/fz_IKZ.schema.archive.yaml#Tailing
       name: Tailing
     - m_def: ../upload/raw/fz_IKZ.schema.archive.yaml#Basic_crystal_characterization

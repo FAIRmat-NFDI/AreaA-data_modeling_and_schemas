@@ -2,7 +2,9 @@ definitions:
   name: 'Float Zone schema' 
   sections:    
     FZ_IKZ_experiment: 
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment
+      base_sections: 
+       - ../upload/raw/base_classes.schema.archive.yaml#Experiment
+       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
           hide: ['description', 'name']
@@ -263,8 +265,6 @@ definitions:
               eln:
                 dict()
             sub_sections:
-              test:
-                section: '#/Digital_protocol_1520'
               gas_ambient_settings:
                 repeats: true
                 section:
@@ -1237,7 +1237,7 @@ definitions:
       base_sections: 
        - ../upload/raw/base_classes.schema.archive.yaml#Task
        - nomad.parsing.tabular.TableData
-       - 'nomad.datamodel.data.EntryData'
+       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
           #dict()
@@ -1288,6 +1288,7 @@ definitions:
             tabular_parser:
               # sep: ','
               comment: '#'
+              mode: column
             browser:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
