@@ -1,7 +1,7 @@
 definitions:
-  name: 'IR cameras data'
+  name: 'IR camera data'
   sections:
-    IR_camera:
+    IR_image:
       base_sections:
         - nomad.datamodel.metainfo.eln.ElnBaseSection
       m_annotations:
@@ -24,19 +24,26 @@ definitions:
               adaptor: RawFileAdaptor 
             eln:
               component: FileEditQuantity
-    IR_cameras:
+        timestamp_rel:
+          type: np.float64
+          description: Relative time
+        timestamp_abs:
+          type: Datetime
+          description: Absolute time
+
+    IR_camera:
       base_sections:
         - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
           lane_width: 200px
       sub_sections:
-        ir_cameras_list:
+        ir_images_list:
           repeats: true
-          section: '#/IR_camera'
+          section: '#/IR_image'
 data:
-  m_def: IR_cameras
-  ir_cameras_list:
+  m_def: IR_camera
+  ir_images_list:
   - name: test1
     image: test1.png
     heat_map: test1.dat
