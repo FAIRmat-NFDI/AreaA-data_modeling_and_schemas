@@ -1,29 +1,23 @@
 data:  
-  m_def: ../upload/raw/hall_python.schema.archive.yaml#Hall_measurement
+  m_def: ../upload/raw/hall_python.schema.archive.yaml#Hall_experiment
   #reader: hall
   #nxdl: NXroot
   users:  #section name - not to be filled
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
   instrument:  #section name - not to be filled
+    data_file: HMS-Configuration-Pietsch_Hall-TT-Halter_15-350K.txt
     model: Lake Shore Hall Measurement System
     voltmeter: Keithley 2182 Nanovoltmeter
     amperemeter: Keithley 485 Autoranging Picoammeter
     current_source: Keithley 220 Programmable current source
     switch_matrix: Keithley 7001 Switch System
-    software: Lake Shore Hall Measurement Software   
-  samples: #section name - not to be filled
-    layer:
-      - method: experimental 
-        epitaxy_type: Homoepitaxy
-        #######thickness: 2.2 #### fix this
-        components:  
-          - "../upload/raw/Substrate1.data.archive.yaml#data"
-    # bulk:
-    #   - epitaxy_type: Homoepitaxy
-    final_sample:
-    - contacts_grafting:
-      - metal_stack: 
+    software: Lake Shore Hall Measurement Software    
+  inputs:
+    - section: ../upload/raw/Substrate1.data.archive.yaml#data
+  outputs:
+    - m_def: ../upload/raw/hall_python.schema.archive.yaml#SampleWithContacts
+      metal_stack:
         - name: material_1
           empirical_formula: Ti
           thickness: 50
@@ -33,39 +27,28 @@ data:
         - name: material_3
           empirical_formula: Ra
           thickness: 7500
-        process_steps:
-          - step_name: Post-annealing
-            # timestamp:
-            elapsed_time: 1
-            step_type: Pre-process
-            step_comment: Was there a post-annealing step?
-            temperature: 470
-            atmosphere: Nitrogen
-            method: RTA
-          - step_name: Pre-treatment
-            # timestamp:
-            elapsed_time: 5
-            step_type: Pre-process
-            step_comment: | 
-              Was there a pre-treatment of the surface? 
-            temperature: 25
-            atmosphere: Nitrogen
-            method: |
-              Aqua regia cleaning for 5 min @ room temperature 
-              + rinsing in DI water
-            reagents:
-              - name: Acqua Regia
-          - step_name: implantation
-            # timestamp:
-            # elapsed_time: 1
-            step_type: Pre-process
-            step_comment: Was an implatation made for contact formation?
-            method: dose, duration, annealing
-          - step_name: regrowth
-            # timestamp:
-            # elapsed_time: 1
-            step_type: Process
-            step_comment: Was a regrowth made for contact formation?
-            method: growth, thickness, concentration, lift-off
-  measurement:
-    data_file: test.csv
+  tasks:
+    - m_def: ../upload/raw/hall_python.schema.archive.yaml#Contacts_grafting
+      name: Contacts Grafting
+      tasks:
+        - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
+          name: Post-annealing
+          step_type: Pre-process
+          notes: RTA
+        - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
+          name: Pre-treatment
+          step_type: Pre-process
+          notes: Aqua regia cleaning for 5 min @ room temperature + rinsing in DI water
+          inputs: 
+            - section: "../upload/raw/AcquaRegia.data.archive.yaml#data"
+        - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
+          name: implantation
+          step_type: Pre-process
+          notes: dose, duration, annealing
+        - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
+          name: regrowth
+          step_type: Process
+          notes: growth, thickness, concentration, lift-off
+    - m_def: ../upload/raw/hall_python.schema.archive.yaml#Hall_measurement
+      data_file: 22-127-G_20K-320K_TT-Halter_WDH_060722.txt
+      name: Hall measurement

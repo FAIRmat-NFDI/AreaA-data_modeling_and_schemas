@@ -377,48 +377,40 @@ definitions:
       m_annotations:
         eln:
       quantities:
-        step_name: 
-          type: str
-          description: what this step consists of
-          m_annotations:
-              eln:
-                component: StringEditQuantity
-        # step_type:
-        #   type:
-        #     type_kind: Enum
-        #     type_data:
-        #       - Pre-process
-        #       - Process
-        #       - Post-process
-        #       - Measurement
-        #       - Storage
-        #   m_annotations:
-        #     eln:
-        #       component: EnumEditQuantity
-        step_number:
-          type: int
-          description: sequential number of the step on going
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
           m_annotations:
             eln:
-              component: NumberEditQuantity
-        step_comment:
+              component: EnumEditQuantity
+          # default: ['Process']
+        # step_number:
+        #   type: int
+        #   description: sequential number of the step on going
+        #   m_annotations:
+        #     eln:
+        #       component: NumberEditQuantity
+        timestamp:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        notes:
           type: str
           description: more verbose description of the step
           m_annotations:
             eln:
               component: StringEditQuantity 
-        step_duration:
-          type: np.float64
-          unit: minute
-          description: Past time since process start
-          m_annotations:
-            eln:
-              component: NumberEditQuantity 
-              defaultDisplayUnit: minute
         elapsed_time:
           type: np.float64
           unit: minute
-          description: Duration of each step
+          description: Duration of the current step
           m_annotations:
             eln:
               component: NumberEditQuantity

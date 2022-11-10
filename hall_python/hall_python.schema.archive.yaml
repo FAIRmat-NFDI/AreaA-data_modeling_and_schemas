@@ -1,7 +1,7 @@
 definitions:
   name: "Electronic Lab Notebook for Hall"
   sections: # Schemes consist of section definitions
-    Process_hall:
+    Contacts_grafting:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
       quantities:
         dose:
@@ -68,15 +68,40 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-    Hall_measurement:
+    Hall_measurement:    
+      base_sections: 
+        - 'nomad.datamodel.metainfo.eln.ikz_hall.HallData'
+        - "../upload/raw/base_classes.schema.archive.yaml#Task"
+    SampleWithContacts:
+      base_sections: 
+        - "../upload/raw/base_classes.schema.archive.yaml#Sample"
+      sub_sections:
+        metal_stack:
+          repeats: true
+          m_annotations:
+            eln: dict()
+          section:
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Substance
+            quantities:
+              thickness:
+                type: np.float64
+                unit: micrometer
+                description: "FILL THE DESCRIPTION"
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: micrometer
+    Hall_experiment:
       base_sections:
         #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
         - "nomad.datamodel.data.EntryData"
+        - "../upload/raw/base_classes.schema.archive.yaml#Experiment"
       m_annotations:
         eln: dict()
       sub_sections:
         instrument:
           section:
+            base_section: 'nomad.datamodel.metainfo.eln.ikz_hall.HallInstrument'
             quantities:
               model:
                 type: str
@@ -114,108 +139,4 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        samples:
-          section:
-            m_annotations:
-              eln: dict()
-            sub_sections:
-              layer:
-                repeats: true
-                # m_annotations:
-                #   eln:
-                section:
-                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
-                  quantities:
-                    epitaxy_type:
-                      type:
-                        type_kind: Enum
-                        type_data:
-                          - Homoepitaxy
-                          - Heteroepitaxy
-                      m_annotations:
-                        eln:
-                          component: RadioEnumEditQuantity
-              bulk:
-                repeats: true
-                # m_annotations:
-                #   eln:
-                section:
-                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
-                  quantities:
-                    epitaxy_type:
-                      type:
-                        type_kind: Enum
-                        type_data:
-                          - Homoepitaxy
-                          - Heteroepitaxy
-                      m_annotations:
-                        eln:
-                          component: RadioEnumEditQuantity
-              final_sample:
-                repeats: true
-                section:
-                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
-                  m_annotations:
-                    eln: dict()
-                  sub_sections:
-                    contacts_grafting:
-                      repeats: true
-                      m_annotations:
-                        eln: dict()
-                      section:
-                        base_section: Process_hall
-                        sub_sections:
-                          metal_stack:
-                            repeats: true
-                            m_annotations:
-                              eln: dict()
-                            section:
-                              base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
-                          process_steps:
-                            repeats: true
-                            m_annotations:
-                              eln: dict()
-                            section:
-                              base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
-                    room_temperature_measurement:
-                      section:
-                        m_annotations:
-                          eln:
-                        sub_sections:
-                          measurement_geometry:
-                            m_annotations:
-                              eln: dict()
-                            section:
-                              base_section: Measurement_geometry
-                        quantities:
-                          data_file:
-                            type: str
-                            description: |
-                              A reference to an uploaded .xlsx
-                            m_annotations:
-                              tabular_parser:
-                                # sep: ','
-                                comment: "#"
-                              browser:
-                                adaptor: RawFileAdaptor
-                              eln:
-                                component: FileEditQuantity 
-                    temperature_dependent_hall_measurement:
-                      section:
-                        # m_annotations:
-                        #   eln:
-                        quantities:
-                          data_file:
-                            type: str
-                            description: |
-                              A reference to an uploaded .xlsx
-                            m_annotations:
-                              tabular_parser:
-                                # sep: ','
-                                comment: "#"
-                              browser:
-                                adaptor: RawFileAdaptor 
-                              eln:
-                                component: FileEditQuantity 
-        measurement:
-          section: 'nomad.datamodel.metainfo.eln.ikz_hall.HallData'
+        

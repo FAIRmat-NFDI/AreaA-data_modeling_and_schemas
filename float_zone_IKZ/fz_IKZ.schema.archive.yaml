@@ -259,283 +259,121 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity      
-        process:
-          section:
-            m_annotations:
-              eln:
-                dict()
-            sub_sections:
-              gas_ambient_settings:
-                repeats: true
-                section:
-                  # m_annotations:
-                  #   eln:
-                  quantities:
-                    timestamp:
-                      type: Datetime
-                      m_annotations:
-                        eln:
-                          component: DateTimeEditQuantity
-                    process_type:
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - pre
-                          - main 
-                          - post 
-                      description: "choose type of process"
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                    process_note:
-                      type: str
-                      description: "Text field for any process notes"
-                      m_annotations:
-                        eln:
-                          component: RichTextEditQuantity
-                    #gas_ambient:
-                    #  section:
-                    #    quantities:
-                    gas_pressure:
-                      type: np.float64
-                      description: "where is this gas pressure measured? "
-                      unit: mbar
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mbar
-                    Ar_inflow_rate:
-                      type: np.float64
-                      description: "Ar inflow rate measured at ???"
-                      unit: cm/minute
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: cm/minute
-                    gas_outflow_rate:
-                      type: np.float64
-                      description: "gas outflow rate measured at ???"
-                      unit: cm/minute
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: cm/minute
-                    N2_Gas_composition:
-                      type: np.float64
-                      description: "Ar inflow rate measured at ???"
-                      unit: m
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: m
-                        #sub_sections:
-                        #  doping:
-                        #    section:
-                        #      quantities:
-                    dopant:
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - PH3
-                          - B2H6
-                      description: "doping type"
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                    doping_concentration:
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - "0"
-                          - "1" 
-                          - "10"
-                          - "100"
-                          - "500"
-                      description: "applied doping concentration in ppm"
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-              process_settings:
-                repeats: true
-                section:
-                  # m_annotations:
-                  #   eln:
-                  quantities:
-                    timestamp:
-                      type: Datetime
-                      m_annotations:
-                        eln:
-                          component: DateTimeEditQuantity
-                    process_type:
-                      type: 
-                        type_kind: Enum
-                        type_data:
-                          - pre
-                          - main 
-                          - post 
-                      description: "choose type of process"
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                    process_note:
-                      type: str
-                      description: "Text field for any process notes"
-                      m_annotations:
-                        eln:
-                          component: RichTextEditQuantity
-                    process_step_name:
-                      type:
-                        type_kind: Enum
-                        type_data:
-                          - process preparation
-                          - rod preheating
-                          - rod glowing
-                          - melting
-                          - back-melting
-                          - dash-neck
-                          - transition to cone
-                          - cone growing 
-                          - crystal body
-                          - operation of crystal support system
-                          - process end
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                    comment:
-                      type: str
-                      description: "comment related to process setting"
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    rod_preheating_method: 
-                      type:   
-                        type_kind: Enum
-                        type_data:
-                          - IR
-                          - Graphite preheater
-                          - Molibdenum preheater 
-                          - other
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                    rod_preheating_voltage:
-                      type: np.float64
-                      description: "Voltage from preheating system"
-                      unit: V
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: V
-                    rod_preheating_duration:
-                      type: np.float64
-                      description: "Voltage from preheating system"
-                      unit: V
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: V
-                    voltage:
-                      type: np.float64
-                      description: "Voltage from software controlled system"
-                      unit: kV
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: kV # is it always the same voltage?
-                    coil_offset: 
-                      type: np.float64
-                      description: "coil offset can be set manually "
-                      unit: mm
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                    upper_pull_speed_rod: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: mm/minute
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm/minute
-                    lower_pull_speed_crystal: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: mm/minute
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm/minute
-                    upper_rotation_rod: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: 1/minute
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: 1/minute
-                    lower_rotation_crystal: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: 1/minute
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: 1/minute
-                    neck_length: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: mm
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                    switching_to_software_process_control: 
-                      type: bool
-                      description: "check for yes / uncheck for no"
-                      m_annotations:
-                        eln:
-                          component: BoolEditQuantity
-                    lower_position_crystal: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: mm
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                    upper_position_rod: 
-                      type: np.float64
-                      description: "fill out"
-                      unit: mm
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                    #back-melting_start_voltage: # same voltage as in protocol, but before you write the protocol
-                    #back-melting_end voltage [kV]: # same voltage as in protocol but before you write the protocol
-                    #start_voltage [kV]: # same voltage as in protocol but before you write the protocol
-                    #maximum_voltage [kV]: # same voltage as in protocol but before you write the protocol
-                    #minimum_voltage [kV]: # same voltage as in protocol but before you write the protocol
-              lifetime:
-                repeats: true
-                section:
-                  # m_annotations:
-                  #   eln:
-                  quantities:
-                    average_lifetime_on_body:
-                      type: np.float64
-                      unit: mm
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mm
-                    lifetime_map:
-                      type: str
-                      description: "drop the lifetime map here"
-                      m_annotations:
-                        eln:
-                          component: RichTextEditQuantity
+        # process:
+        #   section:
+        #     m_annotations:
+        #       eln:
+        #         dict()
+        #     sub_sections:
+        #       gas_ambient_settings:
+        #         repeats: true
+        #         section:
+        #           # m_annotations:
+        #           #   eln:
+        #           quantities:
+        #             timestamp:
+        #               type: Datetime
+        #               m_annotations:
+        #                 eln:
+        #                   component: DateTimeEditQuantity
+        #             process_type:
+        #               type: 
+        #                 type_kind: Enum
+        #                 type_data:
+        #                   - pre
+        #                   - main 
+        #                   - post 
+        #               description: "choose type of process"
+        #               m_annotations:
+        #                 eln:
+        #                   component: EnumEditQuantity
+        #             process_note:
+        #               type: str
+        #               description: "Text field for any process notes"
+        #               m_annotations:
+        #                 eln:
+        #                   component: RichTextEditQuantity
+        #             #gas_ambient:
+        #             #  section:
+        #             #    quantities:
+        #             gas_pressure:
+        #               type: np.float64
+        #               description: "where is this gas pressure measured? "
+        #               unit: mbar
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: mbar
+        #             Ar_inflow_rate:
+        #               type: np.float64
+        #               description: "Ar inflow rate measured at ???"
+        #               unit: cm/minute
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: cm/minute
+        #             gas_outflow_rate:
+        #               type: np.float64
+        #               description: "gas outflow rate measured at ???"
+        #               unit: cm/minute
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: cm/minute
+        #             N2_Gas_composition:
+        #               type: np.float64
+        #               description: "Ar inflow rate measured at ???"
+        #               unit: m
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: m
+        #                 #sub_sections:
+        #                 #  doping:
+        #                 #    section:
+        #                 #      quantities:
+        #             dopant:
+        #               type: 
+        #                 type_kind: Enum
+        #                 type_data:
+        #                   - PH3
+        #                   - B2H6
+        #               description: "doping type"
+        #               m_annotations:
+        #                 eln:
+        #                   component: EnumEditQuantity
+        #             doping_concentration:
+        #               type: 
+        #                 type_kind: Enum
+        #                 type_data:
+        #                   - "0"
+        #                   - "1" 
+        #                   - "10"
+        #                   - "100"
+        #                   - "500"
+        #               description: "applied doping concentration in ppm"
+        #               m_annotations:
+        #                 eln:
+        #                   component: EnumEditQuantity
+        #       lifetime:
+        #         repeats: true
+        #         section:
+        #           # m_annotations:
+        #           #   eln:
+        #           quantities:
+        #             average_lifetime_on_body:
+        #               type: np.float64
+        #               unit: mm
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: mm
+        #             lifetime_map:
+        #               type: str
+        #               description: "drop the lifetime map here"
+        #               m_annotations:
+        #                 eln:
+        #                   component: RichTextEditQuantity
     Gas:
       repeats: true
       #m_annotations:
@@ -665,7 +503,7 @@ definitions:
               eln:
                 component: EnumEditQuantity
     Assembly:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -680,18 +518,8 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Pre-process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Pumping:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -706,11 +534,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Pre-process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         vacuum:
           type: np.float64
           unit: mbar
@@ -729,13 +552,8 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Filling:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -750,11 +568,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Pre-process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         pressure:
           type: np.float64
           unit: bar
@@ -763,13 +576,8 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: bar
           description: "Pressure"
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Annealing:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -784,11 +592,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Pre-process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         method:
           type:
             type_kind: Enum
@@ -814,13 +617,8 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
           description: "FILL THE DESCRIPTION"
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Preheating:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -835,11 +633,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Pre-process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         method:
           type:
             type_kind: Enum
@@ -882,13 +675,8 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
           description: "FILL THE DESCRIPTION"
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Process_start:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -903,11 +691,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         coil_offset:
           type: np.float64
           description: "FILL THE DESCRIPTION"
@@ -972,13 +755,8 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Back_melting:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -993,11 +771,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         coil_offset:
           type: np.float64
           description: "FILL THE DESCRIPTION"
@@ -1054,13 +827,8 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Dash_necking:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -1075,11 +843,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         coil_offset:
           type: np.float64
           description: "FILL THE DESCRIPTION"
@@ -1152,13 +915,8 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Cone_and_body_growing:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -1173,18 +931,8 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Crystal_support:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -1199,11 +947,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         support_release_position:
           type: np.float64
           description: "FILL THE DESCRIPTION"
@@ -1228,14 +971,9 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Digital_protocol_1520:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Task
+       - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
        - nomad.parsing.tabular.TableData
        - nomad.datamodel.data.EntryData
       m_annotations:
@@ -1472,7 +1210,7 @@ definitions:
             tabular:
               name: WinkelRe
     Tailing:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         step_type:
           type:
@@ -1487,11 +1225,6 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-        timestamp:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         crystal_position:
           type: np.float64
           description: "FILL THE DESCRIPTION"
@@ -1508,13 +1241,8 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     Basic_crystal_characterization:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         diameter_target_crystal:
           type: np.float64
@@ -1551,7 +1279,7 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Resistivity:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         target_resistivity:
           type: np.float64
@@ -1581,7 +1309,7 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Lateral_photovoltage_scanning:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Task
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
         interface_curvative:
           type: np.float64
