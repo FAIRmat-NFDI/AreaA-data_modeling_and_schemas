@@ -67,7 +67,7 @@ definitions:
                       lane_width: 200px
                   quantities:
                     ir_cameras_list:
-                      type: ../upload/raw/IRcameras.archive.yaml#IR_cameras
+                      type: ../upload/raw/IRcameras.archive.yaml#IR_camera
               sensors:
                 section:
                   m_annotations:

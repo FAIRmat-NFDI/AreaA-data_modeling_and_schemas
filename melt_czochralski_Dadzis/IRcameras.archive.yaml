@@ -30,7 +30,6 @@ definitions:
         timestamp_abs:
           type: Datetime
           description: Absolute time
-
     IR_camera:
       base_sections:
         - nomad.datamodel.data.EntryData
@@ -45,8 +44,8 @@ data:
   m_def: IR_camera
   ir_images_list:
   - name: test1
-    image: test1.png
-    heat_map: test1.dat
+    image: img/test1.png
+    heat_map: img/test1.dat
   - name: test2
-    image: test2.png
-    heat_map: test2.dat
+    image: img/test2.png
+    heat_map: img/test2.dat
