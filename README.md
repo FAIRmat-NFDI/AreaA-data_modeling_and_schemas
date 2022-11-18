@@ -5,6 +5,8 @@
 ### Electronic Lab Notebook (ELN) / Application definition / Schemes / Data structures  
 
 - - - -
+Full documentation (in preparation) at: https://fairmat-nfdi.github.io/AreaA-Documentation/
+- - - -
 
 ## Base Classes Hierarchy:
 
