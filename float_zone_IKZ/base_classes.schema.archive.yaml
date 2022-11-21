@@ -10,7 +10,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        datetime:
+        timestamp:
           type: Datetime
           m_annotations:
             eln:
@@ -20,7 +20,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        comment:
+        notes:
           type: str
           m_annotations:
             eln:
@@ -109,12 +109,8 @@ definitions:
         Instances of Task are used to represent an activity that happened during workflow
         execution and that was acting on inputs to produce outputs.
       base_section: '#/ElnBaseSection'
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
+      m_annotations:
+        eln: dict()
       sub_sections:
         inputs:
           repeats: True
@@ -127,6 +123,9 @@ definitions:
         A proxy section that can be used to compose a workflow of tasks that are contained
         in a different entry or workflow.
       base_section: '#/Task'
+      m_annotations:
+        eln: 
+          hide: ['datetime', 'id', 'comment']
       quantities:
         task:
           description: |
@@ -289,25 +288,6 @@ definitions:
       base_sections: 
        - '#/Workflow'
       quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        start_time:
-          description: |
-            The starting date and time of the activity.
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        end_time:
-          description: |
-            The ending date and time of the activity.
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
         activity_category:
           type:
             type_kind: Enum
@@ -390,24 +370,13 @@ definitions:
             eln:
               component: EnumEditQuantity
           # default: ['Process']
-        # step_number:
-        #   type: int
-        #   description: sequential number of the step on going
-        #   m_annotations:
-        #     eln:
-        #       component: NumberEditQuantity
-        timestamp:
-          type: Datetime
+        step_number:
+          type: int
+          description: sequential number of the step on going
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
-        notes:
-          type: str
-          description: more verbose description of the step
-          m_annotations:
-            eln:
-              component: StringEditQuantity 
-        elapsed_time:
+              component: NumberEditQuantity
+        duration:
           type: np.float64
           unit: minute
           description: Duration of the current step
@@ -415,20 +384,6 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    Process:
-      base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
-      m_annotations:
-        eln:
-          dict()
-      sub_sections:
-        procedure:
-          repeats: true
-          section: 
-            base_section: '#/Procedure_step'
-            more:
-              label_quantity: step_name # together to repeats: true
     Substance: 
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection

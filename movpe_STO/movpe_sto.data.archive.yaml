@@ -1,10 +1,14 @@
 data:  
   m_def: ../upload/raw/movpe_sto.schema.archive.yaml#MovpeSto_experiment 
-  users:
-    responsible_person:
-      - user_id: "8e6f6796-d4f0-409a-85d2-1b8810c8c3a1"
-  history: 
-    activities:
-    - ../upload/raw/process.archive.yaml#data
-    - ../upload/raw/HRXRD_measurement.archive.yaml#data
-    
+  users:  #section name - not to be filled
+    responsible_person: 
+      - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+  tasks: 
+    # - ../upload/raw/process.archive.yaml#data
+    # - ../upload/raw/HRXRD_measurement.archive.yaml#data
+    - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
+      name: "Epitaxial Growth"
+      task: ../upload/raw/process.archive.yaml#data
+    - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
+      name: "Deposition Control"
+      task: ../upload/raw/deposition_control.archive.yaml#data

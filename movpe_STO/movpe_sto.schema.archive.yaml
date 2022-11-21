@@ -1,9 +1,7 @@
 definitions:
   name: 'Electronic Lab Notebook schema for MOVPE-STO'
   sections:  # Schemas consist of section definitions
-    MovpeSto_experiment:  # This is the name of the first section
-      # Inheriting it from EntryData, makes this section a possible
-      # EntryArchive.data sub-section
+    MovpeSto_experiment:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
@@ -13,159 +11,17 @@ definitions:
           section:
             m_annotations:
               eln:
-            quantities:
-              comment:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              # deposition_control_steps:
-              #   section:
-              #     base_section: ../upload/raw/base_classes/process_step_0-0-1.schema.archive.yaml#Process_step
-              #     quantities:
-              #       elapsed_time:
-              #         type: np.float64
-              #         unit: minute
-              #         shape: ['*']
-              #         unit: minute
-              #         description: Past time since process start
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Timestamp
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       pyrotemperature:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: celsius
-              #         description: Temperature that is controlled by the pyrometer on the substartes surface
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Pyrotemperature
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       vaporization_titan:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: celsius
-              #         description: Vaporization temperature of the Ti flash evaporator
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Vaporization Ti
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       vaporization_strontium_lanthan:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: celsius
-              #         description: Vaporization temperature of the Sr/La flash evaporator
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Vaporization Sr La
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       o2_temperature:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: celsius
-              #         description: Oxygen process gas temperature
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/O2 temperature
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       backpressure_titanium:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: millibar
-              #         description: Backpressure in the Ti evaporation line controlling the vapor pressure of this line
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Backpressure Ti
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       backpressure_strontium_lanthan:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: millibar
-              #         description: Backpressure in the Sr/La evaporation line controlling the vapor pressure of this line
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Backpressure Sr La
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       throttle_valve:
-              #         type: np.float64
-              #         shape: ['*']
-              #         # unit: percent
-              #         description: Opening level of the throttle valve at the turbo pump used to apply the chamber pressure 
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Throttle valve
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       chamber_pressure:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: millibar
-              #         description: chamber pressure in the reaction chamber
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Chamber pressure
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       rotation:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: rpm
-              #         description: carrier rottaion velocity
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Rotation
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       voltage:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: volt
-              #         description: Voltage control of the heating system
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Voltage
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              #       current:
-              #         type: np.float64
-              #         shape: ['*']
-              #         unit: milliampere
-              #         description: Current control of the heating system
-              #         m_annotations:
-              #           tabular:
-              #             name: Deposition Control/Current
-              #       #   eln:
-              #       #     component: NumberEditQuantity
-              #       #     defaultDisplayUnit:
-              # AFM_measurements:
-              #   section:
-              #     quantities:
-              #       roughness:
-              #         type: np.float64
-              #         unit: nanometer
-              #         description: RMS roughness value obtained by AFM
-              #         m_annotations:
-              #           tabular:
-              #             name: AFM/Roughness
-              #           eln:
-              #             component: NumberEditQuantity
-              #             defaultDisplayUnit: nanometer
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Entity
+    AFM_measurements:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step 
+      quantities:
+        roughness:
+          type: np.float64
+          unit: nanometer
+          description: RMS roughness value obtained by AFM
+          m_annotations:
+            tabular:
+              name: AFM/Roughness
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer

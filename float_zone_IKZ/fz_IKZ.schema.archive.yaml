@@ -80,12 +80,12 @@ definitions:
                       m_annotations:
                         eln:
                           component: RichTextEditQuantity
-                    comment:
+                    notes:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    coil_drawing: 
+                    documentation: 
                       type: str
                       description: pdf files containing certificate and other documentation
                       m_annotations:
@@ -126,7 +126,7 @@ definitions:
                       m_annotations:
                         eln:
                           component: EnumEditQuantity
-                    comment:
+                    notes:
                       type: str
                       m_annotations:
                         eln:
@@ -164,7 +164,7 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mm   
-                    comment:
+                    notes:
                       type: str
                       m_annotations:
                         eln:
@@ -202,7 +202,7 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mm   
-                    comment:
+                    notes:
                       type: str
                       m_annotations:
                         eln:
@@ -224,7 +224,7 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    comment:
+                    notes:
                       type: str
                       m_annotations:
                         eln:
@@ -246,7 +246,7 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    comment:
+                    notes:
                       type: str
                       m_annotations:
                         eln:
@@ -609,14 +609,6 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: watt
           description: "FILL THE DESCRIPTION"
-        duration:
-          type: np.float64
-          unit: minute
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: minute
-          description: "FILL THE DESCRIPTION"
     Preheating:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       quantities:
@@ -666,14 +658,6 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
-          description: "FILL THE DESCRIPTION"
-        duration:
-          type: np.float64
-          unit: minute
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: minute
           description: "FILL THE DESCRIPTION"
     Process_start:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
