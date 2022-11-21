@@ -18,14 +18,17 @@ data:
     - name: powder_sample
       section: ../upload/raw/Sample.data.archive.yaml#data  
   tasks:
-    - name: thermal treatment component 1
+    - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
+      name: thermal treatment component 1
       inputs: 
         - name: component_1
           section: ../upload/raw/Substance1.data.archive.yaml#data 
       tasks:
-        - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference # ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
-          task: ../upload/raw/Thermal_treatment.data.archive.yaml#data 
-    - name: thermal treatment component 2
+        # - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
+        #   task: ../upload/raw/Thermal_treatment.data.archive.yaml#data 
+        - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#TemperatureRamp
+    - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
+      name: thermal treatment component 2
       inputs: 
         - name: component_2
           section: ../upload/raw/Substance1.data.archive.yaml#data 

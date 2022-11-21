@@ -20,9 +20,40 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+    TemperatureRamp:
+      base_sections: 
+       - ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        rate:
+          type: np.float64
+          shape: ['*']
+          unit: kelvin / hour
+          description: Temperature increase during the ramp
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kelvin / hour
+        temperature:
+          type: np.float64
+          shape: ['*']
+          unit: kelvin 
+          description: Temperature at the end of the ramp
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kelvin 
+        dwell_time:
+          type: np.float64
+          shape: ['*']
+          unit: hour
+          description: dwell time
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: hour
     ThermalTreatment:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Process
+       - ../upload/raw/base_classes.schema.archive.yaml#Workflow
        - "nomad.datamodel.data.EntryData"
       quantities:
         dose:
@@ -75,42 +106,30 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        brutto_mass_after:
+          type: np.float64
+          unit: gram
+          description: brutto mass after the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        net_mass_after:
+          type: np.float64
+          unit: gram
+          description: net  mass after the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        mass_loss:
+          type: np.float64
+          #unit: gram / gram
+          description: mass loss in percentage
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              #defaultDisplayUnit: gram / gram
     Powder_sample:
       # base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
-
-      # quantities:
-      #   creation_date:
-      #     type: Datetime
-      #     m_annotations:
-      #       eln:
-      #         component: DateTimeEditQuantity
-      #   # created_by:
-      #   #   type: str #User
-      #   #   #shape: ['*']
-      #   #   description: my descr
-      #   #   m_annotations:
-      #   #     eln:
-      #   #       component: UserEditQuantity
-      #   # created_by_test:
-      #   #   type: str #Author
-      #   #   #shape: ['*']
-      #   #   description: my descr
-      #   #   m_annotations:
-      #   #     eln:
-      #   #       component: AuthorEditQuantity
-      #   executed_by:
-      #     type: str
-      #     m_annotations:
-      #       eln:
-      #         component: StringEditQuantity
-      #   execution_date:
-      #     type: Datetime
-      #     m_annotations:
-      #       eln:
-      #         component: DateTimeEditQuantity
-      #   final_sample:
-      #     type: str
-      #     m_annotations:
-      #       eln:
-      #         component: StringEditQuantity

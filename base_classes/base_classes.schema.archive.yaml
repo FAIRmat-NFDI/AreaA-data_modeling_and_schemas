@@ -415,20 +415,6 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    Process:
-      base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
-      m_annotations:
-        eln:
-          dict()
-      sub_sections:
-        procedure:
-          repeats: true
-          section: 
-            base_section: '#/Procedure_step'
-            more:
-              label_quantity: step_name # together to repeats: true
     Substance: 
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
