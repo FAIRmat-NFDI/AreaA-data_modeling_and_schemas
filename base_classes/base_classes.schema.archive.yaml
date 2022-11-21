@@ -313,6 +313,7 @@ definitions:
               - float zone
               - melt czochralski
               - pedestal
+              - MOVPE 
               - OTHER TECHNIQUES
           description: |
             a method is a series of steps for performing a function or accomplishing a result.

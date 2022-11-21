@@ -8,7 +8,7 @@ data:
     # - ../upload/raw/HRXRD_measurement.archive.yaml#data
     - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
       name: "Epitaxial Growth"
-      task: ../upload/raw/process.archive.yaml#data
+      task: ../upload/raw/process.data.archive.yaml#data
     - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
       name: "Deposition Control"
       task: ../upload/raw/deposition_control.archive.yaml#data
