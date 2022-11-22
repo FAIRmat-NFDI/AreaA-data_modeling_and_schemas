@@ -1,0 +1,201 @@
+definitions:
+  name: 'IKZ Material Database PoC'
+  sections:  # Schemes consist of section definitions
+    GeneralProperties: 
+      base_sections: 
+       - nomad.datamodel.metainfo.eln.Chemical
+       - nomad.datamodel.data.EntryData
+      quantities:
+        name:
+          description: |
+            A descriptive name of the material beyond its chemical formula. 
+            Useful to identify solids with the different `chemical_formula` but different structure. 
+        molecular_weight:
+          description: |
+            The molecular weight of the material.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        aggregation_state:
+          type:
+            type_kind: Enum
+            type_data:
+              - solid      
+              - liquid 
+              - gas 
+              - interface solid-liquid 
+              - interface solid-gas 
+              - interface liquid-gas
+          description: |
+            The aggregation state of the material.
+          default: ['solid']
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        description:
+          type: str
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+      sub_sections:
+        publication_reference:
+          section:
+            # This base section allows us to include a DOI number which will be added as a reference to the entry.
+            # It will also retrieve additional information of the publication from crossref.
+            # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+            base_sections: 
+              - 'nomad.datamodel.metainfo.eln.PublicationReference' 
+        structural_properties:
+          section:
+            base_sections: 
+              - 'nomad.datamodel.results.SymmetryNew'
+              - 'nomad.datamodel.results.Cell'
+        thermal_radiation_properties:
+          section:
+            quantities:
+              emissivity:
+                description: |
+                  The emissivity of the material.
+                type: np.float64
+                unit: ''
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              absorption_coefficient:
+                description: |
+                  The absorption coefficient of the material.
+                type: np.float64
+                unit: '1/m'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              refraction_index:
+                description: |
+                  The refraction index of the material.
+                type: np.float64
+                unit: ''
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+        thermal_properties:
+          section:
+            quantities:
+              thermal_conductivity:
+                description: |
+                  The thermal conductivity of the material.
+                type: np.float64
+                unit: 'W/(m*K)'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              thermal_diffusivity:
+                description: |
+                  The thermal diffusivity of the material.
+                type: np.float64
+                unit: 'm^2/s'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              thermal_expansion_coefficient:
+                description: |
+                  The thermal expansion coefficient of the material.
+                type: np.float64
+                unit: '1/K'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              specific_heat_capacity:
+                description: |
+                  The specific heat capacity of the material.
+                type: np.float64
+                unit: 'J/(kg*K)'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              thermal_resistance:
+                description: |
+                  The thermal resistance of the material.
+                type: np.float64
+                unit: 'K/W'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              thermal_resistivity:
+                description: |
+                  The thermal resistivity of the material.
+                type: np.float64
+                unit: 'm*K/W'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              thermal_conductance:
+                description: |
+                  The thermal conductance of the material.
+                type: np.float64
+                unit: 'W/K'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+        mechanical_properties:
+          sections:
+            quantities:
+              elastic_stiffness:
+                description: |
+                  The elastic stiffness of the material.
+                type: np.float64
+                unit: 'Pa'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              critical_resolved_shear_stress:
+                description: |
+                  The critical resolved shear stress of the material.
+                type: np.float64
+                unit: 'Pa'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              dynamic_viscosity:
+                description: |
+                  The dynamic viscosity of the material.
+                type: np.float64
+                unit: 'Pa*s'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              surface_tension:
+                description: |
+                  The surface tension of the material.
+                type: np.float64
+                unit: 'N/m'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              thermocapillary_coefficient:
+                description: |
+                  The thermocapillary coefficient of the material.
+                type: np.float64
+                unit: 'N/m/K'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+        electro_magnetic_properties:
+          section:
+            quantities:
+              electrical_conductivity:
+                description: |
+                  The electrical conductivity of the material.
+                type: np.float64
+                unit: 'S/m'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              magnetic_susceptibility:
+                description: |
+                  The magnetic susceptibility of the material.
+                type: np.float64
+                unit: '1/T'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
