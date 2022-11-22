@@ -1,0 +1,304 @@
+General:
+		Description: "Silicon"
+    ChemFormular: "Si"
+    MolecularWeight": 28.085
+		Aggregation_State: enum (Solid1 | Solid2 | liquid | gas | interface solid-liquid | interface solid-gas | interface liquid-gas)
+    
+
+Solid1: 
+		Name: " "
+    StructuralData: 
+	  	Structure: "cubic",
+	  	SpaceGroup: "m-3m",
+	  	Density:
+				Description: "Density"
+	    	type: "scalar",
+				unit: "kg/m^3",
+				- Citekey: Doi  #  we might have also data sheets  ....
+					density_formular:
+ 						value: "2.33-2.14*10ˆ{-5}*x0-3.2*10ˆ{-9}*x0ˆ{2})*1000"
+						x_entry: "Temperature"
+						x_unit: "K"
+						x_validity_min: 
+						x_validity_max:
+						description:
+		   		status: "IKZ used",
+		   		accessibility: "world"
+			MeltingPoint:
+				Description: "Melting Point Temperature"
+				type: "scalar"
+				unit: "K"
+				- Citekey: 
+					TM_value = 1687
+				status: "IKZ used",
+		   	accessibility: "world"
+		Radiation:
+      Emissivity:
+				Description: "Emissivity"
+				type: "scalar"
+				unit: ""
+				- Citekey: 10.1016/0022-0248(85)90012-0
+					emissivity_formular:	
+	    	 		value: "0.9016-2.616*10^{-4}*x0"
+						x_entry: "Temperature"
+						x_unit: "K"
+						x_validity_min: none
+						x_validity_max: 1000
+						description:
+		   		status: "IKZ used"
+		   		accessibility: "world"
+			Absorption_coefficient:
+				description: "Absorption coefficient"
+				type: "scalar"
+				unit: "1/m"
+				- Citekey: none
+					absorption_value: 999   #  opaque
+	 			  status: "IKZ used"
+		   		accessibility: "world"
+			Refraction_index:
+				description: "Refraction index:"
+				type: "scalar"
+				unit: " "
+				- Citekey: none
+					refraction_value: 0   #  opaque
+	 			  status: "IKZ used"
+		   		accessibility: "world"
+		ThermalProperties:
+      HeatConductivity:
+				Description: " Heat Conductivity"
+	      type: "scalar",
+		 		unit: "W/(m*K)"
+				- Citekey:
+    	    heat_cond_formular: 
+						value: "(529.382/x0- 0.376764 + 0.169524*10^{-3}*x0)*100"
+						x_entry: "Temperature"
+						x_unit: "K"
+						x_validity_min: none
+						x_validity_max: none
+						description:
+					status: "IKZ used"
+		   		accessibility: "world"
+      HeatCapacity:	
+				  description: "Heat capacity"
+					type: "scalar"
+					unit: "J/(kg*K)"
+				  - Citekey: Doi
+						cp_value:
+						descritption:
+						cp_fomular:
+              value: "(0.687+2.36*10^{-4}*x)*1000",
+							x_entry: "Temperature"
+							x_unit: "K"
+							x_validity_min: 
+							x_validity_max:
+							description:
+      ThermalExpansion:
+				Description: "Thermal Expansion"
+	      type: "scalar",
+		 		unit: "1/K"
+				- Citekey: 10.1016/0022-0248(83)90328-7
+	        thermalexp_formular:
+					 	value: "3.725*10ˆ{-6)* [1-e(-5.88*10ˆ{-3}*(x0-124))]+5.84*10ˆ{-10}*x0"
+						x_entry: "Temperature"
+						x_unit: "K"
+						x_validity_min: 
+						x_validity_max:
+						description:
+		   		status: "old",
+		   		accessibility: "world"
+				- Citekey: none
+					thermalexp_list:
+		   			value: "300 460, 400 450, 650 430"
+						x_entry: "Temperature"
+						x_unit: "K"
+		   		status: "test",
+		   		accessibility: "world"  
+    MechanicalProperties:
+      ElasticStiffness:
+				Description: " Elastic Stiffness"
+	      type: "tensor"
+		  	unit: "Pa"
+		    - Citekey: "10.1016/0022-0248(92)90325-D",
+					- index: "11",
+						elast_stiff_formular: 
+						  value: "1.6564*10ˆ{11}*e(-9.4*10ˆ{-5}*(x0-298.15))"
+							x_entry: "Temperature"
+							x_unit: "K"
+							x_validity_min: 
+							x_validity_max:
+							description:
+					- index: "12"
+						elast_stiff_formular: 
+						  value: ".6394*10ˆ{11}*e(-9.8*10ˆ{-5}*(T-298.15)) "
+							x_entry: "Temperature"
+							x_unit: "K"
+							x_validity_min: 
+							x_validity_max:
+							description:
+					- index: "44"
+						elast_stiff_formular: 
+						  value: "0.7951*10ˆ{11}*e(-8.3*10ˆ{-5}*(T-298.15))",
+							x_entry: "Temperature"
+							x_unit: "K"
+							x_validity_min: 
+							x_validity_max:
+							description:
+	   		  status: "test",
+		   		accessibility: "world"  
+      CriticalResolvedShearStress:
+				Description: "Critical Resolved Shear Stress"
+				type: "scalar",
+				unit: "Pa"
+				- Citekey: "10.1016/0022-0248(92)90325-D"
+					crit_res_shear_stress_formula: 
+						value:  "(10.55+10147/x0)*10ˆ{6}"
+  			  	x_entry: "Temperature"
+						x_unit: "K"
+						x_validity_min: 
+						x_validity_max:
+						description:
+          status: "IKZ used"
+					accessibility: "world"
+		Electro-MagneticProperties
+			ElectricConductivity
+				Description: "Electrical Conductivity"
+				type: " scalar"
+				unit: "S/m"
+				- Citekey: ""
+					el_cond_value: 
+						value:  1e-6
+
+
+Liquid:
+		StucturalData
+	  	Density:
+				description: "Density"
+	    	type: "scalar",
+				unit: "kg/m^3",
+				-	CiteKey: 10.1016/0022-0248(85)90012-0
+					density_value:
+          	value:  "2420"
+		      status: "IKZ used",
+		      accessibility: "world"
+		Radiation:
+      Emissivity:
+				Description: "Emissivity"
+				type: "scalar"
+				unit: ""
+				- Citekey: 
+					emissivity_value:	
+	    	 		value: "0.3"
+		   		status: "IKZ used"
+		   		accessibility: "world"
+			Absorption_coefficient:
+				description: "Absorption coefficient"
+				type: "scalar"
+				unit: "1/m"
+				- Citekey: none
+					absorption_value: 999   #  opaque
+	 			  status: "IKZ used"
+		   		accessibility: "world"
+			Refraction_index:
+				description: "Refraction index:"
+				type: "scalar"
+				unit: " "
+				- Citekey: none
+					refraction_value: 0   #  opaque
+	 			  status: "IKZ used"
+		   		accessibility: "world"
+		ThermalProperties:
+		  HeatConductivity:
+				Description: " Heat Conductivity"
+	      type: "scalar",
+		 		unit: "W/(m*K)"
+				- Citekey:
+    	    heat_cond_value: 
+						value: 64
+					status: "IKZ used"
+		   		accessibility: "world"
+      HeatCapacity:	
+				  description: "Heat capacity"
+					type: "scalar"
+					unit: "J/(kg*K)"
+				  - Citekey: Doi
+						cp_value:
+              value: 1000
+      ThermalExpansion:
+				Description: "Thermal Expansion"
+	      type: "scalar",
+		 		unit: "1/K"
+				- Citekey: 10.1016/0022-0248(83)90328-7
+	        thermalexp_value:
+					 	value: 1.41e-4
+		   		status: "IKZ used",
+		   		accessibility: "world"
+		MechanicalProperties:			
+    	DynamicViscosity:  Sato 2003
+				description: "Dynamic Viscosity"
+		  	type: "scalar",
+		  	unit: "Pa*s",
+	    	- CiteKey
+					dyn_visc_formular:
+		    		value : "(0.01*10ˆ{-0.727+819/x0})/10"
+			  		x_entry: "Temperature"
+						x_unit: "K"
+						x_validity_min: none
+						x_validity_max: none
+						description:
+		  	  status: "Numerik used",
+		  	  accessibility: "world"
+        - Citekey
+				  dyn_visc_value:
+		    	  value: 0.0007,
+	   		  status: "Si-FZ used",
+	   		  accessibility: "world"
+
+InterfaceLiquidSolid:
+		ThermalProperties:
+    	LatentHeat:
+				Description" "Latent heat"
+		  	type: "scalar"
+		  	unit: "J/kg"
+		  	- CiteKey: "LandoltBroenstein1984b"
+					latent_heat_value:
+						value: "1804.9*10^{3}",
+		      	status: "IKZ used",
+		      	accessibility: "world"
+    MechanicalProperties:
+	    GrowthAngle:
+				Description: "Growth angle - angle between crystal and liquid"
+		   type: "scalar",
+		   unit: "degree"
+		   - CiteKey
+		      growth_angle_value:
+		      	value: "11",
+          status: "IKZ used",
+		      accessibility: "world"
+			SurfaceTension:
+				Description: "Surface Tension of free surface"
+				type: "scalar"
+				unit: "N/m"
+				- CiteKey:
+					surface_tension_value: 
+						value: 0.7835
+						status: "IKZ used",
+		      	accessibility: "world"
+			ThermocapCoeff:
+				Description: "Thermocapillary coefficient"
+				type: "scalar"
+				unit: "N/(m K)"
+				-Citekey: Hardy1984
+					thermo_cap_value:
+						value: -2.8e-4
+					status: "unkown",
+		      accessibility: "world"
+				-Citekey: Tsukada 1988
+					thermo_cap_value:
+						value -4.3e-4
+				  status: "unkown",
+		      accessibility: "world"
+				-Citekey: Przyborowski 1995
+					thermo_cap_value:
+						value -6.5e-4
+				  status: "unkown",
+		      accessibility: "world"
