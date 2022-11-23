@@ -2,7 +2,7 @@ definitions:
   name: 'Directional Solidification ELN'
   sections:  # Schemas consist of section definitions
     DirSol_experiment:  
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Workflow 
       m_annotations:
         eln:
           dict()
@@ -109,7 +109,7 @@ definitions:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mbar
     Process_einwaage:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
       quantities:
         dose:
           type: np.float64
@@ -163,7 +163,7 @@ definitions:
               component: StringEditQuantity
     Process_DS_manual_protocol:
       # base_section: ../upload/raw/base_classes/process_0-0-1.schema.archive.yaml#Process
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
       quantities:
         dose:
           type: np.float64

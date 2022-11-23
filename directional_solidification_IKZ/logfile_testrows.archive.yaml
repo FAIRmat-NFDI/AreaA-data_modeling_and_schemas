@@ -1,0 +1,45 @@
+data:
+  m_def: Logfile_dir_sol
+  data_file: G1_IKZ_NSI_23.csv
+definitions:
+  name: 'Logfile from Directional Solidification'
+  sections:
+    Logfile_dir_sol:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      -  nomad.parsing.tabular.TableData
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .csv
+          m_annotations:
+            tabular_parser:
+              sep: ';'
+              comment: '#'
+              mode: row
+              target_sub_section: 
+               - mysub
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
+      sub_sections:
+        mysub:
+          repeats: true
+          section: 
+            quantities:
+              timestamp:
+                type: Datetime
+                description: "FILL THE DESCRIPTION"
+                # unit:
+                m_annotations:
+                  tabular:
+                    name: "T Ist H1 Time"
+              t_ist_h1:
+                type: np.float64
+                description: "FILL THE DESCRIPTION"
+                # unit:
+                m_annotations:
+                  tabular:
+                    name: "T Ist H1 ValueY"

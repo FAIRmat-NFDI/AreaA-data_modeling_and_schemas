@@ -7,3 +7,4 @@ data:
     activities:
       - ../upload/raw/einwaage.data.archive.yaml#data
       - ../upload/raw/process.archive.yaml#data
+      - ../upload/raw/logfile.archive.yaml#data
