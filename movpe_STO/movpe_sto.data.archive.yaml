@@ -12,3 +12,13 @@ data:
     - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
       name: "Deposition Control"
       task: ../upload/raw/deposition_control.archive.yaml#data
+    - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#Process_movpesto
+      data_file: datafile.xlsx
+      id: "22-01-21-MA-255"
+      location:
+      timestamp: 2022-08-25 10:33:25.013+02
+      activity_category:
+      activity_method:
+      film:
+      o2_ar:
+      notes: "films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see Precursor"
