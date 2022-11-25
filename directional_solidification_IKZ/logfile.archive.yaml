@@ -1,6 +1,6 @@
 data:
   m_def: Logfile_dir_sol
-  data_file: G1_IKZ_NSI_23.csv
+  data_file: G1_IKZ_NSI_23_for_NOMAD.csv
 definitions:
   name: 'Logfile from Directional Solidification'
   sections:
@@ -8,6 +8,88 @@ definitions:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       -  nomad.parsing.tabular.TableData
+      m_annotations:
+        plot:
+        - label: My_custom_plot_label
+          x: timestamp
+          y:     
+            - ./t_ist_h1
+            - ./t_ist_h2
+            - ./t_ist_h3
+            - ./t_ist_h4
+            - ./t_ist_h5
+            - ./t_ist_h6
+            - ./t_ist_h7
+            - ./t_ist_h8
+            - ./t_ist_h9
+          lines:
+          - mode: lines
+            line:
+              color: rgb(50, 138, 46)
+          - mode: lines
+            line:
+              color: rgb(43, 128, 62)
+          - mode: lines
+            line:
+              color: rgb(41, 122, 74)
+          - mode: lines
+            line:
+              color: rgb(39, 117, 82)
+          - mode: lines
+            line:
+              color: rgb(38, 113, 88)
+          - mode: lines
+            line:
+              color: rgb(36, 109, 94)
+          - mode: lines
+            line:
+              color: rgb(34, 103, 101)
+          - mode: lines
+            line:
+              color: rgb(37, 94, 105)
+          - mode: lines
+            line:
+              color: rgb(39, 87, 107)
+        - label: My_custom_plot_label
+          x: timestamp
+          y:     
+            - ./i_dc_ist_h1
+            - ./i_dc_ist_h2
+            - ./i_dc_ist_h3
+            - ./i_dc_ist_h4
+            - ./i_dc_ist_h5
+            - ./i_dc_ist_h6
+            - ./i_dc_ist_h7
+            - ./i_dc_ist_h8
+            - ./i_dc_ist_h9
+          lines:
+          - mode: lines
+            line:
+              color: rgb(168, 56, 59)
+          - mode: lines
+            line:
+              color: rgb(170, 67, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 78, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 87, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 95, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 101, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 107, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 112, 57)
+          - mode: lines
+            line:
+              color: rgb(170, 117, 57)
       quantities:
         data_file:
           type: str
@@ -37,6 +119,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h1
         t_ist_h2:
           type: np.float64
           shape: ['*']
@@ -45,6 +131,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h2
         t_ist_h3:
           type: np.float64
           shape: ['*']
@@ -53,6 +143,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h3
         t_ist_h4:
           type: np.float64
           shape: ['*']
@@ -61,6 +155,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h4
         t_ist_h5:
           type: np.float64
           shape: ['*']
@@ -69,6 +167,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h5
         t_ist_h6:
           type: np.float64
           shape: ['*']
@@ -77,6 +179,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h6
         t_ist_h7:
           type: np.float64
           shape: ['*']
@@ -85,6 +191,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H7 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h7
         t_ist_h8:
           type: np.float64
           shape: ['*']
@@ -93,6 +203,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H8 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h8
         t_ist_h9:
           type: np.float64
           shape: ['*']
@@ -101,6 +215,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T Ist H9 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_ist_h9
         p_ist_h1:
           type: np.float64
           shape: ['*']
@@ -109,6 +227,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h1
         p_ist_h2:
           type: np.float64
           shape: ['*']
@@ -117,6 +239,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h2
         p_ist_h3:
           type: np.float64
           shape: ['*']
@@ -125,6 +251,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h3
         p_ist_h4:
           type: np.float64
           shape: ['*']
@@ -133,6 +263,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h4
         p_ist_h5:
           type: np.float64
           shape: ['*']
@@ -141,6 +275,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h5
         p_ist_h6:
           type: np.float64
           shape: ['*']
@@ -149,6 +287,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h6
         p_ist_h7:
           type: np.float64
           shape: ['*']
@@ -157,6 +299,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H7 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h7
         p_ist_h8:
           type: np.float64
           shape: ['*']
@@ -165,6 +311,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H8 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h8
         p_ist_h9:
           type: np.float64
           shape: ['*']
@@ -173,6 +323,10 @@ definitions:
           m_annotations:
             tabular:
               name: "P Ist H9 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./p_ist_h9
         i_dc_ist_h1:
           type: np.float64
           shape: ['*']
@@ -181,6 +335,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h1
         i_dc_ist_h2:
           type: np.float64
           shape: ['*']
@@ -189,6 +347,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h2
         i_dc_ist_h3:
           type: np.float64
           shape: ['*']
@@ -197,6 +359,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h3
         i_dc_ist_h4:
           type: np.float64
           shape: ['*']
@@ -205,6 +371,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h4
         i_dc_ist_h5:
           type: np.float64
           shape: ['*']
@@ -213,6 +383,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h5
         i_dc_ist_h6:
           type: np.float64
           shape: ['*']
@@ -221,6 +395,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h6
         i_dc_ist_h7:
           type: np.float64
           shape: ['*']
@@ -229,6 +407,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H7 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h7
         i_dc_ist_h8:
           type: np.float64
           shape: ['*']
@@ -237,6 +419,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H8 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h8
         i_dc_ist_h9:
           type: np.float64
           shape: ['*']
@@ -245,6 +431,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I DC Ist H9 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_dc_ist_h9
         ac_f1_h1:
           type: np.float64
           shape: ['*']
@@ -253,6 +443,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h1
         ac_f2_h1:
           type: np.float64
           shape: ['*']
@@ -261,6 +455,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h1
         ac_f1_h2:
           type: np.float64
           shape: ['*']
@@ -269,6 +467,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h2
         ac_f2_h2:
           type: np.float64
           shape: ['*']
@@ -277,6 +479,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h2
         ac_f1_h3:
           type: np.float64
           shape: ['*']
@@ -285,6 +491,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h3
         ac_f2_h3:
           type: np.float64
           shape: ['*']
@@ -293,6 +503,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h3
         ac_f1_h4:
           type: np.float64
           shape: ['*']
@@ -301,6 +515,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h4
         ac_f2_h4:
           type: np.float64
           shape: ['*']
@@ -309,6 +527,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h4
         ac_f1_h5:
           type: np.float64
           shape: ['*']
@@ -317,6 +539,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h5
         ac_f2_h5:
           type: np.float64
           shape: ['*']
@@ -325,6 +551,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h5
         ac_f1_h6:
           type: np.float64
           shape: ['*']
@@ -333,6 +563,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h6
         ac_f2_h6:
           type: np.float64
           shape: ['*']
@@ -341,6 +575,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h6
         ac_f1_h7:
           type: np.float64
           shape: ['*']
@@ -349,6 +587,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H7 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h7
         ac_f2_h7:
           type: np.float64
           shape: ['*']
@@ -357,6 +599,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H7 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h7
         ac_f1_h8:
           type: np.float64
           shape: ['*']
@@ -365,6 +611,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H8 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h8
         ac_f2_h8:
           type: np.float64
           shape: ['*']
@@ -373,6 +623,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H8 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h8
         ac_f1_h9:
           type: np.float64
           shape: ['*']
@@ -381,6 +635,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F1 H9 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f1_h9
         ac_f2_h9:
           type: np.float64
           shape: ['*']
@@ -389,6 +647,10 @@ definitions:
           m_annotations:
             tabular:
               name: "AC_F2 H9 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./ac_f2_h9
         i_summe_h1:
           type: np.float64
           shape: ['*']
@@ -397,6 +659,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h1
         i_summe_h2:
           type: np.float64
           shape: ['*']
@@ -405,6 +671,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h2
         i_summe_h3:
           type: np.float64
           shape: ['*']
@@ -413,6 +683,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h3
         i_summe_h4:
           type: np.float64
           shape: ['*']
@@ -421,6 +695,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h4
         i_summe_h5:
           type: np.float64
           shape: ['*']
@@ -429,6 +707,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h5
         i_summe_h6:
           type: np.float64
           shape: ['*']
@@ -437,6 +719,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h6
         i_summe_h7:
           type: np.float64
           shape: ['*']
@@ -445,6 +731,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H7 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h7
         i_summe_h8:
           type: np.float64
           shape: ['*']
@@ -453,6 +743,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H8 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h8
         i_summe_h9:
           type: np.float64
           shape: ['*']
@@ -461,6 +755,10 @@ definitions:
           m_annotations:
             tabular:
               name: "I Summe H9 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./i_summe_h9
         trafo_1_m:
           type: np.float64
           shape: ['*']
@@ -469,6 +767,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Trafo 1 M ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./trafo_1_m
         trafo_1_p:
           type: np.float64
           shape: ['*']
@@ -477,6 +779,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Trafo 1 P ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./trafo_1_p
         trafo_2_m:
           type: np.float64
           shape: ['*']
@@ -485,6 +791,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Trafo 2 M ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./trafo_2_m
         trafo_2_p:
           type: np.float64
           shape: ['*']
@@ -493,6 +803,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Trafo 2 P ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./trafo_2_p
         druck_rezipient:
           type: np.float64
           shape: ['*']
@@ -501,6 +815,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Druck Rezipient ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./druck_rezipient
         pp1:
           type: np.float64
           shape: ['*']
@@ -509,6 +827,10 @@ definitions:
           m_annotations:
             tabular:
               name: "PP1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./pp1
         gasfluss_df2:
           type: np.float64
           shape: ['*']
@@ -517,6 +839,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Gasfluss DF2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./gasfluss_df2
         gasfluss_df3:
           type: np.float64
           shape: ['*']
@@ -525,6 +851,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Gasfluss DF3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./gasfluss_df3
         gasfluss_df4:
           type: np.float64
           shape: ['*']
@@ -533,6 +863,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Gasfluss DF4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./gasfluss_df4
         f1:
           type: np.float64
           shape: ['*']
@@ -541,6 +875,10 @@ definitions:
           m_annotations:
             tabular:
               name: "F1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./f1
         f2:
           type: np.float64
           shape: ['*']
@@ -549,6 +887,10 @@ definitions:
           m_annotations:
             tabular:
               name: "F2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./f2
         phase_f1h1:
           type: np.float64
           shape: ['*']
@@ -557,6 +899,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F1 H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f1h1
         phase_f2h1:
           type: np.float64
           shape: ['*']
@@ -565,6 +911,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F2 H1 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f2h1
         phase_f1h2:
           type: np.float64
           shape: ['*']
@@ -573,6 +923,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F1 H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f1h2
         phase_f2h2:
           type: np.float64
           shape: ['*']
@@ -581,6 +935,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F2 H2 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f2h2
         phase_f1h3:
           type: np.float64
           shape: ['*']
@@ -589,6 +947,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F1 H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f1h3
         phase_f2h3:
           type: np.float64
           shape: ['*']
@@ -597,6 +959,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F2 H3 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f2h3
         phase_f1h4:
           type: np.float64
           shape: ['*']
@@ -605,6 +971,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F1 H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f1h4
         phase_f2h4:
           type: np.float64
           shape: ['*']
@@ -613,6 +983,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F2 H4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f2h4
         phase_f1h5:
           type: np.float64
           shape: ['*']
@@ -621,6 +995,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F1 H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f1h5
         phase_f2h5:
           type: np.float64
           shape: ['*']
@@ -629,6 +1007,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F2 H5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f2h5
         phase_f1h6:
           type: np.float64
           shape: ['*']
@@ -637,6 +1019,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F1 H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f1h6
         phase_f2h6:
           type: np.float64
           shape: ['*']
@@ -645,6 +1031,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Phase F2 H6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./phase_f2h6
         co_messwert_ppm:
           type: np.float64
           shape: ['*']
@@ -653,6 +1043,10 @@ definitions:
           m_annotations:
             tabular:
               name: "CO-Messwert [ppm] ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./co_messwert_ppm
         co_messwert_vol:
           type: np.float64
           shape: ['*']
@@ -661,6 +1055,10 @@ definitions:
           m_annotations:
             tabular:
               name: "CO-Messwert [Vol %] ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./co_messwert_vol
         tiegelboden:
           type: np.float64
           shape: ['*']
@@ -669,6 +1067,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Tiegelboden ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./tiegelboden
         t12:
           type: np.float64
           shape: ['*']
@@ -677,6 +1079,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T12 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t12
         t13:
           type: np.float64
           shape: ['*']
@@ -685,6 +1091,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T13 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t13
         t14:
           type: np.float64
           shape: ['*']
@@ -693,6 +1103,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T14 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t14
         widerstand_hz_4:
           type: np.float64
           shape: ['*']
@@ -701,6 +1115,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Widerstand Hz_4 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./widerstand_hz_4
         widerstand_hz_5:
           type: np.float64
           shape: ['*']
@@ -709,6 +1127,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Widerstand Hz_5 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./widerstand_hz_5
         widerstand_hz_6:
           type: np.float64
           shape: ['*']
@@ -717,6 +1139,10 @@ definitions:
           m_annotations:
             tabular:
               name: "Widerstand Hz_6 ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./widerstand_hz_6
         t_pyrometer:
           type: np.float64
           shape: ['*']
@@ -725,6 +1151,10 @@ definitions:
           m_annotations:
             tabular:
               name: "T_Pyrometer ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./t_pyrometer
         no_messwert_ppm:
           type: np.float64
           shape: ['*']
@@ -733,3 +1163,7 @@ definitions:
           m_annotations:
             tabular:
               name: "NO Messwert ppm ValueY"
+            plot:
+              label: My label
+              x: timestamp
+              y: ./no_messwert_ppm

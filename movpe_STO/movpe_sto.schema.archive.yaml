@@ -146,7 +146,7 @@ definitions:
                 m_annotations:
                   tabular:
                     name: Processdata/Timestamp
-                    unit: minute
+                    # unit: minute
                   eln:
                     component: DateTimeEditQuantity
               step_number:
