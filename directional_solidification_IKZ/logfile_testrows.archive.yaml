@@ -1,6 +1,6 @@
 data:
   m_def: Logfile_dir_sol
-  data_file: G1_IKZ_NSI_23.csv
+  data_file: G1_IKZ_NSI_23_for_NOMAD.csv
 definitions:
   name: 'Logfile from Directional Solidification'
   sections:
