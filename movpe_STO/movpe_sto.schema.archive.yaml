@@ -2,7 +2,7 @@ definitions:
   name: 'Electronic Lab Notebook schema for MOVPE-STO'
   sections:  # Schemas consist of section definitions
     MovpeSto_experiment:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Workflow 
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
           dict()
@@ -25,6 +25,89 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
+    Measurement_hrxrd:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
+      -  nomad.parsing.tabular.TableData 
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
+        activity_identifier:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Activity Identifier
+            eln:
+              component: StringEditQuantity
+        location:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Activity Location
+            eln:
+              component: StringEditQuantity
+        start_time:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: HR XRD/Start Time
+            eln:
+              component: DateTimeEditQuantity
+        end_time:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: HR XRD/End Time
+            eln:
+              component: DateTimeEditQuantity
+        category:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Activity Category
+            eln:
+              component: StringEditQuantity
+        method_or_technique:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Activity Method
+            eln:
+              component: StringEditQuantity
+        thickness:
+          type: np.float64
+          unit: nanometer
+          description: Film thickness obtained from HRXRD
+          m_annotations:
+            tabular:
+              name: HR XRD/Thickness
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+        d_vert:
+          type: np.float64
+          unit: angstrom
+          description: "Vertical lattice parameter d_vert obtained from HRXRD"
+          m_annotations:
+            tabular:
+              name: HR XRD/d Vertical
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: angstrom
     Process_movpesto:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
@@ -328,3 +411,196 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: centimeter ** 3 / minute
+    Deposition_control:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      -  nomad.parsing.tabular.TableData
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+              mode: row
+              target_sub_section: 
+               - tasks
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  
+      sub_sections:
+        tasks:
+          repeats: true
+          section:
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+            # more:
+            #   label_quantity: step_name
+            m_annotations:
+              eln:
+            quantities:
+              name: 
+                type: str
+                # shape: ['*']
+                description: name of deposition control step
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Name
+                  eln:
+                    component: StringEditQuantity
+              timestamp: # defined in ElnBaseSection
+                type: Datetime
+                description: timestamp of each step
+                m_annotations:
+                  # tabular:
+                  #   name: Processdata/Timestamp
+                  #   unit: minute
+                  eln:
+                    component: DateTimeEditQuantity
+              duration:
+                type: np.float64
+                unit: minute
+                # shape: ['*']
+                description: Elapsed time since process start
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Duration
+                  eln:
+                    component: NumberEditQuantity #DateTimeEditQuantity
+                    defaultDisplayUnit: minute
+              step_number:
+                type: int
+                #shape: ['*']
+                description: sequential number of the step on going
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Step
+                  eln:
+                    component: NumberEditQuantity
+              pyrotemperature:
+                type: np.float64
+                #shape: ['*']
+                unit: celsius
+                description: Temperature that is controlled by the pyrometer on the substartes surface
+                m_annotations: 
+                  tabular:
+                    name: Deposition Control/Pyrotemperature
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: celsius
+              vaporization_titan:
+                type: np.float64
+                #shape: ['*']
+                unit: celsius
+                description: Vaporization temperature of the Ti flash evaporator
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Vaporization Ti
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: celsius
+              vaporization_strontium_lanthan:
+                type: np.float64
+                #shape: ['*']
+                unit: celsius
+                description: Vaporization temperature of the Sr/La flash evaporator
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Vaporization Sr La
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: celsius
+              o2_temperature:
+                type: np.float64
+                #shape: ['*']
+                unit: celsius
+                description: Oxygen process gas temperature
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/O2 temperature
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: celsius
+              backpressure_titanium:
+                type: np.float64
+                #shape: ['*']
+                unit: millibar
+                description: Backpressure in the Ti evaporation line controlling the vapor pressure of this line
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Backpressure Ti
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: millibar
+              backpressure_strontium_lanthan:
+                type: np.float64
+                #shape: ['*']
+                unit: millibar
+                description: Backpressure in the Sr/La evaporation line controlling the vapor pressure of this line
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Backpressure Sr La
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: millibar
+              throttle_valve:
+                type: np.float64
+                # shape: ['*']
+                # unit: percent
+                description: Opening level of the throttle valve at the turbo pump used to apply the chamber pressure 
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Throttle valve
+                eln:
+                  component: NumberEditQuantity
+                  # defaultDisplayUnit:
+              chamber_pressure:
+                type: np.float64
+                # shape: ['*']
+                unit: millibar
+                description: chamber pressure in the reaction chamber
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Chamber pressure
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: millibar
+              rotation:
+                type: np.float64
+                #shape: ['*']
+                unit: rpm
+                description: carrier rottaion velocity
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Rotation
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: rpm
+              voltage:
+                type: np.float64
+                #shape: ['*']
+                unit: volt
+                description: Voltage control of the heating system
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Voltage
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: volt
+              current:
+                type: np.float64
+                #shape: ['*']
+                unit: milliampere
+                description: Current control of the heating system
+                m_annotations:
+                  tabular:
+                    name: Deposition Control/Current
+                eln:
+                  component: NumberEditQuantity
+                  defaultDisplayUnit: milliampere

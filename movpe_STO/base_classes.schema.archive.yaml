@@ -15,11 +15,6 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         notes:
           type: str
           m_annotations:
@@ -78,6 +73,7 @@ definitions:
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
+      - 'nomad.datamodel.data.EntryData'
       quantities:
         experiment_goal:
           type: str
@@ -273,6 +269,17 @@ definitions:
           m_annotations:
             eln:
               component: BoolEditQuantity
+    Feedstock: 
+      base_sections: 
+      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
+      - '#/Material'
+      quantities:
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     Crystal: 
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection

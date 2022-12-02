@@ -4,9 +4,30 @@ data:
     responsible_person:
       - user_id: "8e6f6796-d4f0-409a-85d2-1b8810c8c3a1"
   tasks: 
-    - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
-      name: "Logfile"
-      task: ../upload/raw/logfile.archive.yaml#data
-    - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
+    - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Recipe_dir_sol
       name: "Rezeptur"
-      task: ../upload/raw/recipe.archive.yaml#data
+      data_file: G1_IKZ_NSI_23.xlsx
+    - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Process_einwaage
+      name: Einwaage
+      comment: test1
+      start_time: 2022-09-01 10:00+01
+      end_time: 2022-09-01 10:01+01
+      input_materials:
+        - ../upload/raw/feedstock1.data.archive.yaml#data
+        - ../upload/raw/feedstock2.data.archive.yaml#data
+      temperature: 25
+      method: test2
+      activity_identifier: test3
+      activity_location: test4
+      activity_category: test5
+      activity_method: test6
+      dose: 43
+      net_mass_before: 45
+      crucible_model: mymodel
+      crucible_mass: 876
+      brutto_mass_before: 47
+      atmosphere: mystring
+      oven: test7
+    - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Logfile_dir_sol
+      name: "Logfile"
+      data_file: G1_IKZ_NSI_23_for_NOMAD.csv
