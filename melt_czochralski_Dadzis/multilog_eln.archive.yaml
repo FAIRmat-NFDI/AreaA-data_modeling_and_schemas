@@ -1,0 +1,145 @@
+definitions:
+  name: Electronic Lab Notebook
+  sections:
+    MeltCzochralski:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.ElnBaseSection
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide:
+          - name
+          - description
+          lane_width: 200px
+      sub_sections:
+        users:
+          section:
+            quantities:
+              user:
+                type: User
+                shape:
+                - '*'
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
+        process:
+          section:
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+            sub_sections:
+              procedure:
+                repeats: true
+                section:
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+                  quantities:
+                    crystal_diameter:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+        configuration:
+          section:
+            m_annotations:
+              eln:
+                lane_width: 200px
+            sub_sections:
+              furnace:
+                section:
+                  m_annotations:
+                    eln:
+                      lane_width: 200px
+                  quantities:
+                    furnace_type:
+                      type: str
+                      description: Furnace description
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              heating:
+                section:
+                  m_annotations:
+                    eln:
+                      lane_width: 200px
+                  quantities:
+                    heater_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                        - Resistance
+                        - Inductor
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    heater_id:
+                      type: str
+                      description: Inductor or resistance heater name or ID
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+        data_processing:
+          section:
+            quantities:
+              software:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                description: Software used for logging
+              sampling_time:
+                type: np.float64
+                unit: ms
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: ms
+                description: Time between sampled points
+              image_time:
+                type: np.float64
+                unit: ms
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: ms
+                description: Time between recorded images
+        instrumentation:
+          section:
+            m_annotations:
+              eln:
+                lane_width: 200px
+            sub_sections:
+              DAQ_6510:
+                section:
+                  m_annotations:
+                    eln:
+                      lane_width: 200px
+                  quantities:
+                    sensors_locations:
+                      type: str
+                      description: Picture of sensor locations
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor
+                        eln:
+                          component: FileEditQuantity
+                    sensors_list:
+                      type: ../upload/raw/DAQ-6510.archive.yaml#Sensors_list
+              Optris_IP_640:
+                section:
+                  m_annotations:
+                    eln:
+                      lane_width: 200px
+                  quantities:
+                    ir_camera:
+                      type: ../upload/raw/Optris-IP-640.archive.yaml#IR_camera
+data:
+  m_def: MeltCzochralski
+  process:
+    start_time: '2022-11-28 16:22:54.839+01:00'
+  data_processing:
+    software: multilog v2.2.0-2-g780bb49
+    sampling_time: 2000
+    image_time: 5000
+  instrumentation:
+    DAQ_6510:
+      sensors_list: ../upload/raw/DAQ-6510.archive.yaml#data
+    Optris_IP_640:
+      ir_camera: ../upload/raw/Optris-IP-640.archive.yaml#data

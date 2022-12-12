@@ -1,3 +1,3 @@
-time_rel,time_abs,TE_1_K air 155 mm over crucible,my_header_4,my_header_5,my_header_6
-1,2,3,4,5,6
-11,22,33,44,55,66
+time_rel,time_abs,TE_1_K_bottom_axis,rogowski_PEM_300A,
+1,2,3,4,
+11,22,33,44,

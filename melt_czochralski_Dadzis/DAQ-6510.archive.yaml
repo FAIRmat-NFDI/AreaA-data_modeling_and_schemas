@@ -1,0 +1,166 @@
+definitions:
+  name: Sensors
+  sections:
+    Sensors_list:
+      base_sections:
+      - nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        plot:
+        - label: TE_1_K bottom axis over time
+          x: value_timestamp_rel
+          y:
+          - TE_1_K_bottom_axis/value_log
+        - label: rogowski_PEM_300A over time
+          x: value_timestamp_rel
+          y:
+          - rogowski_PEM_300A/value_log
+      quantities:
+        data_file:
+          type: str
+          description: 'A reference to an uploaded .csv
+
+            '
+          m_annotations:
+            tabular_parser:
+              sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        value_timestamp_rel:
+          type: np.float64
+          shape:
+          - '*'
+          m_annotations:
+            tabular:
+              name: time_rel
+          description: Relative time
+        value_timestamp_abs:
+          type: Datetime
+          shape:
+          - '*'
+          m_annotations:
+            tabular:
+              name: time_abs
+          description: 'Timestamp for when the values provided in the value field
+            were registered.
+
+            Individual readings can be stored with their timestamps under value_log.
+
+            This is to timestamp the nominal setpoint or
+
+            average reading values listed above in the value field.
+
+            '
+      sub_sections:
+        TE_1_K_bottom_axis:
+          section:
+            m_annotations:
+              plot:
+              - label: value_log over time
+                x: value_timestamp_rel
+                y: value_log
+            quantities:
+              value_log:
+                type: np.float64
+                shape:
+                - '*'
+                m_annotations:
+                  tabular:
+                    name: TE_1_K bottom axis
+                description: Time history of sensor readings. May differ from setpoint
+              value_timestamp_rel:
+                type:
+                  type_kind: quantity_reference
+                  type_data: '#/definitions/section_definitions/0/quantities/1'
+              value_timestamp_abs:
+                type:
+                  type_kind: quantity_reference
+                  type_data: '#/definitions/section_definitions/0/quantities/2'
+              emissivity:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                description: Emission percentage value set in pyrometer
+              transmissivity:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                description: Transmission percentage value set in pyrometer
+              t90:
+                type: np.float64
+                description: FILL THE DESCRIPTION
+                unit: second
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: second
+              comment:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                description: Comment, e.g. sensor position
+        rogowski_PEM_300A:
+          section:
+            m_annotations:
+              plot:
+              - label: value_log over time
+                x: value_timestamp_rel
+                y: value_log
+            quantities:
+              value_log:
+                type: np.float64
+                shape:
+                - '*'
+                m_annotations:
+                  tabular:
+                    name: rogowski_PEM_300A
+                description: Time history of sensor readings. May differ from setpoint
+              value_timestamp_rel:
+                type:
+                  type_kind: quantity_reference
+                  type_data: '#/definitions/section_definitions/0/quantities/1'
+              value_timestamp_abs:
+                type:
+                  type_kind: quantity_reference
+                  type_data: '#/definitions/section_definitions/0/quantities/2'
+              emissivity:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                description: Emission percentage value set in pyrometer
+              transmissivity:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                description: Transmission percentage value set in pyrometer
+              t90:
+                type: np.float64
+                description: FILL THE DESCRIPTION
+                unit: second
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: second
+              comment:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                description: Comment, e.g. sensor position
+data:
+  m_def: Sensors_list
+  data_file: DAQ-6510.csv
+  TE_1_K_bottom_axis:
+    value_timestamp_rel: '#/data/value_timestamp_rel'
+    value_timestamp_abs: '#/data/value_timestamp_abs'
+  rogowski_PEM_300A:
+    value_timestamp_rel: '#/data/value_timestamp_rel'
+    value_timestamp_abs: '#/data/value_timestamp_abs'

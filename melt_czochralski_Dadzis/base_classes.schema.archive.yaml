@@ -1,28 +1,17 @@
 definitions:
-  name: 'Multiple Base Classes for Experiments'
+  name: 'Multiple Base Class'
   sections:  # Schemes consist of section definitions
     Entity:
       m_annotations:
         eln:
+          dict()
       base_sections:
         - nomad.datamodel.data.EntryData
-      quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
       sub_sections:
         users:
           section:
             quantities:
               responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-              operator:
                 type: Author
                 shape: ['*']
                 m_annotations:
@@ -40,9 +29,7 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity  
     Experiment: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
+      base_section:  '#/Entity'
       quantities:
         experiment_goal:
           type: str
@@ -50,71 +37,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Link:
-      description: |
-        Instances of Link are used to represent either a single input or single
-        output of a Task. Using a separate section for links allows to put
-        additional information (e.g. a name) on an input or output.
-      base_section: nomad.datamodel.data.ArchiveSection
-      m_annotations:
-        eln:
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        section:
-          type: '#/Entity' # nomad.datamodel.data.ArchiveSection 
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Task:
-      description: |
-        Instances of Task are used to represent an activity that happened during workflow
-        execution and that was acting on inputs to produce outputs.
-      base_section: nomad.datamodel.data.ArchiveSection
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        inputs:
-          repeats: True
-          section: '#/Link'
-        outputs:
-          repeats: True
-          section: '#/Link'
-    TaskReference:
-      description: |
-        A proxy section that can be used to compose a workflow of tasks that are contained
-        in a different entry or workflow.
-      base_section: '#/Task'
-      quantities:
-        task:
-          description: |
-            A reference to the task that this section is a proxy for.
-          type: '#/Task'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Workflow:
-      description: |
-        Instances of Workflow are used to represent a set of Tasks that connect input and
-        output data objects to produce a provenance graph for those data.
-
-        Workflows themselves can be tasks. This allows to build nested workflows where some
-        of the workflow tasks are workflows themselves.
-      base_section: '#/Task'
-      sub_sections:
-        tasks:
-          description: |
-            The tasks of this workflow as a repeating sub section. Use TaskReference if
-            tasks cannot be contained.
-          repeats: True
-          section: '#/Task'
     Material: 
       base_section: '#/Entity'
       quantities:
@@ -123,7 +45,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Sample: 
+    Substrate: 
       base_section: '#/Material'
       sub_sections:
         SampleID:
@@ -137,58 +59,17 @@ definitions:
                 # hide: ['children', 'parents']
                 # hide: ['children', 'parents', institute]
                 hide: []
-        geometry:
-          section: '#/Geometry'
+        composition:
+          repeats: true
+          #m_annotations:
+          #  eln:
+          section: '#/EntityAndAmount'
       quantities:
-        preparation_date:
-          type: str
-          description: creation date
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        iupac_name:
+        comment:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
-        empirical_formula:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        state_of_matter:
-          type:
-            type_kind: Enum
-            type_data:
-              - single crystal
-              - policrystalline
-              - microcristalline powder
-              - amorphous solid
-              - liquid
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        safety_reactivity:
-          type:
-            type_kind: Enum
-            type_data:
-              - air sensitive
-              - poisonous
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        components:
-          type: '#/Material'
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Substrate: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
-      quantities:
         supplier:
           type: str
           description: Sample preparation including orientating, polishing, cutting done by this company
@@ -227,38 +108,207 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        prepared:
-          type: bool
-          description: Is the sample annealed, cleaned and etched for smooth stepped surface?
-          m_annotations:
-            eln:
-              component: BoolEditQuantity
-        recycled:
-          type: bool
-          description: Was the substrate deposited already and is recycled by polishing?
-          m_annotations:
-            eln:
-              component: BoolEditQuantity
-    Crystal: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
-      quantities:
-        orientation:
+        size:
           type: str
-          description: crystallographic orientation of the substrate in [hkl]
+          description: Substrate dimensions
           m_annotations:
             eln:
               component: StringEditQuantity
-    Activity: 
-      base_sections: 
-       - '#/Workflow'
+        prepared:
+          type: str
+          description: Is the sample annealed, cleaned and etched for smooth stepped surface?
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        recycled:
+          type: str
+          description: Was the substrate deposited already and is recycled by polishing?
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Sample: 
+      base_section: '#/Material'
+      sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+              - 'nomad.datamodel.data.EntryData'
+            m_annotations:
+              template: 
+              eln: 
+                # hide: ['children', 'parents']
+                # hide: ['children', 'parents', institute]
+                hide: []
+        geometry:
+          section:
+            m_annotations:
+              eln:
+                dict()
+            sub_sections:
+              parallelepiped:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    width:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    length:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+              cylinder:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    lower_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    upper_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    cap_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    lateral_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
       quantities:
+        # data_source: 
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - experimental
+        #       - simulation
+        #       - declared_by_vendor
+        #       - nominal
+        #   m_annotations:
+        #     eln:
+        #       component: RadioEnumEditQuantity
+        # synthesis_method:
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - MOVPE
+        #       - what not
+        #   m_annotations:
+        #     eln:
+        #       component: RadioEnumEditQuantity
         comment:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
+        iupac_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        empirical_formula:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        state_or_phase:
+          type:
+            type_kind: Enum
+            type_data:
+              - cristalline solid
+              - microcristalline solid
+              - powder
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        preparation_date:
+          type: str
+          description: creation date
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        components:
+          type: '#/Material'
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Activity: 
+      base_section: "nomad.datamodel.data.EntryData"
+      quantities:
         start_time:
           description: |
             The starting date and time of the activity.
@@ -273,18 +323,18 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        # input_materials:
-        #   type: '#/Material'
-        #   shape: ['*']
-        #   m_annotations:
-        #     eln:
-        #       component: ReferenceEditQuantity
-        # output_materials:
-        #   type: '#/Material'
-        #   shape: ['*']
-        #   m_annotations:
-        #     eln:
-        #       component: ReferenceEditQuantity
+        input_materials:
+          type: '#/Material'
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        output_materials:
+          type: '#/Material'
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
         activity_category:
           type:
             type_kind: Enum
@@ -307,15 +357,11 @@ definitions:
           type: 
             type_kind: Enum
             type_data:
-              - float zone
-              - melt czochralski
-              - pedestal
-              - OTHER TECHNIQUES
+              - ALL THE TECHNIQUES HERE
+              - Melt Czochralski
           description: |
             a method is a series of steps for performing a function or accomplishing a result.
-
             Or
-
             any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
           m_annotations:
             eln:
@@ -327,7 +373,7 @@ definitions:
             #   name: Overview/Experiment Identifier
             eln:
               component: StringEditQuantity
-        activity_location:
+        location:
           type: str
           m_annotations:
             # tabular:
@@ -351,15 +397,10 @@ definitions:
                   eln:
                     component: AuthorEditQuantity
     Measurement:  
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
+      base_section:  '#/Activity'
     Procedure_step:  
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Task'
-      m_annotations:
-        eln:
+      more:
+        label_quantity: 'step_name'
       quantities:
         step_name: 
           type: str
@@ -408,23 +449,20 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
     Process:
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
-      m_annotations:
-        eln:
-          dict()
+      base_section:  '#/Activity'
+      quantities:
+        comment:
+          type: str
+          description: my descr
+          m_annotations:
+            eln:
+              component: StringEditQuantity
       sub_sections:
         procedure:
           repeats: true
-          section: 
-            base_section: '#/Procedure_step'
-            more:
-              label_quantity: step_name # together to repeats: true
+          section: '#/Procedure_step'
     Substance: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      base_section: '#/Material'
       more:
         label_quantity: iupac_name
       sub_sections:
@@ -440,6 +478,11 @@ definitions:
                 # hide: ['children', 'parents', institute]
                 hide: []
       quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         empirical_formula:
           type: str
           description: chemical formula
@@ -452,40 +495,6 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    SubstanceBatch: 
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
-      quantities:
-        component:
-          type: Material
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
         state_or_phase:
           type: str
           description: Phase of the chemical in the bottle
@@ -537,18 +546,40 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        cas_number:
+          type: str
+          description: CAS number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sku_number:
+          type: str
+          description: sku number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        smiles:
+          type: str
+          description: smiles string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        inchi:
+          type: str
+          description: inchi string indentifier
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         documentation: 
           type: str
           description: pdf files containing certificate and other documentation
           m_annotations:
             browser:
-              adaptor: RawFileAdaptor  
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-    AmountOfMaterial: 
-      base_sections:
-      - nomad.datamodel.metainfo.eln.ElnBaseSection 
-      - '#/Material'
+    EntityAndAmount: 
+      base_section: '#/Material'
       quantities:
         component:
           type: Material
@@ -610,8 +641,6 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: mL/minute
     Sensor:
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
       quantities:
         model:
           type: str
@@ -699,110 +728,3 @@ definitions:
             Individual readings can be stored with their timestamps under value_log.
             This is to timestamp the nominal setpoint or
             average reading values listed above in the value field.
-    Geometry:
-      m_annotations:
-        eln:
-          dict()
-      sub_sections:
-        parallelepiped:
-          section:
-            quantities:
-              height:
-                type: np.float64
-                unit: nanometer
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: nanometer
-              width:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              length:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              surface_area:
-                type: np.float64
-                unit: millimeter ** 2
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 2
-              volume:
-                type: np.float64
-                unit: millimeter ** 3
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 3
-        cylinder:
-          section:
-            quantities:
-              height:
-                type: np.float64
-                unit: nanometer
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: nanometer
-              radius:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              lower_cap_radius:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              upper_cap_radius:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              cap_surface_area:
-                type: np.float64
-                unit: millimeter ** 2
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 2
-              lateral_surface_area:
-                type: np.float64
-                unit: millimeter ** 2
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 2
-              volume:
-                type: np.float64
-                unit: millimeter ** 3
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 3
