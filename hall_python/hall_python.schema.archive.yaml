@@ -2,7 +2,7 @@ definitions:
   name: "Electronic Lab Notebook for Hall"
   sections: # Schemes consist of section definitions
     Contacts_grafting:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Process
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment
       quantities:
         dose:
           type: np.float64
@@ -94,8 +94,7 @@ definitions:
     Hall_experiment:
       base_sections:
         #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
-        - "nomad.datamodel.data.EntryData"
-        - "../upload/raw/base_classes.schema.archive.yaml#Experiment"
+        - ../upload/raw/base_classes.schema.archive.yaml#Experiment
       m_annotations:
         eln: dict()
       sub_sections:
