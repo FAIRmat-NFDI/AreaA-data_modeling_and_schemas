@@ -1,0 +1,30 @@
+data:  
+  m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Movpe_experiment 
+  data_file: datafile.xlsx
+  users:  #section name - not to be filled
+    responsible_person: 
+      - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
+  My_exp:
+    - tasks: 
+      # - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
+      #   name: "Epitaxial Growth Reference"
+      #   task: ../upload/raw/process.data.archive.yaml#data
+      - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Process_movpe
+        name: Epitaxial Growth
+        data_file: datafile.xlsx
+        id: "22-01-21-MA-255"
+        location:
+        timestamp: 2022-08-25 10:33:25.013+02
+        activity_category:
+        activity_method:
+        film:
+        o2_ar:
+        notes: "films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see Precursor"
+      - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Deposition_control
+        name: Deposition Control
+        data_file: datafile.xlsx
+      - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Measurement_hrxrd
+        name: HR XRD Characterization
+        data_file: datafile.xlsx
+      - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#AFM_measurements
+        name: AFM Characterization
