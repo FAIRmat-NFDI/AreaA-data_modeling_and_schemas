@@ -1,5 +1,5 @@
 data:
-  m_def: ../upload/raw/Einwaage.schema.archive.yaml#Process_einwaage
+  m_def: ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
   comment: test1
   start_time: 2022-09-01 10:00+01
   end_time: 2022-09-01 10:01+01
@@ -16,3 +16,13 @@ data:
   brutto_mass_before: 47
   atmosphere: mystring
   oven: test7
+  tasks:
+    - step_number:
+      step_comment:
+      step_duration:
+      elapsed_time:
+    - step_number:
+      step_comment:
+      step_duration:
+      elapsed_time:
+

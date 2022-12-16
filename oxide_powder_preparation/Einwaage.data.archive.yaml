@@ -1,6 +1,0 @@
-data:
-  m_def: ../upload/raw/Einwaage.schema.archive.yaml#Powder_sample
-  components:
-    - ../upload/raw/Substance1.data.archive.yaml#data 
-    - ../upload/raw/SubstanceAndAmount.data.archive.yaml#data 
-    - ../upload/raw/Sample.data.archive.yaml#data 
