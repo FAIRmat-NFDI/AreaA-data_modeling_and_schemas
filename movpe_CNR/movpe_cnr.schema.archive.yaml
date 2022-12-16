@@ -3,7 +3,7 @@ definitions:
   sections:  # Schemas consist of section definitions
     Movpe_experiment:
       base_sections: 
-       - nomad.datamodel.data.EntryData 
+       - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
        - nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
@@ -22,16 +22,21 @@ definitions:
               comment: '#'
               mode: row
               target_sub_section: 
-               - My_exp
+               - global
+               - users
+               - tasks
             browser:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity  # A form field that allows to drop and select files.
       sub_sections:
-        My_exp:
+        global:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
+            base_sections: 
+            - ../upload/raw/base_classes.schema.archive.yaml#Global 
+            m_annotations:
+              eln: 
             quantities:
               film:
                 type: str
@@ -44,6 +49,8 @@ definitions:
               substrate:
                 type: ../upload/raw/base_classes.schema.archive.yaml#Substrate
                 m_annotations:
+                  # tabular:
+                  #   name: Overview/Film
                   eln:
                     component: ReferenceEditQuantity
               substrate_temperature:
@@ -51,31 +58,62 @@ definitions:
                 unit: celsius
                 description: temperature of the substrate
                 m_annotations:
+                  # tabular:
+                  #   name: Overview/Film
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: celsius
               carrier_gas:
                 type: ../upload/raw/base_classes.schema.archive.yaml#Substance
                 m_annotations:
+                  # tabular:
+                  #   name: Overview/Film
                   eln:
                     component: ReferenceEditQuantity
-              substrate_temperature:
-                type: np.float64
-                unit: celsius
-                description: temperature of the substrate
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius
-            sub_sections:
-              instrument:
-                section:
-                  m_annotations:
-                    eln:
-                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Entity
+        instrument:
+          section:
+            m_annotations:
+              eln:
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Entity
+        # inputs:
+        #   repeats: True
+        #   section: 
+        #     m_annotations:
+        #       eln:
+        #     quantities:
+        #       name:
+        #         type: str
+        #         m_annotations:
+        #           eln:
+        #             component: StringEditQuantity
+        #       reference:
+        #         type: ../upload/raw/base_classes.schema.archive.yaml#Entity
+        #         m_annotations:
+        #           tabular:
+        #             name: Overview/Film
+        #           eln:
+        #             component: ReferenceEditQuantity
     AFM_measurements:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step 
+      m_annotations:
+        eln:
       quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
         roughness:
           type: np.float64
           unit: nanometer
@@ -90,6 +128,8 @@ definitions:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Measurement
       -  nomad.parsing.tabular.TableData 
+      m_annotations:
+        eln:
       quantities:
         data_file:
           type: str
@@ -177,9 +217,24 @@ definitions:
         eln: 
       quantities:
         data_file:
-          type:
-            type_kind: quantity_reference
-            type_data: '#/definitions/section_definitions/0/quantities/0'
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+              mode: row
+              target_sub_section: 
+               - tasks
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
       sub_sections:
         tasks:
           repeats: true
@@ -288,7 +343,6 @@ definitions:
                 m_annotations:
                   tabular:
                     name: Processdata/Argon flow
-                    unit: centimeter ** 3 / minute 
                   # plot:
                   #   x: elapsed_time
                   #   y: argon_flow
