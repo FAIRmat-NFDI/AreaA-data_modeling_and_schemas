@@ -9,5 +9,5 @@ data:
   comment: my_comment
   supplier: supplier
   orientation: mytest
-  
+  documentation: documentation.pdf
   
