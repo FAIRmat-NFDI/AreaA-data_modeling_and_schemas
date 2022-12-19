@@ -2,51 +2,51 @@ definitions:
   name: Electronic Lab Notebook
   sections:
     Data_processing:
-        base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
-        quantities:
-          software:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-            description: Software used for logging
-          sampling_time:
-            type: np.float64
-            unit: ms
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: ms
-            description: Time between sampled points
-          image_time:
-            type: np.float64
-            unit: ms
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: ms
-            description: Time between recorded images
+      base_sections:
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        software:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: Software used for logging
+        sampling_time:
+          type: np.float64
+          unit: ms
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ms
+          description: Time between sampled points
+        image_time:
+          type: np.float64
+          unit: ms
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ms
+          description: Time between recorded images
     My_nice_process:
-        base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
-        quantities:
-          my_nice_quantity:
-            type: str
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-            description: "a quantity describing my process"
+      base_sections:
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        my_nice_quantity:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: a quantity describing my process
     MeltCzochralski:
       base_sections:
-      - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
+      - ../upload/raw/base_classes.schema.archive.yaml#Experiment
       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
           hide:
           - name
           - description
-          # lane_width: 200px
+          lane_width: 400px
       sub_sections:
         users:
           section:
@@ -101,31 +101,23 @@ definitions:
           section:
             m_annotations:
               eln:
-                # lane_width: 200px
+                lane_width: 400px
             quantities:
-              DAQ_6510_sensors_locations:
-                type: str
-                description: Picture of sensor locations
-                m_annotations:
-                  browser:
-                    adaptor: RawFileAdaptor
-                  eln:
-                    component: FileEditQuantity
-              DAQ_6510_sensors_list:
+              DAQ_6510:
                 type: ../upload/raw/DAQ-6510.archive.yaml#Sensors_list
-              Optris_IP_640_ir_camera:
+              Optris_IP_640:
                 type: ../upload/raw/Optris-IP-640.archive.yaml#IR_camera
 data:
   m_def: MeltCzochralski
-  timpestamp: '2022-11-28 16:22:54.839+01:00'
+  timestamp: '2022-12-19 13:41:38.934+01:00'
+  tasks:
+  - m_def: Data_processing
+    name: Data_processing
+    software: multilog v2.2.0-9-b137997
+    sampling_time: 2000
+    image_time: 5000
+  - m_def: My_nice_process
+    name: My_nice_process
   instrumentation:
-    DAQ_6510_sensors_list: ../upload/raw/DAQ-6510.archive.yaml#data
-    Optris_IP_640_ir_camera: ../upload/raw/Optris-IP-640.archive.yaml#data
-  tasks: 
-    - m_def: Data_processing # ../upload/raw/whateverfile.schema.archive.yaml#Data_processing
-      name: "Data_processing"
-      software: multilog v2.2.0-2-g780bb49
-      sampling_time: 2000
-      image_time: 5000
-    - m_def: My_nice_process
-      name: "My_nice_process"
+    DAQ_6510: ../upload/raw/DAQ-6510.archive.yaml#data
+    Optris_IP_640: ../upload/raw/Optris-IP-640.archive.yaml#data
