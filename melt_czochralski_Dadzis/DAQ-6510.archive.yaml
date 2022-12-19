@@ -6,15 +6,7 @@ definitions:
       - nomad.parsing.tabular.TableData
       - nomad.datamodel.data.EntryData
       m_annotations:
-        plot:
-        - label: TE_1_K bottom axis over time
-          x: value_timestamp_rel
-          y:
-          - TE_1_K_bottom_axis/value_log
-        - label: rogowski_PEM_300A over time
-          x: value_timestamp_rel
-          y:
-          - rogowski_PEM_300A/value_log
+        lane_width: 400px
       quantities:
         data_file:
           type: str
