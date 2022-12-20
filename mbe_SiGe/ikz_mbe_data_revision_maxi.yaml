@@ -1,0 +1,203 @@
+# Schema for MBE data from Substrate to Characterization and beyond
+
+definitions:
+
+    name: 'MBE'
+    
+    sections:
+    
+        Overview:
+            sub_sections:
+                Category:
+
+                    description:
+                        A brief pregnant description of the proposed experiment group.
+                        It can be seen as a kind of heading for a group of experiments that have the same goal and procedure.
+                
+                    quantities:
+                        # insertion for a dropdown menue for used Catergory names as a string with suggestions
+                        names:
+                        # qn: when i am using for exp. a string_with_suggestions. are those suggestions putted in the suggestions: part automatically after i used a not suggested string?
+                            type: str 
+                            m_annotations:
+                                eln:
+                                    component: EnumEditQuantity
+                                    suggestions: ['Ge Homoepitaxy', 'Si Homoepitaxy', 'SiGe Heteroepitaxy']
+                            
+                Motivation:
+            
+                    description:
+                        What is the Motivation behind the group of experiment? Description in around two to five senteces.
+                        
+                    quantities:
+                        # written plaintext for motivation description
+                    
+                        motivation_plain_text:
+                            type: str
+                            m_annotations:
+                                eln:
+                                    component: RichTextEditQuantity
+                                    
+                Literature:
+                    # qn: the possibility to insert a DOI in form of a Hyperlink possible? can I use Url editquantity for that?
+                    description:
+                        In addition to the motivation a section to insert references as DOI which for example the motivation is based on or a glimps of the theoretical backround.
+                        
+                    quantities:
+                        # insert DOI as an URL
+                        
+                        DOI_link:
+                            type:str
+                            m_annotations:
+                                eln:
+                                    component: URLEditQuantity
+
+
+
+        Substrate:
+            sub_sections:
+                ID:
+                    description:
+                        The ID includes the category of the experiment, the batch number, the substrate element(s) and a consecutive number. e.g. GeHomo_UC_DIK_01_Ge_0001
+                        # From the ID, the experiment, i.e. the category, the batch number, the substrate element(s) and a consecutive number should be recognizable at first glance. Example: GeHomo_UC_DIK_01_Ge_0001 stands for Ge Homoepitaxy with germanium substrate from batch UC_DIK_01 the first sample. It is best to automatically generate the ID from the subchapters with the option to manually enter and modify the automatically generated ID.
+                Material:
+                    description:
+                        The Elements and the corresponding isotope which are used in the used Substrate.
+                        # input of the Elements which are used as substrate. A nice option would be a button which opens a periodic table where I can click on the used elements. In addition a dropdown menue with the used isotope.
+                Orientation:
+                    description:
+                        The Orientation and the offcut[°] of the Substrate.
+                        # A dropdown menue with options for choosing the substrate orientation with the present offcut in degree [°] 
+                Storage_locatian:
+                    description:
+                        The location as room number with the place in this room where the sample can be found. e.g. 19.31.334 office shelf or. HU TEM Laboratory
+                        # plain text
+                Batch:
+                    description:
+                        The used shortname of the batch where the substrate is comming from
+                Producer:
+                    description:
+                        The manufacturer of the Substrate
+                        # user input as a string. Maybe in future a dropdownmenue
+                Date received:
+                    description:
+                        The date on which the samples were received.
+                        # an option to select an day out of an calender 
+                    
+                Dopingtype:
+                    description:
+                        Dopingtypes are n-type, p-type or no doping.
+                        # The menu to select p-, n- type or none. Maybe something like 'radio_enum'
+                Doping:
+                    description:
+                        Doping in [Ohm*cm]
+                Dimensions:
+                    description:
+                        The overall dimension of the sample in lenght(L)*width(W)*height(H) in [mm] when rectangular and in a diameter in [mm] or ["] * height [mm] when circular 
+                        # Option to say if rectangular or circular and then respectively L, W and H in [mm] or [mm] or ["] * height [mm]
+                Image:
+                    description:
+                        A sketch or a image of the substrate. Can contain a crosssection, an overview picture or something else.
+                        # A option to upload any kind of image file format. tif,jpeg,png,pdf,svg...
+                Comment:
+                    description:
+                        A generell comment on the Substrate.
+                        # plain text
+
+
+        Process:
+            sub_sections:
+            
+            Substrate preparation:
+                sections:
+                    
+                    Date time:
+                        description: Date and the time when the Ex-situ treatment has startet.
+                        # A Date time quantity
+                    Person:
+                        description: The executing person of the ex-situ treatment.
+                        # AuthorEditQuantity
+                    Chemicals:
+                        description: A list of the used chemicals during the ex-situ treatment.
+                        # String with suggestions in combination with list
+                    Name_of_Procedure:
+                        description: Identifikation name of the ex-situ treatment. e.g. Ge cleaning after Bansen
+                        # String with suggestion
+                    Literature:
+                        description: If available, a reference to the idea of the treatment.
+                        # A URL quantity with in order to insert the DOI
+                    Comment:
+                        description: Generel comment of the treatment.
+                        # plain text
+                    Procedure:
+                        description: In order the used chemicals, the ratio of the chemicals, the time and a optional comment to each step. 
+                        # The chemicals which where defined in the section: Chemicals should be selectable here. This whole procedure should be displayed as a table or similiar. cf.first_overview.pdf
+                        Step_number:
+                        Step_name:
+                        Chemcical:
+                        Ratio:
+                        Time [s]:
+                        Comment:
+                    
+            In-situ treatment: #mbe process
+                    Calibration_date_sources:  # multiple sources, there will be a schema just for calibration
+                        description: The date when the sources where last time calibrated. 
+                        source_material: [Ge, Si]
+                        date_of_Calibration: datetime
+                        comment: string
+                        #Ge:
+                        # Datetime
+                        #Si:
+                        # Datetime
+                section:
+                    
+                    Date:
+                        description: The date and time of the start of the treatment.
+                        #Datetime
+                    Person:
+                        description: The executing person of the in-situ treatment.
+                        # Author
+                    Recipe:
+                        description: The exported recipe from the MBE process Software loaded an displayed in a table.
+                        # The parsed .asi export from the MBE process Software. Maybe there will 
+                    Growth:
+                        description: *.daa file. The exported growth data from MBE process Software which includes temperature, pressure  and information about the sources.
+
+                    Plots: #aus growth *.daa file
+                    
+                    Comment:
+                    
+                    
+
+
+
+
+
+
+
+
+
+
+
+        Characterization:
+        Interpretation:
+        Further_procedure:
+
+
+
+
+TODO:
+- list of abbrevations
+- description to each file
+
+
+
+
+
+
+
+
+
+
+
+
