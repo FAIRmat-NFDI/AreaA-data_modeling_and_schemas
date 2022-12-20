@@ -1,7 +1,5 @@
 # Schema for MBE data from Substrate to Characterization and beyond
 
-definitions:
-
     name: 'MBE'
         Overview:
             Category:
@@ -80,7 +78,7 @@ definitions:
 
 # tasks:
     # preprocess:
-    Substrate preparation:
+    Substrate_preparation:
         Date time:
             description: Date and the time when the Ex-situ treatment has startet.
             # A Date time quantity
@@ -110,7 +108,8 @@ definitions:
             Comment:
     #mbe process
     mbe_growth:
-        growth_recipe:
+    tasks:
+        growth_recipe: 
             Date:
                 description: The date and time of writing the recipe
                 #Datetime
