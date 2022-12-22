@@ -6,4 +6,4 @@
 
 These tree visualization shows the inheritance structure contained in the base_classes file. 
 
-This is a structure in development, for suggestions and contributes please refere to the issues opened in this repo.
+This is a structure under development, for suggestions and contributes please refer to the issues opened in this repo.

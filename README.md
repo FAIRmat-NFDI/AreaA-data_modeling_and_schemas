@@ -15,13 +15,12 @@ Full documentation (in preparation) at: https://fairmat-nfdi.github.io/AreaA-Doc
 
 The tree visualization shows the inheritance structure contained in the base_classes file. 
 
-This is a structure in development, for suggestions and contributes please refere to the issues opened in this repo.
-
+This is a structure under development, for suggestions and contributes please refer to the issues opened in this repo.
 ## About this repo:
 
-This is a collection of example schemes that include several kinds of experiment.  
+It is a collection of example schemas that include several kinds of experiment.  
 
-The schemes here implemented are compliant to the NOMAD data structure: the hierarchy is composed by Sections, Subsections and Quantities (data fields).
+The schemas here implemented adapt to the NOMAD data structure: the hierarchy is composed by Sections, Subsections and Quantities (data fields).
 
 The users can follow the info in this repo to build their own schema for their experiment :thumbsup:.
 
