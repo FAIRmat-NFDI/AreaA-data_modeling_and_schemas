@@ -74,13 +74,8 @@ definitions:
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
       - 'nomad.datamodel.data.EntryData'
-      quantities:
-        experiment_goal:
-          type: str
-          description: indicate here the goal aimed with this experiment
-          m_annotations:
-            eln:
-              component: StringEditQuantity
+      m_annotations:
+        eln:
     Link:
       description: |
         Instances of Link are used to represent either a single input or single
@@ -95,7 +90,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        section:
+        reference:
           type: '#/Entity'
           m_annotations:
             eln:
@@ -147,14 +142,8 @@ definitions:
           section: '#/Task'
     Material: 
       base_section: '#/Entity'
-      quantities:
-        test:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    Sample: 
-      base_section: '#/Material'
+      m_annotations:
+        eln: dict()
       sub_sections:
         SampleID:
           section:
@@ -167,6 +156,9 @@ definitions:
                 # hide: ['children', 'parents']
                 # hide: ['children', 'parents', institute]
                 hide: []
+    Sample: 
+      base_section: '#/Material'
+      sub_sections:
         geometry:
           section: '#/Geometry'
       quantities:
@@ -269,6 +261,14 @@ definitions:
           m_annotations:
             eln:
               component: BoolEditQuantity
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
     Feedstock: 
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
@@ -291,11 +291,11 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Activity: 
-      base_sections: 
-       - '#/Workflow'
+    Global:
+      m_annotations:
+        eln: dict()
       quantities:
-        activity_category:
+        category:
           type:
             type_kind: Enum
             type_data:
@@ -313,7 +313,7 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        activity_method:
+        method:
           type: 
             type_kind: Enum
             type_data:
@@ -331,14 +331,27 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        activity_location:
+        location:
           type: str
           m_annotations:
             # tabular:
             #   name: Overview/Experiment Location
             eln:
               component: StringEditQuantity
+        goal:
+          type: str
+          description: indicate here the goal aimed with this experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Activity: 
+      base_sections: 
+       - '#/Workflow'
       sub_sections:
+        global: 
+          section:  
+            base_sections: 
+            - '#/Global'
         users:
           section:
             quantities:
@@ -354,13 +367,15 @@ definitions:
                 m_annotations:
                   eln:
                     component: AuthorEditQuantity
+        instrument:
+          repeats: True
+          section: '#/Link'
     Measurement:  
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
     Procedure_step:  
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Task'
       m_annotations:
         eln:

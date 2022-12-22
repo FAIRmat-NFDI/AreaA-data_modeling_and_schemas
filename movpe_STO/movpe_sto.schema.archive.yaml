@@ -5,27 +5,7 @@ definitions:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
-          dict()
-      sub_sections:
-        instrument:
-          section:
-            m_annotations:
-              eln:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Entity
-    AFM_measurements:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step 
-      quantities:
-        roughness:
-          type: np.float64
-          unit: nanometer
-          description: RMS roughness value obtained by AFM
-          m_annotations:
-            tabular:
-              name: AFM/Roughness
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: nanometer
-    Measurement_hrxrd:
+    AFM_measurement:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Measurement
       -  nomad.parsing.tabular.TableData 
@@ -46,46 +26,90 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity  # A form field that allows to drop and select files.
+        timestamp:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: AFM/Timestamp
+            eln:
+              component: DateTimeEditQuantity
+        activity_identifier:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFM/Activity Identifier
+            eln:
+              component: StringEditQuantity
+        roughness:
+          type: np.float64
+          unit: nanometer
+          description: RMS roughness value obtained by AFM
+          m_annotations:
+            tabular:
+              name: AFM/Roughness
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+      sub_sections:
+        global:
+          section:
+            base_sections: 
+            - ../upload/raw/base_classes.schema.archive.yaml#Global 
+            quantities:
+              location:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: AFM/Location
+                  eln:
+                    component: StringEditQuantity
+              category:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: AFM/Category
+                  eln:
+                    component: StringEditQuantity
+              method:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: AFM/Method
+                  eln:
+                    component: StringEditQuantity
+    HRXRD_measurement:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
+      -  nomad.parsing.tabular.TableData 
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
+        timestamp:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: HR XRD/Timestamp
+            eln:
+              component: DateTimeEditQuantity
         activity_identifier:
           type: str
           m_annotations:
             tabular:
               name: HR XRD/Activity Identifier
-            eln:
-              component: StringEditQuantity
-        location:
-          type: str
-          m_annotations:
-            tabular:
-              name: HR XRD/Activity Location
-            eln:
-              component: StringEditQuantity
-        start_time:
-          type: Datetime
-          m_annotations:
-            tabular:
-              name: HR XRD/Start Time
-            eln:
-              component: DateTimeEditQuantity
-        end_time:
-          type: Datetime
-          m_annotations:
-            tabular:
-              name: HR XRD/End Time
-            eln:
-              component: DateTimeEditQuantity
-        category:
-          type: str
-          m_annotations:
-            tabular:
-              name: HR XRD/Activity Category
-            eln:
-              component: StringEditQuantity
-        method_or_technique:
-          type: str
-          m_annotations:
-            tabular:
-              name: HR XRD/Activity Method
             eln:
               component: StringEditQuantity
         thickness:
@@ -108,6 +132,33 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: angstrom
+      sub_sections:
+        global:
+          section:
+            base_sections: 
+            - ../upload/raw/base_classes.schema.archive.yaml#Global 
+            quantities:
+              location:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: HR XRD/Location
+                  eln:
+                    component: StringEditQuantity
+              category:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: HR XRD/Category
+                  eln:
+                    component: StringEditQuantity
+              method:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: HR XRD/Method
+                  eln:
+                    component: StringEditQuantity
     Process_movpesto:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
@@ -258,7 +309,6 @@ definitions:
                 m_annotations:
                   tabular:
                     name: Processdata/Argon flow
-                    unit: centimeter ** 3 / minute 
                   # plot:
                   #   x: elapsed_time
                   #   y: argon_flow

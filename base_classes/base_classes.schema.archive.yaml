@@ -74,6 +74,8 @@ definitions:
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
       - 'nomad.datamodel.data.EntryData'
+      m_annotations:
+        eln:
     Link:
       description: |
         Instances of Link are used to represent either a single input or single
@@ -293,7 +295,7 @@ definitions:
       m_annotations:
         eln: dict()
       quantities:
-        activity_category:
+        category:
           type:
             type_kind: Enum
             type_data:
@@ -311,7 +313,7 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        activity_method:
+        method:
           type: 
             type_kind: Enum
             type_data:
@@ -329,14 +331,14 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        activity_location:
+        location:
           type: str
           m_annotations:
             # tabular:
             #   name: Overview/Experiment Location
             eln:
               component: StringEditQuantity
-        experiment_goal:
+        goal:
           type: str
           description: indicate here the goal aimed with this experiment
           m_annotations:
@@ -365,13 +367,15 @@ definitions:
                 m_annotations:
                   eln:
                     component: AuthorEditQuantity
+        instrument:
+          repeats: True
+          section: '#/Link'
     Measurement:  
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
     Procedure_step:  
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Task'
       m_annotations:
         eln:
