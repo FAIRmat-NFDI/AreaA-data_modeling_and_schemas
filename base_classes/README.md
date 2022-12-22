@@ -4,4 +4,6 @@
 
 ![Base Classes](https://box.hu-berlin.de/f/66bbfd73da214e82a3bc/?dl=1)
 
-These base section have got an <em>a priori</em> **inheritance** structure. The user can further decide how to put together this bricks by means of **referencing**.
+These tree visualization shows the inheritance structure contained in the base_classes file. 
+
+This is a structure in development, for suggestions and contributes please refere to the issues opened in this repo.
