@@ -7,20 +7,15 @@ data:
     - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Recipe_dir_sol
       name: "Rezeptur"
       data_file: G1_IKZ_NSI_23.xlsx
-    - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Process_einwaage
-      name: Einwaage
-      comment: test1
-      start_time: 2022-09-01 10:00+01
-      end_time: 2022-09-01 10:01+01
-      input_materials:
-        - ../upload/raw/feedstock1.data.archive.yaml#data
-        - ../upload/raw/feedstock2.data.archive.yaml#data
-      temperature: 25
-      method: test2
-      activity_identifier: test3
-      activity_location: test4
-      activity_category: test5
-      activity_method: test6
+    - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Einwaage
+      name: einwaage for component 1
+      global:
+        activity_identifier: test3
+        activity_location: test4
+        activity_category: test5
+        activity_method: test6
+      notes: test1
+      timestamp: 2022-09-01 10:00+01
       dose: 43
       net_mass_before: 45
       crucible_model: mymodel
@@ -28,6 +23,11 @@ data:
       brutto_mass_before: 47
       atmosphere: mystring
       oven: test7
+      tasks:
+        - m_def: ../upload/raw/directional_solid.schema.archive.yaml#TemperatureRamp
+      inputs: 
+        - name: component_1
+          reference: ../upload/raw/feedstock1.data.archive.yaml#data
     - m_def: ../upload/raw/directional_solid.schema.archive.yaml#Logfile_dir_sol
       name: "Logfile"
       data_file: G1_IKZ_NSI_23_for_NOMAD.csv

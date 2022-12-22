@@ -108,8 +108,41 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mbar
-    Process_einwaage:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
+    TemperatureRamp:
+      base_sections: 
+       - ../upload/raw/base_classes.schema.archive.yaml#Task
+      quantities:
+        rate:
+          type: np.float64
+          shape: ['*']
+          unit: kelvin / hour
+          description: Temperature increase during the ramp
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kelvin / hour
+        temperature:
+          type: np.float64
+          shape: ['*']
+          unit: kelvin 
+          description: Temperature at the end of the ramp
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kelvin 
+        dwell_time:
+          type: np.float64
+          shape: ['*']
+          unit: hour
+          description: dwell time
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: hour
+    Einwaage:
+      base_sections: 
+       - ../upload/raw/base_classes.schema.archive.yaml#Activity
+       - "nomad.datamodel.data.EntryData"
       quantities:
         dose:
           type: np.float64
@@ -161,6 +194,30 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        brutto_mass_after:
+          type: np.float64
+          unit: gram
+          description: brutto mass after the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        net_mass_after:
+          type: np.float64
+          unit: gram
+          description: net  mass after the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        mass_loss:
+          type: np.float64
+          #unit: gram / gram
+          description: mass loss in percentage
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              #defaultDisplayUnit: gram / gram
     Logfile_dir_sol:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
