@@ -79,7 +79,7 @@ definitions:
         metal_stack:
           repeats: true
           m_annotations:
-            eln: dict()
+            eln: 
           section:
             base_section: ../upload/raw/base_classes.schema.archive.yaml#Substance
             quantities:
@@ -96,7 +96,7 @@ definitions:
         #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
         - ../upload/raw/base_classes.schema.archive.yaml#Experiment
       m_annotations:
-        eln: dict()
+        eln: 
       sub_sections:
         instrument:
           section:

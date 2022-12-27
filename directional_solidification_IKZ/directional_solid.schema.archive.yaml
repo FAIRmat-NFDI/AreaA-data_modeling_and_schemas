@@ -5,7 +5,6 @@ definitions:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
-          dict()
       sub_sections:
         instrument:
           section:
