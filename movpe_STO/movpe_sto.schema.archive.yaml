@@ -654,3 +654,66 @@ definitions:
                 eln:
                   component: NumberEditQuantity
                   defaultDisplayUnit: milliampere
+    Movpe_instrument:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Entity
+      m_annotations:
+        eln:
+      quantities:
+        company: 
+          type: str
+          description: the technology partner providing the instrument
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        principle:
+          type: str
+          description: schematic view of the liquid delivery-spin MOVPE setup
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  
+        setup_picture:
+          type: str
+          description: liquid delivery-spin MOVPE setup
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  
+        peristaltic_pump: 
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: StringEditQuantity 
+        evaporation_system: 
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: StringEditQuantity 
+        reaction_chamber: 
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: StringEditQuantity 
+        temperature_controller_of_heated_lines: 
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        precursors:
+          repeats: True
+          m_annotations:
+            eln:
+          section: ../upload/raw/base_classes.schema.archive.yaml#Link
+        publication_reference:
+          repeats: True
+          m_annotations:
+            eln:
+          section: nomad.datamodel.metainfo.eln.PublicationReference
