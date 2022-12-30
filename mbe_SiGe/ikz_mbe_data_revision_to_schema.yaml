@@ -1,8 +1,8 @@
 # Schema for MBE data from Substrate to Characterization and beyond
 
     name: 'MBE'
-        Overview:
-            Category:
+        Overview:  @Andrea -> check the "Global" subsection for these quntities
+            Category: 
                 description:
                     A brief pregnant description of the proposed experiment group.
                     It can be seen as a kind of heading for a group of experiments that have the same goal and procedure.
@@ -32,11 +32,11 @@
                 description:
                     The ID includes the category of the experiment, the batch number, the substrate element(s) and a consecutive number. e.g. GeHomo_UC_DIK_01_Ge_0001
                     # From the ID, the experiment, i.e. the category, the batch number, the substrate element(s) and a consecutive number should be recognizable at first glance. Example: GeHomo_UC_DIK_01_Ge_0001 stands for Ge Homoepitaxy with germanium substrate from batch UC_DIK_01 the first sample. It is best to automatically generate the ID from the subchapters with the option to manually enter and modify the automatically generated ID.
-            Material:
+            Material: @Andrea -> for now it is a list, let's coordinate with Hampus' Substance stuff. let's discuss also doping level and doping species
                 description:
                     The Elements and the corresponding isotope which are used in the used Substrate.
                     # input of the Elements which are used as substrate. A nice option would be a button which opens a periodic table where I can click on the used elements. In addition a dropdown menue with the used isotope.
-            Orientation:
+            Orientation: @Andrea -> offcut and orientation will be two separate quantities
                 description:
                     The Orientation and the offcut[°] of the Substrate.
                     # A dropdown menue with options for choosing the substrate orientation with the present offcut in degree [°] 
@@ -47,7 +47,7 @@
             Batch:
                 description:
                     The used shortname of the batch where the substrate is comming from
-            Producer:
+            Producer: @Andrea -> supplier
                 description:
                     The manufacturer of the Substrate
                     # user input as a string. Maybe in future a dropdownmenue
@@ -60,18 +60,18 @@
                 description:
                     Dopingtypes are n-type, p-type or no doping.
                     # The menu to select p-, n- type or none. Maybe something like 'radio_enum'
-            Doping:
+            Doping: @Andrea -> ? 
                 description:
                     Doping in [Ohm*cm]
-            Dimensions:
+            Dimensions:  @Andrea -> we have a geometry subsection. let's shape it according to your needs
                 description:
                     The overall dimension of the sample in lenght(L)*width(W)*height(H) in [mm] when rectangular and in a diameter in [mm] or ["] * height [mm] when circular 
                     # Option to say if rectangular or circular and then respectively L, W and H in [mm] or [mm] or ["] * height [mm]
-            Image:
+            Image: @Andrea -> it is currently called "documentation" you can drop there files
                 description:
                     A sketch or a image of the substrate. Can contain a crosssection, an overview picture or something else.
                     # A option to upload any kind of image file format. tif,jpeg,png,pdf,svg...
-            Comment:
+            Comment:  @Andrea -> we have "notes"
                 description:
                     A generell comment on the Substrate.
                     # plain text

@@ -22,4 +22,4 @@ data:
     data_file: Parma_datafile_nomad.xlsx
   inputs:
   - name: my substrate
-    reference: ../upload/raw/Substrate.data.archive.yaml
+    reference: ../upload/raw/Substrate.data.archive.yaml#data
