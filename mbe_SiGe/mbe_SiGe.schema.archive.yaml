@@ -130,239 +130,39 @@ definitions:
                     name: HRXRD/Phase
                   eln:
                     component: StringEditQuantity
-    Growth_run:
+    Substrate_preparation:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      -  nomad.parsing.tabular.TableData
       m_annotations:
-        eln: 
-      quantities:
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
-          m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
-            tabular_parser:
-              # sep: ','
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
+        eln:
       sub_sections:
         tasks:
-          repeats: true
-          section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
-            # more:
-            #   label_quantity: step_name
+          description: |
+            The tasks of this workflow as a repeating sub section. Use TaskReference if
+            tasks cannot be contained.
+          repeats: True
+          section:  
+            base_sections: 
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
-              # plot:
-              # - label: Vaporazation Temperature
-              #   x: elapsed_time
-              #   y:     
-              #     - "./vaporization_temperature_titan"
-              #     - "./vaporization_temperature_strontium_lanthan"
-              #   lines:
-              #   - mode: lines
-              #     line:
-              #       color: rgb(40, 80, 130)
-              #   - mode: lines
-              #     line:
-              #       color: rgb(100, 0, 0)
-              # - label: Peristalic Pump Rotation
-              #   x: elapsed_time
-              #   y:     
-              #     - "./peristaltic_pump_rotation_titan"
-              #     - "./peristaltic_pump_rotation_strontium_lanthan"
-              #   lines:
-              #   - mode: markers
-              #     marker:
-              #       color: rgb(40, 80, 130)
-              #   - mode: markers
-              #     marker:
-              #       color: rgb(100, 0, 0)
-              #   # layout:
-              #   #   xaxis:
-              #   #     title: time 
-              #   #   yaxis:
-              #   #     title: P (GPa)
-              #   #     type: log
-              # - label: Gas Flow
-              #   x: elapsed_time
-              #   y:
-              #     - "./argon_flow"
-              #     - "./oxygen_flow"
-              #   lines:
-              #   - mode: lines
-              #     marker:
-              #       color: rgb(40, 80, 130)
-              #   - mode: lines
-              #     line:
-              #       color: rgb(100, 0, 0)
             quantities:
-              name: 
-                type: str
-                # shape: ['*']
-                description: what this step consists of
+              step_number:
+                type: int
+                description: sequential number of the step on going
                 m_annotations:
-                  tabular:
-                    name: Growthrun/Name
+                  eln:
+                    component: NumberEditQuantity
+              ratio:
+                type: str
+                m_annotations:
                   eln:
                     component: StringEditQuantity
               duration:
                 type: np.float64
-                unit: minute
-                # shape: ['*']
-                description: Past time since process start
+                unit: second
+                description: Duration of the current step in seconds
                 m_annotations:
-                  tabular:
-                    name: Growthrun/Duration
-                  eln:
-                    component: NumberEditQuantity #DateTimeEditQuantity
-                    defaultDisplayUnit: minute
-              step_number:
-                type: int
-                #shape: ['*']
-                description: sequential number of the step on going
-                m_annotations:
-                  tabular:
-                    name: Growthrun/Step
                   eln:
                     component: NumberEditQuantity
-              temperature:
-                type: np.float64
-                #shape: ['*']
-                unit: celsius
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/Temperature
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius
-              pressure:
-                type: np.float64
-                #shape: ['*']
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/Pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              TMG_bubbler_flow:
-                type: np.float64
-                #shape: ['*']
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Bubbler flow
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              TMG_partial_pressure:
-                type: np.float64
-                #shape: ['*']
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Partial Pressure
-                  plot:
-                    x: duration
-                    y: TMG_partial_pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-    Setup:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      -  nomad.parsing.tabular.TableData
-      m_annotations:
-        eln: 
-      quantities:
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
-          m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
-            tabular_parser:
-              # sep: ','
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-      sub_sections:
-        tasks:
-          repeats: true
-          section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
-            more:
-              label_quantity: item
-            m_annotations:
-              eln:
-            quantities:
-              item: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Item
-                  eln:
-                    component: StringEditQuantity
-              temperature_bath: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/T bath
-                  eln:
-                    component: StringEditQuantity
-              pressure: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Pressure
-                  eln:
-                    component: StringEditQuantity
-              percent: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Percent
-                  eln:
-                    component: StringEditQuantity
-              notes: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Notes
-                  eln:
-                    component: StringEditQuantity
+                    defaultDisplayUnit: second

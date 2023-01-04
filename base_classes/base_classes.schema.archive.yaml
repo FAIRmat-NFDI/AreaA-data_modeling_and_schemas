@@ -392,6 +392,12 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+      sub_sections:
+        publication_reference:
+          repeats: True
+          m_annotations:
+            eln:
+          section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
        - '#/Workflow'

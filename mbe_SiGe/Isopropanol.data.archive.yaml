@@ -1,0 +1,9 @@
+data:
+  m_def: ../upload/raw/base_classes.schema.archive.yaml#Substance
+  SampleID:
+    institute: IKZ
+    sample_owner: Maximilian
+    creation_datetime: 2022-09-26
+    sample_short_name: my_sample
+    #sample_id:
+  iupac_name: isopropyl alcohol

@@ -3,13 +3,23 @@ data:
   users:
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
-  # tasks: 
-  # # - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
-  # #   name: "Epitaxial Growth Reference"
-  # #   task: ../upload/raw/process.data.archive.yaml#data
-  # - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Setup
-  #   name: Setup
-  #   data_file: Parma_datafile_nomad.xlsx
+  global:
+    category: epitaxial growth synthesis
+    method: SiGe Heteroepitaxy
+    location: Bangkok
+    goal: write here the motivation of your experiment
+    publication_reference: # check the class nomad.datamodel.metainfo.eln.PublicationReference, this class will be revised by Hampus, Pepe, Andrea, Sebastian soon next year
+      - DOI_number: mein DOI
+        publication_authors: [meine Autorin 1, mein Autor 1]
+        publication_date: 2022-08-25 
+        journal: meine Zeitschrift
+        publication_title: mein Titel
+  tasks: 
+  # - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
+  #   name: "Epitaxial Growth Reference"
+  #   task: ../upload/raw/process.data.archive.yaml#data
+  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Substrate_preparation
+    name: Substrate_preparation
   # - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Growth_run
   #   name: Epitaxial Growth
   #   data_file: Parma_datafile_nomad.xlsx
