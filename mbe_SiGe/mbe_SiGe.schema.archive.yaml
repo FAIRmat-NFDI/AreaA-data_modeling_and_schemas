@@ -166,3 +166,6 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: second
+    Test:   
+      base_sections: 
+        - 'nomad.datamodel.metainfo.eln.ikz_mbe.SubstratePreparation'

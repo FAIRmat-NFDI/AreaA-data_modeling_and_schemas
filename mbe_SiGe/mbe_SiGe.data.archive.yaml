@@ -20,9 +20,8 @@ data:
   #   task: ../upload/raw/process.data.archive.yaml#data
   - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Substrate_preparation
     name: Substrate_preparation
-  # - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Growth_run
-  #   name: Epitaxial Growth
-  #   data_file: Parma_datafile_nomad.xlsx
+  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Test
+    data_file: Test_Rezept.asl
   # - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#HRXRD_measurement
   #   name: HR XRD Characterization
   #   data_file: Parma_datafile_nomad.xlsx
