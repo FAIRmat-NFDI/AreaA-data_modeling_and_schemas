@@ -1,5 +1,11 @@
 Sample:
   name: KTF-9_1_A
+experiment_identifier: Test
+instrument:
+  common_beam_depolarizer: false
+  common_beam_mask:
+    y_gap: 100
+  polarizer: 0
 operator:
   address: Unter den Linden 6
   affiliation: HU Berlin
