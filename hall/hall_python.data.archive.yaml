@@ -6,13 +6,7 @@ data:
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
   instrument:  #section name - not to be filled
-    data_file: HMS-Configuration-Pietsch_Hall-TT-Halter_15-350K.txt
-    model: Lake Shore Hall Measurement System
-    voltmeter: Keithley 2182 Nanovoltmeter
-    amperemeter: Keithley 485 Autoranging Picoammeter
-    current_source: Keithley 220 Programmable current source
-    switch_matrix: Keithley 7001 Switch System
-    software: Lake Shore Hall Measurement Software    
+    data_file: HMS-Configuration-Pietsch_Hall-TT-Halter_15-350K.txt 
   inputs:
     - section: ../upload/raw/Substrate1.data.archive.yaml#data
   outputs:
