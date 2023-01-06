@@ -3,7 +3,7 @@ definitions:
   sections:
     Transmission:
       base_sections:
-        - "nomad.datamodel.metainfo.eln.NexusParser"
+        - "nomad.datamodel.metainfo.eln.NexusDataConverter"
         - "nomad.datamodel.data.EntryData"
       m_annotations:
         template:
