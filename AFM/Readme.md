@@ -35,3 +35,37 @@ Thus, if we have a way of tuning this interaction using:
  - magnetic material based tips
  - etc.
 
+## quantitative imaging
+A little different method has become available with the development of computers and data processing in thepast few decades. This method measures the force - separation distance curves at every XY point on the surface and determines various mechanical parameters, such as elasticity (Young's modulus) or maximal force of adhesion. The QI mode produces large data sets and is claimed to be very quantitative.
+
+# Force detection
+In all cases the key sensor is a microscopic leaf-spring, a cantilever with submillimeter length and a few micrometers of thickness. Its deflection can be detected in various ways.
+
+The original system used a cantilever coated with a metal film, and a capacitive sensor to see its vertical deflection.
+
+Moderns devices mostly use a light pointer, the displacement of light reflected from the back side of the cantilever projected onto a segmented photodiode. Using such an optical detector allows for a very sensitive detection of changes in bending (tilt of the 'mirror').
+
+# Calibration
+Thus, detectors provide some kind of electic signal proportional to the force acting on the cantilever. Usually this signal has to be first converted to an actual deflection (using the sensor response) and then to force (using the spring constant).
+
+## sensor response
+The simplest way of detecting the sensor response is to push the probe to a hard surface when any motion of the back end of the cantilever directly relates to the sensor signal, and the slope of this straight curve indicates the sensor response.
+
+Alternatively the oscillation amplitude of a free standing cantilever with known spring constant (usually derived from its geometry and material properties) can be employed.
+
+## spring constant
+There are a set of possibilities to estimate the spring constant of a cantilever:
+ - estimate it based on the material properties and the geometry of the cantilever
+ - thermal oscillation / oscillation resonance of the cantilever
+ - apply a set of particles with known weight and measure deflection
+ - bend the cantilever agains a known cantilever and follow the bending of both
+
+From these, the first two are the most common ones nowadays, and both have their problems of accuracy.
+
+### geometric correction
+There is a deviation between the two methods of detecting deflection / spring constant, coming from the fact that the deformation shape is different between the two methods. This may result in a typical 20-30% deviation between the real value and the measured value both for the spring constant or the sensor response.
+
+The correction also depends on the geometry of the cantilever, most commonly a rectangular beam or an A-shaped spring.
+
+# Reporting scans
+From the description above it is clear that not all experiments can be described using the same parameters. There is a major difference between contact and non-contact methods. All may require to have a proper sensor response and spring constant calibration, but the latter also require a free oscillation resonance measured. Other SPM methods will require further parameters, but these can be easily appended.
