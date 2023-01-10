@@ -1,7 +1,7 @@
 definitions:
   name: 'Electronic Lab Notebook schema for MBE SiGe'
   sections:  # Schemas consist of section definitions
-    Mbe_experiment:
+    Experiment:
       base_sections: 
        - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
@@ -166,6 +166,52 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: second
-    Test:   
+    Growth_recipe:
       base_sections: 
-        - 'nomad.datamodel.metainfo.eln.ikz_mbe.SubstratePreparation'
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
+      - 'nomad.datamodel.metainfo.eln.ikz_mbe.SubstratePreparation'
+      m_annotations:
+        eln:
+    Growth_process:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      - 'nomad.datamodel.metainfo.eln.ikz_mbe.SubstratePreparation'
+      m_annotations:
+        eln:
+    Growth_log:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
+      m_annotations:
+        eln:
+    Calibration_date_sources:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
+      m_annotations:
+        eln:
+      quantities:
+        source_material:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        calibration_date:
+          type: Datetime
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+    Mbe_process:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      m_annotations:
+        eln:
+      sub_sections:
+        tasks:
+          description: The tasks of this workflow contain the growth recipe and log files
+          repeats: True
+          section:  
+            base_sections: 
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
+            m_annotations:
+              eln:

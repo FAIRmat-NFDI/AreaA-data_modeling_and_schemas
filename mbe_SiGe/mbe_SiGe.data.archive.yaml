@@ -1,12 +1,12 @@
 data:  
-  m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Mbe_experiment 
+  m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Experiment 
   users:
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
   global:
     category: epitaxial growth synthesis
     method: SiGe Heteroepitaxy
-    location: Bangkok
+    location: Berlin
     goal: write here the motivation of your experiment
     publication_reference: # check the class nomad.datamodel.metainfo.eln.PublicationReference, this class will be revised by Hampus, Pepe, Andrea, Sebastian soon next year
       - DOI_number: mein DOI
@@ -20,14 +20,26 @@ data:
   #   task: ../upload/raw/process.data.archive.yaml#data
   - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Substrate_preparation
     name: Substrate_preparation
-  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Test
-    data_file: Test_Rezept.asl
-  # - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#HRXRD_measurement
-  #   name: HR XRD Characterization
-  #   data_file: Parma_datafile_nomad.xlsx
-  # - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#AFM_measurement
-  #   name: AFM Characterization
-  #   data_file: Parma_datafile_nomad.xlsx
+    tasks:
+      - name: step 1
+      - name: step 2
+  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Mbe_process
+    name: Mbe_process
+    tasks:
+    - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Growth_recipe
+      name: Growth_recipe
+      data_file: Test_Rezept.asl
+    - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Growth_process
+      name: Growth_process
+      tasks:
+        - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Calibration_date_sources
+          name: Calibration_date_sources
+        - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Growth_log
+          name: Growth_log
+  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#HRXRD_measurement
+    name: HR XRD Characterization
+  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#AFM_measurement
+    name: AFM Characterization
   inputs:
     - name: my substrate
       reference: ../upload/raw/Substrate.data.archive.yaml#data
