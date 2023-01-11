@@ -105,4 +105,4 @@ Most systems report data in proprietary file formats. These may contain all nece
 
 ### Gwyddeon
 The open source software [Gwyddion](https://github.com/christian-sahlmann/gwyddion) is capable of reading many of the available file formats, and provides an OSS output version for other users.
-The original [website](https://gwyddion.net/) is down for a few months now, which may mean that it is time to fork the original repo.
+The original [website](https://gwyddion.net/) is down for a few months now, the active page is at [Sourceforge](https://sourceforge.net/p/gwyddion/blog/).
