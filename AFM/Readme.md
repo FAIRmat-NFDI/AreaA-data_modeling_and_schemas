@@ -104,5 +104,5 @@ Thus, the devices often record the piezo positions based on the voltage applied 
 Most systems report data in proprietary file formats. These may contain all necessary information about the scanner, calibration parameters, etc., but reading them can be complicated.
 
 ### Gwyddeon
-The open source software [Gwyddeon](https://github.com/christian-sahlmann/gwyddion) is capable of reading many of the available file formats, and provides an OSS output version for other users.
+The open source software [Gwyddion](https://github.com/christian-sahlmann/gwyddion) is capable of reading many of the available file formats, and provides an OSS output version for other users.
 The original [website](https://gwyddion.net/) is down for a few months now, which may mean that it is time to fork the original repo.
