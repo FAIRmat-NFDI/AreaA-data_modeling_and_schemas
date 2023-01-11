@@ -19,6 +19,9 @@ This method is what today is known as contact mode atomic force microscopy. Even
 
 The former easily results in breaking the probe, and the latter is the one what is today used in most instruments.
 
+## friction force images
+When the scan is performed with a fast axis in the direction perpendicular of the long axis of the cantilever, the interaction to the surface also causes a twist of the cantilever, which is detected (most commonly) as the left-right signal on the segmented photodetector. Comparing this signal between scanning a line forwards and backwards (trace and retrace), we get information characteristic to the interaction (friction).
+
 ## non-contact or intermittent-contact modes
 To find a less invasive method to image soft surfaces, another way was developed. Leaf springs always have a resonance frequency if oscillated. Oscillating the probe near or at its reasonance, the amplitude and phase (between the driving oscilation and the actual motion of the cantilever) will be sensitive to the interaction to the surface.
 
@@ -67,5 +70,39 @@ There is a deviation between the two methods of detecting deflection / spring co
 
 The correction also depends on the geometry of the cantilever, most commonly a rectangular beam or an A-shaped spring.
 
+## calibration for friction
+The two key parameters are similar, but different than above. Again we need a sensor response describing the relation between the detected signal and the twist angle, then this angle and the actual torque.
+
+
+# Force measurements
+While it is usually a different way of operating an AFM, generating force-distance curves, it is directly employed in quantitative imaging mode.
+
+Force-distance curves are measured driving the vertical position of the probe either moving the sample or the probe. This direction is denoted usually as Z-axis.
+
+There are two main modes used in this measurement:
+ - driving the Z-positioner with a predefined speed and detect the force (and Z-position)
+ - maintain a constant force by moving the Z-position, the so called force-clamp mode
+
+In both modes the probe is pushed to the surface up to a predefined maximal force, and then the actual measurement begins.
+Force-distance scans still report the X,Y piezo position of the head, thus it is possible to create maps of derived model parameters.
+
 # Reporting scans
 From the description above it is clear that not all experiments can be described using the same parameters. There is a major difference between contact and non-contact methods. All may require to have a proper sensor response and spring constant calibration, but the latter also require a free oscillation resonance measured. Other SPM methods will require further parameters, but these can be easily appended.
+
+The instruments actually record numeric values from analog to digital (A/D) converters, which are first converted to voltage or current based on hardware parameters, then to physical units based on calibration of the components.
+
+## piezo positions
+Piezoelectric stacs show a non-linear characteristics in their voltage - position relation. Usually this is approximated as a second order polynomial, and is calibrated by the manufacturer using interferomentic position measurements.
+
+Since these stacks age, thus their parameters change with time, every system provides means to tune these parameters based on scans of reference samples (provided by the manufacturer).
+Another way of countering this problem is that many models developed after about 2000 includes capacitive sensor based position detection to measure the actual position of the various piezo actuators.
+Capacitive sensors are less accurate than the interferometric method, but also robust and stable. (Less accurate meaning typically +/- 1-2 nm.)
+
+Thus, the devices often record the piezo positions based on the voltage applied to the piezo stacks, and another set as 'measured' positions.
+
+## file formats
+Most systems report data in proprietary file formats. These may contain all necessary information about the scanner, calibration parameters, etc., but reading them can be complicated.
+
+### Gwyddeon
+The open source software [Gwyddeon](https://github.com/christian-sahlmann/gwyddion) is capable of reading many of the available file formats, and provides an OSS output version for other users.
+The original [website](https://gwyddion.net/) is down for a few months now, which may mean that it is time to fork the original repo.
