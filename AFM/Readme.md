@@ -106,3 +106,45 @@ Most systems report data in proprietary file formats. These may contain all nece
 ### Gwyddeon
 The open source software [Gwyddion](https://github.com/christian-sahlmann/gwyddion) is capable of reading many of the available file formats, and provides an OSS output version for other users.
 The original [website](https://gwyddion.net/) is down for a few months now, the active page is at [Sourceforge](https://sourceforge.net/p/gwyddion/blog/).
+
+## Common reported parameters
+### cantilevers / probes
+ - probe name and supplier, e.g. PPP-NCLR tapping mode probe from Nanoandmore
+ - probe geometry type: beam shape
+ - probe material (nominal): Si
+ - coating: Al backside film
+ - nominal length: 225 micrometer
+ - nominal resonance frequency: 190 kHz
+ - nominal spring constant: 48 N/m
+ - nominal tip radius: 7 nm
+
+Not every imaging requires full calibration of the probes, but if that was performed, report:
+ - sensore response
+ - spring constant
+ - what method was used to calibrate
+ - calibration data
+ - temperature
+
+If the probe was modified or cleaned prior measurement that is an experiment to be
+referenced here.
+
+### scan parameters
+ - set point
+ - image size in micrometers
+ - image size in pixels
+ - scanning frequency (one full trace and retrace scan / second)
+ - scanning speed (optional)
+ - integral gain
+ - proportional gain
+ - differential gain (if available)
+ - dynamic parameter adjustment used (e.g. scanAssyst)
+
+### for non-contact modes
+ - free oscillation frequency in kHz
+ - set oscillation frequency in kHs
+ - free oscillation amplitude
+(We can assume that phase was set to zero at free oscillation close to the surface.)
+
+### for QI mode or force modulation mode
+ - force oscillation frequency
+ - force oscillation amplitude
