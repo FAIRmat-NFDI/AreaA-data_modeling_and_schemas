@@ -338,31 +338,6 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              TMG_bubbler_flow:
-                type: np.float64
-                #shape: ['*']
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Bubbler flow
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              TMG_partial_pressure:
-                type: np.float64
-                #shape: ['*']
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Partial Pressure
-                  plot:
-                    x: duration
-                    y: TMG_partial_pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
     Setup:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
@@ -444,3 +419,34 @@ definitions:
                     name: SetUp/Notes
                   eln:
                     component: StringEditQuantity
+    Bubbler:
+      more:
+        label_quantity: item
+      m_annotations:
+        eln:
+      quantities:
+        TMG_bubbler_flow:
+          type: np.float64
+          #shape: ['*']
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: Growthrun/TMG Bubbler flow
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        TMG_partial_pressure:
+          type: np.float64
+          #shape: ['*']
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: Growthrun/TMG Partial Pressure
+            plot:
+              x: duration
+              y: TMG_partial_pressure
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar

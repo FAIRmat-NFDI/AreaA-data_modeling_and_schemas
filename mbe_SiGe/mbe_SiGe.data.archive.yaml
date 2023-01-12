@@ -23,6 +23,8 @@ data:
     tasks:
       - name: step 1
       - name: step 2
+  - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Substrate_cutting
+    name: Substrate_cutting
   - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Mbe_process
     name: Mbe_process
     tasks:

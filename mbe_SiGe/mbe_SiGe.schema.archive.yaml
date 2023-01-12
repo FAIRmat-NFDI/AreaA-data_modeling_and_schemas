@@ -166,16 +166,27 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: second
+    Substrate_cutting:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
+      m_annotations:
+        eln:
+      quantities:
+        test:
+          type: int
+          description: test
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
     Growth_recipe:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Task
-      - 'nomad.datamodel.metainfo.eln.ikz_mbe.SubstratePreparation'
+      - 'nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe'
       m_annotations:
         eln:
     Growth_process:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      - 'nomad.datamodel.metainfo.eln.ikz_mbe.SubstratePreparation'
       m_annotations:
         eln:
     Growth_log:
