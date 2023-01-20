@@ -5,10 +5,6 @@ definitions:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
-    AFM_measurement:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      -  nomad.parsing.tabular.TableData 
       quantities:
         data_file:
           type: str
@@ -26,6 +22,18 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity  # A form field that allows to drop and select files.
+    AFM_measurement:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
+      -  nomad.parsing.tabular.TableData 
+      quantities:
+        data_file:
+          type: str
+          m_annotations:
+            tabular_parser:
+              # sep: ','
+              path_to_data_file: '#data/data_file'
+              comment: '#'
         timestamp:
           type: Datetime
           m_annotations:
@@ -84,20 +92,11 @@ definitions:
       quantities:
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
         timestamp:
           type: Datetime
           m_annotations:
@@ -168,23 +167,14 @@ definitions:
       quantities:
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
                - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
         film:
           type: str
           description: Film material (Material:Dopant species)
@@ -468,23 +458,14 @@ definitions:
       quantities:
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
                - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  
       sub_sections:
         tasks:
           repeats: true
@@ -711,7 +692,7 @@ definitions:
           repeats: True
           m_annotations:
             eln:
-          section: ../upload/raw/base_classes.schema.archive.yaml#Link
+          section: nomad.datamodel.metainfo.workflow2.Link
         publication_reference:
           repeats: True
           m_annotations:

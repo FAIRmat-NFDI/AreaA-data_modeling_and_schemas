@@ -1,5 +1,5 @@
 definitions:
-  name: 'Multiple Base Classes for Experiments'
+  name: 'Base Classes'
   sections:  # Schemes consist of section definitions
     ElnBaseSection:
       base_sections:
@@ -76,70 +76,6 @@ definitions:
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-    Link:
-      description: |
-        Instances of Link are used to represent either a single input or single
-        output of a Task. Using a separate section for links allows to put
-        additional information (e.g. a name) on an input or output.
-      base_section: nomad.datamodel.data.ArchiveSection
-      m_annotations:
-        eln:
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        reference:
-          type: '#/Entity'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Task:
-      description: |
-        Instances of Task are used to represent an activity that happened during workflow
-        execution and that was acting on inputs to produce outputs.
-      base_section: '#/ElnBaseSection'
-      m_annotations:
-        eln: 
-      sub_sections:
-        inputs:
-          repeats: True
-          section: '#/Link'
-        outputs:
-          repeats: True
-          section: '#/Link'
-    TaskReference:
-      description: |
-        A proxy section that can be used to compose a workflow of tasks that are contained
-        in a different entry or workflow.
-      base_section: '#/Task'
-      m_annotations:
-        eln: 
-          hide: ['datetime', 'id', 'comment']
-      quantities:
-        task:
-          description: |
-            A reference to the task that this section is a proxy for.
-          type: '#/Task'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Workflow:
-      description: |
-        Instances of Workflow are used to represent a set of Tasks that connect input and
-        output data objects to produce a provenance graph for those data.
-
-        Workflows themselves can be tasks. This allows to build nested workflows where some
-        of the workflow tasks are workflows themselves.
-      base_section: '#/Task'
-      sub_sections:
-        tasks:
-          description: |
-            The tasks of this workflow as a repeating sub section. Use TaskReference if
-            tasks cannot be contained.
-          repeats: True
-          section: '#/Task'
     Material: 
       base_section: '#/Entity'
       m_annotations:
@@ -400,7 +336,7 @@ definitions:
           section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
-       - '#/Workflow'
+        - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
         global: 
           section:  
@@ -423,14 +359,15 @@ definitions:
                     component: AuthorEditQuantity
         instrument:
           repeats: True
-          section: '#/Link'
+          section: nomad.datamodel.metainfo.workflow2.Link
     Measurement:  
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
     Procedure_step:  
       base_sections: 
-      - '#/Task'
+        - nomad.datamodel.metainfo.workflow2.Task
+        - '#/ElnBaseSection'
       m_annotations:
         eln:
       quantities:

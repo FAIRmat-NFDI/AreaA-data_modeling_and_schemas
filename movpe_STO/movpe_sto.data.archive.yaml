@@ -1,18 +1,18 @@
 data:  
   m_def: ../upload/raw/movpe_sto.schema.archive.yaml#MovpeSto_experiment 
+  data_file: datafile.xlsx
   users:  #section name - not to be filled
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
   instrument: 
     - name: my_instrument_name
-      reference: ../upload/raw/Instrument.data.archive.yaml#data
+      section: ../upload/raw/Instrument.data.archive.yaml#data
   tasks: 
     # - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
     #   name: "Epitaxial Growth Reference"
     #   task: ../upload/raw/process.data.archive.yaml#data
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#Process_movpesto
       name: Epitaxial Growth
-      data_file: datafile.xlsx
       id: "22-01-21-MA-255"
       location:
       timestamp: 2022-08-25 10:33:25.013+02
@@ -23,10 +23,7 @@ data:
       notes: "films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see Precursor"
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#Deposition_control
       name: Deposition Control
-      data_file: datafile.xlsx
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#HRXRD_measurement
       name: HR XRD Characterization
-      data_file: datafile.xlsx
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#AFM_measurement
       name: AFM Characterization
-      data_file: datafile.xlsx
