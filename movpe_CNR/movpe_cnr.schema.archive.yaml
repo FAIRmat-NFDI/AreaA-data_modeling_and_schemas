@@ -98,23 +98,14 @@ definitions:
               component: StringEditQuantity
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
-              - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
+               - tasks
       sub_sections:
         tasks:
           repeats: true
@@ -154,23 +145,14 @@ definitions:
               component: StringEditQuantity
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
                - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
       sub_sections:
         tasks:
           repeats: true
@@ -217,23 +199,14 @@ definitions:
       quantities:
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
                - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
       sub_sections:
         tasks:
           repeats: true
@@ -243,53 +216,9 @@ definitions:
             #   label_quantity: step_name
             m_annotations:
               eln:
-              # plot:
-              # - label: Vaporazation Temperature
-              #   x: elapsed_time
-              #   y:     
-              #     - "./vaporization_temperature_titan"
-              #     - "./vaporization_temperature_strontium_lanthan"
-              #   lines:
-              #   - mode: lines
-              #     line:
-              #       color: rgb(40, 80, 130)
-              #   - mode: lines
-              #     line:
-              #       color: rgb(100, 0, 0)
-              # - label: Peristalic Pump Rotation
-              #   x: elapsed_time
-              #   y:     
-              #     - "./peristaltic_pump_rotation_titan"
-              #     - "./peristaltic_pump_rotation_strontium_lanthan"
-              #   lines:
-              #   - mode: markers
-              #     marker:
-              #       color: rgb(40, 80, 130)
-              #   - mode: markers
-              #     marker:
-              #       color: rgb(100, 0, 0)
-              #   # layout:
-              #   #   xaxis:
-              #   #     title: time 
-              #   #   yaxis:
-              #   #     title: P (GPa)
-              #   #     type: log
-              # - label: Gas Flow
-              #   x: elapsed_time
-              #   y:
-              #     - "./argon_flow"
-              #     - "./oxygen_flow"
-              #   lines:
-              #   - mode: lines
-              #     marker:
-              #       color: rgb(40, 80, 130)
-              #   - mode: lines
-              #     line:
-              #       color: rgb(100, 0, 0)
             quantities:
               name: 
                 type: str
-                # shape: ['*']
                 description: what this step consists of
                 m_annotations:
                   tabular:
@@ -299,7 +228,6 @@ definitions:
               duration:
                 type: np.float64
                 unit: minute
-                # shape: ['*']
                 description: Past time since process start
                 m_annotations:
                   tabular:
@@ -309,7 +237,6 @@ definitions:
                     defaultDisplayUnit: minute
               step_number:
                 type: int
-                #shape: ['*']
                 description: sequential number of the step on going
                 m_annotations:
                   tabular:
@@ -318,7 +245,6 @@ definitions:
                     component: NumberEditQuantity
               temperature:
                 type: np.float64
-                #shape: ['*']
                 unit: celsius
                 description: FILL THE DESCRIPTION
                 m_annotations:
@@ -329,7 +255,6 @@ definitions:
                     defaultDisplayUnit: celsius
               pressure:
                 type: np.float64
-                #shape: ['*']
                 unit: mbar
                 description: FILL THE DESCRIPTION
                 m_annotations:
@@ -338,6 +263,87 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
+              TMG_bubbler_flow:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Bubbler Flow
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+              TMG_bubbler_dilution:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Bubbler Dilution
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              TMG_inject:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Inject
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              TMG_bubbler_pressure:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Bubbler Pressure
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+              TMG_bubbler_temperature:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Bubbler T
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+              TMG_partial_pressure:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Partial Pressure
+                  # plot:
+                  #   x: duration
+                  #   y: TMG_partial_pressure
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+              flow_carrier_TMG:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: Growthrun/Flow Carrier TMG
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              TMG_valve:
+                type: bool
+                description: is valve open? true/false
+                m_annotations:
+                  tabular:
+                    name: Growthrun/TMG Valve
+                  eln:
+                    component: BoolEditQuantity
     Setup:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
@@ -347,23 +353,14 @@ definitions:
       quantities:
         data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
             tabular_parser:
               # sep: ','
+              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
                - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
       sub_sections:
         tasks:
           repeats: true
@@ -419,34 +416,4 @@ definitions:
                     name: SetUp/Notes
                   eln:
                     component: StringEditQuantity
-    Bubbler:
-      more:
-        label_quantity: item
-      m_annotations:
-        eln:
-      quantities:
-        TMG_bubbler_flow:
-          type: np.float64
-          #shape: ['*']
-          unit: mbar
-          description: FILL THE DESCRIPTION
-          m_annotations:
-            tabular:
-              name: Growthrun/TMG Bubbler flow
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: mbar
-        TMG_partial_pressure:
-          type: np.float64
-          #shape: ['*']
-          unit: mbar
-          description: FILL THE DESCRIPTION
-          m_annotations:
-            tabular:
-              name: Growthrun/TMG Partial Pressure
-            plot:
-              x: duration
-              y: TMG_partial_pressure
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: mbar
+
