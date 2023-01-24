@@ -86,13 +86,15 @@ definitions:
                     component: StringEditQuantity
     AFM_measurement:
       base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
       -  nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
-          hide: ['name']
+          #  hide: ['name']
       quantities:
         name:
           type: str
+          default: 'AFM Measurements'
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -110,11 +112,11 @@ definitions:
         tasks:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Measurement 
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step 
             m_annotations:
               eln:
             quantities:
-              name:
+              sample_id:
                 type: str
                 m_annotations:
                   tabular:
@@ -133,13 +135,15 @@ definitions:
                     defaultDisplayUnit: nanometer
     HRXRD_measurement:
       base_sections: 
-      -  nomad.parsing.tabular.TableData 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
+      - nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
-          hide: ['name']
+          # hide: ['name']
       quantities:
         name:
           type: str
+          default: 'HR XRD Measurements'
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -157,11 +161,11 @@ definitions:
         tasks:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Measurement
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
             m_annotations:
               eln:
             quantities:
-              name:
+              sample_id:
                 type: str
                 m_annotations:
                   tabular:
