@@ -2,7 +2,7 @@
 
 ## Base Classes Hierarchy:
 
-![Base Classes](https://box.hu-berlin.de/f/66bbfd73da214e82a3bc/?dl=1)
+![Base Classes](https://box.hu-berlin.de/f/d47b44f9f09543768f5b/?dl=1)
 
 These tree visualization shows the inheritance structure contained in the base_classes file. 
 
