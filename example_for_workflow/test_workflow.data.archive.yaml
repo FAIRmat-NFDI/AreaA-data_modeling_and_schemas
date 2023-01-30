@@ -1,0 +1,140 @@
+data:  
+  m_def: ../upload/raw/test_workflow.schema.archive.yaml#Experiment
+  comment: | 
+    This schema represents some features 
+    that are currently not optimized for a flawless use.
+
+    Checkout below the tasks section:
+
+    * Sample_preparation. it's a nested workflow where the user just wanna place the inputs 
+      in the top level and they should be propagated in each and every step.
+
+    * Sample_cut: a task where N output are generated, we should implement some normalize function 
+      for this specific "Sample Generating Task" so that N new sample IDs are generated out of the input one.
+    
+    * Further_sample_treatment. This task is performed in parallel on each sample.
+      One should then instanciate N times this task and give one of the N samples as input.
+      Can we ameliorate it with some automation?
+  tasks: 
+  - m_def: ../upload/raw/test_workflow.schema.archive.yaml#Sample_preparation
+    name: Sample_preparation
+    tasks:
+      - name: step 1
+      - name: step 2
+      - m_def: ../upload/raw/test_workflow.schema.archive.yaml#Nested_sample_preparation
+        name: nested step 3
+        tasks:
+          - name: nested step 1
+          - name: nested step 2
+          - name: nested step 3
+          - name: nested step 4
+      - name: step 4
+    inputs: 
+      - name: reagent 1
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: reagent 2
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: reagent 3
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: reagent 4
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: reagent 5
+        section: ../upload/raw/Sample.data.archive.yaml#data
+  - m_def: ../upload/raw/test_workflow.schema.archive.yaml#Sample_cut
+    name: Sample_cut
+    inputs: 
+      - name: my sample 
+        section: ../upload/raw/Sample.data.archive.yaml#data
+    outputs: 
+      - name: my cut sample 1
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 2
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 3
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 4
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 5
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 6
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 7
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 8
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 9
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 10
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 11
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 12
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 13
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 14
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 15
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 16
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 17
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 18
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 19
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 20
+        section: ../upload/raw/Sample.data.archive.yaml#data
+  - m_def: ../upload/raw/test_workflow.schema.archive.yaml#Further_sample_treatment
+    name: Further_sample_treatment
+    tasks:
+    - name: Parallel Sample treatments 1
+    - name: Parallel Sample treatments 2
+    - name: Parallel Sample treatments 3
+    - name: Parallel Sample treatments 4
+    - name: Parallel Sample treatments 5
+    inputs: 
+      - name: my cut sample 1
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 2
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 3
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 4
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 5
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 6
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 7
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 8
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 9
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 10
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 11
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 12
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 13
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 14
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 15
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 16
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 17
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 18
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 19
+        section: ../upload/raw/Sample.data.archive.yaml#data
+      - name: my cut sample 20
+        section: ../upload/raw/Sample.data.archive.yaml#data
+  inputs:
+    - name: my substrate
+      section: ../upload/raw/Sample.data.archive.yaml#data

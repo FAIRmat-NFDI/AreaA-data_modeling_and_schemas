@@ -1,0 +1,88 @@
+definitions:
+  name: 'My Workflow'
+  sections: 
+    Experiment:
+      base_sections: 
+       - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
+      m_annotations:
+        eln: 
+      quantities:
+        comment:
+          type: str
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+    Sample_preparation:
+      base_sections: 
+        - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      m_annotations:
+        eln:
+      sub_sections:
+        tasks:
+          repeats: True
+          section:  
+            base_sections: 
+              - nomad.datamodel.metainfo.workflow2.Task
+            m_annotations:
+              eln:
+            quantities:
+              step_number:
+                type: int
+                description: sequential number of the step on going
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+    Nested_sample_preparation:
+      base_sections: 
+        - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      m_annotations:
+        eln:
+      sub_sections:
+        tasks:
+          repeats: True
+          section:  
+            base_sections: 
+              - nomad.datamodel.metainfo.workflow2.Task
+            m_annotations:
+              eln:
+            quantities:
+              step_number:
+                type: int
+                description: sequential number of the step on going
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+    Sample_cut:
+      base_sections: 
+        - nomad.datamodel.metainfo.workflow2.Task
+      m_annotations:
+        eln: 
+    Further_sample_treatment:
+      base_sections: 
+        - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      m_annotations:
+        eln:
+      sub_sections:
+        tasks:
+          repeats: True
+          section:  
+            base_sections: 
+              - nomad.datamodel.metainfo.workflow2.Task
+            m_annotations:
+              eln:
+            quantities:
+              step_number:
+                type: int
+                description: sequential number of the step on going
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+    Dummy_task:
+      base_sections: 
+        - nomad.datamodel.metainfo.workflow2.Task
+      quantities:
+        my_nice_property:
+          type: int
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
