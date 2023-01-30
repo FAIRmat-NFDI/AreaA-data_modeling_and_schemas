@@ -10,7 +10,9 @@ data:
   - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#Growth_run
     name: Epitaxial Growth
   - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#HRXRD_measurement
+    name: HR XRD Characterization
   - m_def: ../upload/raw/movpe_cnr.schema.archive.yaml#AFM_measurement
+    name: AFM Characterization
   inputs:
   - name: my substrate
     reference: ../upload/raw/Substrate.data.archive.yaml#data

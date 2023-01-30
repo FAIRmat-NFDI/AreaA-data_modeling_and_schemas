@@ -192,6 +192,7 @@ definitions:
     Growth_log:
       base_sections: 
         - nomad.datamodel.metainfo.workflow2.Task
+        - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthLog
       m_annotations:
         eln:
     Calibration_date_sources:
