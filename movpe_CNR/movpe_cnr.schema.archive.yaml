@@ -172,7 +172,7 @@ definitions:
                     name: HRXRD/Sample
                   eln:
                     component: StringEditQuantity
-              timestamp:
+              datetime:
                 type: Datetime
                 m_annotations:
                   tabular:

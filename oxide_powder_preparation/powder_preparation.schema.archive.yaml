@@ -4,7 +4,6 @@ definitions:
     PowderPreparation:
       base_sections: 
         - ../upload/raw/base_classes.schema.archive.yaml#Experiment
-        - "nomad.datamodel.data.EntryData"
       quantities:
         total_mass:
           type: np.float64
@@ -22,7 +21,7 @@ definitions:
               component: StringEditQuantity
     TemperatureRamp:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Task
+        - nomad.datamodel.metainfo.workflow2.Task
       quantities:
         rate:
           type: np.float64
@@ -53,7 +52,7 @@ definitions:
               defaultDisplayUnit: hour
     ThermalTreatment:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Workflow
+      - ../upload/raw/base_classes.schema.archive.yaml#Activity
        - "nomad.datamodel.data.EntryData"
       quantities:
         dose:

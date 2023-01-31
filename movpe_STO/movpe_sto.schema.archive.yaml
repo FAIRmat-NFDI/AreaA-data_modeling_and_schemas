@@ -34,7 +34,7 @@ definitions:
               # sep: ','
               path_to_data_file: '#data/data_file'
               comment: '#'
-        timestamp:
+        datetime:
           type: Datetime
           m_annotations:
             tabular:
@@ -97,7 +97,7 @@ definitions:
               # sep: ','
               path_to_data_file: '#data/data_file'
               comment: '#'
-        timestamp:
+        datetime:
           type: Datetime
           m_annotations:
             tabular:
@@ -264,7 +264,7 @@ definitions:
                   eln:
                     component: NumberEditQuantity #DateTimeEditQuantity
                     defaultDisplayUnit: minute
-              timestamp: # defined in ElnBaseSection
+              datetime: # defined in ElnBaseSection
                 type: Datetime
                 description: timestamp of each step
                 m_annotations:
@@ -485,7 +485,7 @@ definitions:
                     name: Deposition Control/Name
                   eln:
                     component: StringEditQuantity
-              timestamp: # defined in ElnBaseSection
+              datetime: # defined in ElnBaseSection
                 type: Datetime
                 description: timestamp of each step
                 m_annotations:
