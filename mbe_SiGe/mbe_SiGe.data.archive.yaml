@@ -38,6 +38,7 @@ data:
           name: Calibration_date_sources
         - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#Growth_log
           name: Growth_log
+          data_file: Ge_001_UC_DIK_01_014.daa
   - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#HRXRD_measurement
     name: HR XRD Characterization
   - m_def: ../upload/raw/mbe_SiGe.schema.archive.yaml#AFM_measurement
