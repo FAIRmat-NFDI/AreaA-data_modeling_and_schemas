@@ -10,7 +10,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        timestamp:
+        datetime:
           type: Datetime
           m_annotations:
             eln:
@@ -664,11 +664,11 @@ definitions:
           type: np.float64
           shape: ['*']
           description: Time history of sensor readings. May differ from setpoint
-        value_timestamp_rel:
+        elapsed_time:
           type: np.float64
           shape: ['*']
           description: Relative time in measurement series.
-        value_timestamp_abs:
+        datetime:
           type: Datetime
           shape: ['*']
           description: |

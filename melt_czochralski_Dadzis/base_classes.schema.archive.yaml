@@ -1,5 +1,5 @@
 definitions:
-  name: 'Multiple Base Classes for Experiments'
+  name: 'Base Classes'
   sections:  # Schemes consist of section definitions
     ElnBaseSection:
       base_sections:
@@ -10,7 +10,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        timestamp:
+        datetime:
           type: Datetime
           m_annotations:
             eln:
@@ -76,70 +76,6 @@ definitions:
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-    Link:
-      description: |
-        Instances of Link are used to represent either a single input or single
-        output of a Task. Using a separate section for links allows to put
-        additional information (e.g. a name) on an input or output.
-      base_section: nomad.datamodel.data.ArchiveSection
-      m_annotations:
-        eln:
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        reference:
-          type: '#/Entity'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Task:
-      description: |
-        Instances of Task are used to represent an activity that happened during workflow
-        execution and that was acting on inputs to produce outputs.
-      base_section: '#/ElnBaseSection'
-      m_annotations:
-        eln: 
-      sub_sections:
-        inputs:
-          repeats: True
-          section: '#/Link'
-        outputs:
-          repeats: True
-          section: '#/Link'
-    TaskReference:
-      description: |
-        A proxy section that can be used to compose a workflow of tasks that are contained
-        in a different entry or workflow.
-      base_section: '#/Task'
-      m_annotations:
-        eln: 
-          hide: ['datetime', 'id', 'comment']
-      quantities:
-        task:
-          description: |
-            A reference to the task that this section is a proxy for.
-          type: '#/Task'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Workflow:
-      description: |
-        Instances of Workflow are used to represent a set of Tasks that connect input and
-        output data objects to produce a provenance graph for those data.
-
-        Workflows themselves can be tasks. This allows to build nested workflows where some
-        of the workflow tasks are workflows themselves.
-      base_section: '#/Task'
-      sub_sections:
-        tasks:
-          description: |
-            The tasks of this workflow as a repeating sub section. Use TaskReference if
-            tasks cannot be contained.
-          repeats: True
-          section: '#/Task'
     Material: 
       base_section: '#/Entity'
       m_annotations:
@@ -217,6 +153,13 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        element_list:
+          type: str
+          shape: ['*']
+          description: The Elements and the corresponding isotope which are used in the Substrate.
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         orientation:
           type: str
           description: crystallographic orientation of the substrate in [hkl]
@@ -230,6 +173,18 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
+        storage_location:
+          type: str
+          description: The location as room number with the place in this room where the sample can be found. e.g. 19.31.334 office shelf or. HU TEM Laboratory
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        batch_number:
+          type: str
+          description: batch number of chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         doping_level:
           type: np.float64
           #unit: wt %
@@ -237,6 +192,17 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
+        doping_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - n-type
+              - p-type
+              - no doping
+          description: Dopingtypes are n-type, p-type or no doping
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
         doping_species:
           type: str
           description: Doping species to obtain electrical conductivity in the substrates
@@ -261,6 +227,18 @@ definitions:
           m_annotations:
             eln:
               component: BoolEditQuantity
+        buying_date:
+          type: Datetime
+          description: Date of the Invoice Mail
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        opening_date:
+          type: Datetime
+          description: Date of Opening the Chemical bottle in the Glove box
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
         documentation: 
           type: str
           description: pdf files containing certificate and other documentation
@@ -269,6 +247,9 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
+      sub_sections:
+        geometry:
+          section: '#/Geometry'
     Feedstock: 
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
@@ -321,6 +302,9 @@ definitions:
               - melt czochralski
               - pedestal
               - MOVPE 
+              - Ge Homoepitaxy
+              - Si Homoepitaxy
+              - SiGe Heteroepitaxy
               - OTHER TECHNIQUES
           description: |
             a method is a series of steps for performing a function or accomplishing a result.
@@ -344,9 +328,15 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+      sub_sections:
+        publication_reference:
+          repeats: True
+          m_annotations:
+            eln:
+          section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
-       - '#/Workflow'
+        - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
         global: 
           section:  
@@ -369,14 +359,15 @@ definitions:
                     component: AuthorEditQuantity
         instrument:
           repeats: True
-          section: '#/Link'
+          section: nomad.datamodel.metainfo.workflow2.Link
     Measurement:  
       base_sections: 
       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
     Procedure_step:  
       base_sections: 
-      - '#/Task'
+        - nomad.datamodel.metainfo.workflow2.Task
+        - '#/ElnBaseSection'
       m_annotations:
         eln:
       quantities:
@@ -673,11 +664,11 @@ definitions:
           type: np.float64
           shape: ['*']
           description: Time history of sensor readings. May differ from setpoint
-        value_timestamp_rel:
+        elapsed_time:
           type: np.float64
           shape: ['*']
           description: Relative time in measurement series.
-        value_timestamp_abs:
+        datetime:
           type: Datetime
           shape: ['*']
           description: |

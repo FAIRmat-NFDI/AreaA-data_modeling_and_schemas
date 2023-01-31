@@ -8,6 +8,7 @@ definitions:
         eln: 
     AFM_measurement:
       base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
       -  nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
@@ -64,6 +65,7 @@ definitions:
                     defaultDisplayUnit: nanometer
     HRXRD_measurement:
       base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
       -  nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
@@ -108,7 +110,7 @@ definitions:
                     name: HRXRD/Sample
                   eln:
                     component: StringEditQuantity
-              timestamp:
+              datetime:
                 type: Datetime
                 m_annotations:
                   tabular:
