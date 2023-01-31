@@ -36,8 +36,13 @@ directional_solidification:
     Feedstock: #see oxide powder preparation schema from Steffen
       - feedstock_name: Feedstock Size 1
         feedstock_id:
+        material:
         type: sg-Si
+        particel_size:
         supplier: Wacker  
+        buying date:
+        opening date:
+        datasheet file upload:
         #weight: 500,0 g 
       - feedstock_name: Feedstock Size 2
         feedstock_id:
@@ -79,7 +84,7 @@ directional_solidification:
         weight: 10400.0 g
       total_weight: 14000 g # from components
     Feedstock_filling: # on basis of Einwaage
-      stacking_order:
+      stacking_order: # List of components in order of stacking
       Notes:  
     DS_process_manual_protocol: #from table in "G1_IKZ_NSI_23_Protokoll new.docx"
       timestamp: col1
