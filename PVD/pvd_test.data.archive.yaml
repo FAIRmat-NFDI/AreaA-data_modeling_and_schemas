@@ -1,0 +1,107 @@
+data:
+  m_def: ../upload/raw/pvd.schema.archive.yaml#HzbUnoldLabPvdThermal
+  sources:
+    - source_type: Knudsen
+      position:
+        x: 0
+        y: 0
+        z: 0
+        n1: 0
+        n2: 0
+        n3: 0
+      power:
+        values: [0.1, 0.2, 0.2, 0.1]
+        times: [0, 1, 2, 3]
+        n_times: 4
+        start_time: 2023-01-31T11:00:00
+        mean: 0.15
+        min: 0.1
+        max: 0.2
+        standard_deviation: 0.057735
+        unit: V
+    - source_type: Knudsen
+      position:
+        x: 1
+        y: 0
+        z: 0
+        n1: 0
+        n2: 0
+        n3: 0
+      power:
+        values: [0.2, 0.3, 0.3, 0.2]
+        times: [0, 1, 2, 3]
+        n_times: 4
+        start_time: 2023-01-31T11:00:00
+        mean: 0.25
+        min: 0.2
+        max: 0.3
+        standard_deviation: 0.057735
+        unit: V
+    - source_type: Knudsen
+      position:
+        x: 0
+        y: 1
+        z: 0
+        n1: 0
+        n2: 0
+        n3: 0
+      power:
+        values: [0.0, 0.1, 0.1, 0.0]
+        times: [0, 1, 2, 3]
+        n_times: 4
+        start_time: 2023-01-31T11:00:00
+        mean: 0.05
+        min: 0.0
+        max: 0.1
+        standard_deviation: 0.057735
+        unit: V
+    - source_type: Knudsen
+      position:
+        x: 1
+        y: 1
+        z: 0
+        n1: 0
+        n2: 0
+        n3: 0
+      power:
+        values: [0.3, 0.4, 0.4, 0.3]
+        times: [0, 1, 2, 3]
+        n_times: 4
+        start_time: 2023-01-31T11:00:00
+        mean: 0.35
+        min: 0.3
+        max: 0.4
+        standard_deviation: 0.057735
+        unit: V
+  atmosphere:
+    chamber_pressure:
+      values: [0.1, 0.2, 0.2, 0.1]
+      times: [0, 1, 2, 3]
+      n_times: 4
+      start_time: 2023-01-31T11:00:00
+      mean: 0.15
+      min: 0.1
+      max: 0.2
+      standard_deviation: 0.057735
+      unit: hPa
+    gases:
+      - flow:
+          values: [0.1, 0.2, 0.2, 0.1]
+          times: [0, 1, 2, 3]
+          n_times: 4
+          start_time: 2023-01-31T11:00:00
+          mean: 0.15
+          min: 0.1
+          max: 0.2
+          standard_deviation: 0.057735
+          unit: m3/s
+      - flow:
+          values: [0.2, 0.3, 0.3, 0.2]
+          times: [0, 1, 2, 3]
+          n_times: 4
+          start_time: 2023-01-31T11:00:00
+          mean: 0.25
+          min: 0.2
+          max: 0.3
+          standard_deviation: 0.057735
+          unit: m3/s

@@ -1,48 +1,263 @@
 definitions:
   name: PVDProcess
+  description: |
+    Base classes for PVD processes.
   sections:
-    Activity:
+
+    TimeSeries:
+      base_section: nomad.datamodel.data.ArchiveSection
       description: |
-        A base class for any activity in relation to an enitity.
+        A section describing a time series.
+      m_annotations:
+        plot:
+        - x: times
+          y: values
       quantities:
+        values:
+          description: |
+            The array of values.
+          type: np.float64
+          shape: ['*']
+        times:
+          description: |
+            The array of times for the corresponding values.
+          type: np.float64
+          shape: ['*']
+          unit: s
+          m_annotations:
+            eln:
+              defaultDisplayUnit: s
+        n_times:
+          description: |
+            The number of time points in the series.
+          type: int
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
         start_time:
           description: |
-            The starting date and time of the activity.
+            The datetime of the first time point.
           type: Datetime
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        end_time:
+        mean:
           description: |
-            The ending date and time of the activity.
-          type: Datetime
+            The mean value for all times.
+          type: np.float64
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
-    Entity:
+              component: NumberEditQuantity
+        min:
+          description: |
+            The minimum value for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        max:
+          description: |
+            The maximum value for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        standard_deviation:
+          description: |
+            The standard deviation of the values for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        unit:
+          description: |
+            The unit of the values.
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+    Position:
+      base_section: nomad.datamodel.data.ArchiveSection
       description: |
-        A base class for any enitity which can be related to an activity.
-    Process:
-      base_section: Activity
+        A section describing a position in 3D space in a an orthonormal coordinate system
+        (x,y,z).
+      quantities:
+        x:
+          description: |
+            The x position in meters.
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        y:
+          description: |
+            The y position in meters.
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        z:
+          description: |
+            The z position in meters.
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        n1:
+          description: |
+            The x component of the normal vector.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        n2:
+          description: |
+            The y component of the normal vector.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        n3:
+          description: |
+            The z component of the normal vector.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+
+    PVDSource:
+      base_section: nomad.datamodel.data.ArchiveSection
       description: |
-        A base class for a process which modifies an enitity.
+        A source used in a PVD process.
+      quantities:
+        material:
+          description: |
+            The material deposited from the source.
+          type: nomad.datamodel.metainfo.eln.Ensemble
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        source_type:
+          description: |
+            The type of source.
+          type:
+              type_kind: Enum
+              type_data:
+                - Target
+                - Crucible
+                - Cracker
+                - Knudsen
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+      sub_sections:
+        position:
+          description: |
+            The position of the source in the chamber reference system.
+          section: '#/Position'
+        power:
+          description: |
+            The power fed to the source as a function of time.
+          section: '#/TimeSeries'
+        rate:
+          description: |
+            The measured depostion rate from the source as a function of time.
+          section: '#/TimeSeries'
+
+    PVDGas:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A gas (flow) inside a PVD chamber.
+      quantities:
+        gas_composition:
+          description: |
+            The gas composition.
+          type: nomad.datamodel.metainfo.eln.Ensemble
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+      sub_sections:
+        flow:
+          description: |
+            The flow of the gas as a fucntion of time.
+          section: '#/TimeSeries'
+    
+    PVDAtmosphere:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A description of the atmosphere inside a PVD chamber.
+      sub_sections:
+        chamber_pressure:
+          description: |
+            The pressure inside the PVD chamber as a function of time.
+          section: '#/TimeSeries'
+        gases:
+          description: |
+            The power fed to the source as a function of time.
+          repeats: True
+          section: '#/PVDGas'
+    
+    PVDSubstrate:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A description of a substrate inside a PVD chamber.
+      quantities:
+        thin_film_stack:
+          description: |
+            A reference to the ThinFilmStack used as substrate.
+          type: nomad.datamodel.metainfo.eln.Ensemble  # TODO: Change to ThinFilmStack class when implemented
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        rotating:
+          description: |
+            Whether or not the substrate is rotating during deposition.
+          type: bool
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+      sub_sections:
+        temperature:
+          description: |
+            The temperature of the substrate as a function of time.
+          section: '#/TimeSeries'
+        position:
+          description: |
+            The stationary position of the substrate in the chamber reference system.
+          section: '#/Position'
+
     Synthesis:
-      base_section: Process
+      base_section: nomad.datamodel.metainfo.eln.Process
       description: |
         A base class for a synthesis which creates or adds to a sample entity.
+
     PVD:
       base_section: Synthesis
       description: |
         A base class for a Physical Vapor Deposition (PVD) synthesis process.
-      quantities:
-        mean_chamber_pressure:
+      sub_sections:
+        sources:
           description: |
-            The mean pressure in the chamber during the deposition.
-          type: np.float64
-          unit: hPa
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
+            The sources in the chamber used for deposition.
+          repeats: True
+          section: '#/PVDSource'
+        atmosphere:
+          description: |
+            The atmospehere inside the chamber during deposition.
+          section: '#/PVDAtmosphere'
+        substrates:
+          description: |
+            The substrates present in the chamber during deposition.
+          repeats: True
+          section: '#/PVDSubstrate'
+
     PvdThermal:
       base_section: PVD
       description: |
@@ -57,61 +272,23 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
+
     HzbUnoldLabPvdThermal:
       base_sections: [PvdThermal, nomad.datamodel.data.EntryData]
       description: |
         A schema for a PVD process in the Unold group at HZB.
       m_annotations:
         eln:
-    SampleID:
-      base_section: nomad.datamodel.metainfo.eln.SampleID
-      description: |
-        Base class for constructing and indexing the ID of a sample.
-    Sample:
-      base_section: Entity
-      description: |
-        A base class for a sample.
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        sample_id:
-          section:
-            base_section: SampleID
-            m_annotations:
-              eln:
-        sample_history:
-          section:
-            quantities:
-              activity_on_sample:
-                type: Activity
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-    InstrumentID:
-      base_section: nomad.datamodel.metainfo.eln.SampleID  # TODO: Implement InstrumentID python class
-      description: |
-        Base class for constructing and indexing the ID of an instrument.
-    Instrument:
-      base_section: Entity
-      description: |
-        A base class for any instrument which is used to perform an activity.
-      sub_sections:
-        InstrumentID:
-          section:
-            base_section: InstrumentID
-    ThinFilm:
-      base_section: Sample
-      description: |
-        A base class for a thin films sample.
-    HZBUnoldLabThinFilm:
-      base_sections: [ThinFilm, nomad.datamodel.data.EntryData]
-      description: |
-        A schema for a thin film fabricated in the Unold group at HZB.
-      m_annotations:
-        eln:
+        plot:
+        - label: Source power
+          x: 
+            - sources/0/power/times
+            - sources/1/power/times
+            - sources/2/power/times
+            - sources/3/power/times
+          y: 
+            - sources/0/power/values
+            - sources/1/power/values
+            - sources/2/power/values
+            - sources/3/power/values
     
