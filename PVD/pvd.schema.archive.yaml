@@ -136,7 +136,27 @@ definitions:
       base_section: nomad.datamodel.data.ArchiveSection
       description: |
         A source used in a PVD process.
+      m_annotations:
+        eln:
+          overview: true
+        plot:
+          title: Rate and shutter status over time
+          x: 
+            - power/times
+            - rate/times
+            - shutter/times
+          y:
+            - power/values
+            - rate/values
+            - shutter/values
       quantities:
+        name:
+          description: |
+            A short name for the source.
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         material:
           description: |
             The material deposited from the source.
@@ -169,6 +189,11 @@ definitions:
         rate:
           description: |
             The measured depostion rate from the source as a function of time.
+          section: '#/TimeSeries'
+        shutter:
+          description: |
+            The status of the source shutter as a function of time. 0 for closed and 1 for
+            open.
           section: '#/TimeSeries'
 
     PVDGas:
@@ -258,20 +283,33 @@ definitions:
           repeats: True
           section: '#/PVDSubstrate'
 
+    PVDThermalSource:
+      base_section: PVDSource
+      description: |
+        A source used in a Thermal PVD process.
+      m_annotations:
+        eln:
+          overview: true
+        plot:
+          title: Source temperature over time
+          x: temperature/times
+          y: temperature/values
+      sub_sections:
+        temperature:
+          description: |
+            The temperature of the source as a function of time.
+          section: '#/TimeSeries'
+    
     PvdThermal:
       base_section: PVD
       description: |
         A base class for a thermal PVD synthesis process.
-      quantities:
-        mean_source_temperatures:
+      sub_sections:
+        sources:
           description: |
-            The mean temperature of the sources during the deposition.
-          type: np.float64
-          unit: degC
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
+            The sources in the chamber used for deposition.
+          repeats: True
+          section: '#/PVDThermalSource'
 
     HzbUnoldLabPvdThermal:
       base_sections: [PvdThermal, nomad.datamodel.data.EntryData]
