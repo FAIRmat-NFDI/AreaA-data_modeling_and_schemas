@@ -1,46 +1,9 @@
 definitions:
   name: Electronic Lab Notebook
   sections:
-    Data_processing:
-      base_sections:
-      - ../upload/raw/base_classes.schema.archive.yaml#Task
-      quantities:
-        software:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-          description: Software used for logging
-        sampling_time:
-          type: np.float64
-          unit: ms
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: ms
-          description: Time between sampled points
-        image_time:
-          type: np.float64
-          unit: ms
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: ms
-          description: Time between recorded images
-    My_nice_process:
-      base_sections:
-      - ../upload/raw/base_classes.schema.archive.yaml#Task
-      quantities:
-        my_nice_quantity:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-          description: a quantity describing my process
     MeltCzochralski:
       base_sections:
       - ../upload/raw/base_classes.schema.archive.yaml#Experiment
-      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
           hide:
@@ -107,17 +70,53 @@ definitions:
                 type: ../upload/raw/DAQ-6510.archive.yaml#Sensors_list
               Optris_IP_640:
                 type: ../upload/raw/Optris-IP-640.archive.yaml#IR_camera
+    Data_processing:
+      base_sections:
+        - nomad.datamodel.metainfo.workflow2.Task
+      quantities:
+        software:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: Software used for logging
+        sampling_time:
+          type: np.float64
+          unit: ms
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ms
+          description: Time between sampled points
+        image_time:
+          type: np.float64
+          unit: ms
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ms
+          description: Time between recorded images
+    Example_userdefined_task:
+      base_sections:
+        - nomad.datamodel.metainfo.workflow2.Task
+      quantities:
+        test_quantity:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+          description: a quantity describing my process
 data:
   m_def: MeltCzochralski
-  timestamp: '2022-12-19 13:41:38.934+01:00'
+  datetime: '2022-12-19 13:41:38.934+01:00'
   tasks:
   - m_def: Data_processing
     name: Data_processing
     software: multilog v2.2.0-9-b137997
     sampling_time: 2000
     image_time: 5000
-  - m_def: My_nice_process
-    name: My_nice_process
+  - m_def: Example_userdefined_task
+    name: Example_userdefined_task
   instrumentation:
     DAQ_6510: ../upload/raw/DAQ-6510.archive.yaml#data
     Optris_IP_640: ../upload/raw/Optris-IP-640.archive.yaml#data

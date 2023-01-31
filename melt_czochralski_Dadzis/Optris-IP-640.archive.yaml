@@ -4,6 +4,7 @@
 definitions:
   name: 'IR camera data'
   sections:
+
     IR_image:
       base_sections:
         - nomad.datamodel.metainfo.eln.ElnBaseSection
@@ -27,10 +28,10 @@ definitions:
               adaptor: RawFileAdaptor 
             eln:
               component: FileEditQuantity
-        timestamp_rel:
+        elapsed_time:
           type: np.float64
           description: Relative time
-        timestamp_abs:
+        datetime:
           type: Datetime
           description: Absolute time
 
@@ -39,7 +40,7 @@ definitions:
         - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
-          lane_width: 200px
+          lane_width: 400px
       sub_sections:
         ir_images_list:
           repeats: true
@@ -78,11 +79,11 @@ data:
   - name: img_000001
     image: Optris-IP-640/img_000001.png
     heat_map: Optris-IP-640/img_000001.csv
-    timestamp_rel: 0.0
-    timestamp_abs: 2022-11-28 16:22:54.897+01:00
+    elapsed_time: 0.0
+    datetime: 2022-11-28 16:22:54.897+01:00
   - name: img_000002
     image: Optris-IP-640/img_000002.png
     heat_map: Optris-IP-640/img_000002.csv
-    timestamp_rel: 4.963
-    timestamp_abs: 2022-11-28 16:22:59.859+01:00
+    elapsed_time: 4.963
+    datetime: 2022-11-28 16:22:59.859+01:00
  
