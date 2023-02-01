@@ -28,21 +28,21 @@ data:
         - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
           name: Post-annealing
           step_type: Pre-process
-          notes: RTA
+          description: RTA
         - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
           name: Pre-treatment
           step_type: Pre-process
-          notes: Aqua regia cleaning for 5 min @ room temperature + rinsing in DI water
+          description: Aqua regia cleaning for 5 min @ room temperature + rinsing in DI water
           inputs: 
             - section: "../upload/raw/AcquaRegia.data.archive.yaml#data"
         - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
           name: implantation
           step_type: Pre-process
-          notes: dose, duration, annealing
+          description: dose, duration, annealing
         - m_def: "../upload/raw/base_classes.schema.archive.yaml#Procedure_step"
           name: regrowth
           step_type: Process
-          notes: growth, thickness, concentration, lift-off
+          description: growth, thickness, concentration, lift-off
     - m_def: ../upload/raw/hall_python.schema.archive.yaml#Hall_measurement
       data_file: 22-127-G_20K-320K_TT-Halter_WDH_060722.txt
       name: Hall measurement

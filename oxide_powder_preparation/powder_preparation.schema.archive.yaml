@@ -52,8 +52,7 @@ definitions:
               defaultDisplayUnit: hour
     ThermalTreatment:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
-       - "nomad.datamodel.data.EntryData"
+       - ../upload/raw/base_classes.schema.archive.yaml#Activity
       quantities:
         dose:
           type: np.float64

@@ -13,7 +13,7 @@ data:
     #   task: ../upload/raw/process.data.archive.yaml#data
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#Process_movpesto
       name: Epitaxial Growth
-      notes: "films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see Precursor"
+      description: "films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see Precursor"
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#Deposition_control
       name: Deposition Control
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#HRXRD_measurement

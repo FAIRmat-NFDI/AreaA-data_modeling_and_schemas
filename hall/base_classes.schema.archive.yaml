@@ -1,40 +1,11 @@
 definitions:
   name: 'Base Classes'
   sections:  # Schemes consist of section definitions
-    ElnBaseSection:
-      base_sections:
-        - nomad.datamodel.data.ArchiveSection
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
-        notes:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        users:
-          section:
-            quantities:
-              responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
     Entity:
       m_annotations:
         eln:
       base_sections: 
-       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
+       - nomad.datamodel.metainfo.eln.ElnBaseSection
        - nomad.datamodel.data.EntryData
       quantities:
         comment:
@@ -71,7 +42,6 @@ definitions:
                     component: ReferenceEditQuantity  
     Experiment: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
@@ -144,7 +114,6 @@ definitions:
               component: ReferenceEditQuantity
     Substrate: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Material'
       quantities:
         supplier:
@@ -252,7 +221,6 @@ definitions:
           section: '#/Geometry'
     Feedstock: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Material'
       quantities:
         supplier:
@@ -263,7 +231,6 @@ definitions:
               component: StringEditQuantity
     Crystal: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Material'
       quantities:
         orientation:
@@ -336,7 +303,8 @@ definitions:
           section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Workflow
+      - nomad.datamodel.metainfo.eln.ElnBaseSection
+      - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
         global: 
           section:  
@@ -362,12 +330,11 @@ definitions:
           section: nomad.datamodel.metainfo.workflow2.Link
     Measurement:  
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Activity'
     Procedure_step:  
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Task
-        - '#/ElnBaseSection'
+      - nomad.datamodel.metainfo.workflow2.Task
+      - nomad.datamodel.metainfo.eln.ElnBaseSection
       m_annotations:
         eln:
       quantities:
@@ -400,7 +367,6 @@ definitions:
               defaultDisplayUnit: minute
     Substance: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Material'
       more:
         label_quantity: iupac_name
@@ -455,7 +421,6 @@ definitions:
               component: StringEditQuantity
     SubstanceBatch: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
       - '#/Material'
       quantities:
         component:
@@ -524,7 +489,6 @@ definitions:
               component: FileEditQuantity
     AmountOfMaterial: 
       base_sections:
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection 
       - '#/Material'
       quantities:
         component:
@@ -588,7 +552,7 @@ definitions:
               defaultDisplayUnit: mL/minute
     Sensor:
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
+      - nomad.datamodel.metainfo.eln.ElnBaseSection
       quantities:
         model:
           type: str
