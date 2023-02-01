@@ -62,7 +62,7 @@ definitions:
                     component: NumberEditQuantity
                     defaultDisplayUnit: celsius
               carrier_gas:
-                type: ../upload/raw/base_classes.schema.archive.yaml#Substance
+                type: nomad.datamodel.metainfo.eln.Substance
                 m_annotations:
                   # tabular:
                   #   name: Overview/Film

@@ -1,16 +1,10 @@
 data:  
   m_def: ../upload/raw/movpe_sto.schema.archive.yaml#MovpeSto_experiment 
   data_file: datafile.xlsx
-  users:  #section name - not to be filled
-    responsible_person: 
-      - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
   instrument: 
     - name: my_instrument_name
       section: ../upload/raw/Instrument.data.archive.yaml#data
   tasks: 
-    # - m_def: ../upload/raw/base_classes.schema.archive.yaml#TaskReference 
-    #   name: "Epitaxial Growth Reference"
-    #   task: ../upload/raw/process.data.archive.yaml#data
     - m_def: ../upload/raw/movpe_sto.schema.archive.yaml#Process_movpesto
       name: Epitaxial Growth
       description: "films can be stoichiometric or off-stoichiometric. Cation ratios in absolute numbers see Precursor"

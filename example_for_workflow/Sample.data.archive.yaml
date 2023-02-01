@@ -5,20 +5,3 @@ data:
     sample_owner: Maximilian
     creation_datetime: 2022-09-26
     sample_short_name: my_sample
-    #sample_id:
-  comment: my_comment
-  supplier: supplier
-  orientation: 010
-  off_cut: 25.5
-  element_list: [Si, Ge, U]
-  storage_location: 19.31.334 office shelf
-  batch_number: mein batch nummer
-  doping_type: n-type
-  doping_species: Ge, Te, S, Sr 
-  buying_date: 2006-03-09
-  documentation: test_image.png
-  geometry:
-    parallelepiped:
-      height: 32
-      width: 42
-      length: 61

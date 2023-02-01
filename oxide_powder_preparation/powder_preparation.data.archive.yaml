@@ -3,8 +3,6 @@ data:
   inputs:
     - section: ../upload/raw/Substance1.data.archive.yaml#data 
       name: component_1
-    - section: ../upload/raw/SubstanceAndAmount.data.archive.yaml#data  
-      name: component_2
   outputs:
     - section: ../upload/raw/Sample.data.archive.yaml#data   
       name: powder_sample

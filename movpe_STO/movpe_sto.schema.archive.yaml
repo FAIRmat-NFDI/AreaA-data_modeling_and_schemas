@@ -637,7 +637,7 @@ definitions:
                   defaultDisplayUnit: milliampere
     Movpe_instrument:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Entity
+      - nomad.datamodel.metainfo.eln.Instrument
       m_annotations:
         eln:
       quantities:

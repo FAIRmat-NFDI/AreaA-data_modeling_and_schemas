@@ -1,53 +1,14 @@
 definitions:
   name: 'Base Classes'
-  sections:  # Schemes consist of section definitions
-    Entity:
-      m_annotations:
-        eln:
-      base_sections: 
-       - nomad.datamodel.metainfo.eln.ElnBaseSection
-       - nomad.datamodel.data.EntryData
-      quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        users:
-          section:
-            quantities:
-              responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-              operator:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-        history:
-          section: 
-            # m_annotations:
-            #   eln:
-            quantities:
-              activities:
-                type: Activity
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity  
+  sections:
     Experiment: 
       base_sections: 
       - '#/Activity'
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-    Material: 
-      base_section: '#/Entity'
+    System: 
+      base_section: 'nomad.datamodel.metainfo.eln.System'
       m_annotations:
         eln:
       sub_sections:
@@ -55,15 +16,12 @@ definitions:
           section:
             base_sections:
               - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
             m_annotations:
               template: 
               eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
                 hide: []
-    Sample: 
-      base_section: '#/Material'
+    Ensemble: 
+      base_section: '#/System'
       sub_sections:
         geometry:
           section: '#/Geometry'
@@ -107,14 +65,14 @@ definitions:
             eln:
               component: EnumEditQuantity
         components:
-          type: '#/Material'
+          type: '#/System'
           shape: ['*']
           m_annotations:
             eln:
               component: ReferenceEditQuantity
     Substrate: 
       base_sections: 
-      - '#/Material'
+      - '#/System'
       quantities:
         supplier:
           type: str
@@ -221,7 +179,7 @@ definitions:
           section: '#/Geometry'
     Feedstock: 
       base_sections: 
-      - '#/Material'
+      - '#/System'
       quantities:
         supplier:
           type: str
@@ -231,7 +189,7 @@ definitions:
               component: StringEditQuantity
     Crystal: 
       base_sections: 
-      - '#/Material'
+      - '#/System'
       quantities:
         orientation:
           type: str
@@ -303,28 +261,13 @@ definitions:
           section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
+      - nomad.datamodel.metainfo.eln.Activity
       - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
         global: 
           section:  
             base_sections: 
             - '#/Global'
-        users:
-          section:
-            quantities:
-              responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-              operator:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
         instrument:
           repeats: True
           section: nomad.datamodel.metainfo.workflow2.Link
@@ -365,66 +308,12 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    Substance: 
-      base_sections: 
-      - '#/Material'
-      more:
-        label_quantity: iupac_name
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
-      quantities:
-        empirical_formula:
-          type: str
-          description: chemical formula
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          description: the IUPAC nomenclature of the chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     SubstanceBatch: 
       base_sections: 
-      - '#/Material'
+      - '#/System'
       quantities:
         component:
-          type: Material
+          type: System
           m_annotations:
             eln:
               component: ReferenceEditQuantity
@@ -489,10 +378,10 @@ definitions:
               component: FileEditQuantity
     AmountOfMaterial: 
       base_sections:
-      - '#/Material'
+      - '#/System'
       quantities:
         component:
-          type: Material
+          type: System
           m_annotations:
             eln:
               component: ReferenceEditQuantity

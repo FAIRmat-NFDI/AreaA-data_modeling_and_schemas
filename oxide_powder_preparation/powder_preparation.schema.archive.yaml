@@ -129,5 +129,4 @@ definitions:
               component: NumberEditQuantity
               #defaultDisplayUnit: gram / gram
     Powder_sample:
-      # base_section: ../upload/raw/base_classes/sample_0-0-1.schema.archive.yaml#Sample
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Sample
+      base_section: nomad.datamodel.metainfo.eln.Ensemble
