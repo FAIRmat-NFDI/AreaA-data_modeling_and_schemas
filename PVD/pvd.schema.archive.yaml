@@ -318,7 +318,8 @@ definitions:
       m_annotations:
         eln:
         plot:
-        - label: Source power
+        - title: Source Power
+          label: Power
           x: 
             - sources/0/power/times
             - sources/1/power/times
@@ -329,4 +330,16 @@ definitions:
             - sources/1/power/values
             - sources/2/power/values
             - sources/3/power/values
+        - title: Source Rate
+          label: Rate
+          x: 
+            - sources/0/rate/times
+            - sources/1/rate/times
+            - sources/2/rate/times
+            - sources/3/rate/times
+          y: 
+            - sources/0/rate/values
+            - sources/1/rate/values
+            - sources/2/rate/values
+            - sources/3/rate/values
     
