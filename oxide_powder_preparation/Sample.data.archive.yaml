@@ -13,6 +13,3 @@ data:
       length: 250
       surface_area: 12500
       volume: 670000
-  components:
-    - ../upload/raw/Substance1.data.archive.yaml#data 
-    - ../upload/raw/SubstanceAndAmount.data.archive.yaml#data 

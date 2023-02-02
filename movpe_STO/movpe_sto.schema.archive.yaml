@@ -638,6 +638,7 @@ definitions:
     Movpe_instrument:
       base_sections: 
       - nomad.datamodel.metainfo.eln.Instrument
+      - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
       quantities:

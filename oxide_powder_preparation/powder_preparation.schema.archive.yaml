@@ -129,4 +129,14 @@ definitions:
               component: NumberEditQuantity
               #defaultDisplayUnit: gram / gram
     Powder_sample:
-      base_section: nomad.datamodel.metainfo.eln.Ensemble
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Ensemble
+      - nomad.datamodel.data.EntryData
+    Component:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Component
+      - nomad.datamodel.data.EntryData
+    Substance:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.data.EntryData

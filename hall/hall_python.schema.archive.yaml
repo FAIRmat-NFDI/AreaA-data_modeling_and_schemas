@@ -74,14 +74,14 @@ definitions:
         - nomad.datamodel.metainfo.workflow2.Task
     SampleWithContacts:
       base_sections: 
-        - 'nomad.datamodel.metainfo.eln.Ensemble'
+        - '../upload/raw/base_classes.schema.archive.yaml#Ensemble'
       sub_sections:
         metal_stack:
           repeats: true
           m_annotations:
             eln: 
           section:
-            base_section: 'nomad.datamodel.metainfo.eln.Substance'
+            base_section: '../upload/raw/base_classes.schema.archive.yaml#Substance'
             quantities:
               thickness:
                 type: np.float64

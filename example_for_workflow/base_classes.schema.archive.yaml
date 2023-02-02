@@ -8,7 +8,9 @@ definitions:
       m_annotations:
         eln:
     System: 
-      base_section: 'nomad.datamodel.metainfo.eln.System'
+      base_sections: 
+      - 'nomad.datamodel.metainfo.eln.System'
+      - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
       sub_sections:
@@ -21,27 +23,35 @@ definitions:
               eln: 
                 hide: []
     Ensemble: 
-      base_section: '#/System'
+      base_sections: 
+      - 'nomad.datamodel.metainfo.eln.Ensemble'
+      - 'nomad.datamodel.data.EntryData'
       sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+            m_annotations:
+              template: 
+              eln: 
+                hide: []
         geometry:
           section: '#/Geometry'
+    Substance:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.data.EntryData
       quantities:
-        preparation_date:
-          type: str
-          description: creation date
+        safety_reactivity:
+          type:
+            type_kind: Enum
+            type_data:
+              - air sensitive
+              - poisonous
+          shape: ['*']
           m_annotations:
             eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        empirical_formula:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
+              component: EnumEditQuantity
         state_of_matter:
           type:
             type_kind: Enum
@@ -54,25 +64,9 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        safety_reactivity:
-          type:
-            type_kind: Enum
-            type_data:
-              - air sensitive
-              - poisonous
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        components:
-          type: '#/System'
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
     Substrate: 
       base_sections: 
-      - '#/System'
+      - '#/Ensemble'
       quantities:
         supplier:
           type: str
@@ -179,21 +173,11 @@ definitions:
           section: '#/Geometry'
     Feedstock: 
       base_sections: 
-      - '#/System'
+      - '#/Ensemble'
       quantities:
         supplier:
           type: str
           description: Sample preparation including orientating, polishing, cutting done by this company
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    Crystal: 
-      base_sections: 
-      - '#/System'
-      quantities:
-        orientation:
-          type: str
-          description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity

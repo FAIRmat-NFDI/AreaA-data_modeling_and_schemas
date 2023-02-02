@@ -1,2 +1,2 @@
 data:
-  m_def: nomad.datamodel.metainfo.eln.Substance
+  m_def: ../upload/raw/base_classes.schema.archive.yaml#Substance
