@@ -6,7 +6,7 @@ data:
     creation_datetime: 2022-09-26
     sample_short_name: my_sample
     #sample_id:
-  comment: my_comment
+  description: my_comment
   supplier: supplier
   orientation: 010
   off_cut: 25.5

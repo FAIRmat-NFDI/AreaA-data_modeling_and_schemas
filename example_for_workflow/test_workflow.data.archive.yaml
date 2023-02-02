@@ -1,6 +1,6 @@
 data:  
   m_def: ../upload/raw/test_workflow.schema.archive.yaml#Experiment
-  comment: | 
+  description: | 
     This schema represents some features 
     that are currently not optimized for a flawless use.
 

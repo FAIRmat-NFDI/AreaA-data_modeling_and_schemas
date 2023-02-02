@@ -6,12 +6,6 @@ definitions:
        - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln: 
-      quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: RichTextEditQuantity
     Sample_preparation:
       base_sections: 
         - ../upload/raw/base_classes.schema.archive.yaml#Activity
