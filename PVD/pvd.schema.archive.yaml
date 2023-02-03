@@ -110,28 +110,36 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
-        n1:
+        e1:
           description: |
-            The x component of the normal vector.
+            The x component of the euler vector.
           type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
-        n2:
+        e2:
           description: |
-            The y component of the normal vector.
+            The y component of the euler vector.
           type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
-        n3:
+        e3:
           description: |
-            The z component of the normal vector.
+            The z component of the euler vector.
           type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
-
+        e_theta:
+          description: |
+            The right hand angle around the euler axis
+          type: np.float64
+          unit: radian
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            
     PVDSource:
       base_section: nomad.datamodel.data.ArchiveSection
       description: |
@@ -255,7 +263,9 @@ definitions:
           section: '#/TimeSeries'
         position:
           description: |
-            The stationary position of the substrate in the chamber reference system.
+            The stationary position of the substrate in the chamber reference system. 
+            Origin of substrate is at the center of mass, the euler axis is normal to the 
+            surface being deposited on.
           section: '#/Position'
 
     Synthesis:
@@ -267,6 +277,11 @@ definitions:
       base_section: Synthesis
       description: |
         A base class for a Physical Vapor Deposition (PVD) synthesis process.
+      quantities:
+        chamber_origin:
+          description: |
+            A description of the orthonormal chamber reference coordinate system.
+          type: str
       sub_sections:
         sources:
           description: |
@@ -320,26 +335,10 @@ definitions:
         plot:
         - title: Source Power
           label: Power
-          x: 
-            - sources/0/power/times
-            - sources/1/power/times
-            - sources/2/power/times
-            - sources/3/power/times
-          y: 
-            - sources/0/power/values
-            - sources/1/power/values
-            - sources/2/power/values
-            - sources/3/power/values
+          x: sources/:/power/times
+          y: sources/:/power/values
         - title: Source Rate
           label: Rate
-          x: 
-            - sources/0/rate/times
-            - sources/1/rate/times
-            - sources/2/rate/times
-            - sources/3/rate/times
-          y: 
-            - sources/0/rate/values
-            - sources/1/rate/values
-            - sources/2/rate/values
-            - sources/3/rate/values
+          x: sources/:/rate/times
+          y: sources/:/rate/values
     
