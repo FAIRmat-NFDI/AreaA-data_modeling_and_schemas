@@ -1,8 +1,5 @@
 data:
   m_def: ../upload/raw/powder_preparation.schema.archive.yaml#PowderPreparation
-  inputs:
-    - section: ../upload/raw/Substance1.data.archive.yaml#data 
-      name: component_1
   outputs:
     - section: ../upload/raw/Sample.data.archive.yaml#data   
       name: powder_sample
@@ -10,7 +7,7 @@ data:
     - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
       name: thermal treatment component 1
       inputs: 
-        - section: ../upload/raw/Substance1.data.archive.yaml#data 
+        - section: ../upload/raw/Li2CO3.data.archive.yaml#data 
           name: component_1
       tasks:
         - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#TemperatureRamp
@@ -22,7 +19,7 @@ data:
     - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#ThermalTreatment
       name: thermal treatment component 2
       inputs: 
-        - section: ../upload/raw/Substance1.data.archive.yaml#data 
+        - section: ../upload/raw/Al2O3.data.archive.yaml#data 
           name: component_2
           
       

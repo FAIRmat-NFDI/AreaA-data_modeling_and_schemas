@@ -1,0 +1,69 @@
+data:
+  m_def: ../upload/raw/base_classes.schema.archive.yaml#/definitions/section_definitions/3
+  name: Li2CO3
+  datetime: 2023-02-03T09:57:55.624108+00:00
+  cas_uri: substance/pt/554132
+  cas_number: 554-13-2
+  cas_name: Lithium carbonate (Li2CO3)
+  inchi: InChI=1S/CH2O3.2Li/c2-1(3)4;;/h(H2,2,3,4);;
+  inchi_key: InChIKey=XMNPAWRFUJJEOS-UHFFFAOYSA-N
+  smile: C(=O)(O)O.[Li]
+  canonical_smile: "[Li].O=C(O)O"
+  molecular_formula: CH2O3.2Li
+  cas_synonyms:
+    - Carbonic acid, lithium salt (1:2)
+    - Carbonic acid, dilithium salt
+    - Lithium carbonate (Li<sub>2</sub>CO<sub>3</sub>)
+    - Candamide
+    - Dilithium carbonate
+    - Eskalith
+    - Carbonic acid lithium salt (Li<sub>2</sub>CO<sub>3</sub>)
+    - Camcolit
+    - Carbolith
+    - Hypnorex
+    - Lithane
+    - Lithonate
+    - Lithotabs
+    - Plenur
+    - Priadel
+    - Quilonum retard
+    - CP 15467-61
+    - Micalith
+    - Lithocarb
+    - Phasal
+    - Lithobid
+    - Teralithe
+    - Quilonorm-retard
+    - Liskonum
+    - Ceglution
+    - NSC 16895
+    - Lithicarb
+    - Limas
+    - Carbolithium
+    - Lithium carbonate
+    - Lithuril
+    - Li2CO3
+    - QJ 0005
+  elemental_composition:
+    - element: Li
+      atomic_fraction: 0.1388888888888889
+    - element: H
+      atomic_fraction: 0.2777777777777778
+    - element: C
+      atomic_fraction: 0.1388888888888889
+    - element: O
+      atomic_fraction: 0.4444444444444444
+  cas_experimental_properties:
+    - name: Melting Point
+      property: 723 °C
+      sourceNumber: "1"
+    - name: Density
+      property: 2.11 g/cm<sup>3</sup>
+      sourceNumber: "1"
+  cas_property_citations:
+    - docUri: ""
+      sourceNumber: 1
+      source: Hazardous Substances Data Bank data were obtained from the National
+        Library of Medicine (US)
+  description: <p>my component</p>
+m_ref_archives: {}
