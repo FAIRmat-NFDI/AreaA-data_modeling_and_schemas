@@ -148,7 +148,7 @@ definitions:
         eln:
           overview: true
         plot:
-          title: Rate and shutter status over time
+          label: Source Parameters (fractions)
           x: 
             - power/times
             - rate/times
@@ -157,6 +157,10 @@ definitions:
             - power/values
             - rate/values
             - shutter/values
+          lines:
+            - name: Power
+            - name: Rate / nmol/cm2/10s
+            - name: Shutter (1 open, 0 closed)
       quantities:
         name:
           description: |
