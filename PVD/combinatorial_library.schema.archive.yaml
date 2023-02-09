@@ -1,0 +1,43 @@
+definitions:
+  sections:
+    CombiSample:
+      quantities:
+        x:
+          type: np.float64
+        y:
+          type: np.float64
+    CombiLibrary:
+      m_annotations:
+        plot:
+          x: samples/:/x
+          y: samples/:/y
+          lines: 
+            - mode: markers
+              marker: 
+                color: "rgb(40, 80, 130)"
+            - mode: markers
+              marker: 
+                color: "rgb(40, 80, 130)"
+            - mode: markers
+              marker: 
+                color: "rgb(40, 80, 130)"
+            - mode: markers
+              marker: 
+                color: "rgb(40, 80, 130)"
+            
+      sub_sections:
+        samples:
+          repeats: true
+          section: '#/CombiSample'
+
+data:
+  m_def: '#/CombiLibrary'
+  samples:
+    - x: 0.25
+      y: 0.25
+    - x: -0.25
+      y: 0.25
+    - x: -0.25
+      y: -0.25
+    - x: 0.25
+      y: -0.25
