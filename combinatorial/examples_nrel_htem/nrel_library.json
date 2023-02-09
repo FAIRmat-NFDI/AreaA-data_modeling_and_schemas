@@ -1,0 +1,111 @@
+{
+    "id": 10055,
+    "num": 1118,
+    "pdac": "4",
+    "quality": 3,
+    "person_id": 54,
+    "sample_date": "2017-01-01T00:00:00.000Z",
+    "owner_name": "Yanbing Han",
+    "owner_email": "Yanbing.Han@nrel.gov",
+    "xrf_type": "fischer",
+    "sputter_operator": "Yanbing",
+    "sample_ids": [
+        320820,
+        320822,
+        320821,
+        320824,
+        320823,
+        320826,
+        320825,
+        320828,
+        320827,
+        320832,
+        320831,
+        320834,
+        320833,
+        320836,
+        320835,
+        320838,
+        320837,
+        320840,
+        320839,
+        320811,
+        320812,
+        320813,
+        320814,
+        320807,
+        320808,
+        320809,
+        320810,
+        320816,
+        320817,
+        320842,
+        320841,
+        320848,
+        320847,
+        320846,
+        320845,
+        320844,
+        320843,
+        320830,
+        320829,
+        320818,
+        320819,
+        320805,
+        320806,
+        320815
+    ],
+    "elements": [
+        "Ba",
+        "S",
+        "Cu"
+    ],
+    "xrf_elements": [
+        "Ba",
+        "Cu",
+        "S"
+    ],
+    "xrf_compounds": [
+        "Ba",
+        "Cu",
+        "S"
+    ],
+    "deposition_sample_time_min": 180,
+    "deposition_compounds": [
+        "BaS",
+        "Cu2S",
+        null
+    ],
+    "deposition_power": [
+        40,
+        30,
+        null
+    ],
+    "deposition_base_pressure_mtorr": null,
+    "deposition_growth_pressure_mtorr": 1.5,
+    "deposition_target_pulses": null,
+    "deposition_rep_rate": [
+        null
+    ],
+    "deposition_energy": null,
+    "deposition_cycles": null,
+    "deposition_ts_distance": null,
+    "deposition_initial_temp_c": 100,
+    "box_number": null,
+    "deposition_gases": [
+        "Argon",
+        "None",
+        null
+    ],
+    "deposition_substrate_material": "Quartz",
+    "deposition_gas_flow_sccm": [
+        16,
+        null,
+        null
+    ],
+    "has_xrd": 44,
+    "has_xrf": 44,
+    "has_ele": 1,
+    "has_opt": 44,
+    "data_access": "public"
+}
