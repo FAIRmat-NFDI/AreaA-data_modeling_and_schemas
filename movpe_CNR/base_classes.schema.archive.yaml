@@ -284,7 +284,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-        duration:
+        elapsed_time:
           type: np.float64
           unit: minute
           description: Duration of the current step

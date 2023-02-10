@@ -229,7 +229,7 @@ definitions:
                     name: Growthrun/Name
                   eln:
                     component: StringEditQuantity
-              duration:
+              elapsed_time:
                 type: np.float64
                 unit: minute
                 description: Past time since process start
