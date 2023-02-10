@@ -1,0 +1,3 @@
+data:  
+  m_def: ../upload/raw/HPT_RIKEN.schema.archive.yaml#HPT_experiment 
+  data_file: BO_data_test.xlsx

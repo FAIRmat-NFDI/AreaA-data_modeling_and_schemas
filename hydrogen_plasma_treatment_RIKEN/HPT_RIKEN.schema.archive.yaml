@@ -1,0 +1,112 @@
+definitions:
+  name: 'Bayesian optimization for hydrogen plasma treatment'
+  sections:  
+    HPT_experiment:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
+      - nomad.parsing.tabular.TableData
+      m_annotations:
+        eln:
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+              mode: row
+              target_sub_section: 
+               - tasks
+            browser:
+              adaptor: RawFileAdaptor  
+            eln:
+              component: FileEditQuantity  
+      sub_sections:
+        tasks:
+          repeats: true
+          section:
+            more:
+              label_quantity: process_number
+            m_annotations:
+              eln:
+            quantities:
+              process_number: 
+                type: int
+                description: "Sequential index of process"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/Index
+                  eln:
+                    component: NumberEditQuantity
+              process_temperature:
+                type: np.float64
+                unit: celsius
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/Process temperature
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: celsius
+              elapsed_time:
+                type: np.float64
+                unit: minute
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/Process time
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: minute
+              h2_pressure:
+                type: np.float64
+                unit: pascal
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/H2 pressure
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: pascal
+              h2_flow_rate:
+                type: np.float64
+                unit: cm ** 3 / minute # sccm
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/H2 flow rate
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute # sccm
+              rf_power:
+                type: np.float64
+                unit: watt
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/RF power
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: watt
+              electrode_distance:
+                type: np.float64
+                unit: millimeter
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/Electrode distance 
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              carrier_lifetime:
+                type: np.float64
+                unit: minute # please change unit here
+                description: "FILL WITH DESCRIPTION"
+                m_annotations:
+                  tabular:
+                    name: Sheet1/Carrier lifetime
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: minute # please change unit here
