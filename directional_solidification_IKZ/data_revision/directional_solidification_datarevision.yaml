@@ -17,7 +17,7 @@ directional_solidification:
     setup_notes: Wieder ausgebaute, niedrigere Suszeptor Wände + TiC-Deckel aus NSI-22 + neues Saphirfenster +Tiegelscherben ELKEM_02 zur Befestigung, # could be structured in subsections propably!?
     furnace_ID: G1_Si_furnace 
     vacuum_before_gas_inlet: < 3 x 10-3 mbar
-    crucible:
+    crucible: # inner part was in contact with melt
       crucible_id: EW02057 M1744002039  
       crucible_weight: 7811.5 g
       crucible_name: VESUVIUS 
@@ -212,39 +212,34 @@ directional_solidification:
 
 # from TF meeting:
 instrument:
-  Crucible_Support_shape:
-    - graphite thick
+  crucible: # inner part which is in contact with melt
+      crucible_id: EW02057 M1744002039  
+      crucible_weight: 7811.5 g
+      crucible_name: VESUVIUS 
+      crucible_coating: coated at IKZ mit HC Stark # extra schema -> preprocess!
+      crucible_pretreatment: Tiegel mit Druckluft ausgepustet	
+  Crucible_Support: # mechanical support of crucible, has own material and shape because of high temperature, consists of side and bottom support and top cover
+    Crucible_Support_side_and_bottom_shape: 
+    - graphite thick # enumerate
     - graphite thin
+    - ... # flexible
+    
 		Crucible_Top_cover:
-      - slot oppening
+      - slot opening
       - plate
-			Top_cover_material:
+		Crucible_Top_cover_material:
         - SiC
         - TiC
-      Top_cover_mass:
-        - ... g
-        - ... g
-  Suszeptor:
+        - graphite
+        - ... #user input
+    Crucible_Top_cover_age:
+        - # hours exposed to high temperature process
+  Suszeptor: # nur bei Induktiver Heizung, hier nicht relevant weil Widerstandheizung
     Suszeptor_material:
     Suszeptor_mass:
-  Bottom_plate:
-    Bottom_plate_material:
-      Bottom_plate_mass:
-  Saphire_plate:
-  Dummy:
-    Dummy_material:
-    Dummy_mass:
 
-  Crucible:	
-		Crucible producer:
-		Crucible type:
-		Crucible code:
-		Coating date: # Coating seems to be a preprocess 
-		coating producer:
-		coating type:
-		coating layers number:
-		Crucible Mass:
-		Quartz ring mass in kg:
+  
+
 
 Charge: # -> Einwaage
   Charge preparation date:
