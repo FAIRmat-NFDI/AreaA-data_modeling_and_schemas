@@ -1,5 +1,5 @@
 definitions:
-  name: PVDProcess
+  name: PvdProcess
   description: |
     Base classes for PVD processes.
   sections:
@@ -24,9 +24,6 @@ definitions:
           type: np.float64
           shape: ['*']
           unit: s
-          m_annotations:
-            eln:
-              defaultDisplayUnit: s
         n_times:
           description: |
             The number of time points in the series.
@@ -140,7 +137,7 @@ definitions:
             eln:
               component: NumberEditQuantity
             
-    PVDSource:
+    PvdSource:
       base_section: nomad.datamodel.data.ArchiveSection
       description: |
         A source used in a PVD process.
@@ -172,7 +169,7 @@ definitions:
         material:
           description: |
             The material deposited from the source.
-          type: nomad.datamodel.metainfo.eln.Ensemble
+          type: nomad.datamodel.metainfo.eln.Substance
           m_annotations:
             eln:
               component: ReferenceEditQuantity
@@ -208,7 +205,7 @@ definitions:
             open.
           section: '#/TimeSeries'
 
-    PVDGas:
+    PvdGas:
       base_section: nomad.datamodel.data.ArchiveSection
       description: |
         A gas (flow) inside a PVD chamber.
@@ -226,7 +223,7 @@ definitions:
             The flow of the gas as a fucntion of time.
           section: '#/TimeSeries'
     
-    PVDAtmosphere:
+    PvdAtmosphere:
       base_section: nomad.datamodel.data.ArchiveSection
       description: |
         A description of the atmosphere inside a PVD chamber.
@@ -239,9 +236,9 @@ definitions:
           description: |
             The power fed to the source as a function of time.
           repeats: True
-          section: '#/PVDGas'
+          section: '#/PvdGas'
     
-    PVDSubstrate:
+    PvdSubstrate:
       base_section: nomad.datamodel.data.ArchiveSection
       description: |
         A description of a substrate inside a PVD chamber.
@@ -277,7 +274,7 @@ definitions:
       description: |
         A base class for a synthesis which creates or adds to a sample entity.
 
-    PVD:
+    PhysicalVaporDeposition:
       base_section: Synthesis
       description: |
         A base class for a Physical Vapor Deposition (PVD) synthesis process.
@@ -291,28 +288,41 @@ definitions:
           description: |
             The sources in the chamber used for deposition.
           repeats: True
-          section: '#/PVDSource'
+          section: '#/PvdSource'
         atmosphere:
           description: |
             The atmospehere inside the chamber during deposition.
-          section: '#/PVDAtmosphere'
+          section: '#/PvdAtmosphere'
         substrates:
           description: |
             The substrates present in the chamber during deposition.
           repeats: True
-          section: '#/PVDSubstrate'
+          section: '#/PvdSubstrate'
 
-    PVDThermalSource:
-      base_section: PVDSource
+    PvdThermalSource:
+      base_section: PvdSource
       description: |
         A source used in a Thermal PVD process.
       m_annotations:
         eln:
           overview: true
         plot:
-          title: Source temperature over time
-          x: temperature/times
-          y: temperature/values
+          - label: Source Parameters
+            x: 
+              - power/times
+              - rate/times
+              - shutter/times
+            y:
+              - power/values
+              - rate/values
+              - shutter/values
+            lines:
+              - name: Power
+              - name: Rate / nmol/cm2/10s
+              - name: Shutter (1 open, 0 closed)
+          - label: Source Temperature (°C)
+            x: temperature/times
+            y: temperature/values
       sub_sections:
         temperature:
           description: |
@@ -320,7 +330,7 @@ definitions:
           section: '#/TimeSeries'
     
     PvdThermal:
-      base_section: PVD
+      base_section: PhysicalVaporDeposition
       description: |
         A base class for a thermal PVD synthesis process.
       sub_sections:
@@ -328,21 +338,5 @@ definitions:
           description: |
             The sources in the chamber used for deposition.
           repeats: True
-          section: '#/PVDThermalSource'
-
-    HzbUnoldLabPvdThermal:
-      base_sections: [PvdThermal, nomad.datamodel.data.EntryData]
-      description: |
-        A schema for a PVD process in the Unold group at HZB.
-      m_annotations:
-        eln:
-        plot:
-        - title: Source Power
-          label: Power
-          x: sources/:/power/times
-          y: sources/:/power/values
-        - title: Source Rate
-          label: Rate
-          x: sources/:/rate/times
-          y: sources/:/rate/values
+          section: '#/PvdThermalSource'
     
