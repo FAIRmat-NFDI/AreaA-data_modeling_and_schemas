@@ -9,9 +9,12 @@ definitions for various labs and setups.
 Activity
 ├── Process
 .   ├── Synthesis
-.   .   ├── PVD
-.   .   .   ├── EBeam
-    .   .   ├── Sputtering
-        .   ├── Thermal
-            └── PLD
+.   .   ├── VaporDeposition
+.   .   .   ├── PVD
+.   .   .   .   ├── EBeam
+.   .   .   .   ├── MBE
+    .   .   .   ├── Sputtering
+        .   .   ├── Thermal
+            .   └── PLD
+            └── CVD
 ```
