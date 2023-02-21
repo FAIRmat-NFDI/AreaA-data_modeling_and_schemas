@@ -51,29 +51,29 @@ definitions:
       m_annotations:
         plot:
         - label: 'Heat conductivity'
-          x: heat_conductivity/:/temperatures
-          y: heat_conductivity/:/values
+          x: thermal_properties/heat_conductivity/:/temperatures
+          y: thermal_properties/heat_conductivity/:/values
         - label: 'Heat capacity'
-          x: heat_capacity/:/temperatures
-          y: heat_capacity/:/values
+          x: thermal_properties/heat_capacity/:/temperatures
+          y: thermal_properties/heat_capacity/:/values
         - label: 'Thermal expension'
-          x: thermal_expansion/:/temperatures
-          y: thermal_expansion/:/values
+          x: thermal_properties/thermal_expansion/:/temperatures
+          y: thermal_properties/thermal_expansion/:/values
         - label: 'Elastic stiffness'
-          x: elastic_stiffness/:/temperatures
-          y: elastic_stiffness/:/values
+          x: mechanical_properties/elastic_stiffness/:/temperatures
+          y: mechanical_properties/elastic_stiffness/:/values
         - label: 'Critial resolved shear stress'
-          x: critical_resolved_shear_stress/:/temperatures
-          y: critical_resolved_shear_stress/:/values
+          x: mechanical_properties/critical_resolved_shear_stress/:/temperatures
+          y: mechanical_properties/critical_resolved_shear_stress/:/values
         - label: 'Viscosity'
-          x: viscosity/:/temperatures
-          y: viscosity/:/values
+          x: mechanical_properties/viscosity/:/temperatures
+          y: mechanical_properties/viscosity/:/values
         - label: 'Surface tension'
-          x: surface_tension/:/temperatures
-          y: surface_tension/:/values
+          x: mechanical_properties/surface_tension/:/temperatures
+          y: mechanical_properties/surface_tension/:/values
         - label: 'Growth angle'
-          x: growth_angle/:/temperatures
-          y: growth_angle/:/values
+          x: mechanical_properties/growth_angle/:/temperatures
+          y: mechanical_properties/growth_angle/:/values
         eln:
           hide: [datetime, users, cas_uri, cas_name, cas_synonyms, image, inchi, inchi_key, smile, canonical_smile, molecular_weight]
           lane_width: 800px
@@ -114,7 +114,7 @@ definitions:
               - 'nomad.datamodel.results.SymmetryNew'
               - 'nomad.datamodel.results.Cell'
         density:
-          repeats: True
+          # repeats: True
           section:
             base_sections: 
               - '#/TemperatureSeries'
