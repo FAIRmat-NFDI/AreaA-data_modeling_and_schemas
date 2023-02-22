@@ -159,7 +159,6 @@ definitions:
                         The emmisivity of the material.
                       type: np.float64
                       shape: ['*']
-                      unit: ''
                       m_annotations:
                         eln:
                           component: NumberEditQuantity
