@@ -1,19 +1,91 @@
 definitions:
   name: 'IKZ Material Database PoC'
   sections:  # Schemes consist of section definitions
-    GeneralProperties: 
-      base_sections: 
-       - nomad.datamodel.metainfo.eln.Chemical
-       - nomad.datamodel.data.EntryData
+    TemperatureSeries:
+      # base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A section describing a temperature depdendent property.
       quantities:
         name:
           description: |
-            A descriptive name of the material beyond its chemical formula. 
-            Useful to identify solids with the different `chemical_formula` but different structure. 
-        molecular_weight:
+            A descriptive name for this series. This is used to identify the series in plots.
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        values:
           description: |
-            The molecular weight of the material.
+            The array of values.
           type: np.float64
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        temperatures:
+          description: |
+            The array of times for the corresponding values.
+          type: np.float64
+          shape: ['*']
+          unit: K
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        # n_temperatures:
+        #   description: |
+        #     The number of time points in the series.
+        #   type: int
+        #   m_annotations:
+        #     eln:
+        #       component: NumberEditQuantity
+        temperature_dependence_function:
+          description: |
+            The function describing the temperature dependence.
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    IKZMaterial: 
+      base_sections: 
+       - nomad.datamodel.metainfo.eln.Substance
+       - nomad.datamodel.data.EntryData
+      m_annotations:
+        plot:
+        - label: 'Heat conductivity'
+          x: thermal_properties/heat_conductivity/:/temperatures
+          y: thermal_properties/heat_conductivity/:/values
+        - label: 'Heat capacity'
+          x: thermal_properties/heat_capacity/:/temperatures
+          y: thermal_properties/heat_capacity/:/values
+        - label: 'Thermal expension'
+          x: thermal_properties/thermal_expansion/:/temperatures
+          y: thermal_properties/thermal_expansion/:/values
+        - label: 'Elastic stiffness'
+          x: mechanical_properties/elastic_stiffness/:/temperatures
+          y: mechanical_properties/elastic_stiffness/:/values
+        - label: 'Critial resolved shear stress'
+          x: mechanical_properties/critical_resolved_shear_stress/:/temperatures
+          y: mechanical_properties/critical_resolved_shear_stress/:/values
+          layout:
+            yaxis:
+              type: log
+        - label: 'Viscosity'
+          x: mechanical_properties/viscosity/:/temperatures
+          y: mechanical_properties/viscosity/:/values
+        - label: 'Surface tension'
+          x: mechanical_properties/surface_tension/:/temperatures
+          y: mechanical_properties/surface_tension/:/values
+        - label: 'Growth angle'
+          x: mechanical_properties/growth_angle/:/temperatures
+          y: mechanical_properties/growth_angle/:/values
+        eln:
+          hide: [datetime, users, cas_uri, cas_name, cas_synonyms, image, inchi, inchi_key, smile, canonical_smile, molecular_weight]
+          lane_width: 800px
+      quantities:
+        molar_mass:
+          description: |
+            The molar mass of the material.
+          type: np.float64
+          unit: 'g/mol'
           m_annotations:
             eln:
               component: NumberEditQuantity
@@ -32,170 +104,473 @@ definitions:
           default: ['solid']
           m_annotations:
             eln:
-              component: EnumEditQuantity
+              component: RadioEnumEditQuantity
         description:
           type: str
           m_annotations:
             eln:
               component: RichTextEditQuantity
       sub_sections:
-        publication_reference:
-          section:
-            # This base section allows us to include a DOI number which will be added as a reference to the entry.
-            # It will also retrieve additional information of the publication from crossref.
-            # We are redefining DOI_number to give it a StringEditQuantity ELN component.
-            base_sections: 
-              - 'nomad.datamodel.metainfo.eln.PublicationReference' 
         structural_properties:
           section:
             base_sections: 
               - 'nomad.datamodel.results.SymmetryNew'
               - 'nomad.datamodel.results.Cell'
+        density:
+          # repeats: True
+          section:
+            base_sections: 
+              - '#/TemperatureSeries'
+            # m_annotations:
+            #   plot:
+            #   - x: temperatures
+            #     y: values
+            quantities:
+              values:
+                description: |
+                  The density of the material.
+                type: np.float64
+                shape: ['*']
+                unit: 'g/cm^3'
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
         thermal_radiation_properties:
           section:
-            quantities:
-              emissivity:
-                description: |
-                  The emissivity of the material.
-                type: np.float64
-                unit: ''
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              absorption_coefficient:
-                description: |
-                  The absorption coefficient of the material.
-                type: np.float64
-                unit: '1/m'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              refraction_index:
-                description: |
-                  The refraction index of the material.
-                type: np.float64
-                unit: ''
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+            sub_sections:
+              emmisivity:
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The emmisivity of the material.
+                      type: np.float64
+                      shape: ['*']
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Emisivity'
         thermal_properties:
           section:
-            quantities:
-              thermal_conductivity:
-                description: |
-                  The thermal conductivity of the material.
-                type: np.float64
-                unit: 'W/(m*K)'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              thermal_diffusivity:
-                description: |
-                  The thermal diffusivity of the material.
-                type: np.float64
-                unit: 'm^2/s'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              thermal_expansion_coefficient:
-                description: |
-                  The thermal expansion coefficient of the material.
-                type: np.float64
-                unit: '1/K'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              specific_heat_capacity:
-                description: |
-                  The specific heat capacity of the material.
-                type: np.float64
-                unit: 'J/(kg*K)'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              thermal_resistance:
-                description: |
-                  The thermal resistance of the material.
-                type: np.float64
-                unit: 'K/W'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              thermal_resistivity:
-                description: |
-                  The thermal resistivity of the material.
-                type: np.float64
-                unit: 'm*K/W'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              thermal_conductance:
-                description: |
-                  The thermal conductance of the material.
-                type: np.float64
-                unit: 'W/K'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+            m_annotations:
+              plot:
+              - label: 'Heat conductivity'
+                x: heat_conductivity/:/temperatures
+                y: heat_conductivity/:/values
+              - label: 'Heat capacity'
+                x: heat_capacity/:/temperatures
+                y: heat_capacity/:/values
+              - label: 'Thermal expension'
+                x: thermal_expansion/:/temperatures
+                y: thermal_expansion/:/values
+            sub_sections:
+              heat_conductivity:
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The thermal conductivity of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'W/(m*K)'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Heat conductivity'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
+              heat_capacity:
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The heat capacity of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'J/(kg*K)'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Heat capacity'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
+              thermal_expansion:
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The thermal expansion of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: '1/K'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Thermal expansion'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
         mechanical_properties:
-          sections:
-            quantities:
+          section:
+            m_annotations:
+              plot:
+              - label: 'Elastic stiffness'
+                x: elastic_stiffness/:/temperatures
+                y: elastic_stiffness/:/values
+              - label: 'Critial resolved shear stress'
+                x: critical_resolved_shear_stress/:/temperatures
+                y: critical_resolved_shear_stress/:/values
+                layout:
+                  yaxis:
+                    type: log
+              - label: 'Viscosity'
+                x: viscosity/:/temperatures
+                y: viscosity/:/values
+              - label: 'Surface tension'
+                x: surface_tension/:/temperatures
+                y: surface_tension/:/values
+              - label: 'Growth angle'
+                x: growth_angle/:/temperatures
+                y: growth_angle/:/values
+            sub_sections:
               elastic_stiffness:
-                description: |
-                  The elastic stiffness of the material.
-                type: np.float64
-                unit: 'Pa'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The elastic stiffness of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'Pa'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Elastic Stiffness'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
               critical_resolved_shear_stress:
-                description: |
-                  The critical resolved shear stress of the material.
-                type: np.float64
-                unit: 'Pa'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              dynamic_viscosity:
-                description: |
-                  The dynamic viscosity of the material.
-                type: np.float64
-                unit: 'Pa*s'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The critical resolved shear stress of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'Pa'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Critical resolved shear stress'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
+              viscosity:
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The viscosity of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'Pa*s'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Viscosity'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
               surface_tension:
-                description: |
-                  The surface tension of the material.
-                type: np.float64
-                unit: 'N/m'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-              thermocapillary_coefficient:
-                description: |
-                  The thermocapillary coefficient of the material.
-                type: np.float64
-                unit: 'N/m/K'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The surface tension of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'N/m'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Surface tension'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference'  
+              growth_angle:
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The growth_angle: of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'deg'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Growth angle'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference'   
         electro_magnetic_properties:
           section:
-            quantities:
+            sub_sections:
               electrical_conductivity:
-                description: |
-                  The electrical conductivity of the material.
-                type: np.float64
-                unit: 'S/m'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   # eln:
+                  #   #   overview: True
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The electrical conductivity of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: 'S/m'
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Electrical conductivity'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
               magnetic_susceptibility:
-                description: |
-                  The magnetic susceptibility of the material.
-                type: np.float64
-                unit: '1/T'
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
+                repeats: True
+                section:
+                  base_sections: 
+                    - '#/TemperatureSeries'
+                  # m_annotations:
+                  #   plot:
+                  #   - x: temperatures
+                  #     y: values
+                  quantities:
+                    name:
+                      description: |
+                        A descriptive name for this series. It could be derived form the reference such as `Jordan 1980`.
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    values:
+                      description: |
+                        The critical resolved shear stress of the material.
+                      type: np.float64
+                      shape: ['*']
+                      unit: ' '
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          label: 'Magentic susceptibility'
+                  sub_sections:
+                    publication_reference:
+                      section:
+                        # This base section allows us to include a DOI number which will be added as a reference to the entry.
+                        # It will also retrieve additional information of the publication from crossref.
+                        # We are redefining DOI_number to give it a StringEditQuantity ELN component.
+                        base_sections: 
+                          - 'nomad.datamodel.metainfo.eln.PublicationReference' 
