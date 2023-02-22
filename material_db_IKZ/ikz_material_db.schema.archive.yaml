@@ -65,6 +65,9 @@ definitions:
         - label: 'Critial resolved shear stress'
           x: mechanical_properties/critical_resolved_shear_stress/:/temperatures
           y: mechanical_properties/critical_resolved_shear_stress/:/values
+          layout:
+            yaxis:
+              type: log
         - label: 'Viscosity'
           x: mechanical_properties/viscosity/:/temperatures
           y: mechanical_properties/viscosity/:/values
@@ -298,6 +301,9 @@ definitions:
               - label: 'Critial resolved shear stress'
                 x: critical_resolved_shear_stress/:/temperatures
                 y: critical_resolved_shear_stress/:/values
+                layout:
+                  yaxis:
+                    type: log
               - label: 'Viscosity'
                 x: viscosity/:/temperatures
                 y: viscosity/:/values
