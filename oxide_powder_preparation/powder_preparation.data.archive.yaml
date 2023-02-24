@@ -21,5 +21,22 @@ data:
       inputs: 
         - section: ../upload/raw/Al2O3.data.archive.yaml#data 
           name: component_2
+    - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#My_test
+      name: thermal treatment component 3
+      inputs: 
+        - section: ../upload/raw/Al2O3.data.archive.yaml#data 
+          name: component_2
+    - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#My_test2
+      name: thermal treatment component 4
+      inputs: 
+        - section: ../upload/raw/Al2O3.data.archive.yaml#data 
+          name: component_2
+    - m_def: ../upload/raw/powder_preparation.schema.archive.yaml#My_test3
+      name: thermal treatment component 5
+      inputs: 
+        - section: ../upload/raw/Al2O3.data.archive.yaml#data 
+          name: component_2
+        - section: ../upload/raw/Al2O3.data.archive.yaml#data 
+          name: component_2
           
       

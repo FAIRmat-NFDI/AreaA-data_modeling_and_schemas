@@ -16,7 +16,7 @@ definitions:
           repeats: True
           section:  
             base_sections: 
-              - nomad.datamodel.metainfo.workflow2.Task
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
             quantities:
@@ -36,7 +36,7 @@ definitions:
           repeats: True
           section:  
             base_sections: 
-              - nomad.datamodel.metainfo.workflow2.Task
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
             quantities:
@@ -48,7 +48,7 @@ definitions:
                     component: NumberEditQuantity
     Sample_cut:
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Task
+        - nomad.datamodel.metainfo.eln.SampleCut
       m_annotations:
         eln: 
     Further_sample_treatment:
@@ -61,7 +61,7 @@ definitions:
           repeats: True
           section:  
             base_sections: 
-              - nomad.datamodel.metainfo.workflow2.Task
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
             quantities:
@@ -73,7 +73,7 @@ definitions:
                     component: NumberEditQuantity
     Dummy_task:
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Task
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
       quantities:
         my_nice_property:
           type: int

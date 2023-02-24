@@ -1,6 +1,30 @@
 definitions:
   name: 'Base Classes'
   sections:
+    Task: 
+      base_sections: 
+        - nomad.datamodel.metainfo.eln.ElnBaseSection
+      m_annotations:
+        eln:
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        inputs:
+          section:
+            base_sections:
+              - nomad.datamodel.metainfo.workflow2.Link
+            m_annotations:
+              eln: 
+        outputs:
+          section:
+            base_sections:
+              - nomad.datamodel.metainfo.workflow2.Link
+            m_annotations:
+              eln: 
     Experiment: 
       base_sections: 
       - '#/Activity'
@@ -245,8 +269,9 @@ definitions:
           section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
+      - '#/Task'
       - nomad.datamodel.metainfo.eln.Activity
-      - nomad.datamodel.metainfo.workflow2.Workflow
+      # - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
         global: 
           section:  
@@ -255,12 +280,16 @@ definitions:
         instrument:
           repeats: True
           section: nomad.datamodel.metainfo.workflow2.Link
+        tasks:
+          repeats: True
+          section: '#/Task'
     Measurement:  
       base_sections: 
       - '#/Activity'
     Procedure_step:  
       base_sections: 
-      - nomad.datamodel.metainfo.workflow2.Task
+      - '#/Task'
+      # - nomad.datamodel.metainfo.workflow2.Task
       - nomad.datamodel.metainfo.eln.ElnBaseSection
       m_annotations:
         eln:

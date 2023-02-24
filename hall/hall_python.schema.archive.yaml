@@ -71,7 +71,7 @@ definitions:
     Hall_measurement:    
       base_sections: 
         - 'nomad.datamodel.metainfo.eln.ikz_hall.HallData'
-        - nomad.datamodel.metainfo.workflow2.Task
+        - '../upload/raw/base_classes.schema.archive.yaml#Task'
     SampleWithContacts:
       base_sections: 
         - '../upload/raw/base_classes.schema.archive.yaml#Ensemble'

@@ -72,7 +72,7 @@ definitions:
                 type: ../upload/raw/Optris-IP-640.archive.yaml#IR_camera
     Data_processing:
       base_sections:
-        - nomad.datamodel.metainfo.workflow2.Task
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
       quantities:
         software:
           type: str
@@ -98,7 +98,7 @@ definitions:
           description: Time between recorded images
     Example_userdefined_task:
       base_sections:
-        - nomad.datamodel.metainfo.workflow2.Task
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
       quantities:
         test_quantity:
           type: str

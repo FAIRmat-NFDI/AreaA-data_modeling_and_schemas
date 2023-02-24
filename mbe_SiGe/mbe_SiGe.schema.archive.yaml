@@ -145,7 +145,7 @@ definitions:
           repeats: True
           section:  
             base_sections: 
-              - nomad.datamodel.metainfo.workflow2.Task
+              ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
             quantities:
@@ -170,7 +170,7 @@ definitions:
                     defaultDisplayUnit: second
     Substrate_cutting:
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Task
+        ../upload/raw/base_classes.schema.archive.yaml#Task
       m_annotations:
         eln:
       quantities:
@@ -182,7 +182,7 @@ definitions:
               component: NumberEditQuantity
     Growth_recipe:
       base_sections: 
-      - nomad.datamodel.metainfo.workflow2.Task
+      - ../upload/raw/base_classes.schema.archive.yaml#Task
       - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe
       m_annotations:
         eln:
@@ -193,13 +193,13 @@ definitions:
         eln:
     Growth_log:
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Task
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
         - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthLog
       m_annotations:
         eln:
     Calibration_date_sources:
       base_sections: 
-        - nomad.datamodel.metainfo.workflow2.Task
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
       m_annotations:
         eln:
       quantities:
@@ -226,6 +226,6 @@ definitions:
           repeats: True
           section:  
             base_sections: 
-              - nomad.datamodel.metainfo.workflow2.Task
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
