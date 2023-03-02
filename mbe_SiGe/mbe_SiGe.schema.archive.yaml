@@ -8,11 +8,11 @@ definitions:
         eln: 
     AFM_measurement:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      -  nomad.parsing.tabular.TableData 
+        - ../upload/raw/base_classes.schema.archive.yaml#Measurement
+        -  nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
-          hide: ['name']
+          # hide: ['name']
       quantities:
         name:
           type: str
@@ -42,7 +42,8 @@ definitions:
         tasks:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Measurement 
+            base_sections: 
+              - ../upload/raw/base_classes.schema.archive.yaml#Measurement 
             m_annotations:
               eln:
             quantities:
@@ -65,11 +66,10 @@ definitions:
                     defaultDisplayUnit: nanometer
     HRXRD_measurement:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      -  nomad.parsing.tabular.TableData 
+        - ../upload/raw/base_classes.schema.archive.yaml#Measurement
+        -  nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
-          hide: ['name']
       quantities:
         name:
           type: str
@@ -134,7 +134,7 @@ definitions:
                     component: StringEditQuantity
     Substrate_preparation:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+        - ../upload/raw/base_classes.schema.archive.yaml#Activity
       m_annotations:
         eln:
       sub_sections:
@@ -145,7 +145,7 @@ definitions:
           repeats: True
           section:  
             base_sections: 
-              ../upload/raw/base_classes.schema.archive.yaml#Task
+              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
               eln:
             quantities:
@@ -170,7 +170,7 @@ definitions:
                     defaultDisplayUnit: second
     Substrate_cutting:
       base_sections: 
-        ../upload/raw/base_classes.schema.archive.yaml#Task
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
       m_annotations:
         eln:
       quantities:
@@ -182,19 +182,19 @@ definitions:
               component: NumberEditQuantity
     Growth_recipe:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Task
-      - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe
+        - ../upload/raw/base_classes.schema.archive.yaml#Task
+        # - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe
       m_annotations:
         eln:
     Growth_process:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+        - ../upload/raw/base_classes.schema.archive.yaml#Activity
       m_annotations:
         eln:
     Growth_log:
       base_sections: 
         - ../upload/raw/base_classes.schema.archive.yaml#Task
-        - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthLog
+        # - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthLog
       m_annotations:
         eln:
     Calibration_date_sources:
@@ -217,7 +217,7 @@ definitions:
               component: DateTimeEditQuantity
     Mbe_process:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+        - ../upload/raw/base_classes.schema.archive.yaml#Activity
       m_annotations:
         eln:
       sub_sections:
