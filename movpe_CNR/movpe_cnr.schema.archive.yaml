@@ -1,6 +1,6 @@
 definitions:
   name: 'Electronic Lab Notebook schema for MOVPE-STO'
-  sections:  # Schemas consist of section definitions
+  sections:  
     Movpe_experiment:
       base_sections: 
        - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
@@ -13,77 +13,96 @@ definitions:
           description: |
             A reference to an uploaded .xlsx
           m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
-            tabular_parser:
-              # sep: ','
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - global
             browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+              adaptor: RawFileAdaptor
             eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
+              component: FileEditQuantity
+            tabular_parser:
+              comment: '#'
+              mode: root
       sub_sections:
-        global:
-          repeats: true
-          section:
-            base_sections: 
-            - ../upload/raw/base_classes.schema.archive.yaml#Global 
-            m_annotations:
-              eln: 
-            quantities:
-              film:
-                type: str
-                description: Film material (Material:Dopant species)
-                m_annotations:
-                  tabular:
-                    name: Overview/Film
-                  eln:
-                    component: StringEditQuantity
-              substrate:
-                type: ../upload/raw/base_classes.schema.archive.yaml#Substrate
-                m_annotations:
-                  # tabular:
-                  #   name: Overview/Film
-                  eln:
-                    component: ReferenceEditQuantity
-              substrate_temperature:
-                type: np.float64
-                unit: celsius
-                description: temperature of the substrate
-                m_annotations:
-                  tabular:
-                    name: Overview/Substrate T 
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: celsius
-              carrier_gas:
-                type: nomad.datamodel.metainfo.eln.Substance
-                m_annotations:
-                  # tabular:
-                  #   name: Overview/Film
-                  eln:
-                    component: ReferenceEditQuantity
-              VI_III_ratio:
-                type: str
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Overview/VI III ratio
-                  eln:
-                    component: StringEditQuantity
-              growth_time:
-                type: str
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Overview/Growth time
-                  eln:
-                    component: StringEditQuantity
+        Overview:
+          section: '#/Overview'       
+    Overview:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Global 
+      - nomad.parsing.tabular.TableData 
+      m_annotations:
+        eln: 
+      quantities:
+        data_file:
+          type: str
+          default: '#data/data_file'
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              comment: '#'
+              mode: column
+            browser:
+              adaptor: RawFileAdaptor 
+            eln:
+              component: FileEditQuantity 
+        sample:
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Overview/Sample
+        date:
+          type: Datetime
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Overview/Date
+        operator:
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Overview/Operator
+        film:
+          type: str
+          description: Film material (Material:Dopant species)
+          m_annotations:
+            tabular:
+              name: Overview/Film
+        substrate:
+          type: str
+          description: Substrates placed into the reactor for film growth
+          m_annotations:
+            tabular:
+              name: Overview/Substrate
+        substrate_temperature:
+          type: np.float64
+          unit: celsius
+          description: temperature of the substrate
+          m_annotations:
+            tabular:
+              name: Overview/Substrate T 
+        carrier_gas:
+          type: str
+          m_annotations:
+            tabular:
+              name: Overview/Carrier Gas
+        VI_III_ratio:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: Overview/VI III Ratio
+        growth_time:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: Overview/Growth Time
+        notes:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: Overview/Notes
     AFM_measurement:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Measurement
