@@ -59,10 +59,10 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
       sub_sections:
-        global:
+        Overview:
           section:
             base_sections: 
-            - ../upload/raw/base_classes.schema.archive.yaml#Global 
+            - ../upload/raw/base_classes.schema.archive.yaml#Overview 
             quantities:
               location:
                 type: str
@@ -132,10 +132,10 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: angstrom
       sub_sections:
-        global:
+        Overview:
           section:
             base_sections: 
-            - ../upload/raw/base_classes.schema.archive.yaml#Global 
+            - ../upload/raw/base_classes.schema.archive.yaml#Overview 
             quantities:
               location:
                 type: str

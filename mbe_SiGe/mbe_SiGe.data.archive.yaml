@@ -3,7 +3,7 @@ data:
   users:
     responsible_person: 
       - user_id: 5c87d4dd-5b6a-4759-9946-fff9bbd7cd44
-  global:
+  Overview:
     category: epitaxial growth synthesis
     method: SiGe Heteroepitaxy
     location: Berlin

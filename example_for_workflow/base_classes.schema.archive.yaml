@@ -205,7 +205,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Global:
+    Overview:
       # m_annotations:
       #   eln: dict()
       quantities:
@@ -273,10 +273,10 @@ definitions:
       - nomad.datamodel.metainfo.eln.Activity
       # - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
-        global: 
+        Overview: 
           section:  
             base_sections: 
-            - '#/Global'
+            - '#/Overview'
         instrument:
           repeats: True
           section: nomad.datamodel.metainfo.workflow2.Link

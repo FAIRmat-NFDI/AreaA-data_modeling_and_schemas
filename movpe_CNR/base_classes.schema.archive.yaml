@@ -27,10 +27,14 @@ definitions:
               eln: 
     Experiment: 
       base_sections: 
-      - '#/Activity'
-      - 'nomad.datamodel.data.EntryData'
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
+      sub_sections:
+        tasks:
+          repeats: True
+          section: '#/Task'
     System: 
       base_sections: 
       - 'nomad.datamodel.metainfo.eln.System'
@@ -205,7 +209,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Global:
+    Overview:
       # m_annotations:
       #   eln: dict()
       quantities:
@@ -273,10 +277,10 @@ definitions:
       - nomad.datamodel.metainfo.eln.Activity
       # - nomad.datamodel.metainfo.workflow2.Workflow
       sub_sections:
-        global: 
+        Overview: 
           section:  
             base_sections: 
-            - '#/Global'
+            - '#/Overview'
         instrument:
           repeats: True
           section: nomad.datamodel.metainfo.workflow2.Link
@@ -286,7 +290,7 @@ definitions:
     Measurement:  
       base_sections: 
       - '#/Activity'
-    Procedure_step:  
+    ProcedureStep:  
       base_sections: 
       - '#/Task'
       # - nomad.datamodel.metainfo.workflow2.Task

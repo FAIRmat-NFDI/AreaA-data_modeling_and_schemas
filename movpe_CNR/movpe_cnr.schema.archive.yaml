@@ -1,10 +1,10 @@
 definitions:
-  name: 'Electronic Lab Notebook schema for MOVPE-STO'
+  name: 'ELN for MOVPE exp at CNR'
   sections:  
     Movpe_experiment:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
        - nomad.parsing.tabular.TableData 
+       - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln: 
       quantities:
@@ -22,57 +22,192 @@ definitions:
               mode: root
       sub_sections:
         Overview:
-          section: '#/Overview'       
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            - '#/Overview'
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: column
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity 
+        GrowthRun:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - tasks
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              tasks:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/GrowthRunStep'
+        AFM_measurements:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - tasks
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              tasks:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/AFM_measurement'
+        HRXRD_measurements:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - tasks
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              tasks:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/HRXRD_measurement'
     Overview:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Global 
-      - nomad.parsing.tabular.TableData 
+      - ../upload/raw/base_classes.schema.archive.yaml#Overview 
       m_annotations:
         eln: 
       quantities:
-        data_file:
+        location:
           type: str
-          default: '#data/data_file'
-          description: |
-            A reference to an uploaded .xlsx
           m_annotations:
-            tabular_parser:
-              comment: '#'
-              mode: column
-            browser:
-              adaptor: RawFileAdaptor 
             eln:
-              component: FileEditQuantity 
+              component: StringEditQuantity
+        goal:
+          type: str
+          description: indicate here the goal aimed with this experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         sample:
           type: str
           description: FILL
           m_annotations:
             tabular:
               name: Overview/Sample
+            eln:
+              component: StringEditQuantity
         date:
           type: Datetime
           description: FILL
           m_annotations:
             tabular:
               name: Overview/Date
+            eln:
+              component: DateTimeEditQuantity
+        category:
+          type: str
+          description: |
+            A phenomenon by which change takes place in a system. 
+            In physiological systems, a process may be 
+            chemical, physical or both. 
+            [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Overview/Activity Category
+        method:
+          type: str
+          description: |
+            a method is a series of steps for performing a function or accomplishing a result.
+
+            Or
+
+            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Overview/Activity Method
         operator:
           type: str
           description: FILL
           m_annotations:
             tabular:
               name: Overview/Operator
+            eln:
+              component: StringEditQuantity 
         film:
           type: str
           description: Film material (Material:Dopant species)
           m_annotations:
             tabular:
               name: Overview/Film
+            eln:
+              component: StringEditQuantity
         substrate:
           type: str
           description: Substrates placed into the reactor for film growth
           m_annotations:
             tabular:
               name: Overview/Substrate
+            eln:
+              component: StringEditQuantity
         substrate_temperature:
           type: np.float64
           unit: celsius
@@ -80,293 +215,269 @@ definitions:
           m_annotations:
             tabular:
               name: Overview/Substrate T 
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
         carrier_gas:
           type: str
           m_annotations:
             tabular:
               name: Overview/Carrier Gas
+            eln:
+              component: StringEditQuantity
         VI_III_ratio:
           type: str
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
               name: Overview/VI III Ratio
+            eln:
+              component: StringEditQuantity
         growth_time:
-          type: str
+          type: np.float64
+          unit: minute
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
               name: Overview/Growth Time
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
         notes:
           type: str
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
               name: Overview/Notes
+            eln:
+              component: StringEditQuantity
     AFM_measurement:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      -  nomad.parsing.tabular.TableData 
+      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
       m_annotations:
-        eln: 
-          #  hide: ['name']
+        eln:
       quantities:
-        name:
+        sample_id:
           type: str
-          default: 'AFM Measurements'
           m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Sample
             eln:
               component: StringEditQuantity
-        data_file:
-          type: str
+        roughness:
+          type: np.float64
+          unit: nanometer
+          description: RMS roughness value obtained by AFM
           m_annotations:
-            tabular_parser:
-              # sep: ','
-              path_to_data_file: '#data/data_file'
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
-      sub_sections:
-        tasks:
-          repeats: true
-          section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step 
-            m_annotations:
-              eln:
-            quantities:
-              sample_id:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: AFMReflectanceSEM/Sample
-                  eln:
-                    component: StringEditQuantity
-              roughness:
-                type: np.float64
-                unit: nanometer
-                description: RMS roughness value obtained by AFM
-                m_annotations:
-                  tabular:
-                    name: AFMReflectanceSEM/Roughness
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: nanometer
+            tabular:
+              name: AFMReflectanceSEM/Roughness
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
     HRXRD_measurement:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      - nomad.parsing.tabular.TableData 
+      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
       m_annotations:
         eln: 
-          # hide: ['name']
       quantities:
-        name:
+        sample_id:
           type: str
-          default: 'HR XRD Measurements'
+          m_annotations:
+            tabular:
+              name: HRXRD/Sample
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: HRXRD/Timestamp
+            eln:
+              component: DateTimeEditQuantity
+        method:
+          type: str
+          m_annotations:
+            tabular:
+              name: HRXRD/Activity Method
+            eln:
+              component: StringEditQuantity
+        phase:
+          type: str
+          description: Phase type obtained from HRXRD 
+          m_annotations:
+            tabular:
+              name: HRXRD/Phase
+            eln:
+              component: StringEditQuantity
+    GrowthRunStep:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
+      m_annotations:
+        eln: 
+          # hide: [descritpion]
+      quantities:
+        name: 
+          type: str
+          description: what this step consists of
+          m_annotations:
+            tabular:
+              name: GrowthRun/Name
+            eln:
+              component: StringEditQuantity
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: Past time since process start
+          m_annotations:
+            tabular:
+              name: GrowthRun/Duration
+            eln:
+              component: NumberEditQuantity #DateTimeEditQuantity
+              defaultDisplayUnit: minute
+        step_number:
+          type: int
+          description: sequential number of the step on going
+          m_annotations:
+            tabular:
+              name: GrowthRun/Step
+            eln:
+              component: NumberEditQuantity
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Temperature
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        pressure:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Pressure
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        description:
+          type: str
+          description: FILL THE DESCRIPTION
           m_annotations:
             eln:
               component: StringEditQuantity
-        data_file:
-          type: str
-          m_annotations:
-            tabular_parser:
-              # sep: ','
-              path_to_data_file: '#data/data_file'
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
       sub_sections:
-        tasks:
+        Bubblers:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
-            m_annotations:
-              eln:
             quantities:
-              sample_id:
+              material:
                 type: str
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Sample
-                  eln:
-                    component: StringEditQuantity
-              datetime:
-                type: Datetime
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Timestamp
-                  eln:
-                    component: DateTimeEditQuantity
-              method:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Activity Method
-                  eln:
-                    component: StringEditQuantity
-              phase:
-                type: str
-                description: Phase type obtained from HRXRD 
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Phase
-                  eln:
-                    component: StringEditQuantity
-    Growth_run:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      -  nomad.parsing.tabular.TableData
-      m_annotations:
-        eln: 
-      quantities:
-        data_file:
-          type: str
-          m_annotations:
-            tabular_parser:
-              # sep: ','
-              path_to_data_file: '#data/data_file'
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
-      sub_sections:
-        tasks:
-          repeats: true
-          section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
-            # more:
-            #   label_quantity: step_name
-            m_annotations:
-              eln:
-            quantities:
-              name: 
-                type: str
-                description: what this step consists of
-                m_annotations:
-                  tabular:
-                    name: Growthrun/Name
-                  eln:
-                    component: StringEditQuantity
-              elapsed_time:
-                type: np.float64
-                unit: minute
-                description: Past time since process start
-                m_annotations:
-                  tabular:
-                    name: Growthrun/Duration
-                  eln:
-                    component: NumberEditQuantity #DateTimeEditQuantity
-                    defaultDisplayUnit: minute
-              step_number:
-                type: int
-                description: sequential number of the step on going
-                m_annotations:
-                  tabular:
-                    name: Growthrun/Step
-                  eln:
-                    component: NumberEditQuantity
-              temperature:
-                type: np.float64
-                unit: celsius
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: Growthrun/Temperature
+                    name: GrowthRun/Bubbler Material
+                  eln:
+                    component: StringEditQuantity
+              flow:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Bubbler Flow
                   eln:
                     component: NumberEditQuantity
-                    defaultDisplayUnit: celsius
+                    defaultDisplayUnit: mbar
+              dilution:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Bubbler Dilution
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              inject:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Inject
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
               pressure:
                 type: np.float64
                 unit: mbar
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: Growthrun/Pressure
+                    name: GrowthRun/Bubbler Pressure
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              TMG_bubbler_flow:
+              temperature:
                 type: np.float64
                 unit: mbar
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: Growthrun/TMG Bubbler Flow
+                    name: GrowthRun/Bubbler Temp
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              TMG_bubbler_dilution:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Bubbler Dilution
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              TMG_inject:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Inject
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              TMG_bubbler_pressure:
+              partial_pressure:
                 type: np.float64
                 unit: mbar
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: Growthrun/TMG Bubbler Pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              TMG_bubbler_temperature:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Bubbler T
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              TMG_partial_pressure:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: Growthrun/TMG Partial Pressure
+                    name: GrowthRun/Partial Pressure
                   # plot:
                   #   x: duration
                   #   y: TMG_partial_pressure
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              flow_carrier_TMG:
+              flow_carrier:
                 type: np.float64
                 unit: cm ** 3 / minute
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: Growthrun/Flow Carrier TMG
+                    name: GrowthRun/Flow Carrier
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: cm ** 3 / minute
-              TMG_valve:
+              valve:
                 type: bool
                 description: is valve open? true/false
                 m_annotations:
                   tabular:
-                    name: Growthrun/TMG Valve
+                    name: GrowthRun/Valve
                   eln:
                     component: BoolEditQuantity
+              inner_valve:
+                type: np.float64
+                description: inner valve (0-200)
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Inner Valve
+                  eln:
+                    component: NumberEditQuantity
+              outer_valve:
+                type: np.float64
+                description: outer valve (0-200)
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Outer Valve
+                  eln:
+                    component: NumberEditQuantity
     Setup:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Activity
@@ -388,7 +499,7 @@ definitions:
         tasks:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
             more:
               label_quantity: item
             m_annotations:
