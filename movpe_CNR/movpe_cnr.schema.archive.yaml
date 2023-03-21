@@ -20,6 +20,12 @@ definitions:
             tabular_parser:
               comment: '#'
               mode: root
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
       sub_sections:
         Overview:
           section:
@@ -42,6 +48,128 @@ definitions:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity 
+        Precursors:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - precursors
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              precursors:
+                repeats: true
+                section:
+                  base_sections: 
+                  - ../upload/raw/base_classes.schema.archive.yaml#Substance 
+                  quantities:
+                    cas_number:
+                      type: str
+                      description: FILL
+                      m_annotations:
+                        tabular:
+                          name: Precursors/CAS
+                        eln:
+                          component: StringEditQuantity
+                          label: CAS number        
+        Substrate:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - substrates
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              substrates:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/Substrate'
+        Mist:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - MistSource
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              MistSource:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/MistSource'
+        Pregrowth:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - PregrowthStep
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              PregrowthStep:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/PregrowthStep'
         GrowthRun:
           section:
             base_sections: 
@@ -59,17 +187,45 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - tasks
+                    - GrowthRunStep
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              tasks:
+              GrowthRunStep:
                 repeats: true
                 section:
                   base_sections: 
                   - '#/GrowthRunStep'
+        SamplesCut:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - SampleCut
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              SampleCut:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/SampleCut'
         AFM_measurements:
           section:
             base_sections: 
@@ -126,6 +282,34 @@ definitions:
                 section:
                   base_sections: 
                   - '#/HRXRD_measurement'
+        # Contacts:
+        #   section:
+        #     base_sections: 
+        #     - nomad.parsing.tabular.TableData 
+        #     m_annotations:
+        #       eln: 
+        #     quantities:
+        #       data_file:
+        #         type: str
+        #         default: '#data/data_file'
+        #         description: |
+        #           A reference to an uploaded .xlsx
+        #         m_annotations:
+        #           tabular_parser:
+        #             comment: '#'
+        #             mode: row
+        #             target_sub_section: 
+        #             - Contact
+        #           browser:
+        #             adaptor: RawFileAdaptor 
+        #           eln:
+        #             component: FileEditQuantity
+        #     sub_sections:
+        #       Contact:
+        #         repeats: true
+        #         section:
+        #           base_sections: 
+        #           - '#/Contact'
     Overview:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Overview 
@@ -478,75 +662,420 @@ definitions:
                     name: GrowthRun/Outer Valve
                   eln:
                     component: NumberEditQuantity
-    Setup:
+    PregrowthStep:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      - nomad.parsing.tabular.TableData
+      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
+      m_annotations:
+        eln: 
+          # hide: [descritpion]
+      quantities:
+        step_number:
+          type: int
+          description: sequential number of the step on going
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            tabular:
+              name: Pregrowth/Step Index
+        name: 
+          type: str
+          description: what this step consists of
+          m_annotations:
+            tabular:
+              name: Pregrowth/Step Name
+            eln:
+              component: StringEditQuantity
+        description: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Pregrowth/Description
+            eln:
+              component: StringEditQuantity
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            tabular:
+              name: Pregrowth/Duration
+        carrier_gas_flow:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+            tabular:
+              name: Pregrowth/Carrier Gas Flow
+        carrier_gas: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Pregrowth/Carrier Gas
+            eln:
+              component: StringEditQuantity
+        chamber_pressure:
+          type: np.float64
+          unit: mbar
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+            tabular:
+              name: Pregrowth/Chamber Pressure
+        substrate_temperature:
+          type: np.float64
+          unit: celsius
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+            tabular:
+              name: Pregrowth/Substrate Temperature
+        carrier_rotation:
+          type: int
+          unit: rpm
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm
+            tabular:
+              name: Pregrowth/Carrier Rotation
+        notes: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Pregrowth/Notes
+            eln:
+              component: StringEditQuantity
+    Substrate:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Substrate 
+      quantities:
+        alias:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Substrates
+        name:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Material
+        lab_id:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Substrate ID
+        supplier:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Supplier
+        element_list:
+          type: str
+          shape: ['*']
+          description: The Elements and the corresponding isotope which are used in the Substrate.
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orientation:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Orientation
+        off_cut:
+          type: np.float64
+          unit: degrees
+          description: Off-cut angle to the substrates surface
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            tabular:
+              name: Substrate/Off-cut
+        doping_level:
+          type: np.float64
+          #unit: wt %
+          description: Chemical doping level of electrically conductive substrates
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            tabular:
+              name: Substrate/Doping Level
+        doping_species:
+          type: str
+          description: Doping species to obtain electrical conductivity in the substrates
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Doping Species
+        size:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Size
+        susceptor:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Susceptor
+        mask:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Mask
+        pocket:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Pocket
+        annealing:
+          type: bool
+          description: Is the sample annealed?
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+            tabular:
+              name: Substrate/Annealing
+        cleaning:
+          type: bool
+          description: FILL
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+            tabular:
+              name: Substrate/Cleaning
+        regrowth:
+          type: bool
+          description: FILL
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+            tabular:
+              name: Substrate/Regrowth
+        notes: 
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    MistSource:
+      m_annotations:
+        eln: 
+          # hide: [descritpion]
+      quantities:
+        item: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Mist/Item
+            eln:
+              component: StringEditQuantity
+        temperature: 
+          type: np.float64
+          unit: celsius
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplyUnit: celsius
+            tabular:
+              name: Mist/Temperature
+        time:
+          type: np.float64
+          unit: minute
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplyUnit: minute
+            tabular:
+              name: Mist/Time
+        notes: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Mist/Notes
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        components:
+          repeats: True
+          section:
+            quantities:
+              material:
+                type: str
+                description: FILL
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+                  tabular:
+                    name: Mist/Material
+              concentration:
+                type: np.float64
+                unit: mol / liter
+                description: FILL
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplyUnit: mol / liter
+                  tabular:
+                    name: Mist/Concentration
+    SampleCut:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
       m_annotations:
         eln: 
       quantities:
-        data_file:
+        parent_sample_id: 
           type: str
+          description: FILL
           m_annotations:
-            tabular_parser:
-              # sep: ','
-              path_to_data_file: '#data/data_file'
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
-      sub_sections:
-        tasks:
-          repeats: true
-          section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
-            more:
-              label_quantity: item
-            m_annotations:
-              eln:
-            quantities:
-              item: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Item
-                  eln:
-                    component: StringEditQuantity
-              temperature_bath: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/T bath
-                  eln:
-                    component: StringEditQuantity
-              pressure: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Pressure
-                  eln:
-                    component: StringEditQuantity
-              percent: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Percent
-                  eln:
-                    component: StringEditQuantity
-              notes: 
-                type: str
-                # shape: ['*']
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: SetUp/Notes
-                  eln:
-                    component: StringEditQuantity
+            tabular:
+              name: SampleCut/Parent Sample ID
+            eln:
+              component: StringEditQuantity
+        children_sample_id: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: SampleCut/Children Sample ID
+            eln:
+              component: StringEditQuantity
+        # cut_date:
+        #   type: Datetime
+        #   description: FILL
+        #   m_annotations:
+        #     tabular:
+        #       name: SampleCut/Cut Date
+        #     eln:
+        #       component: DateTimeEditQuantity
+        position: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: SampleCut/Position
+            eln:
+              component: StringEditQuantity
+        purpose: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: SampleCut/Experiment
+            eln:
+              component: StringEditQuantity
+        size:
+          type: np.float64
+          unit: millimeter ** 2
+          description: FILL
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplyUnit: millimeter ** 2
+            tabular:
+              name: SampleCut/Size
+        collaborator: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: SampleCut/Collaborator
+            eln:
+              component: StringEditQuantity
+    Contact:
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
+      m_annotations:
+        eln: 
+      quantities:
+        name: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Sample Piece
+            eln:
+              component: StringEditQuantity
+        # deposition_date:
+        #   type: Datetime
+        #   description: FILL
+        #   m_annotations:
+        #     tabular:
+        #       name: Contacts/Deposition Date
+        #     eln:
+        #       component: DateTimeEditQuantity
+        category: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Activity Category
+            eln:
+              component: StringEditQuantity
+        method: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Activity Method
+            eln:
+              component: StringEditQuantity
+        contact_type: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Contact Type
+            eln:
+              component: StringEditQuantity
+        geometry: 
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Geometry
+            eln:
+              component: StringEditQuantity
