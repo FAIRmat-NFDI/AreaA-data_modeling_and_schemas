@@ -1,12 +1,13 @@
 definitions:
   name: 'ELN for MOVPE exp at CNR'
   sections:  
-    Movpe_experiment:
+    MovpeExperiment:
       base_sections: 
        - nomad.parsing.tabular.TableData 
        - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln: 
+          hide: ['end_time', 'lab_id', 'location']
       quantities:
         data_file:
           type: str
@@ -226,7 +227,7 @@ definitions:
                 section:
                   base_sections: 
                   - '#/SampleCut'
-        AFM_measurements:
+        AFMmeasurements:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -253,8 +254,8 @@ definitions:
                 repeats: true
                 section:
                   base_sections: 
-                  - '#/AFM_measurement'
-        HRXRD_measurements:
+                  - '#/AFMmeasurement'
+        HRXRDmeasurements:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -281,35 +282,35 @@ definitions:
                 repeats: true
                 section:
                   base_sections: 
-                  - '#/HRXRD_measurement'
-        # Contacts:
-        #   section:
-        #     base_sections: 
-        #     - nomad.parsing.tabular.TableData 
-        #     m_annotations:
-        #       eln: 
-        #     quantities:
-        #       data_file:
-        #         type: str
-        #         default: '#data/data_file'
-        #         description: |
-        #           A reference to an uploaded .xlsx
-        #         m_annotations:
-        #           tabular_parser:
-        #             comment: '#'
-        #             mode: row
-        #             target_sub_section: 
-        #             - Contact
-        #           browser:
-        #             adaptor: RawFileAdaptor 
-        #           eln:
-        #             component: FileEditQuantity
-        #     sub_sections:
-        #       Contact:
-        #         repeats: true
-        #         section:
-        #           base_sections: 
-        #           - '#/Contact'
+                  - '#/HRXRDmeasurement'
+        Contacts:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - contact
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              contact:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/Contact'
     Overview:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#Overview 
@@ -435,7 +436,7 @@ definitions:
               name: Overview/Notes
             eln:
               component: StringEditQuantity
-    AFM_measurement:
+    AFMmeasurement:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
       m_annotations:
@@ -458,7 +459,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
-    HRXRD_measurement:
+    HRXRDmeasurement:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
       m_annotations:
@@ -1039,7 +1040,7 @@ definitions:
               name: Contacts/Sample Piece
             eln:
               component: StringEditQuantity
-        # deposition_date:
+        # datetime:
         #   type: Datetime
         #   description: FILL
         #   m_annotations:
@@ -1047,6 +1048,7 @@ definitions:
         #       name: Contacts/Deposition Date
         #     eln:
         #       component: DateTimeEditQuantity
+        #       label: deposition_date
         category: 
           type: str
           description: FILL
@@ -1071,7 +1073,7 @@ definitions:
               name: Contacts/Contact Type
             eln:
               component: StringEditQuantity
-        geometry: 
+        contact_geometry: 
           type: str
           description: FILL
           m_annotations:

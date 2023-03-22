@@ -31,10 +31,10 @@ definitions:
       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
-      sub_sections:
-        tasks:
-          repeats: True
-          section: '#/Task'
+      # sub_sections:
+      #   tasks:
+      #     repeats: True
+      #     section: '#/Task'
     System: 
       base_sections: 
       - 'nomad.datamodel.metainfo.eln.System'
@@ -298,18 +298,18 @@ definitions:
       m_annotations:
         eln:
       quantities:
-        step_type:
-          type:
-            type_kind: Enum
-            type_data:
-              - Pre-process
-              - Process
-              - Post-process
-              - Measurement
-              - Storage
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
+        # step_type:
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - Pre-process
+        #       - Process
+        #       - Post-process
+        #       - Measurement
+        #       - Storage
+        #   m_annotations:
+        #     eln:
+        #       component: EnumEditQuantity
           # default: ['Process']
         step_number:
           type: int
