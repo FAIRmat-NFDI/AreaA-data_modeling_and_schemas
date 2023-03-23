@@ -27,10 +27,14 @@ definitions:
               eln: 
     Experiment: 
       base_sections: 
-      - '#/Activity'
-      - 'nomad.datamodel.data.EntryData'
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
+      # sub_sections:
+      #   tasks:
+      #     repeats: True
+      #     section: '#/Task'
     System: 
       base_sections: 
       - 'nomad.datamodel.metainfo.eln.System'
@@ -286,7 +290,7 @@ definitions:
     Measurement:  
       base_sections: 
       - '#/Activity'
-    Procedure_step:  
+    ProcedureStep:  
       base_sections: 
       - '#/Task'
       # - nomad.datamodel.metainfo.workflow2.Task
@@ -294,18 +298,18 @@ definitions:
       m_annotations:
         eln:
       quantities:
-        step_type:
-          type:
-            type_kind: Enum
-            type_data:
-              - Pre-process
-              - Process
-              - Post-process
-              - Measurement
-              - Storage
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
+        # step_type:
+        #   type:
+        #     type_kind: Enum
+        #     type_data:
+        #       - Pre-process
+        #       - Process
+        #       - Post-process
+        #       - Measurement
+        #       - Storage
+        #   m_annotations:
+        #     eln:
+        #       component: EnumEditQuantity
           # default: ['Process']
         step_number:
           type: int
