@@ -3,11 +3,12 @@ Each combinatorial library contains samples wich are their own archives.
 
 The library contains references to the samples.
 
-The samples contain an `index` within the library.
+The samples contain a `sample_number` within the library.
 
-## Thin film Combinatorial
+## Continuous Combinatorial
 ### Library
-The library has a grid which maps the sample `index` to the `x`, `y`, (`z`) position.
+The library has a references to the samples together with their `sample_number` and their
+`x`, `y`, `z` position.
 
 ### Sample
 The sample has a:

@@ -1,43 +1,148 @@
 definitions:
+  name: Combinatorial Synthesis
   sections:
-    CombiSample:
-      quantities:
-        x:
-          type: np.float64
-        y:
-          type: np.float64
-    CombiLibrary:
+    CombinatorialSample:
+      base_sections:
+        - nomad.datamodel.metainfo.eln.ElnBaseSection
+        - nomad.datamodel.data.EntryData
+      description: |
+        A base section for any sample of a combinatorial library.
       m_annotations:
-        plot:
-          x: samples/:/x
-          y: samples/:/y
-          lines: 
-            - mode: markers
-              marker: 
-                color: "rgb(40, 80, 130)"
-            - mode: markers
-              marker: 
-                color: "rgb(40, 80, 130)"
-            - mode: markers
-              marker: 
-                color: "rgb(40, 80, 130)"
-            - mode: markers
-              marker: 
-                color: "rgb(40, 80, 130)"
-            
+        eln:
+          hide:
+            - users
+      quantities:
+        sample_number:
+          type: int
+          description: |
+            A unique number for this sample of the combinatorial library.
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        lab_id:
+          type: str
+          description: |
+            A unique human readable ID for the sample within the combinatorial library.
+            Suggested to be the ID of the library followed by a dash ("-") and the sample 
+            number.
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: Sample ID
+    CombinatorialSampleReference:
+      base_section: nomad.datamodel.data.ArchiveSection
+      more:
+        label_quantity: sample_number
+      description: |
+        A section containing a reference to a combinatorial sample entry.
+      quantities:
+        sample_number:
+          type: int
+          description: |
+            A unique number for this sample of the combinatorial library.
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        sample_reference:
+          type: CombinatorialSample
+          description: |
+            The reference to the combinatorial sample entry.
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    CombinatorialLibrary:
+      base_sections:
+        - nomad.datamodel.metainfo.eln.ElnBaseSection
+        - nomad.datamodel.data.EntryData
+      description: |
+        A base section for any combinatorial library.
+      quantities:
+        lab_id:
+          type: str
+          description: |
+            A unique human readable ID for the combinatorial library.
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: Library ID
       sub_sections:
         samples:
-          repeats: true
-          section: '#/CombiSample'
-
-data:
-  m_def: '#/CombiLibrary'
-  samples:
-    - x: [0.25]
-      y: [0.25]
-    - x: [-0.25]
-      y: [0.25]
-    - x: [-0.25]
-      y: [-0.25]
-    - x: [0.25]
-      y: [-0.25]
+          description: |
+            All the investigated samples of the combinatorial library.
+          repeats: True
+          section: CombinatorialSampleReference
+    Position:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A section for representing the position of a sample within a continuous 
+        combinatorial library.
+        If nothing else is specified it is the position relative to the center of mass of
+        the library.
+      quantities:
+        x:
+          type: float
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        y:
+          type: float
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        z:
+          type: float
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+    ContinuousCombinatorialSample:
+      base_section: CombinatorialSample
+      description: |
+        A base section for any sample of a continuous combinatorial library.
+      sub_sections:
+        position:
+          description: |
+            The position of a sample within the continuous combinatorial library.
+            If nothing else is specified it is the position relative to the center of mass
+            of the library. 
+          section: Position
+    ContinuousCombinatorialSampleReference:
+      base_section: CombinatorialSampleReference
+      more:
+        label_quantity: sample_number
+      description: |
+        A section containing a reference to a continuous combinatorial sample entry.
+      quantities:
+        sample_reference:
+          type: ContinuousCombinatorialSample
+          description: |
+            The reference to the combinatorial sample entry.
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+      sub_sections:
+        position:
+          description: |
+            The position of a sample within the continuous combinatorial library.
+            If nothing else is specified it is the position relative to the center of mass
+            of the library. 
+          section: Position
+    ContinuousCombinatorialLibrary:
+      base_section: CombinatorialLibrary
+      m_annotations:
+        plot:
+        - x: samples/:/position/x
+          y: samples/:/position/y  
+      description: |
+        A base section for any continuous combinatorial library.
+      sub_sections:
+        samples:
+          description: |
+            All the investigated samples of the combinatorial library.
+          repeats: True
+          section: ContinuousCombinatorialSampleReference
