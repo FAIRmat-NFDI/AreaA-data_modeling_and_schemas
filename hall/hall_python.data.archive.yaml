@@ -21,7 +21,7 @@ data:
         - name: material_3
           empirical_formula: Ra
           thickness: 7500
-  tasks:
+  activities:
     - m_def: ../upload/raw/hall_python.schema.archive.yaml#Contacts_grafting
       name: Contacts Grafting
       tasks:

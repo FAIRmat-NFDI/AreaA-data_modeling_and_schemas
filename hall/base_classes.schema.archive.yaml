@@ -2,8 +2,8 @@ definitions:
   name: 'Base Classes'
   sections:
     Task: 
-      base_sections: 
-        - nomad.datamodel.metainfo.eln.ElnBaseSection
+      # base_sections: 
+      #   - nomad.datamodel.metainfo.eln.ElnBaseSection
       m_annotations:
         eln:
       quantities:
@@ -25,12 +25,24 @@ definitions:
               - nomad.datamodel.metainfo.workflow2.Link
             m_annotations:
               eln: 
-    Experiment: 
-      base_sections: 
-      - '#/Activity'
-      - 'nomad.datamodel.data.EntryData'
-      m_annotations:
-        eln:
+    Link:
+      quantities:
+        name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        section:
+          type: nomad.datamodel.data.ArchiveSection
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    # Experiment: 
+    #   base_sections: 
+    #   - '#/Activity'
+    #   - 'nomad.datamodel.data.EntryData'
+    #   m_annotations:
+    #     eln:
     System: 
       base_sections: 
       - 'nomad.datamodel.metainfo.eln.System'
@@ -269,20 +281,20 @@ definitions:
           section: nomad.datamodel.metainfo.eln.PublicationReference
     Activity: 
       base_sections: 
-      - '#/Task'
+      # - '#/Task'
       - nomad.datamodel.metainfo.eln.Activity
       # - nomad.datamodel.metainfo.workflow2.Workflow
-      sub_sections:
-        Overview: 
-          section:  
-            base_sections: 
-            - '#/Overview'
-        instrument:
-          repeats: True
-          section: nomad.datamodel.metainfo.workflow2.Link
-        tasks:
-          repeats: True
-          section: '#/Task'
+      # sub_sections:
+      #   Overview: 
+      #     section:  
+      #       base_sections: 
+      #       - '#/Overview'
+      #   instrument:
+      #     repeats: True
+      #     section: nomad.datamodel.metainfo.workflow2.Link
+      #   tasks:
+      #     repeats: True
+      #     section: '#/Task'
     Measurement:  
       base_sections: 
       - '#/Activity'

@@ -2,7 +2,9 @@ definitions:
   name: "Electronic Lab Notebook for Hall"
   sections: # Schemes consist of section definitions
     Contacts_grafting:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment
+      base_sections: 
+      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      - nomad.datamodel.data.EntryData
       quantities:
         dose:
           type: np.float64
@@ -54,6 +56,10 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+      sub_sections:
+        tasks:
+          repeats: True
+          section: '../upload/raw/base_classes.schema.archive.yaml#Task'
     Measurement_geometry:
       quantities:
         geometry:
@@ -94,10 +100,14 @@ definitions:
     Hall_experiment:
       base_sections:
         #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
-        - ../upload/raw/base_classes.schema.archive.yaml#Experiment
+      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
       sub_sections:
         instrument:
           section:
             base_section: 'nomad.datamodel.metainfo.eln.ikz_hall.HallInstrument'
+        activities:
+          repeats: True
+          section: '../upload/raw/base_classes.schema.archive.yaml#Task'
