@@ -292,11 +292,12 @@ definitions:
       - '#/Activity'
     ProcedureStep:  
       base_sections: 
-      - '#/Task'
+      # - '#/Task'
       # - nomad.datamodel.metainfo.workflow2.Task
       - nomad.datamodel.metainfo.eln.ElnBaseSection
       m_annotations:
         eln:
+          hide: ['description']
       quantities:
         # step_type:
         #   type:

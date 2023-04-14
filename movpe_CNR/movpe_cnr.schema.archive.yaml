@@ -439,6 +439,8 @@ definitions:
     AFMmeasurement:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
+      more:
+        label_quantity: sample_id
       m_annotations:
         eln:
       quantities:
@@ -462,6 +464,8 @@ definitions:
     HRXRDmeasurement:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
+      more:
+        label_quantity: sample_id
       m_annotations:
         eln: 
       quantities:
@@ -553,10 +557,42 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        purge_flow:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Purge Flow
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        uniform_valve:
+          type: int
+          description: inner valve (0-200)
+          m_annotations:
+            tabular:
+              name: GrowthRun/Uniform Valve
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 200
+        purge_valve:
+          type: int
+          description: inner valve (0-200)
+          m_annotations:
+            tabular:
+              name: GrowthRun/Purge Valve
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 200
       sub_sections:
         Bubblers:
           repeats: true
           section:
+            more:
+              label_quantity: material
             quantities:
               material:
                 type: str
@@ -644,25 +680,134 @@ definitions:
                 description: is valve open? true/false
                 m_annotations:
                   tabular:
-                    name: GrowthRun/Valve
+                    name: GrowthRun/Bubbler Valve
                   eln:
                     component: BoolEditQuantity
               inner_valve:
-                type: np.float64
+                type: int
                 description: inner valve (0-200)
                 m_annotations:
                   tabular:
                     name: GrowthRun/Inner Valve
                   eln:
-                    component: NumberEditQuantity
+                    component: SliderEditQuantity
+                    minValue: 0
+                    maxValue: 200
               outer_valve:
-                type: np.float64
-                description: outer valve (0-200)
+                type: int
+                description: inner valve (0-200)
                 m_annotations:
                   tabular:
                     name: GrowthRun/Outer Valve
                   eln:
+                    component: SliderEditQuantity
+                    minValue: 0
+                    maxValue: 200
+        GasSource:
+          repeats: true
+          section:
+            more:
+              label_quantity: material
+            quantities:
+              material:
+                type: str
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Gas Cylinder Material
+                  eln:
+                    component: StringEditQuantity
+              dilution_in_cylinder:
+                type: np.float64
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Dilution in Cylinder
+                  eln:
                     component: NumberEditQuantity
+              flow_from_mfc:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Flow from MFC
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              effective_flow:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Effective Flow
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              partial_pressure:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Gas Partial Pressure
+                  # plot:
+                  #   x: duration
+                  #   y: TMG_partial_pressure
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+              flow_carrier:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Gas Flow Carrier
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              pressure:
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Cylinder Pressure
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+              valve:
+                type: bool
+                description: is valve open? true/false
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Gas Valve
+                  eln:
+                    component: BoolEditQuantity
+        MistSource1:
+          repeats: true
+          section:
+            more:
+              label_quantity: material
+            quantities:
+              material:
+                type: str
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/MIST Flow MFC
+                  eln:
+                    component: StringEditQuantity
+              valve:
+                type: bool
+                description: is valve open? true/false
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/MIST Valve
+                  eln:
+                    component: BoolEditQuantity
     PregrowthStep:
       base_sections: 
       - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
