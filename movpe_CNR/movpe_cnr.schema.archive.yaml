@@ -146,6 +146,7 @@ definitions:
         Pregrowth:
           section:
             base_sections: 
+            - nomad.datamodel.metainfo.eln.Process
             - nomad.parsing.tabular.TableData 
             m_annotations:
               eln: 
@@ -174,6 +175,7 @@ definitions:
         GrowthRun:
           section:
             base_sections: 
+            - nomad.datamodel.metainfo.eln.Process
             - nomad.parsing.tabular.TableData 
             m_annotations:
               eln: 
@@ -244,16 +246,17 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - tasks
+                    - measurements
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              tasks:
+              measurements:
                 repeats: true
                 section:
                   base_sections: 
+                  - nomad.datamodel.metainfo.eln.Measurement
                   - '#/AFMmeasurement'
         HRXRDmeasurements:
           section:
@@ -272,18 +275,19 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - tasks
+                    - measurements
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              tasks:
+              measurements:
                 repeats: true
                 section:
                   base_sections: 
+                  - nomad.datamodel.metainfo.eln.Measurement
                   - '#/HRXRDmeasurement'
-        Contacts:
+        ContactsSputtering:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -300,20 +304,19 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - contact
+                    - contacts
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              contact:
+              contacts:
                 repeats: true
                 section:
                   base_sections: 
-                  - '#/Contact'
+                  - nomad.datamodel.metainfo.eln.Process
+                  - '#/ContactSputtering'
     Overview:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Overview 
       m_annotations:
         eln: 
       quantities:
@@ -437,8 +440,6 @@ definitions:
             eln:
               component: StringEditQuantity
     AFMmeasurement:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
       more:
         label_quantity: sample_id
       m_annotations:
@@ -462,8 +463,6 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
     HRXRDmeasurement:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep 
       more:
         label_quantity: sample_id
       m_annotations:
@@ -499,8 +498,6 @@ definitions:
             eln:
               component: StringEditQuantity
     GrowthRunStep:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
       m_annotations:
         eln: 
           # hide: [descritpion]
@@ -809,8 +806,6 @@ definitions:
                   eln:
                     component: BoolEditQuantity
     PregrowthStep:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
       m_annotations:
         eln: 
           # hide: [descritpion]
@@ -1108,8 +1103,6 @@ definitions:
                   tabular:
                     name: Mist/Concentration
     SampleCut:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
       m_annotations:
         eln: 
       quantities:
@@ -1129,14 +1122,14 @@ definitions:
               name: SampleCut/Children Sample ID
             eln:
               component: StringEditQuantity
-        # cut_date:
-        #   type: Datetime
-        #   description: FILL
-        #   m_annotations:
-        #     tabular:
-        #       name: SampleCut/Cut Date
-        #     eln:
-        #       component: DateTimeEditQuantity
+        cut_date:
+          type: Datetime
+          description: FILL
+          m_annotations:
+            tabular:
+              name: SampleCut/Cut Date
+            eln:
+              component: DateTimeEditQuantity
         position: 
           type: str
           description: FILL
@@ -1171,9 +1164,7 @@ definitions:
               name: SampleCut/Collaborator
             eln:
               component: StringEditQuantity
-    Contact:
-      base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#ProcedureStep
+    ContactSputtering:
       m_annotations:
         eln: 
       quantities:
@@ -1185,15 +1176,15 @@ definitions:
               name: Contacts/Sample Piece
             eln:
               component: StringEditQuantity
-        # datetime:
-        #   type: Datetime
-        #   description: FILL
-        #   m_annotations:
-        #     tabular:
-        #       name: Contacts/Deposition Date
-        #     eln:
-        #       component: DateTimeEditQuantity
-        #       label: deposition_date
+        datetime:
+          type: Datetime
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Deposition Date
+            eln:
+              component: DateTimeEditQuantity
+              label: deposition_date
         category: 
           type: str
           description: FILL
