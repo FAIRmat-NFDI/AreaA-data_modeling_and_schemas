@@ -277,6 +277,15 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity      
+        materials:
+          section:
+            quantities:
+              material:
+                shape: ['*']
+                type: nomad.datamodel.data.ArchiveSection
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
         growth_process:
           section:
             m_annotations:
