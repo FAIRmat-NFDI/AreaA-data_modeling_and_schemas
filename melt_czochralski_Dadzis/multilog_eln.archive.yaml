@@ -72,7 +72,7 @@ definitions:
                 type: ../upload/raw/Optris-IP-640.archive.yaml#IR_camera
     Data_processing:
       base_sections:
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         software:
           type: str
@@ -96,9 +96,9 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: ms
           description: Time between recorded images
-    Example_userdefined_task:
+    Example_userdefined_activity:
       base_sections:
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         test_quantity:
           type: str
@@ -115,8 +115,8 @@ data:
     software: multilog v2.2.0-9-b137997
     sampling_time: 2000
     image_time: 5000
-  - m_def: Example_userdefined_task
-    name: Example_userdefined_task
+  - m_def: Example_userdefined_activity
+    name: Example_userdefined_activity
   instrumentation:
     DAQ_6510: ../upload/raw/DAQ-6510.archive.yaml#data
     Optris_IP_640: ../upload/raw/Optris-IP-640.archive.yaml#data

@@ -85,7 +85,7 @@ definitions:
               procedure:
                 repeats: true
                 section: 
-                  base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+                  base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
                   quantities:
                     melting_power:
                       type: np.float64

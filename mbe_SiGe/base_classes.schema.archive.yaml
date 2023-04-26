@@ -1,40 +1,23 @@
 definitions:
   name: 'Base Classes'
   sections:
-    Task: 
-      base_sections: 
-        - nomad.datamodel.metainfo.eln.ElnBaseSection
-      m_annotations:
-        eln:
+    Link:
       quantities:
         name:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
-      sub_sections:
-        inputs:
-          section:
-            base_sections:
-              - nomad.datamodel.metainfo.workflow2.Link
-            m_annotations:
-              eln: 
-        outputs:
-          section:
-            base_sections:
-              - nomad.datamodel.metainfo.workflow2.Link
-            m_annotations:
-              eln: 
+        section:
+          type: nomad.datamodel.data.ArchiveSection
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
     Experiment: 
       base_sections: 
-      - nomad.datamodel.metainfo.eln.Activity
-      - nomad.datamodel.data.EntryData
+      - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-      # sub_sections:
-      #   tasks:
-      #     repeats: True
-      #     section: '#/Task'
     System: 
       base_sections: 
       - 'nomad.datamodel.metainfo.eln.System'
@@ -271,45 +254,22 @@ definitions:
           m_annotations:
             eln:
           section: nomad.datamodel.metainfo.eln.PublicationReference
-    Activity: 
-      base_sections: 
-      - '#/Task'
-      - nomad.datamodel.metainfo.eln.Activity
-      # - nomad.datamodel.metainfo.workflow2.Workflow
-      sub_sections:
-        Overview: 
-          section:  
-            base_sections: 
-            - '#/Overview'
-        instrument:
-          repeats: True
-          section: nomad.datamodel.metainfo.workflow2.Link
-        tasks:
-          repeats: True
-          section: '#/Task'
-    Measurement:  
-      base_sections: 
-      - '#/Activity'
-    ProcedureStep:  
-      base_sections: 
-      - '#/Task'
-      # - nomad.datamodel.metainfo.workflow2.Task
-      - nomad.datamodel.metainfo.eln.ElnBaseSection
+    ActivityStep: 
       m_annotations:
         eln:
       quantities:
-        # step_type:
-        #   type:
-        #     type_kind: Enum
-        #     type_data:
-        #       - Pre-process
-        #       - Process
-        #       - Post-process
-        #       - Measurement
-        #       - Storage
-        #   m_annotations:
-        #     eln:
-        #       component: EnumEditQuantity
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
           # default: ['Process']
         step_number:
           type: int

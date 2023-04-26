@@ -1,13 +1,30 @@
 definitions:
-  name: 'Float Zone schema' 
+  name: 'ELN for Float Zone' 
   sections:    
-    FZ_IKZ_experiment: 
+    FloatZoneExperiment: 
       base_sections: 
        - ../upload/raw/base_classes.schema.archive.yaml#Experiment
        - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
           hide: ['description', 'name']
+        template: 
+          growth_process:
+            assembly: {}
+            pumping: {}
+            filling: {}
+            annealing: {}
+            preheating: {}
+            process_start: {}
+            back_melting: {}
+            dash_necking: {}
+            cone_and_body_growing: {}
+            crystal_support: {}
+            digital_protocol_1520: {}
+            tailing: {}
+            basic_crystal_characterization: {}
+            resistivity: {}
+            lateral_photovoltage_scanning: {}
       quantities:
         tags:
           type: str
@@ -259,6 +276,44 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity      
+        growth_process:
+          section:
+            m_annotations:
+              eln:
+                hide: ['description']
+            base_sections:
+            - nomad.datamodel.metainfo.eln.Activity
+            sub_sections:
+              assembly: 
+                section:  '#/Assembly'
+              pumping:
+                section: '#/Pumping'
+              filling:
+                section: '#/Filling'
+              annealing:
+                section: '#/Annealing'
+              preheating:
+                section: '#/Preheating'
+              process_start:
+                section: '#/Process_start'
+              back_melting:
+                section: '#/Back_melting'
+              dash_necking:
+                section: '#/Dash_necking'
+              cone_and_body_growing:
+                section: '#/Cone_and_body_growing'
+              crystal_support:
+                section: '#/Crystal_support'
+              digital_protocol_1520:
+                section: '#/Digital_protocol_1520'
+              tailing:
+                section: '#/Tailing'
+              basic_crystal_characterization:
+                section: '#/Basic_crystal_characterization'
+              resistivity:
+                section: '#/Resistivity'
+              lateral_photovoltage_scanning:
+                section: '#/Lateral_photovoltage_scanning'
         # process:
         #   section:
         #     m_annotations:
@@ -376,8 +431,6 @@ definitions:
         #                   component: RichTextEditQuantity
     Gas:
       repeats: true
-      #m_annotations:
-      #  eln:
       section:
         base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
         m_annotations:
@@ -503,7 +556,7 @@ definitions:
               eln:
                 component: EnumEditQuantity
     Assembly:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -519,7 +572,7 @@ definitions:
               component: EnumEditQuantity
           default: ['Pre-process']
     Pumping:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -553,7 +606,7 @@ definitions:
             eln:
               component: EnumEditQuantity
     Filling:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -577,7 +630,7 @@ definitions:
               defaultDisplayUnit: bar
           description: "Pressure"
     Annealing:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -610,7 +663,7 @@ definitions:
               defaultDisplayUnit: watt
           description: "FILL THE DESCRIPTION"
     Preheating:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -660,7 +713,7 @@ definitions:
               defaultDisplayUnit: kV
           description: "FILL THE DESCRIPTION"
     Process_start:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -740,7 +793,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
     Back_melting:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -812,7 +865,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
     Dash_necking:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -900,7 +953,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
     Cone_and_body_growing:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -916,7 +969,7 @@ definitions:
               component: EnumEditQuantity
           default: ['Process']
     Crystal_support:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -957,7 +1010,7 @@ definitions:
               defaultDisplayUnit: mm
     Digital_protocol_1520:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+       - ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
        - nomad.parsing.tabular.TableData
        - nomad.datamodel.data.EntryData
       m_annotations:
@@ -1194,7 +1247,7 @@ definitions:
             tabular:
               name: WinkelRe
     Tailing:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
           type:
@@ -1226,7 +1279,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
     Basic_crystal_characterization:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         diameter_target_crystal:
           type: np.float64
@@ -1263,7 +1316,7 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Resistivity:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         target_resistivity:
           type: np.float64
@@ -1293,7 +1346,7 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Lateral_photovoltage_scanning:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         interface_curvative:
           type: np.float64

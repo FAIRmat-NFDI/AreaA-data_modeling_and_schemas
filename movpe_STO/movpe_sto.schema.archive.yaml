@@ -24,8 +24,8 @@ definitions:
               component: FileEditQuantity  # A form field that allows to drop and select files.
     AFM_measurement:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      -  nomad.parsing.tabular.TableData 
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.parsing.tabular.TableData 
       quantities:
         data_file:
           type: str
@@ -87,8 +87,8 @@ definitions:
                     component: StringEditQuantity
     HRXRD_measurement:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-      -  nomad.parsing.tabular.TableData 
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.parsing.tabular.TableData 
       quantities:
         data_file:
           type: str
@@ -195,7 +195,7 @@ definitions:
         tasks:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
             # more:
             #   label_quantity: step_name
             m_annotations:
@@ -470,7 +470,7 @@ definitions:
         tasks:
           repeats: true
           section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
+            base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
             # more:
             #   label_quantity: step_name
             m_annotations:

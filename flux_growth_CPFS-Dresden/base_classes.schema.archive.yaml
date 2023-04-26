@@ -273,7 +273,7 @@ definitions:
                     component: AuthorEditQuantity
     Measurement:  
       base_section:  '#/Activity'
-    Procedure_step:  
+    ActivityStep:  
       more:
         label_quantity: 'step_name'
       quantities:
@@ -331,7 +331,7 @@ definitions:
       sub_sections:
         procedure:
           repeats: true
-          section: '#/Procedure_step'
+          section: '#/ActivityStep'
     Substance: 
       base_section: '#/Material'
       more:

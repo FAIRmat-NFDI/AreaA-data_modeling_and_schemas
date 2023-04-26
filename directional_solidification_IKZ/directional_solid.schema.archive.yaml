@@ -109,7 +109,7 @@ definitions:
                           defaultDisplayUnit: mbar
     TemperatureRamp:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Task
+       - ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         rate:
           type: np.float64
@@ -140,8 +140,8 @@ definitions:
               defaultDisplayUnit: hour
     Einwaage:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Activity
-       - "nomad.datamodel.data.EntryData"
+       - nomad.datamodel.metainfo.eln.Activity
+       - nomad.datamodel.data.EntryData
       quantities:
         dose:
           type: np.float64
@@ -219,7 +219,6 @@ definitions:
               #defaultDisplayUnit: gram / gram
     Logfile_dir_sol:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       -  nomad.parsing.tabular.TableData
       m_annotations:
         plot:
@@ -1382,7 +1381,6 @@ definitions:
               y: ./no_messwert_ppm
     Recipe_dir_sol:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Procedure_step
       -  nomad.parsing.tabular.TableData
       m_annotations:
         plot:

@@ -1,147 +1,27 @@
 definitions:
-  name: 'Multiple Base Classes for Experiments'
-  sections:  # Schemes consist of section definitions
-    ElnBaseSection:
-      base_sections:
-        - nomad.datamodel.data.ArchiveSection
+  name: 'Base Classes'
+  sections:
+    Link:
       quantities:
         name:
           type: str
           m_annotations:
             eln:
               component: StringEditQuantity
-        timestamp:
-          type: Datetime
+        section:
+          type: nomad.datamodel.data.ArchiveSection
           m_annotations:
             eln:
-              component: DateTimeEditQuantity
-        notes:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        users:
-          section:
-            quantities:
-              responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-    Entity:
-      m_annotations:
-        eln:
-      base_sections: 
-       - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-       - nomad.datamodel.data.EntryData
-      quantities:
-        comment:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        users:
-          section:
-            quantities:
-              responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-              operator:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-        history:
-          section: 
-            # m_annotations:
-            #   eln:
-            quantities:
-              activities:
-                type: Activity
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity  
+              component: ReferenceEditQuantity
     Experiment: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-    Link:
-      description: |
-        Instances of Link are used to represent either a single input or single
-        output of a Task. Using a separate section for links allows to put
-        additional information (e.g. a name) on an input or output.
-      base_section: nomad.datamodel.data.ArchiveSection
-      m_annotations:
-        eln:
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        reference:
-          type: '#/Entity'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Task:
-      description: |
-        Instances of Task are used to represent an activity that happened during workflow
-        execution and that was acting on inputs to produce outputs.
-      base_section: '#/ElnBaseSection'
-      m_annotations:
-        eln: 
-      sub_sections:
-        inputs:
-          repeats: True
-          section: '#/Link'
-        outputs:
-          repeats: True
-          section: '#/Link'
-    TaskReference:
-      description: |
-        A proxy section that can be used to compose a workflow of tasks that are contained
-        in a different entry or workflow.
-      base_section: '#/Task'
-      m_annotations:
-        eln: 
-          hide: ['datetime', 'id', 'comment']
-      quantities:
-        task:
-          description: |
-            A reference to the task that this section is a proxy for.
-          type: '#/Task'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-    Workflow:
-      description: |
-        Instances of Workflow are used to represent a set of Tasks that connect input and
-        output data objects to produce a provenance graph for those data.
-
-        Workflows themselves can be tasks. This allows to build nested workflows where some
-        of the workflow tasks are workflows themselves.
-      base_section: '#/Task'
-      sub_sections:
-        tasks:
-          description: |
-            The tasks of this workflow as a repeating sub section. Use TaskReference if
-            tasks cannot be contained.
-          repeats: True
-          section: '#/Task'
-    Material: 
-      base_section: '#/Entity'
+    System: 
+      base_sections: 
+      - 'nomad.datamodel.metainfo.eln.System'
+      - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
       sub_sections:
@@ -149,35 +29,40 @@ definitions:
           section:
             base_sections:
               - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
             m_annotations:
               template: 
               eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
                 hide: []
-    Sample: 
-      base_section: '#/Material'
+    Ensemble: 
+      base_sections: 
+      - 'nomad.datamodel.metainfo.eln.Ensemble'
+      - 'nomad.datamodel.data.EntryData'
       sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+            m_annotations:
+              template: 
+              eln: 
+                hide: []
         geometry:
           section: '#/Geometry'
+    Substance:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.data.EntryData
       quantities:
-        preparation_date:
-          type: str
-          description: creation date
+        safety_reactivity:
+          type:
+            type_kind: Enum
+            type_data:
+              - air sensitive
+              - poisonous
+          shape: ['*']
           m_annotations:
             eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        empirical_formula:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
+              component: EnumEditQuantity
         state_of_matter:
           type:
             type_kind: Enum
@@ -190,30 +75,20 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-        safety_reactivity:
-          type:
-            type_kind: Enum
-            type_data:
-              - air sensitive
-              - poisonous
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        components:
-          type: '#/Material'
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
     Substrate: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      - '#/Ensemble'
       quantities:
         supplier:
           type: str
           description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        element_list:
+          type: str
+          shape: ['*']
+          description: The Elements and the corresponding isotope which are used in the Substrate.
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -230,6 +105,18 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
+        storage_location:
+          type: str
+          description: The location as room number with the place in this room where the sample can be found. e.g. 19.31.334 office shelf or. HU TEM Laboratory
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        batch_number:
+          type: str
+          description: batch number of chemical
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         doping_level:
           type: np.float64
           #unit: wt %
@@ -237,6 +124,17 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
+        doping_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - n-type
+              - p-type
+              - no doping
+          description: Dopingtypes are n-type, p-type or no doping
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
         doping_species:
           type: str
           description: Doping species to obtain electrical conductivity in the substrates
@@ -261,6 +159,18 @@ definitions:
           m_annotations:
             eln:
               component: BoolEditQuantity
+        buying_date:
+          type: Datetime
+          description: Date of the Invoice Mail
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        opening_date:
+          type: Datetime
+          description: Date of Opening the Chemical bottle in the Glove box
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
         documentation: 
           type: str
           description: pdf files containing certificate and other documentation
@@ -269,10 +179,12 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
+      sub_sections:
+        geometry:
+          section: '#/Geometry'
     Feedstock: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      - '#/Ensemble'
       quantities:
         supplier:
           type: str
@@ -280,18 +192,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Crystal: 
-      base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
-      quantities:
-        orientation:
-          type: str
-          description: crystallographic orientation of the substrate in [hkl]
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    Global:
+    Overview:
       # m_annotations:
       #   eln: dict()
       quantities:
@@ -321,6 +222,9 @@ definitions:
               - melt czochralski
               - pedestal
               - MOVPE 
+              - Ge Homoepitaxy
+              - Si Homoepitaxy
+              - SiGe Heteroepitaxy
               - OTHER TECHNIQUES
           description: |
             a method is a series of steps for performing a function or accomplishing a result.
@@ -344,39 +248,13 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Activity: 
-      base_sections: 
-       - '#/Workflow'
       sub_sections:
-        global: 
-          section:  
-            base_sections: 
-            - '#/Global'
-        users:
-          section:
-            quantities:
-              responsible_person:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-              operator:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
-        instrument:
+        publication_reference:
           repeats: True
-          section: '#/Link'
-    Measurement:  
-      base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Activity'
-    Procedure_step:  
-      base_sections: 
-      - '#/Task'
+          m_annotations:
+            eln:
+          section: nomad.datamodel.metainfo.eln.PublicationReference
+    ActivityStep: 
       m_annotations:
         eln:
       quantities:
@@ -399,7 +277,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-        duration:
+        elapsed_time:
           type: np.float64
           unit: minute
           description: Duration of the current step
@@ -407,68 +285,12 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    Substance: 
-      base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
-      more:
-        label_quantity: iupac_name
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-              - 'nomad.datamodel.data.EntryData'
-            m_annotations:
-              template: 
-              eln: 
-                # hide: ['children', 'parents']
-                # hide: ['children', 'parents', institute]
-                hide: []
-      quantities:
-        empirical_formula:
-          type: str
-          description: chemical formula
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        iupac_name:
-          type: str
-          description: the IUPAC nomenclature of the chemical
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        cas_number:
-          type: str
-          description: CAS number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sku_number:
-          type: str
-          description: sku number
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        smiles:
-          type: str
-          description: smiles string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        inchi:
-          type: str
-          description: inchi string indentifier
-          m_annotations:
-            eln:
-              component: StringEditQuantity
     SubstanceBatch: 
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
-      - '#/Material'
+      - '#/System'
       quantities:
         component:
-          type: Material
+          type: System
           m_annotations:
             eln:
               component: ReferenceEditQuantity
@@ -533,11 +355,10 @@ definitions:
               component: FileEditQuantity
     AmountOfMaterial: 
       base_sections:
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection 
-      - '#/Material'
+      - '#/System'
       quantities:
         component:
-          type: Material
+          type: System
           m_annotations:
             eln:
               component: ReferenceEditQuantity
@@ -597,7 +418,7 @@ definitions:
               defaultDisplayUnit: mL/minute
     Sensor:
       base_sections: 
-      - '#/ElnBaseSection' #nomad.datamodel.metainfo.eln.ElnBaseSection
+      - nomad.datamodel.metainfo.eln.ElnBaseSection
       quantities:
         model:
           type: str
@@ -673,11 +494,11 @@ definitions:
           type: np.float64
           shape: ['*']
           description: Time history of sensor readings. May differ from setpoint
-        value_timestamp_rel:
+        elapsed_time:
           type: np.float64
           shape: ['*']
           description: Relative time in measurement series.
-        value_timestamp_abs:
+        datetime:
           type: Datetime
           shape: ['*']
           description: |

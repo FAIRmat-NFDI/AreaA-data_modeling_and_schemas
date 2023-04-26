@@ -52,7 +52,7 @@ definitions:
               defaultDisplayUnit: hour
     ThermalTreatment:
       base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         dose:
           type: np.float64
@@ -128,6 +128,10 @@ definitions:
             eln:
               component: NumberEditQuantity
               #defaultDisplayUnit: gram / gram
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/TemperatureRamp'
     My_test:
       base_sections: 
       - nomad.datamodel.metainfo.eln.Sample_cut

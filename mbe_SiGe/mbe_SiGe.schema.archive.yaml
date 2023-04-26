@@ -1,153 +1,96 @@
 definitions:
-  name: 'Electronic Lab Notebook schema for MBE SiGe'
+  name: 'ELN for MBE SiGe'
   sections:  # Schemas consist of section definitions
-    Experiment:
+    MbeExperiment:
       base_sections: 
        - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln: 
-    AFM_measurement:
+          hide: ['end_time', 'lab_id', 'location']
+      quantities:
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        SubstratePreparation:
+          section:
+            base_sections: 
+            - '#/SubstratePreparation'
+        SubstrateCutting:
+          section:
+            base_sections: 
+            - '#/SubstrateCutting'
+        TestSampleCut:
+          section:
+            base_sections:
+            - nomad.datamodel.metainfo.eln.SampleCut
+            # m_annotations:
+            #   eln: 
+            #     properties:
+            #       order: ["datetime", "name", "inputs", "number_of_samples", "outputs", "lab_id", "users", "description"]
+        GrowthRecipe:
+          section:
+            base_sections: 
+            - '#/GrowthRecipe'
+        CalibrationDateSources:
+          section:
+            base_sections: 
+            - '#/CalibrationDateSources'
+        GrowthLog:
+          section:
+            base_sections: 
+            - '#/GrowthLog'
+        AFMmeasurements:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - tasks
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              tasks:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/AFMmeasurement'
+    AFMmeasurement:
       base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-        -  nomad.parsing.tabular.TableData 
+        - nomad.datamodel.metainfo.eln.Measurement
+        - nomad.parsing.tabular.TableData 
       m_annotations:
         eln: 
           # hide: ['name']
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
-          m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
-            tabular_parser:
-              # sep: ','
-              comment: '#'
-              mode: row
-              target_sub_section: 
-              - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-      sub_sections:
-        tasks:
-          repeats: true
-          section:
-            base_sections: 
-              - ../upload/raw/base_classes.schema.archive.yaml#Measurement 
-            m_annotations:
-              eln:
-            quantities:
-              name:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: AFMReflectanceSEM/Sample
-                  eln:
-                    component: StringEditQuantity
-              roughness:
-                type: np.float64
-                unit: nanometer
-                description: RMS roughness value obtained by AFM
-                m_annotations:
-                  tabular:
-                    name: AFMReflectanceSEM/Roughness
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: nanometer
-    HRXRD_measurement:
+    SubstratePreparation:
       base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Measurement
-        -  nomad.parsing.tabular.TableData 
-      m_annotations:
-        eln: 
-      quantities:
-        name:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
-          m_annotations:
-            # The tabular_parser annotation, will treat the values of this
-            # quantity as files. It will try to interpret the files and fill
-            # quantities in this section (and sub_section) with the column
-            # data of .csv or .xlsx files.
-            tabular_parser:
-              # sep: ','
-              comment: '#'
-              mode: row
-              target_sub_section: 
-               - tasks
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-      sub_sections:
-        tasks:
-          repeats: true
-          section:
-            base_section: ../upload/raw/base_classes.schema.archive.yaml#Measurement
-            m_annotations:
-              eln:
-            quantities:
-              name:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Sample
-                  eln:
-                    component: StringEditQuantity
-              datetime:
-                type: Datetime
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Timestamp
-                  eln:
-                    component: DateTimeEditQuantity
-              method:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Activity Method
-                  eln:
-                    component: StringEditQuantity
-              phase:
-                type: str
-                description: Phase type obtained from HRXRD 
-                m_annotations:
-                  tabular:
-                    name: HRXRD/Phase
-                  eln:
-                    component: StringEditQuantity
-    Substrate_preparation:
-      base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Activity
+        - nomad.datamodel.metainfo.eln.Activity
       m_annotations:
         eln:
       sub_sections:
-        tasks:
-          description: |
-            The tasks of this workflow as a repeating sub section. Use TaskReference if
-            tasks cannot be contained.
+        steps:
           repeats: True
           section:  
-            base_sections: 
-              - ../upload/raw/base_classes.schema.archive.yaml#Task
             m_annotations:
-              eln:
+              eln: 
+                properties:
+                  order: ["duration", "ratio", "step_number"]
             quantities:
               step_number:
                 type: int
@@ -168,9 +111,9 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: second
-    Substrate_cutting:
+    SubstrateCutting:
       base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
+        - nomad.datamodel.metainfo.eln.Activity
       m_annotations:
         eln:
       quantities:
@@ -180,26 +123,21 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-    Growth_recipe:
-      base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
-        # - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe
-      m_annotations:
-        eln:
-    Growth_process:
+    GrowthRecipe:
       base_sections: 
         - ../upload/raw/base_classes.schema.archive.yaml#Activity
+        - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe
       m_annotations:
         eln:
-    Growth_log:
+    GrowthLog:
       base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
-        # - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthLog
+        - nomad.datamodel.metainfo.eln.Activity
+        - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthLog
       m_annotations:
         eln:
-    Calibration_date_sources:
+    CalibrationDateSources:
       base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Task
+        - nomad.datamodel.metainfo.eln.Activity
       m_annotations:
         eln:
       quantities:
@@ -215,17 +153,3 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-    Mbe_process:
-      base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      m_annotations:
-        eln:
-      sub_sections:
-        tasks:
-          description: The tasks of this workflow contain the growth recipe and log files
-          repeats: True
-          section:  
-            base_sections: 
-              - ../upload/raw/base_classes.schema.archive.yaml#Task
-            m_annotations:
-              eln:

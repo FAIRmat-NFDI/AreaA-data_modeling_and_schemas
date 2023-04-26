@@ -1,11 +1,14 @@
 definitions:
   name: "Electronic Lab Notebook for Hall"
   sections: # Schemes consist of section definitions
-    Contacts_grafting:
+    ContactsGrafting:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
+      - nomad.datamodel.metainfo.eln.Activity
       - nomad.datamodel.data.EntryData
       quantities:
+        method:
+          type: str
+          default: "Contact Grafting"
         dose:
           type: np.float64
           # unit: celsius
@@ -57,10 +60,10 @@ definitions:
             eln:
               component: StringEditQuantity
       sub_sections:
-        tasks:
+        steps:
           repeats: True
-          section: '../upload/raw/base_classes.schema.archive.yaml#Task'
-    Measurement_geometry:
+          section: '../upload/raw/base_classes.schema.archive.yaml#ActivityStep'
+    MeasurementGeometry:
       quantities:
         geometry:
           type:
@@ -74,10 +77,14 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-    Hall_measurement:    
+    HallMeasurement:    
       base_sections: 
-        - 'nomad.datamodel.metainfo.eln.ikz_hall.HallData'
-        - '../upload/raw/base_classes.schema.archive.yaml#Task'
+        - nomad.datamodel.metainfo.eln.ikz_hall.HallData
+        - nomad.datamodel.metainfo.eln.Activity
+      quantities:
+        method:
+          type: str
+          default: "Hall Measurement"
     SampleWithContacts:
       base_sections: 
         - '../upload/raw/base_classes.schema.archive.yaml#Ensemble'
@@ -97,17 +104,27 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: micrometer
-    Hall_experiment:
+    HallExperiment:
       base_sections:
-        #- "nomad.datamodel.metainfo.eln.NexusDataConverter"
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
       - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
       sub_sections:
         instrument:
           section:
-            base_section: 'nomad.datamodel.metainfo.eln.ikz_hall.HallInstrument'
-        activities:
-          repeats: True
-          section: '../upload/raw/base_classes.schema.archive.yaml#Task'
+            base_sections: 
+            - 'nomad.datamodel.metainfo.eln.ikz_hall.HallInstrument'
+        contacts_grafting:
+          section: 
+            base_sections: 
+            - '#/ContactsGrafting'
+            m_annotations:
+              template:
+              eln:
+        hall_measurement:
+          section: 
+            base_sections: 
+            - '#/HallMeasurement'
+            m_annotations:
+              template:
+              eln:
