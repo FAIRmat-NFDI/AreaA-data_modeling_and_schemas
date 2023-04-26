@@ -20,8 +20,9 @@ definitions:
             dash_necking: {}
             cone_and_body_growing: {}
             crystal_support: {}
-            digital_protocol_1520: {}
             tailing: {}
+            digital_protocol_1520: {}
+          characterization:
             basic_crystal_characterization: {}
             resistivity: {}
             lateral_photovoltage_scanning: {}
@@ -304,16 +305,29 @@ definitions:
                 section: '#/Cone_and_body_growing'
               crystal_support:
                 section: '#/Crystal_support'
-              digital_protocol_1520:
-                section: '#/Digital_protocol_1520'
               tailing:
                 section: '#/Tailing'
+              digital_protocol_1520:
+                section: '#/Digital_protocol_1520'
+        characterization:
+          section:
+            m_annotations:
+              eln:
+                hide: ['description']
+            base_sections:
+            - nomad.datamodel.metainfo.eln.Activity
+            sub_sections:
               basic_crystal_characterization:
                 section: '#/Basic_crystal_characterization'
               resistivity:
                 section: '#/Resistivity'
               lateral_photovoltage_scanning:
                 section: '#/Lateral_photovoltage_scanning'
+              lifetime:
+                repeats: true
+                section:
+                  # m_annotations:
+                  #   eln:
         # process:
         #   section:
         #     m_annotations:
@@ -410,25 +424,6 @@ definitions:
         #               m_annotations:
         #                 eln:
         #                   component: EnumEditQuantity
-        #       lifetime:
-        #         repeats: true
-        #         section:
-        #           # m_annotations:
-        #           #   eln:
-        #           quantities:
-        #             average_lifetime_on_body:
-        #               type: np.float64
-        #               unit: mm
-        #               m_annotations:
-        #                 eln:
-        #                   component: NumberEditQuantity
-        #                   defaultDisplayUnit: mm
-        #             lifetime_map:
-        #               type: str
-        #               description: "drop the lifetime map here"
-        #               m_annotations:
-        #                 eln:
-        #                   component: RichTextEditQuantity
     Gas:
       repeats: true
       section:
@@ -1278,8 +1273,24 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
+    Lifetime:
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
+      quantities:
+        average_lifetime_on_body:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        lifetime_map:
+          type: str
+          description: "drop the lifetime map here"
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
     Basic_crystal_characterization:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
       quantities:
         diameter_target_crystal:
           type: np.float64
@@ -1316,7 +1327,7 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Resistivity:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
       quantities:
         target_resistivity:
           type: np.float64
@@ -1346,7 +1357,7 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Lateral_photovoltage_scanning:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
+      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
       quantities:
         interface_curvative:
           type: np.float64
