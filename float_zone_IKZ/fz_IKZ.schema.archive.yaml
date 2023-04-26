@@ -26,6 +26,7 @@ definitions:
             basic_crystal_characterization: {}
             resistivity: {}
             lateral_photovoltage_scanning: {}
+            lifetime: {}
       quantities:
         tags:
           type: str
@@ -278,11 +279,18 @@ definitions:
                         eln:
                           component: FileEditQuantity      
         materials:
+          repeats: true
           section:
+            m_annotations:
+              eln:
             quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
               material:
-                shape: ['*']
-                type: nomad.datamodel.data.ArchiveSection
+                type: 'nomad.datamodel.metainfo.eln.System'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
@@ -334,7 +342,7 @@ definitions:
                 section: '#/Lateral_photovoltage_scanning'
               lifetime:
                 repeats: true
-                section:
+                section: '#/Lifetime'
                   # m_annotations:
                   #   eln:
         # process:
@@ -436,7 +444,8 @@ definitions:
     Gas:
       repeats: true
       section:
-        base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
+        base_sections:
+        - 'nomad.datamodel.metainfo.eln.System'
         m_annotations:
           eln:
         quantities:
@@ -459,7 +468,8 @@ definitions:
       #m_annotations:
       #  eln:
       section:
-        base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
+        base_sections:
+        - 'nomad.datamodel.metainfo.eln.System'
         m_annotations:
           eln:
         quantities:
@@ -477,7 +487,8 @@ definitions:
                 component: EnumEditQuantity
     Feed_rod:
       section:
-        base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
+        base_sections:
+        - 'nomad.datamodel.metainfo.eln.System'
         quantities:
           material: 
             type: 
@@ -546,7 +557,8 @@ definitions:
                 defaultDisplayUnit: deg
     Seed:
       section:
-        base_section: ../upload/raw/base_classes.schema.archive.yaml#Material
+        base_sections:
+        - 'nomad.datamodel.metainfo.eln.System'
         quantities:
           orientation:
             type: 
@@ -1283,7 +1295,8 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
     Lifetime:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         average_lifetime_on_body:
           type: np.float64
@@ -1299,7 +1312,8 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Basic_crystal_characterization:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         diameter_target_crystal:
           type: np.float64
@@ -1336,7 +1350,8 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Resistivity:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         target_resistivity:
           type: np.float64
@@ -1366,7 +1381,8 @@ definitions:
             eln:
               component: RichTextEditQuantity
     Lateral_photovoltage_scanning:
-      base_section: ../upload/raw/base_classes.schema.archive.yaml#Activity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
       quantities:
         interface_curvative:
           type: np.float64
