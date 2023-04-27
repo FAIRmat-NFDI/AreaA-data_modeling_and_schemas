@@ -331,8 +331,6 @@ definitions:
             m_annotations:
               eln:
                 hide: ['description']
-            base_sections:
-            - nomad.datamodel.metainfo.eln.Activity
             sub_sections:
               BasicCrystalCharacterization:
                 repeats: true
