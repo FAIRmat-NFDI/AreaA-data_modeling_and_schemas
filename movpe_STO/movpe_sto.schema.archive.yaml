@@ -61,8 +61,6 @@ definitions:
       sub_sections:
         Overview:
           section:
-            base_sections: 
-            - ../upload/raw/base_classes.schema.archive.yaml#Overview 
             quantities:
               location:
                 type: str
@@ -134,8 +132,6 @@ definitions:
       sub_sections:
         Overview:
           section:
-            base_sections: 
-            - ../upload/raw/base_classes.schema.archive.yaml#Overview 
             quantities:
               location:
                 type: str

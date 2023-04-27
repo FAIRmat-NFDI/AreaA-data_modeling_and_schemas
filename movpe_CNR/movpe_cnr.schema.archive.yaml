@@ -76,7 +76,8 @@ definitions:
                 repeats: true
                 section:
                   base_sections: 
-                  - ../upload/raw/base_classes.schema.archive.yaml#Substance 
+                  - nomad.datamodel.metainfo.eln.Substance
+                  - nomad.datamodel.data.EntryData
                   quantities:
                     cas_number:
                       type: str

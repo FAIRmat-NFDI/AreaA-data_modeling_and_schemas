@@ -94,7 +94,8 @@ definitions:
           m_annotations:
             eln: 
           section:
-            base_section: '../upload/raw/base_classes.schema.archive.yaml#Substance'
+            base_sections: 
+            - nomad.datamodel.metainfo.eln.Substance
             quantities:
               thickness:
                 type: np.float64

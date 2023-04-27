@@ -1449,3 +1449,13 @@ definitions:
                     label: My label
                     x: step_number
                     y: ./h1_soll_p
+    Feedstock: 
+      base_sections: 
+      - '#/Ensemble'
+      quantities:
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity

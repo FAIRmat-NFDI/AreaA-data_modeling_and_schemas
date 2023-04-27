@@ -1,3 +1,4 @@
+# Check the built-in base classes at the path nomad/datamodel/metainfo/eln/__init__.py !!!
 definitions:
   name: 'Base Classes'
   sections:
@@ -18,66 +19,10 @@ definitions:
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-    System: 
-      base_sections: 
-      - 'nomad.datamodel.metainfo.eln.System'
-      - 'nomad.datamodel.data.EntryData'
-      m_annotations:
-        eln:
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-            m_annotations:
-              template: 
-              eln: 
-                hide: []
-    Ensemble: 
+    Substrate: 
       base_sections: 
       - 'nomad.datamodel.metainfo.eln.Ensemble'
       - 'nomad.datamodel.data.EntryData'
-      sub_sections:
-        SampleID:
-          section:
-            base_sections:
-              - 'nomad.datamodel.metainfo.eln.SampleID'
-            m_annotations:
-              template: 
-              eln: 
-                hide: []
-        geometry:
-          section: '#/Geometry'
-    Substance:
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.Substance
-      - nomad.datamodel.data.EntryData
-      quantities:
-        safety_reactivity:
-          type:
-            type_kind: Enum
-            type_data:
-              - air sensitive
-              - poisonous
-          shape: ['*']
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        state_of_matter:
-          type:
-            type_kind: Enum
-            type_data:
-              - single crystal
-              - policrystalline
-              - microcristalline powder
-              - amorphous solid
-              - liquid
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-    Substrate: 
-      base_sections: 
-      - '#/Ensemble'
       quantities:
         supplier:
           type: str
@@ -180,80 +125,16 @@ definitions:
             eln:
               component: FileEditQuantity
       sub_sections:
+        SampleID:
+          section:
+            base_sections:
+              - 'nomad.datamodel.metainfo.eln.SampleID'
+            m_annotations:
+              template: 
+              eln: 
+                hide: []
         geometry:
           section: '#/Geometry'
-    Feedstock: 
-      base_sections: 
-      - '#/Ensemble'
-      quantities:
-        supplier:
-          type: str
-          description: Sample preparation including orientating, polishing, cutting done by this company
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    Overview:
-      # m_annotations:
-      #   eln: dict()
-      quantities:
-        category:
-          type:
-            type_kind: Enum
-            type_data:
-              - crystal growth synthesis
-              - sample preparation synthesis
-              - epitaxial growth synthesis
-              - sol-gel synthesis
-              - surface coating synthesis
-              - measurement experiment
-          description: |
-            A phenomenon by which change takes place in a system. 
-            In physiological systems, a process may be 
-            chemical, physical or both. 
-            [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        method:
-          type: 
-            type_kind: Enum
-            type_data:
-              - float zone
-              - melt czochralski
-              - pedestal
-              - MOVPE 
-              - Ge Homoepitaxy
-              - Si Homoepitaxy
-              - SiGe Heteroepitaxy
-              - OTHER TECHNIQUES
-          description: |
-            a method is a series of steps for performing a function or accomplishing a result.
-
-            Or
-
-            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-        location:
-          type: str
-          m_annotations:
-            # tabular:
-            #   name: Overview/Experiment Location
-            eln:
-              component: StringEditQuantity
-        goal:
-          type: str
-          description: indicate here the goal aimed with this experiment
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        publication_reference:
-          repeats: True
-          m_annotations:
-            eln:
-          section: nomad.datamodel.metainfo.eln.PublicationReference
     ActivityStep: 
       m_annotations:
         eln:
@@ -286,11 +167,9 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
     SubstanceBatch: 
-      base_sections: 
-      - '#/System'
       quantities:
         component:
-          type: System
+          type: 'nomad.datamodel.metainfo.eln.System'
           m_annotations:
             eln:
               component: ReferenceEditQuantity
@@ -354,11 +233,9 @@ definitions:
             eln:
               component: FileEditQuantity
     AmountOfMaterial: 
-      base_sections:
-      - '#/System'
       quantities:
         component:
-          type: System
+          type: 'nomad.datamodel.metainfo.eln.System'
           m_annotations:
             eln:
               component: ReferenceEditQuantity
