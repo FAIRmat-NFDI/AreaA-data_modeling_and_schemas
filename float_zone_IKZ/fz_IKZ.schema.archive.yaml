@@ -9,24 +9,24 @@ definitions:
         eln:
           hide: ['description', 'name']
         template: 
-          growth_process:
-            assembly: {}
-            pumping: {}
-            filling: {}
-            annealing: {}
-            preheating: {}
-            process_start: {}
-            back_melting: {}
-            dash_necking: {}
-            cone_and_body_growing: {}
-            crystal_support: {}
-            tailing: {}
-            digital_protocol_1520: {}
-          characterization:
-            basic_crystal_characterization: {}
-            resistivity: {}
-            lateral_photovoltage_scanning: {}
-            lifetime: {}
+          GrowthProcess:
+            Assembly: {}
+            Pumping: {}
+            Filling: {}
+            Annealing: {}
+            Preheating: {}
+            ProcessStart: {}
+            BackMelting: {}
+            DashNecking: {}
+            ConeAndBodyGrowing: {}
+            CrystalSupport: {}
+            Tailing: {}
+            DigitalProtocol1520: {}
+          Characterization:
+            BasicCrystalCharacterization: {}
+            Resistivity: {}
+            LateralPhotovoltageScanning: {}
+            Lifetime: {}
       quantities:
         tags:
           type: str
@@ -68,7 +68,7 @@ definitions:
             eln:
               component: EnumEditQuantity
       sub_sections:
-        instrument:
+        Instrument:
           section:
             quantities:
               furnace_type:
@@ -84,7 +84,7 @@ definitions:
                   eln:
                     component: EnumEditQuantity
             sub_sections:
-              coil:
+              Coil:
                 section:
                   quantities:
                     coil_id:
@@ -112,7 +112,7 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity
-              pre_heater:
+              PreHeater:
                 repeats: true
                 section:
                   quantities:
@@ -158,7 +158,7 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity
-              reflector:
+              Reflector:
                 repeats: true
                 section:
                   quantities:
@@ -196,7 +196,7 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity    
-              after_heater:
+              AfterHeater:
                 repeats: true
                 section:
                   quantities:
@@ -234,7 +234,7 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity    
-              rod_holder:
+              RodHolder:
                 section:
                   quantities:
                     rod_holder_id:
@@ -256,7 +256,7 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity    
-              seed_holder:
+              SeedHolder:
                 section:
                   quantities:
                     seed_holder_id:
@@ -278,7 +278,7 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity      
-        materials:
+        Materials:
           repeats: true
           section:
             m_annotations:
@@ -294,7 +294,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-        growth_process:
+        GrowthProcess:
           section:
             m_annotations:
               eln:
@@ -302,31 +302,31 @@ definitions:
             base_sections:
             - nomad.datamodel.metainfo.eln.Activity
             sub_sections:
-              assembly: 
+              Assembly: 
                 section:  '#/Assembly'
-              pumping:
+              Pumping:
                 section: '#/Pumping'
-              filling:
+              Filling:
                 section: '#/Filling'
-              annealing:
+              Annealing:
                 section: '#/Annealing'
-              preheating:
+              Preheating:
                 section: '#/Preheating'
-              process_start:
-                section: '#/Process_start'
-              back_melting:
-                section: '#/Back_melting'
-              dash_necking:
-                section: '#/Dash_necking'
-              cone_and_body_growing:
-                section: '#/Cone_and_body_growing'
-              crystal_support:
-                section: '#/Crystal_support'
-              tailing:
+              ProcessStart:
+                section: '#/ProcessStart'
+              BackMelting:
+                section: '#/BackMelting'
+              DashNecking:
+                section: '#/DashNecking'
+              ConeAndBodyGrowing:
+                section: '#/ConeAndBodyGrowing'
+              CrystalSupport:
+                section: '#/CrystalSupport'
+              Tailing:
                 section: '#/Tailing'
-              digital_protocol_1520:
-                section: '#/Digital_protocol_1520'
-        characterization:
+              DigitalProtocol1520:
+                section: '#/DigitalProtocol1520'
+        Characterization:
           section:
             m_annotations:
               eln:
@@ -334,13 +334,16 @@ definitions:
             base_sections:
             - nomad.datamodel.metainfo.eln.Activity
             sub_sections:
-              basic_crystal_characterization:
-                section: '#/Basic_crystal_characterization'
-              resistivity:
+              BasicCrystalCharacterization:
+                repeats: true
+                section: '#/BasicCrystalCharacterization'
+              Resistivity:
+                repeats: true
                 section: '#/Resistivity'
-              lateral_photovoltage_scanning:
-                section: '#/Lateral_photovoltage_scanning'
-              lifetime:
+              LateralPhotovoltageScanning:
+                repeats: true
+                section: '#/LateralPhotovoltageScanning'
+              Lifetime:
                 repeats: true
                 section: '#/Lifetime'
                   # m_annotations:
@@ -442,135 +445,131 @@ definitions:
         #                 eln:
         #                   component: EnumEditQuantity
     Gas:
-      repeats: true
-      section:
-        base_sections:
-        - 'nomad.datamodel.metainfo.eln.System'
-        m_annotations:
-          eln:
-        quantities:
-          name:
-            type: 
-              type_kind: Enum
-              type_data:
-                - Ar from bottle
-                - Ar from pipeline
-                - N2 from bottle
-                - N2 from pipeline
-                - H2
-                - Other
-            description: "name/type of gas"
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.System
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        name:
+          type: 
+            type_kind: Enum
+            type_data:
+              - Ar from bottle
+              - Ar from pipeline
+              - N2 from bottle
+              - N2 from pipeline
+              - H2
+              - Other
+          description: "name/type of gas"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
     Dopant:
-      repeats: true
-      #m_annotations:
-      #  eln:
-      section:
-        base_sections:
-        - 'nomad.datamodel.metainfo.eln.System'
-        m_annotations:
-          eln:
-        quantities:
-          name:
-            type:
-              type_kind: Enum
-              type_data:
-                - PH3
-                - B2H6
-                - CH4
-                - Other
-            description: "name/type of dopant"
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.System
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        name:
+          type:
+            type_kind: Enum
+            type_data:
+              - PH3
+              - B2H6
+              - CH4
+              - Other
+          description: "name/type of dopant"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
     Feed_rod:
-      section:
-        base_sections:
-        - 'nomad.datamodel.metainfo.eln.System'
-        quantities:
-          material: 
-            type: 
-              type_kind: Enum
-              type_data:
-                - Wacker
-                - ASIMI 
-                - REC 
-                - other                        
-            description: "feed rod material options"
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
-          diameter:
-            type: np.float64
-            description: "diameter of feed rod"
-            unit: mm
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: mm
-          length:
-            type: np.float64
-            description: "length of feed rod"
-            unit: mm
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: mm
-          weight:
-            type: np.float64
-            description: "weight of feed rod"
-            unit: kg
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: kg
-          rod_surface: 
-            type: 
-              type_kind: Enum
-              type_data:
-                - round grinded
-                - raw
-            description: "rod surface condition"
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
-          rod_pretreatment:
-            type: 
-              type_kind: Enum
-              type_data:
-                - etched
-                - raw
-                - US cleaned
-            description: "rod pretreatment"
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
-          rod_angle:
-            type: np.float64
-            description: "angle of feed rod"
-            unit: deg
-            m_annotations:
-              eln:
-                component: NumberEditQuantity
-                defaultDisplayUnit: deg
+      base_sections:
+      - nomad.datamodel.metainfo.eln.System
+      - nomad.datamodel.data.EntryData
+      quantities:
+        material: 
+          type: 
+            type_kind: Enum
+            type_data:
+              - Wacker
+              - ASIMI 
+              - REC 
+              - other                        
+          description: "feed rod material options"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        diameter:
+          type: np.float64
+          description: "diameter of feed rod"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        length:
+          type: np.float64
+          description: "length of feed rod"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        weight:
+          type: np.float64
+          description: "weight of feed rod"
+          unit: kg
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kg
+        rod_surface: 
+          type: 
+            type_kind: Enum
+            type_data:
+              - round grinded
+              - raw
+          description: "rod surface condition"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        rod_pretreatment:
+          type: 
+            type_kind: Enum
+            type_data:
+              - etched
+              - raw
+              - US cleaned
+          description: "rod pretreatment"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        rod_angle:
+          type: np.float64
+          description: "angle of feed rod"
+          unit: deg
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: deg
     Seed:
-      section:
-        base_sections:
-        - 'nomad.datamodel.metainfo.eln.System'
-        quantities:
-          orientation:
-            type: 
-              type_kind: Enum
-              type_data:
-                - "100"
-                - "111"
-                - "Other"
-            description: "rod pretreatment"
-            m_annotations:
-              eln:
-                component: EnumEditQuantity
+      base_sections:
+      - nomad.datamodel.metainfo.eln.System
+      - nomad.datamodel.data.EntryData
+      quantities:
+        orientation:
+          type: 
+            type_kind: Enum
+            type_data:
+              - "100"
+              - "111"
+              - "Other"
+          description: "rod pretreatment"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
     Assembly:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
@@ -728,7 +727,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
           description: "FILL THE DESCRIPTION"
-    Process_start:
+    ProcessStart:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
@@ -808,7 +807,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
-    Back_melting:
+    BackMelting:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
@@ -880,7 +879,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: kV
-    Dash_necking:
+    DashNecking:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
@@ -968,7 +967,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    Cone_and_body_growing:
+    ConeAndBodyGrowing:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
@@ -984,7 +983,7 @@ definitions:
             eln:
               component: EnumEditQuantity
           default: ['Process']
-    Crystal_support:
+    CrystalSupport:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         step_type:
@@ -1024,7 +1023,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mm
-    Digital_protocol_1520:
+    DigitalProtocol1520:
       base_sections: 
        - ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
        - nomad.parsing.tabular.TableData
@@ -1311,7 +1310,7 @@ definitions:
           m_annotations:
             eln:
               component: RichTextEditQuantity
-    Basic_crystal_characterization:
+    BasicCrystalCharacterization:
       base_sections:
       - nomad.datamodel.metainfo.eln.Activity
       quantities:
@@ -1380,7 +1379,7 @@ definitions:
           m_annotations:
             eln:
               component: RichTextEditQuantity
-    Lateral_photovoltage_scanning:
+    LateralPhotovoltageScanning:
       base_sections:
       - nomad.datamodel.metainfo.eln.Activity
       quantities:
