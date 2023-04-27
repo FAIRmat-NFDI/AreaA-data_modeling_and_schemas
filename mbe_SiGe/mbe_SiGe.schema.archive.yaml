@@ -7,23 +7,23 @@ definitions:
       m_annotations:
         eln: 
           hide: ['end_time', 'lab_id', 'location']
-      quantities:
-        description: 
-          type: str
-          description: description
+        template:
+          PublicationReference: {}
+          SubstratePreparation: {}
+          SubstrateCutting: {}
+          GrowthRecipe: {}
+          GrowthLog: {}
+      sub_sections:
+        PublicationReference:
+          repeats: true
           m_annotations:
             eln:
-              component: StringEditQuantity
-      sub_sections:
+          section: nomad.datamodel.metainfo.eln.PublicationReference
         SubstratePreparation:
           section:
             base_sections: 
             - '#/SubstratePreparation'
         SubstrateCutting:
-          section:
-            base_sections: 
-            - '#/SubstrateCutting'
-        TestSampleCut:
           section:
             base_sections:
             - nomad.datamodel.metainfo.eln.SampleCut
@@ -31,6 +31,10 @@ definitions:
             #   eln: 
             #     properties:
             #       order: ["datetime", "name", "inputs", "number_of_samples", "outputs", "lab_id", "users", "description"]
+            quantities:
+              method:
+                type: str 
+                default: "Substrate Cutting"
         GrowthRecipe:
           section:
             base_sections: 
@@ -78,11 +82,19 @@ definitions:
       m_annotations:
         eln: 
           # hide: ['name']
+      quantities:
+        method:
+          type: str 
+          default: "AFM"
     SubstratePreparation:
       base_sections: 
         - nomad.datamodel.metainfo.eln.Activity
       m_annotations:
         eln:
+      quantities:
+        method:
+          type: str 
+          default: "Substrate Preparation"
       sub_sections:
         steps:
           repeats: True
@@ -111,21 +123,9 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: second
-    SubstrateCutting:
-      base_sections: 
-        - nomad.datamodel.metainfo.eln.Activity
-      m_annotations:
-        eln:
-      quantities:
-        test:
-          type: int
-          description: test
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
     GrowthRecipe:
       base_sections: 
-        - ../upload/raw/base_classes.schema.archive.yaml#Activity
+        - nomad.datamodel.metainfo.eln.Activity
         - nomad.datamodel.metainfo.eln.ikz_mbe.GrowthRecipe
       m_annotations:
         eln:

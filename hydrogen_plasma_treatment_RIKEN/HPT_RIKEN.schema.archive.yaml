@@ -24,7 +24,7 @@ definitions:
             eln:
               component: FileEditQuantity  
       sub_sections:
-        tasks:
+        processes:
           repeats: true
           section:
             more:
