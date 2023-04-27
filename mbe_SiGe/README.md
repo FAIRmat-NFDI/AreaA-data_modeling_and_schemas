@@ -1,4 +1,4 @@
-# MOVPE SrTiO experiment
+# MBE SiGe experiment
 
 #### drag and drop "schema file", "data set", and "base classes subfolder" into the nomad upload page 
 
