@@ -1,10 +1,18 @@
 definitions:
-  name: 'Electronic Lab Notebook schema for MOVPE-STO'
+  name: 'ELN for MOVPE-STO'
   sections:  # Schemas consist of section definitions
-    MovpeSto_experiment:
+    MovpeStoExperiment:
       base_section: ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln:
+        template:
+          Instrument: {}
+          GrowthProcess: 
+            ProcessMovpeSto: {}
+            DepositionControl: {}
+          Characterization: 
+            AFMmeasurements: {}
+            HRXRDmeasurements: {}
       quantities:
         data_file:
           type: str
@@ -22,17 +30,42 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity  # A form field that allows to drop and select files.
-    AFM_measurement:
+      sub_sections:
+        Instrument:
+          section: '#/MovpeInstrument'
+        GrowthProcess:
+          section:
+            m_annotations:
+              eln:
+                hide: ['description']
+            sub_sections:
+              ProcessMovpeSto: 
+                section:  '#/ProcessMovpeSto'
+              DepositionControl: 
+                section:  '#/DepositionControl'
+        Characterization:
+          section:
+            m_annotations:
+              eln:
+                hide: ['description']
+            sub_sections:
+              AFMmeasurements:
+                repeats: true
+                section: '#/AFMmeasurement'
+              HRXRDmeasurements:
+                repeats: true
+                section: '#/HRXRDmeasurement'
+    AFMmeasurement:
       base_sections: 
       - nomad.datamodel.metainfo.eln.Measurement
       - nomad.parsing.tabular.TableData 
       quantities:
         data_file:
           type: str
+          default: '#data/data_file'
           m_annotations:
             tabular_parser:
               # sep: ','
-              path_to_data_file: '#data/data_file'
               comment: '#'
         datetime:
           type: Datetime
@@ -41,6 +74,27 @@ definitions:
               name: AFM/Timestamp
             eln:
               component: DateTimeEditQuantity
+        location:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFM/Location
+            eln:
+              component: StringEditQuantity
+        category:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFM/Category
+            eln:
+              component: StringEditQuantity
+        method:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFM/Method
+            eln:
+              component: StringEditQuantity
         activity_identifier:
           type: str
           m_annotations:
@@ -58,42 +112,17 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
-      sub_sections:
-        Overview:
-          section:
-            quantities:
-              location:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: AFM/Location
-                  eln:
-                    component: StringEditQuantity
-              category:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: AFM/Category
-                  eln:
-                    component: StringEditQuantity
-              method:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: AFM/Method
-                  eln:
-                    component: StringEditQuantity
-    HRXRD_measurement:
+    HRXRDmeasurement:
       base_sections: 
       - nomad.datamodel.metainfo.eln.Measurement
       - nomad.parsing.tabular.TableData 
       quantities:
         data_file:
           type: str
+          default: '#data/data_file'
           m_annotations:
             tabular_parser:
               # sep: ','
-              path_to_data_file: '#data/data_file'
               comment: '#'
         datetime:
           type: Datetime
@@ -102,6 +131,27 @@ definitions:
               name: HR XRD/Timestamp
             eln:
               component: DateTimeEditQuantity
+        location:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Location
+            eln:
+              component: StringEditQuantity
+        category:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Category
+            eln:
+              component: StringEditQuantity
+        method:
+          type: str
+          m_annotations:
+            tabular:
+              name: HR XRD/Method
+            eln:
+              component: StringEditQuantity
         activity_identifier:
           type: str
           m_annotations:
@@ -129,44 +179,19 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: angstrom
-      sub_sections:
-        Overview:
-          section:
-            quantities:
-              location:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: HR XRD/Location
-                  eln:
-                    component: StringEditQuantity
-              category:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: HR XRD/Category
-                  eln:
-                    component: StringEditQuantity
-              method:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: HR XRD/Method
-                  eln:
-                    component: StringEditQuantity
-    Process_movpesto:
+    ProcessMovpeSto:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      -  nomad.parsing.tabular.TableData
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.parsing.tabular.TableData
       m_annotations:
         eln: 
       quantities:
         data_file:
           type: str
+          default: '#data/data_file'
           m_annotations:
             tabular_parser:
               # sep: ','
-              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
@@ -447,17 +472,17 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: centimeter ** 3 / minute
-    Deposition_control:
+    DepositionControl:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Activity
-      -  nomad.parsing.tabular.TableData
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.parsing.tabular.TableData
       quantities:
         data_file:
           type: str
+          default: '#data/data_file'
           m_annotations:
             tabular_parser:
               # sep: ','
-              path_to_data_file: '#data/data_file'
               comment: '#'
               mode: row
               target_sub_section: 
@@ -631,10 +656,10 @@ definitions:
                 eln:
                   component: NumberEditQuantity
                   defaultDisplayUnit: milliampere
-    Movpe_instrument:
+    MovpeInstrument:
       base_sections: 
       - nomad.datamodel.metainfo.eln.Instrument
-      - 'nomad.datamodel.data.EntryData'
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
       quantities:
@@ -685,13 +710,13 @@ definitions:
             eln:
               component: StringEditQuantity
       sub_sections:
-        precursors:
+        Precursors:
           repeats: True
           m_annotations:
             eln:
-          section: nomad.datamodel.metainfo.workflow2.Link
-        publication_reference:
-          repeats: True
+          section: ../upload/raw/base_classes.schema.archive.yaml#Link
+        PublicationReference:
+          repeats: true
           m_annotations:
             eln:
           section: nomad.datamodel.metainfo.eln.PublicationReference
