@@ -1,0 +1,112 @@
+# Kentaro Kutsukake's NOMAD use case
+# Goal: publish data and ML notebook of Kentaro's publiscation "Application of Bayesian 
+# optimization for improved passivation performance in TiOx/SiOy/c-Si heterostructure by
+# hydrogen plasma treatment". doi: 10.35848/1882-0786/abd869 in NOMAD
+# In this Yaml file we conduct the "Data Revision" to fully understand the dataset and prepare a schema file for uploading the data into NOMAD
+# datafiles: BO_data.xlsx --> process and characterization data, BO.ipynb --> ML notebook
+#
+# todo:
+#       1. describe BO_data.xlsx --> Kentaro
+#       2. write schema file --> Andrea & Sebastian
+#       3. (optional) add a minimum of additional metadata to understand context of the datafile. --> see below
+#          (e.g. details from the published article about the used instruments, materials, processes etc. and also the ML by BO) 
+#
+#
+# description of xlsx file
+XLSX_file: #describe columns and rows
+    data_owner: # Kentaro?!
+    columns: #parameters
+        Process temperature:
+            description: # todo Kentaro
+            unit: °C
+            type: integer
+        Process time: 
+            description: # todo Kentaro
+            unit: min
+            type: float
+        H2 pressure: 	
+            description: # todo Kentaro
+            unit: Pa
+            type: integer
+        H2 flow rate:
+            description: # todo Kentaro
+            unit: sccm
+            type: integer
+        RF power:	
+            description: # todo Kentaro
+            unit: W
+            type: integer
+        Electrod distance:
+            description: # todo Kentaro
+            unit: mm
+            type: integer
+        Carrier lifetime:
+            description: # todo Kentaro
+            unit: µm
+            type: integer
+    rows:
+        description: # each row is one experiment? 
+
+# Additional information to understand dataset, could be taken from article.
+# This information is optional, but helps to understand the dataset. --> FAIR data!
+
+# From the article the following information could be derived. Feel free to extend it
+# if you have more inforamtion available and provide the source.
+        
+substrate: 
+    surface_condition: Double-sided mirrorpolished,
+    doping_type: n-type 
+    fabrication_method: Fz-grown 
+    wafer_type: cystalline
+    wafer_material: Si 
+    resistivity: 2.0 to 4.0 Ω · cm
+    thickness:  280 ± 20 μm,
+
+process_steps: # description of the overall process of TiOx/SiOy/c-Si heterostructures
+	HF_cleaning: # wet chemical step --> general schema?
+        dipping_time: 30sec
+        input:
+            solution: 5% HF, 
+            sample: c-Si substrate # see above
+        output: clean c-Si substrate # --> no oxide layer, H terminated Si surface
+    formation_of_SiOx: # wet chemical step --> general schema?
+        dipping_time: 10mins
+        temperature: room temperature 
+        input: 
+            solution: 30% H2O2 
+            sample: clean c-Si substrate # from above
+        output/sample/layer: ultra-thin SiOy interlayer.
+    Atomic_layer_deposition:  # do we have other people doing ALD?
+        deposition temperature: 150 °C
+        inputs: 
+            sample: Si/SiOx 
+            Metal_precursor: TDMAT
+            Oxidant: H2O
+        output/sample/layer:
+            film_thickness: 3 nm # layer thickness was determined by a spectroscopic ellipsometer (SE). The details of SE analysis are given elsewhere.29)
+            film_material: TiOx thin #Si/SiOx/TiOx
+    Hydrogen_plasma_treatment: # see xlsx table
+        instrument_setting: # we could attache also the small figure from the article
+            hydrogen_plasma: generated using a VHF power supply with a frequency of 60 MHz
+            electrode_area: 138.5 cm2
+        process_parameters: # see xlsx table
+            temperature (THPT): # the process temperature is the set temperature of the heater and could be different from the actual temperature of the sample. For example, the temperature at the sample surface could be increased owing to plasma exposure. Since the actual temperature is influenced by various process conditions, the process temperature is employed as one of the process parameters to be optimized.
+            process time (tHPT):
+            H2 pressure (pH2):
+            H2 flow rate (RH2):
+            RF power (PRF):
+            electrode distance (d):
+        inputs:
+            sample: Si/SiOx/TiOx
+        output:
+            sample: TiOx/c-Si heterostructure with terminated interfacial dangling bonds by hydrogen atoms            
+QSSPC_Lifetime_measurement: # measure τeff of the TiOx/SiOy/c-Si heterostructures
+    instrument: WCT-120(Sinton Instruments) # could be an own schema just describe that method and its data
+    effective_carrier_lifetime_τeff: µs
+
+ML_BO_description: # to be done by Kentaro...
+
+            
+
+
+    
