@@ -1,0 +1,4 @@
+plugin_type: schema
+name: NOMAD's RTG SIMS schema plugin
+description: |
+  This is a schema for SIMS depth profile data from RTG Microanalyse (https://www.rtg-berlin.de/)

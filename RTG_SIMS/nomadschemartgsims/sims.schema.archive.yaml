@@ -1,0 +1,59 @@
+definitions:
+  name: RTG SIMS Schemas
+  sections:
+    RTG_SIMS_measurement:
+      base_sections: 
+        #- nomad.datamodel.metainfo.eln.ElnBaseSection
+        - nomad.datamodel.data.EntryData
+      quantities:
+        lab_id:
+          type: str
+          description: the ID from RTG
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: depth profile ID
+        Matrix:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        date:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        SampleID:
+          type: str
+          description: sampleID from user
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        Elements:
+          repeats: true
+          section:
+            quantities:
+              name:
+                type: str
+                description: the ID from RTG
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              depth:
+                type: np.float64
+                description: etch depth
+                #shape: ['*']
+                unit: µm
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              counts:
+                type: np.float64
+                description: intensity in counts per seconds
+                #shape: ['*']
+                unit: 1/s
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    

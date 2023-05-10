@@ -1,0 +1,9 @@
+{
+    "data": {
+        "m_def": "nomadschemartgsims.schema.RTG_SIMS_measurement",
+        "name": "test",
+        "datetime": "2023-05-09T20:29:14.655170+00:00",
+        "data_file": "22-285-AG.dp_ascii"
+    },
+    "m_ref_archives": {}
+}
