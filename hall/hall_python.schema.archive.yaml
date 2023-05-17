@@ -87,7 +87,7 @@ definitions:
           default: "Hall Measurement"
     SampleWithContacts:
       base_sections: 
-        - '../upload/raw/base_classes.schema.archive.yaml#Ensemble'
+        - 'nomad.datamodel.metainfo.eln.Ensemble'
       sub_sections:
         metal_stack:
           repeats: true
