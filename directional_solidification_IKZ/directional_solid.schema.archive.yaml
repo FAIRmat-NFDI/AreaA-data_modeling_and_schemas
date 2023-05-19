@@ -4,6 +4,7 @@ definitions:
     DirectionalSolidificationExperiment:  
       base_sections:
        - nomad.datamodel.metainfo.eln.Activity
+       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
       quantities:
@@ -65,38 +66,53 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              crucible:
-                section:
+              crucible_setup:
+                section: 
+                  m_annotations:
+                    eln:
                   quantities:
-                    crucible_id:
+                    crucible_Support_side_and_bottom_shape:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    crucible_weight:
+                    crucible_top_cover:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                          suggestions: ['slot opening', 'plate']
+                    crucible_top_cover_material:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                          suggestions: ['SiC', 'TiC', 'graphite']
+                    crucible_top_cover_age:
                       type: np.float64
-                      unit: gram
-                      description: weight in grams of crucible
+                      unit: hour
+                      description: crucible_top_cover_age in hours
                       m_annotations:
                         eln:
                           component: NumberEditQuantity
-                          defaultDisplayUnit: gram
-                    crucible_name:
+                          defaultDisplayUnit: hour
+                  sub_sections:
+                    crucible:
+                      section: '#/Crucible'
+              susceptor:
+                section:
+                  quantities:
+                    susceptor_material:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    crucible_coating:
+                    susceptor_mass:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-                    crucible_pretreatment:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-              magnetic_field_settings:
+              magnetic_field_setup:
                 section:
                   quantities:
                     test3:
@@ -104,12 +120,12 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              gas_settings:
+              gas_setup:
                 repeats: true
                 section:  
                   quantities:
                     gas:
-                      type: ../upload/raw/base_classes.schema.archive.yaml#Material
+                      type: nomad.datamodel.metainfo.eln.Entity # to be specified!
                       m_annotations:
                         eln:
                           component: ReferenceEditQuantity
@@ -129,9 +145,52 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mbar
+        process:
+          section:
+            m_annotations:
+              eln:
+            sub_sections:
+              RecipeProcess:
+                section: '#/Recipe'
+              PreparationOfSetupParts:
+                section:
+                  quantities:
+                    test:
+                      type: str 
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              Einwaage_process:
+                section: '#/Einwaage'
+              FeedstockFilling:
+                section:
+                  quantities:
+                    notes:
+                      type: str 
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                  sub_sections:
+                    stacking_order:
+                      repeats: true
+                      section: nomad.datamodel.metainfo.eln.Component
+              ManualProtocol:
+                section:
+                  quantities:
+                    test:
+                      type: str 
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+              # CrystalCutting:
+              #   section: basesections_IKZ.SampleCut
+              BasicCharacterizationProcess:
+                section: '#/BasicCharacterization'
+              DigitalProtocolProcess:
+                section: '#/DigitalProtocol'
     TemperatureRamp:
-      base_sections: 
-       - ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
+      # base_sections: 
+      #  - ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
       quantities:
         rate:
           type: np.float64
@@ -239,7 +298,14 @@ definitions:
             eln:
               component: NumberEditQuantity
               #defaultDisplayUnit: gram / gram
-    Logfile_dir_sol:
+      sub_sections:
+        components:
+          repeats: true 
+          section: nomad.datamodel.metainfo.eln.Component
+        steps:
+          repeats: true
+          section: '#/TemperatureRamp'
+    DigitalProtocol:
       base_sections: 
       -  nomad.parsing.tabular.TableData
       m_annotations:
@@ -1401,7 +1467,7 @@ definitions:
               label: My label
               x: timestamp
               y: ./no_messwert_ppm
-    Recipe_dir_sol:
+    Recipe:
       base_sections: 
       -  nomad.parsing.tabular.TableData
       m_annotations:
@@ -1473,7 +1539,7 @@ definitions:
                     y: ./h1_soll_p
     Feedstock: 
       base_sections: 
-      - '#/Ensemble'
+      - nomad.datamodel.metainfo.eln.Entity
       quantities:
         supplier:
           type: str
@@ -1481,3 +1547,93 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+    Crucible:
+      quantities:
+        crucible_id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_weight:
+          type: np.float64
+          unit: gram
+          description: Weight in grams
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_name:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_coating:
+          type: str
+          description: see preprocess activity for details 
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_pretreatment:
+          type: str
+          description: FILL 
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    BasicCharacterization:
+      base_sections:
+        - nomad.datamodel.metainfo.eln.Measurement
+      quantities:
+        kopfmasse_b:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        kopfmasse_l:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        bodenmasse_b:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        bodenmasse_l:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        weight:
+          type: np.float64
+          unit: gram
+          description: Weight in grams
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        height_north_in_middle:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        height_south:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        height_east:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        height_west:
+          type: np.float64 
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        surface_inspection:
+          type: str 
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
