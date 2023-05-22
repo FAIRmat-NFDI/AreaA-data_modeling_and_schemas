@@ -4,7 +4,6 @@ definitions:
     MovpeExperiment:
       base_sections: 
        - nomad.parsing.tabular.TableData 
-       - ../upload/raw/base_classes.schema.archive.yaml#Experiment 
       m_annotations:
         eln: 
           hide: ['end_time', 'lab_id', 'location']
@@ -453,6 +452,20 @@ definitions:
               name: AFMReflectanceSEM/Sample
             eln:
               component: StringEditQuantity
+        datetime:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Date
+            eln:
+              component: DateTimeEditQuantity
+        surface_state:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Surface State
+            eln:
+              component: StringEditQuantity
         roughness:
           type: np.float64
           unit: nanometer
@@ -463,6 +476,40 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
+        surface_features:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Surface Features
+            eln:
+              component: StringEditQuantity
+        thickness:
+          type: np.float64
+          unit: nanometer
+          description: Thickness from Reflectance
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Thickness
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+        growth_rate:
+          type: np.float64
+          unit: nanometer / minute
+          description: Growth rate calculated
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Thickness
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer / minute
+        notes:
+          type: str
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Notes
+            eln:
+              component: StringEditQuantity
     HRXRDmeasurement:
       more:
         label_quantity: sample_id
@@ -480,7 +527,7 @@ definitions:
           type: Datetime
           m_annotations:
             tabular:
-              name: HRXRD/Timestamp
+              name: HRXRD/Date
             eln:
               component: DateTimeEditQuantity
         method:
@@ -496,6 +543,60 @@ definitions:
           m_annotations:
             tabular:
               name: HRXRD/Phase
+            eln:
+              component: StringEditQuantity
+        peak_position_2theta:
+          type: np.float64
+          unit: degree
+          description: "Peak Position - 2theta"
+          m_annotations:
+            tabular:
+              name: HRXRD/Peak Position - 2theta
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: degree
+        peak_fwhm_2theta:
+          type: np.float64
+          unit: degree
+          description: "Peak Position - 2theta"
+          m_annotations:
+            tabular:
+              name: HRXRD/Peak FWHM - 2theta
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: degree
+        peak_position_omega:
+          type: np.float64
+          unit: degree
+          description: "Peak Position - Omega"
+          m_annotations:
+            tabular:
+              name: HRXRD/Peak Position - 2theta
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: degree
+        peak_fwhm_rocking_curve:
+          type: str
+          description: Peak FWHM Rocking Curve
+          m_annotations:
+            tabular:
+              name: HRXRD/Peak FWHM Rocking Curve
+            eln:
+              component: StringEditQuantity
+        reflection:
+          type: str
+          description: Peak FWHM Rocking Curve
+          m_annotations:
+            tabular:
+              name: HRXRD/Reflection
+            eln:
+              component: StringEditQuantity
+        notes:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: HRXRD/Notes
             eln:
               component: StringEditQuantity
     GrowthRunStep:
@@ -549,12 +650,66 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mbar
-        description:
-          type: str
+        flow_metal_carrier:
+          type: np.float64
+          unit: mbar
           description: FILL THE DESCRIPTION
           m_annotations:
+            tabular:
+              name: GrowthRun/Flow Metal Carrier
             eln:
-              component: StringEditQuantity
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        metal_inner_valve:
+          type: int
+          description: inner valve (0-200)
+          m_annotations:
+            tabular:
+              name: GrowthRun/Metal Inner Valve
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 200
+        metal_outer_valve:
+          type: int
+          description: outer valve (0-200)
+          m_annotations:
+            tabular:
+              name: GrowthRun/Metal Outer Valve
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 200
+        flow_oxydant_carrier:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Flow Oxydant Carrier
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        oxydant_inner_valve:
+          type: int
+          description: inner valve (0-200)
+          m_annotations:
+            tabular:
+              name: GrowthRun/Oxydant Inner Valve
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 200
+        oxydant_outer_valve:
+          type: int
+          description: outer valve (0-200)
+          m_annotations:
+            tabular:
+              name: GrowthRun/Oxydant Outer Valve
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 200
         purge_flow:
           type: np.float64
           unit: cm ** 3 / minute
@@ -585,6 +740,14 @@ definitions:
               component: SliderEditQuantity
               minValue: 0
               maxValue: 200
+        notes:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Notes
+            eln:
+              component: StringEditQuantity
       sub_sections:
         Bubblers:
           repeats: true
@@ -600,16 +763,6 @@ definitions:
                     name: GrowthRun/Bubbler Material
                   eln:
                     component: StringEditQuantity
-              flow:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Flow
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
               dilution:
                 type: np.float64
                 unit: cm ** 3 / minute
@@ -681,26 +834,6 @@ definitions:
                     name: GrowthRun/Bubbler Valve
                   eln:
                     component: BoolEditQuantity
-              inner_valve:
-                type: int
-                description: inner valve (0-200)
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Inner Valve
-                  eln:
-                    component: SliderEditQuantity
-                    minValue: 0
-                    maxValue: 200
-              outer_valve:
-                type: int
-                description: inner valve (0-200)
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Outer Valve
-                  eln:
-                    component: SliderEditQuantity
-                    minValue: 0
-                    maxValue: 200
         GasSource:
           repeats: true
           section:
@@ -756,17 +889,7 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              flow_carrier:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Gas Flow Carrier
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              pressure:
+              cylinder_pressure:
                 type: np.float64
                 unit: mbar
                 description: FILL THE DESCRIPTION
@@ -902,7 +1025,8 @@ definitions:
               component: StringEditQuantity
     Substrate:
       base_sections: 
-      - ../upload/raw/base_classes.schema.archive.yaml#Substrate 
+      - 'nomad.datamodel.metainfo.eln.System'
+      - 'nomad.datamodel.data.EntryData'
       quantities:
         alias:
           type: str
@@ -1033,6 +1157,14 @@ definitions:
               component: BoolEditQuantity
             tabular:
               name: Substrate/Regrowth
+        documentation: 
+          type: str
+          description: pdf files containing certificate and other documentation
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
         notes: 
           type: str
           description: FILL
