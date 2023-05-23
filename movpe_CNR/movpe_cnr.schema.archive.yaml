@@ -29,12 +29,7 @@ definitions:
               component: StringEditQuantity
         method:
           type: str
-          default: "MOVPE"
-          # m_annotations:
-          #   tabular:
-          #     name: HRXRD/Activity Method
-          #   eln:
-          #     component: StringEditQuantity
+          default: "MOVPE Experiment"
       sub_sections:
         Overview:
           section:
@@ -207,12 +202,7 @@ definitions:
                     component: FileEditQuantity
               method:
                 type: str
-                default: "GrowthRun"
-                # m_annotations:
-                #   tabular:
-                #     name: HRXRD/Activity Method
-                #   eln:
-                #     component: StringEditQuantity
+                default: "MOVPE GrowthRun"
             sub_sections:
               GrowthRunSteps:
                 repeats: true
@@ -374,22 +364,6 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Overview/Activity Category
-        #
-        # REACTIVATE this quantoity when Overview is moved in the rot level
-        #
-        # method:
-        #   type: str
-        #   description: |
-        #     a method is a series of steps for performing a function or accomplishing a result.
-
-        #     Or
-
-        #     any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
-        #   m_annotations:
-        #     eln:
-        #       component: StringEditQuantity
-        #     tabular:
-        #       name: Overview/Activity Method
         operator:
           type: str
           description: FILL
@@ -468,7 +442,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "AFM"
+          default: "MOVPE AFM"
         description: 
           type: str
           description: description
@@ -549,17 +523,20 @@ definitions:
       m_annotations:
         eln: 
       quantities:
+        method:
+          type: str
+          default: "MOVPE HRXRD"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         sample_id:
           type: str
           m_annotations:
             tabular:
               name: HRXRD/Sample
-            eln:
-              component: StringEditQuantity
-        description: 
-          type: str
-          description: description
-          m_annotations:
             eln:
               component: StringEditQuantity
         datetime:
@@ -569,9 +546,6 @@ definitions:
               name: HRXRD/Date
             eln:
               component: DateTimeEditQuantity
-        method:
-          type: str
-          default: "HRXRD"
         phase:
           type: str
           description: Phase type obtained from HRXRD 
@@ -1285,7 +1259,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "SampleCut"
+          default: "MOVPE Sample Cut"
         description: 
           type: str
           description: description
@@ -1357,18 +1331,21 @@ definitions:
       - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Process
       quantities:
+        method:
+          type: str
+          default: "MOVPE Contacts Sputtering"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         name: 
           type: str
           description: FILL
           m_annotations:
             tabular:
               name: Contacts/Sample Piece
-            eln:
-              component: StringEditQuantity
-        description: 
-          type: str
-          description: description
-          m_annotations:
             eln:
               component: StringEditQuantity
         datetime:
@@ -1388,9 +1365,6 @@ definitions:
               name: Contacts/Activity Category
             eln:
               component: StringEditQuantity
-        method:
-          type: str
-          default: "Contacts Sputtering"
         contact_type: 
           type: str
           description: FILL

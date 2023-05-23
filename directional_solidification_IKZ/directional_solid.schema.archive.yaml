@@ -1,5 +1,5 @@
 definitions:
-  name: 'Directional Solidification ELN'
+  name: 'Directional Solidification Experiment'
   sections:  # Schemas consist of section definitions
     DirectionalSolidificationExperiment:  
       base_sections:
@@ -8,6 +8,15 @@ definitions:
       m_annotations:
         eln:
       quantities:
+        method:
+          type: str
+          default: "Directional Solidification (DS)"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         protocol_file:
           type: str
           description: protocol file
@@ -150,9 +159,11 @@ definitions:
             m_annotations:
               eln:
             sub_sections:
-              RecipeProcess:
-                section: '#/Recipe'
-              PreparationOfSetupParts:
+              recipe:
+                section: 
+                  base_sections:
+                    - '#/Recipe'
+              preparation_setup_parts:
                 section:
                   quantities:
                     test:
@@ -160,11 +171,25 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              Einwaage_process:
-                section: '#/Einwaage'
-              FeedstockFilling:
+              weighing:
+                section: 
+                  base_sections:
+                    - '#/Weighing'
+              feedstock_filling:
                 section:
+                  base_sections: 
+                    - nomad.datamodel.metainfo.eln.Process
+                    - nomad.datamodel.data.EntryData
                   quantities:
+                    method:
+                      type: str
+                      default: "DS Feedstock Filling"
+                    description: 
+                      type: str
+                      description: description
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
                     notes:
                       type: str 
                       m_annotations:
@@ -174,23 +199,24 @@ definitions:
                     stacking_order:
                       repeats: true
                       section: nomad.datamodel.metainfo.eln.Component
-              ManualProtocol:
-                section:
-                  quantities:
-                    test:
-                      type: str 
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-              # CrystalCutting:
+              manual_protocol:
+                section: 
+                  base_sections:
+                    - '#/ManualProtocol'
+              digital_protocol:
+                section: 
+                  base_sections:
+                    - '#/DigitalProtocol'
+              # crystal_cutting:
               #   section: basesections_IKZ.SampleCut
-              BasicCharacterizationProcess:
-                section: '#/BasicCharacterization'
-              DigitalProtocolProcess:
-                section: '#/DigitalProtocol'
+              basic_characterization:
+                section: 
+                  base_sections:
+                    - '#/BasicCharacterization'
     TemperatureRamp:
-      # base_sections: 
-      #  - ../upload/raw/base_classes.schema.archive.yaml#ActivityStep
+      base_sections: 
+       - nomad.datamodel.metainfo.eln.Process
+       - nomad.datamodel.data.EntryData
       quantities:
         rate:
           type: np.float64
@@ -219,11 +245,20 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: hour
-    Einwaage:
+    Weighing:
       base_sections: 
-       - nomad.datamodel.metainfo.eln.Activity
+       - nomad.datamodel.metainfo.eln.Process
        - nomad.datamodel.data.EntryData
       quantities:
+        method:
+          type: str
+          default: "DS Weighing"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         dose:
           type: np.float64
           # unit: celsius
@@ -305,9 +340,31 @@ definitions:
         steps:
           repeats: true
           section: '#/TemperatureRamp'
+    ManualProtocol:
+      base_sections: 
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.parsing.tabular.TableData
+      quantities:
+        method:
+          type: str
+          default: "DS Manual Protocol"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        test:
+          type: str 
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     DigitalProtocol:
       base_sections: 
-      -  nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.parsing.tabular.TableData
       m_annotations:
         plot:
         - label: Temperature, T(˚C)
@@ -391,6 +448,15 @@ definitions:
             line:
               color: rgb(170, 117, 57)
       quantities:
+        method:
+          type: str
+          default: "DS Digital Protocol"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         data_file:
           type: str
           description: |
@@ -1469,7 +1535,9 @@ definitions:
               y: ./no_messwert_ppm
     Recipe:
       base_sections: 
-      -  nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.parsing.tabular.TableData
       m_annotations:
         plot:
         - label: My_custom_plot_label
@@ -1481,6 +1549,15 @@ definitions:
             line:
               color: rgb(50, 138, 46)
       quantities:
+        method:
+          type: str
+          default: "DS Recipe"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         data_file:
           type: str
           description: |
@@ -1581,8 +1658,18 @@ definitions:
               component: StringEditQuantity
     BasicCharacterization:
       base_sections:
-        - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Measurement
       quantities:
+        method:
+          type: str
+          default: "DS Basic Characterization"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         kopfmasse_b:
           type: np.float64 
           m_annotations:
