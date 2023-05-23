@@ -1,10 +1,11 @@
 definitions:
-  name: 'ELN for MOVPE exp at CNR'
+  name: 'MOVPE Experiment (IMEM-CNR)'
   sections:  
     MovpeExperiment:
       base_sections: 
        - nomad.parsing.tabular.TableData 
        - nomad.datamodel.metainfo.eln.Activity
+       - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
           hide: ['end_time', 'lab_id', 'location']
@@ -31,7 +32,7 @@ definitions:
           type: str
           default: "MOVPE Experiment"
       sub_sections:
-        Overview:
+        overview:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -52,7 +53,7 @@ definitions:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity 
-        Precursors:
+        precursors:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -90,7 +91,7 @@ definitions:
                         eln:
                           component: StringEditQuantity
                           label: CAS number        
-        Substrate:
+        substrate:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -118,7 +119,7 @@ definitions:
                 section:
                   base_sections: 
                   - '#/Substrate'
-        Mist:
+        MIST:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -135,26 +136,35 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - MistSource
+                    - MIST_source
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              MistSource:
+              MIST_source:
                 repeats: true
                 section:
                   base_sections: 
                   - '#/MistSource'
-        Pregrowth:
+        pregrowth:
           section:
             base_sections: 
-            - nomad.datamodel.data.EntryData
             - nomad.datamodel.metainfo.eln.Process
             - nomad.parsing.tabular.TableData 
+            - nomad.datamodel.data.EntryData
             m_annotations:
               eln: 
             quantities:
+              method:
+                type: str
+                default: "MOVPE Pregrowth"
+              description: 
+                type: str
+                description: description
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
               data_file:
                 type: str
                 default: '#data/data_file'
@@ -165,18 +175,18 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - PregrowthSteps
+                    - pregrowth_steps
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              PregrowthSteps:
+              pregrowth_steps:
                 repeats: true
                 section:
                   base_sections: 
                   - '#/PregrowthStep'
-        GrowthRun:
+        growth_run:
           section:
             base_sections: 
             - nomad.datamodel.data.EntryData
@@ -185,6 +195,15 @@ definitions:
             m_annotations:
               eln: 
             quantities:
+              method:
+                type: str
+                default: "MOVPE Growth Run"
+              description: 
+                type: str
+                description: description
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
               data_file:
                 type: str
                 default: '#data/data_file'
@@ -209,7 +228,7 @@ definitions:
                 section:
                   base_sections: 
                   - '#/GrowthRunStep'
-        SamplesCut:
+        samples_cut:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -226,18 +245,18 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - SampleCut
+                    - sample_cut
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              SampleCut:
+              sample_cut:
                 repeats: true
                 section:
                   base_sections: 
                   - '#/SampleCut'
-        AFMmeasurements:
+        AFM:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -265,7 +284,7 @@ definitions:
                 section:
                   base_sections: 
                   - '#/AFMmeasurement'
-        HRXRDmeasurements:
+        HRXRD:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -293,7 +312,7 @@ definitions:
                 section:
                   base_sections: 
                   - '#/HRXRDmeasurement'
-        ContactsSputtering:
+        contacts_sputtering:
           section:
             base_sections: 
             - nomad.parsing.tabular.TableData 
@@ -310,13 +329,13 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - contacts
+                    - processes
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              contacts:
+              processes:
                 repeats: true
                 section:
                   base_sections: 
@@ -435,8 +454,8 @@ definitions:
       more:
         label_quantity: sample_id
       base_sections:
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
       quantities:
@@ -518,8 +537,8 @@ definitions:
       more:
         label_quantity: sample_id
       base_sections:
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
       quantities:
@@ -1252,8 +1271,8 @@ definitions:
                     name: Mist/Concentration
     SampleCut:
       base_sections:
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
       quantities:
@@ -1328,8 +1347,8 @@ definitions:
       m_annotations:
         eln: 
       base_sections:
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.data.EntryData
       quantities:
         method:
           type: str

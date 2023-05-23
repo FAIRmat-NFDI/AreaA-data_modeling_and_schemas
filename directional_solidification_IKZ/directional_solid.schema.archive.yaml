@@ -160,21 +160,29 @@ definitions:
               eln:
             sub_sections:
               recipe:
-                section: 
-                  base_sections:
-                    - '#/Recipe'
+                section: '#/Recipe'
               preparation_setup_parts:
                 section:
+                  base_sections: 
+                    - nomad.datamodel.metainfo.eln.Process
+                    - nomad.datamodel.data.EntryData
                   quantities:
+                    method:
+                      type: str
+                      default: "DS Preparation Setup Parts"
+                    description: 
+                      type: str
+                      description: description
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
                     test:
                       type: str 
                       m_annotations:
                         eln:
                           component: StringEditQuantity
               weighing:
-                section: 
-                  base_sections:
-                    - '#/Weighing'
+                section: '#/Weighing'
               feedstock_filling:
                 section:
                   base_sections: 
@@ -199,25 +207,30 @@ definitions:
                     stacking_order:
                       repeats: true
                       section: nomad.datamodel.metainfo.eln.Component
+              temperature_ramp:
+                section: '#/TemperatureRamp'
               manual_protocol:
-                section: 
-                  base_sections:
-                    - '#/ManualProtocol'
+                section: '#/ManualProtocol'
               digital_protocol:
-                section: 
-                  base_sections:
-                    - '#/DigitalProtocol'
+                section: '#/DigitalProtocol'
               # crystal_cutting:
               #   section: basesections_IKZ.SampleCut
               basic_characterization:
-                section: 
-                  base_sections:
-                    - '#/BasicCharacterization'
+                section: '#/BasicCharacterization'
     TemperatureRamp:
       base_sections: 
        - nomad.datamodel.metainfo.eln.Process
        - nomad.datamodel.data.EntryData
       quantities:
+        method:
+          type: str
+          default: "DS Temperature Ramp"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         rate:
           type: np.float64
           shape: ['*']
@@ -342,9 +355,8 @@ definitions:
           section: '#/TemperatureRamp'
     ManualProtocol:
       base_sections: 
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Process
-      - nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
       quantities:
         method:
           type: str
@@ -362,9 +374,9 @@ definitions:
               component: StringEditQuantity
     DigitalProtocol:
       base_sections: 
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Process
       - nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
       m_annotations:
         plot:
         - label: Temperature, T(˚C)
@@ -1535,9 +1547,9 @@ definitions:
               y: ./no_messwert_ppm
     Recipe:
       base_sections: 
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Process
       - nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
       m_annotations:
         plot:
         - label: My_custom_plot_label
@@ -1658,8 +1670,8 @@ definitions:
               component: StringEditQuantity
     BasicCharacterization:
       base_sections:
-      - nomad.datamodel.data.EntryData
       - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
       quantities:
         method:
           type: str
