@@ -310,7 +310,7 @@ definitions:
       -  nomad.parsing.tabular.TableData
       m_annotations:
         plot:
-        - label: My_custom_plot_label
+        - label: Temperature, T(˚C)
           x: timestamp
           y:     
             - ./t_ist_h1
@@ -350,7 +350,7 @@ definitions:
           - mode: lines
             line:
               color: rgb(39, 87, 107)
-        - label: My_custom_plot_label
+        - label: Direct Current Intensity, I_DC(A)
           x: timestamp
           y:     
             - ./i_dc_ist_h1
