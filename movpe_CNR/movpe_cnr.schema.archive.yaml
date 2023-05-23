@@ -4,6 +4,7 @@ definitions:
     MovpeExperiment:
       base_sections: 
        - nomad.parsing.tabular.TableData 
+       - nomad.datamodel.metainfo.eln.Activity
       m_annotations:
         eln: 
           hide: ['end_time', 'lab_id', 'location']
@@ -26,6 +27,14 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        method:
+          type: str
+          default: "MOVPE"
+          # m_annotations:
+          #   tabular:
+          #     name: HRXRD/Activity Method
+          #   eln:
+          #     component: StringEditQuantity
       sub_sections:
         Overview:
           section:
@@ -76,7 +85,6 @@ definitions:
                 section:
                   base_sections: 
                   - nomad.datamodel.metainfo.eln.Substance
-                  - nomad.datamodel.data.EntryData
                   quantities:
                     cas_number:
                       type: str
@@ -146,6 +154,7 @@ definitions:
         Pregrowth:
           section:
             base_sections: 
+            - nomad.datamodel.data.EntryData
             - nomad.datamodel.metainfo.eln.Process
             - nomad.parsing.tabular.TableData 
             m_annotations:
@@ -161,13 +170,13 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - PregrowthStep
+                    - PregrowthSteps
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              PregrowthStep:
+              PregrowthSteps:
                 repeats: true
                 section:
                   base_sections: 
@@ -175,6 +184,7 @@ definitions:
         GrowthRun:
           section:
             base_sections: 
+            - nomad.datamodel.data.EntryData
             - nomad.datamodel.metainfo.eln.Process
             - nomad.parsing.tabular.TableData 
             m_annotations:
@@ -190,13 +200,21 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - GrowthRunStep
+                    - GrowthRunSteps
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
+              method:
+                type: str
+                default: "GrowthRun"
+                # m_annotations:
+                #   tabular:
+                #     name: HRXRD/Activity Method
+                #   eln:
+                #     component: StringEditQuantity
             sub_sections:
-              GrowthRunStep:
+              GrowthRunSteps:
                 repeats: true
                 section:
                   base_sections: 
@@ -256,7 +274,6 @@ definitions:
                 repeats: true
                 section:
                   base_sections: 
-                  - nomad.datamodel.metainfo.eln.Measurement
                   - '#/AFMmeasurement'
         HRXRDmeasurements:
           section:
@@ -285,7 +302,6 @@ definitions:
                 repeats: true
                 section:
                   base_sections: 
-                  - nomad.datamodel.metainfo.eln.Measurement
                   - '#/HRXRDmeasurement'
         ContactsSputtering:
           section:
@@ -314,7 +330,6 @@ definitions:
                 repeats: true
                 section:
                   base_sections: 
-                  - nomad.datamodel.metainfo.eln.Process
                   - '#/ContactSputtering'
     Overview:
       m_annotations:
@@ -359,19 +374,22 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Overview/Activity Category
-        method:
-          type: str
-          description: |
-            a method is a series of steps for performing a function or accomplishing a result.
+        #
+        # REACTIVATE this quantoity when Overview is moved in the rot level
+        #
+        # method:
+        #   type: str
+        #   description: |
+        #     a method is a series of steps for performing a function or accomplishing a result.
 
-            Or
+        #     Or
 
-            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Overview/Activity Method
+        #     any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+        #     tabular:
+        #       name: Overview/Activity Method
         operator:
           type: str
           description: FILL
@@ -442,9 +460,21 @@ definitions:
     AFMmeasurement:
       more:
         label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Measurement
       m_annotations:
-        eln:
+        eln: 
       quantities:
+        method:
+          type: str
+          default: "AFM"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         sample_id:
           type: str
           m_annotations:
@@ -513,6 +543,9 @@ definitions:
     HRXRDmeasurement:
       more:
         label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Measurement
       m_annotations:
         eln: 
       quantities:
@@ -521,6 +554,12 @@ definitions:
           m_annotations:
             tabular:
               name: HRXRD/Sample
+            eln:
+              component: StringEditQuantity
+        description: 
+          type: str
+          description: description
+          m_annotations:
             eln:
               component: StringEditQuantity
         datetime:
@@ -532,11 +571,7 @@ definitions:
               component: DateTimeEditQuantity
         method:
           type: str
-          m_annotations:
-            tabular:
-              name: HRXRD/Activity Method
-            eln:
-              component: StringEditQuantity
+          default: "HRXRD"
         phase:
           type: str
           description: Phase type obtained from HRXRD 
@@ -1036,6 +1071,12 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Substrates
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         name:
           type: str
           description: FILL
@@ -1236,9 +1277,21 @@ definitions:
                   tabular:
                     name: Mist/Concentration
     SampleCut:
+      base_sections:
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Process
       m_annotations:
         eln: 
       quantities:
+        method:
+          type: str
+          default: "SampleCut"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         parent_sample_id: 
           type: str
           description: FILL
@@ -1300,6 +1353,9 @@ definitions:
     ContactSputtering:
       m_annotations:
         eln: 
+      base_sections:
+      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.metainfo.eln.Process
       quantities:
         name: 
           type: str
@@ -1307,6 +1363,12 @@ definitions:
           m_annotations:
             tabular:
               name: Contacts/Sample Piece
+            eln:
+              component: StringEditQuantity
+        description: 
+          type: str
+          description: description
+          m_annotations:
             eln:
               component: StringEditQuantity
         datetime:
@@ -1326,14 +1388,9 @@ definitions:
               name: Contacts/Activity Category
             eln:
               component: StringEditQuantity
-        method: 
+        method:
           type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Contacts/Activity Method
-            eln:
-              component: StringEditQuantity
+          default: "Contacts Sputtering"
         contact_type: 
           type: str
           description: FILL
