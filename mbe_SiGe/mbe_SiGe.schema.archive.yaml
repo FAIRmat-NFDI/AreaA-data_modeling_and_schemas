@@ -25,8 +25,8 @@ definitions:
             - '#/SubstratePreparation'
         SubstrateCutting:
           section:
-            base_sections:
-            - nomad.datamodel.metainfo.eln.SampleCut
+            #############################base_sections:
+            ##############################################################################################- nomad.datamodel.metainfo.eln.SampleCut
             # m_annotations:
             #   eln: 
             #     properties:

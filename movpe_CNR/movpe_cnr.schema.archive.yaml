@@ -70,27 +70,17 @@ definitions:
                     comment: '#'
                     mode: row
                     target_sub_section: 
-                    - precursors
+                    - precursor_list
                   browser:
                     adaptor: RawFileAdaptor 
                   eln:
                     component: FileEditQuantity
             sub_sections:
-              precursors:
+              precursor_list:
                 repeats: true
                 section:
                   base_sections: 
-                  - nomad.datamodel.metainfo.eln.Substance
-                  quantities:
-                    cas_number:
-                      type: str
-                      description: FILL
-                      m_annotations:
-                        tabular:
-                          name: Precursors/CAS
-                        eln:
-                          component: StringEditQuantity
-                          label: CAS number        
+                  - '#/Precursor'
         substrate:
           section:
             base_sections: 
@@ -150,84 +140,11 @@ definitions:
         pregrowth:
           section:
             base_sections: 
-            - nomad.datamodel.metainfo.eln.Process
-            - nomad.parsing.tabular.TableData 
-            - nomad.datamodel.data.EntryData
-            m_annotations:
-              eln: 
-            quantities:
-              method:
-                type: str
-                default: "MOVPE Pregrowth"
-              description: 
-                type: str
-                description: description
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              data_file:
-                type: str
-                default: '#data/data_file'
-                description: |
-                  A reference to an uploaded .xlsx
-                m_annotations:
-                  tabular_parser:
-                    comment: '#'
-                    mode: row
-                    target_sub_section: 
-                    - pregrowth_steps
-                  browser:
-                    adaptor: RawFileAdaptor 
-                  eln:
-                    component: FileEditQuantity
-            sub_sections:
-              pregrowth_steps:
-                repeats: true
-                section:
-                  base_sections: 
-                  - '#/PregrowthStep'
+            - '#/PreGrowth'
         growth_run:
           section:
             base_sections: 
-            - nomad.datamodel.data.EntryData
-            - nomad.datamodel.metainfo.eln.Process
-            - nomad.parsing.tabular.TableData 
-            m_annotations:
-              eln: 
-            quantities:
-              method:
-                type: str
-                default: "MOVPE Growth Run"
-              description: 
-                type: str
-                description: description
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              data_file:
-                type: str
-                default: '#data/data_file'
-                description: |
-                  A reference to an uploaded .xlsx
-                m_annotations:
-                  tabular_parser:
-                    comment: '#'
-                    mode: row
-                    target_sub_section: 
-                    - GrowthRunSteps
-                  browser:
-                    adaptor: RawFileAdaptor 
-                  eln:
-                    component: FileEditQuantity
-              method:
-                type: str
-                default: "MOVPE GrowthRun"
-            sub_sections:
-              GrowthRunSteps:
-                repeats: true
-                section:
-                  base_sections: 
-                  - '#/GrowthRunStep'
+            - '#/GrowthRun'
         samples_cut:
           section:
             base_sections: 
@@ -256,62 +173,6 @@ definitions:
                 section:
                   base_sections: 
                   - '#/SampleCut'
-        AFM:
-          section:
-            base_sections: 
-            - nomad.parsing.tabular.TableData 
-            m_annotations:
-              eln: 
-            quantities:
-              data_file:
-                type: str
-                default: '#data/data_file'
-                description: |
-                  A reference to an uploaded .xlsx
-                m_annotations:
-                  tabular_parser:
-                    comment: '#'
-                    mode: row
-                    target_sub_section: 
-                    - measurements
-                  browser:
-                    adaptor: RawFileAdaptor 
-                  eln:
-                    component: FileEditQuantity
-            sub_sections:
-              measurements:
-                repeats: true
-                section:
-                  base_sections: 
-                  - '#/AFMmeasurement'
-        HRXRD:
-          section:
-            base_sections: 
-            - nomad.parsing.tabular.TableData 
-            m_annotations:
-              eln: 
-            quantities:
-              data_file:
-                type: str
-                default: '#data/data_file'
-                description: |
-                  A reference to an uploaded .xlsx
-                m_annotations:
-                  tabular_parser:
-                    comment: '#'
-                    mode: row
-                    target_sub_section: 
-                    - measurements
-                  browser:
-                    adaptor: RawFileAdaptor 
-                  eln:
-                    component: FileEditQuantity
-            sub_sections:
-              measurements:
-                repeats: true
-                section:
-                  base_sections: 
-                  - '#/HRXRDmeasurement'
         contacts_sputtering:
           section:
             base_sections: 
@@ -340,6 +201,188 @@ definitions:
                 section:
                   base_sections: 
                   - '#/ContactSputtering'
+        SEM:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - measurements
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              measurements:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/SEMmeasurement'
+        AFM:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - measurements
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              measurements:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/AFMmeasurement'
+        reflectance:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - measurements
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              measurements:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/ReflectanceMeasurement'
+        absorbance:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - measurements
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              measurements:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/AbsorbanceMeasurement'
+        hall:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - measurements
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              measurements:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/HallMeasurement'
+        HRXRD:
+          section:
+            base_sections: 
+            - nomad.parsing.tabular.TableData 
+            m_annotations:
+              eln: 
+            quantities:
+              data_file:
+                type: str
+                default: '#data/data_file'
+                description: |
+                  A reference to an uploaded .xlsx
+                m_annotations:
+                  tabular_parser:
+                    comment: '#'
+                    mode: row
+                    target_sub_section: 
+                    - measurements
+                  browser:
+                    adaptor: RawFileAdaptor 
+                  eln:
+                    component: FileEditQuantity
+            sub_sections:
+              measurements:
+                repeats: true
+                section:
+                  base_sections: 
+                  - '#/HRXRDmeasurement'
+    Precursor:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.data.EntryData
+      quantities:
+        cas_number:
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Precursors/CAS
+            eln:
+              component: StringEditQuantity
+              label: CAS number
     Overview:
       m_annotations:
         eln: 
@@ -371,18 +414,18 @@ definitions:
               name: Overview/Date
             eln:
               component: DateTimeEditQuantity
-        category:
-          type: str
-          description: |
-            A phenomenon by which change takes place in a system. 
-            In physiological systems, a process may be 
-            chemical, physical or both. 
-            [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Overview/Activity Category
+        # category:
+        #   type: str
+        #   description: |
+        #     A phenomenon by which change takes place in a system. 
+        #     In physiological systems, a process may be 
+        #     chemical, physical or both. 
+        #     [IUPAC Gold Book](https://goldbook.iupac.org/terms/view/P04858)
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+        #     tabular:
+        #       name: Overview/Activity Category
         operator:
           type: str
           description: FILL
@@ -450,7 +493,7 @@ definitions:
               name: Overview/Notes
             eln:
               component: StringEditQuantity
-    AFMmeasurement:
+    SEMmeasurement:
       more:
         label_quantity: sample_id
       base_sections:
@@ -461,7 +504,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE AFM"
+          default: "MOVPE SEM"
         description: 
           type: str
           description: description
@@ -482,6 +525,7 @@ definitions:
               name: AFMReflectanceSEM/Date
             eln:
               component: DateTimeEditQuantity
+              label: "Notes"
         surface_state:
           type: str
           m_annotations:
@@ -489,6 +533,42 @@ definitions:
               name: AFMReflectanceSEM/Surface State
             eln:
               component: StringEditQuantity
+    AFMmeasurement:
+      more:
+        label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+      quantities:
+        method:
+          type: str
+          default: "MOVPE AFM"
+        description: 
+          type: str
+          description: description
+          default: '#data/SEM/description'
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: "Notes"
+        sample_id:
+          type: str
+          default: '#data/SEM/sample_id'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Sample
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          default: '#data/SEM/datetime'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Date
+            eln:
+              component: DateTimeEditQuantity
         roughness:
           type: np.float64
           unit: nanometer
@@ -506,6 +586,43 @@ definitions:
               name: AFMReflectanceSEM/Surface Features
             eln:
               component: StringEditQuantity
+    ReflectanceMeasurement:
+      more:
+        label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+      quantities:
+        method:
+          type: str
+          default: "MOVPE AFM"
+        description: 
+          type: str
+          default: '#data/SEM/description'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Notes
+            eln:
+              component: StringEditQuantity
+              label: "Notes"
+        sample_id:
+          type: str
+          default: '#data/SEM/sample_id'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Sample
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          default: '#data/SEM/datetime'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Date
+            eln:
+              component: DateTimeEditQuantity
         thickness:
           type: np.float64
           unit: nanometer
@@ -522,17 +639,166 @@ definitions:
           description: Growth rate calculated
           m_annotations:
             tabular:
-              name: AFMReflectanceSEM/Thickness
+              name: AFMReflectanceSEM/Growth Rate
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer / minute
-        notes:
+    AbsorbanceMeasurement:
+      more:
+        label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+      quantities:
+        method:
+          type: str
+          default: "MOVPE Absorbance"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sample_id:
           type: str
           m_annotations:
             tabular:
-              name: AFMReflectanceSEM/Notes
+              name: ElectroOptical/Sample
             eln:
               component: StringEditQuantity
+        datetime:
+          type: Datetime
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Date
+            eln:
+              component: DateTimeEditQuantity
+        energy_gap:
+          type: np.float64
+          unit: eV
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Energy Gap ABS
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: eV
+        abs_coefficient:
+          type: np.float64
+          unit: 1 / cm
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Energy Gap ABS
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: 1 / cm
+        thickness:
+          type: np.float64
+          unit: nanometer
+          description: Thickness from ABS
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Energy Gap ABS
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+    HallMeasurement:
+      more:
+        label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+      quantities:
+        method:
+          type: str
+          default: "MOVPE Hall"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sample_id:
+          type: str
+          default: '#data/adsorbance/sample_id'
+          m_annotations:
+            # tabular:
+            #   name: ElectroOptical/Sample
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          default: '#data/adsorbance/datetime'
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Date
+            eln:
+              component: DateTimeEditQuantity
+        resistivity:
+          type: np.float64
+          unit: ohm / cm
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Resistivity
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ohm / cm
+        mobility:
+          type: np.float64
+          unit: cm**2 / volt / second
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Mobility
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm**2 / volt / second
+        carrier_concentration:
+          type: np.float64
+          unit: 1 / cm**3
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Carrier Concentration
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: 1 / cm**3
+        energy_gap_PC:
+          type: np.float64
+          unit: eV
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Energy Gap PC
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: eV
+        responsivity:
+          type: np.float64
+          unit: ampere / watt
+          description: FILL
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Responsivity
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ampere / watt
+        rejection_ratio:
+          type: np.float64
+          #unit: 
+          description: Rejection Ratio (250/400)
+          m_annotations:
+            tabular:
+              name: ElectroOptical/Rejection Ratio
+            eln:
+              component: NumberEditQuantity
+              #defaultDisplayUnit: 
     HRXRDmeasurement:
       more:
         label_quantity: sample_id
@@ -599,7 +865,7 @@ definitions:
           description: "Peak Position - Omega"
           m_annotations:
             tabular:
-              name: HRXRD/Peak Position - 2theta
+              name: HRXRD/Peak Position - Omega
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -617,14 +883,6 @@ definitions:
           m_annotations:
             tabular:
               name: HRXRD/Reflection
-            eln:
-              component: StringEditQuantity
-        notes:
-          type: str
-          description: FILL THE DESCRIPTION
-          m_annotations:
-            tabular:
-              name: HRXRD/Notes
             eln:
               component: StringEditQuantity
     GrowthRunStep:
@@ -1053,8 +1311,8 @@ definitions:
               component: StringEditQuantity
     Substrate:
       base_sections: 
-      - 'nomad.datamodel.metainfo.eln.System'
-      - 'nomad.datamodel.data.EntryData'
+      - nomad.datamodel.metainfo.eln.System
+      - nomad.datamodel.data.EntryData
       quantities:
         alias:
           type: str
@@ -1206,10 +1464,19 @@ definitions:
             eln:
               component: StringEditQuantity
     MistSource:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Entity
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln: 
           # hide: [descritpion]
       quantities:
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
         item: 
           type: str
           description: FILL
@@ -1248,7 +1515,7 @@ definitions:
               component: StringEditQuantity
       sub_sections:
         components:
-          repeats: True
+          repeats: true
           section:
             quantities:
               material:
@@ -1376,14 +1643,14 @@ definitions:
             eln:
               component: DateTimeEditQuantity
               label: deposition_date
-        category: 
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Contacts/Activity Category
-            eln:
-              component: StringEditQuantity
+        # category: 
+        #   type: str
+        #   description: FILL
+        #   m_annotations:
+        #     tabular:
+        #       name: Contacts/Activity Category
+        #     eln:
+        #       component: StringEditQuantity
         contact_type: 
           type: str
           description: FILL
@@ -1400,3 +1667,82 @@ definitions:
               name: Contacts/Geometry
             eln:
               component: StringEditQuantity
+    GrowthRun:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.parsing.tabular.TableData 
+      #- nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+      quantities:
+        method:
+          type: str
+          default: "MOVPE Growth Run"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        data_file:
+          type: str
+          default: '#data/data_file'
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              comment: '#'
+              mode: row
+              target_sub_section: 
+              - GrowthRunSteps
+            browser:
+              adaptor: RawFileAdaptor 
+            eln:
+              component: FileEditQuantity
+        method:
+          type: str
+          default: "MOVPE GrowthRun"
+      sub_sections:
+        GrowthRunSteps:
+          repeats: true
+          section:
+            base_sections: 
+            - '#/GrowthRunStep'
+    PreGrowth:
+      base_sections: 
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.parsing.tabular.TableData 
+      #- nomad.datamodel.data.EntryData
+      m_annotations:
+        eln: 
+      quantities:
+        method:
+          type: str
+          default: "MOVPE Pregrowth"
+        description: 
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        data_file:
+          type: str
+          default: '#data/data_file'
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              comment: '#'
+              mode: row
+              target_sub_section: 
+              - pregrowth_steps
+            browser:
+              adaptor: RawFileAdaptor 
+            eln:
+              component: FileEditQuantity
+      sub_sections:
+        pregrowth_steps:
+          repeats: true
+          section:
+            base_sections: 
+            - '#/PregrowthStep'
