@@ -1,0 +1,22 @@
+definitions:
+  name: Coating method
+  description: |
+    A set of base sections for any coating method as defined by "coating method" in CHMO:
+    http://purl.obolibrary.org/obo/CHMO_0001470
+  sections:
+    CoatingMethod:
+      links: [http://purl.obolibrary.org/obo/CHMO_0001470]
+      description: |
+        The application of a thin cover to a sample. 
+        [ https://orcid.org/0000-0002-0640-0422 ]
+      base_sections: [nomad.datamodel.metainfo.eln.Process]
+    SpinCoating:
+      links: [http://purl.obolibrary.org/obo/CHMO_0001472]
+      description: |
+        A coating method for applying a thin (<1 μm thickness) cover to flat substrates 
+        where an excess amount of coating solution (in a volatile solvent) is placed on 
+        the substrate, which is then rotated at high speed (8000 rpm) for approximately 
+        30 s in order to spread the solution by centripetal force. The solvent then 
+        evaporates, leaving a thin film. [ https://orcid.org/0000-0002-0640-0422 ]
+      base_sections: [CoatingMethod]
+      
