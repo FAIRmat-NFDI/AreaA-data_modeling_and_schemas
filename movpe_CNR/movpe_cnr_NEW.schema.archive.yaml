@@ -20,8 +20,8 @@ definitions:
               comment: '#'
               entry_sections: # list of subsections to be parsed by data_file in entry mode
               - precursors
-              - substrate
-              - MIST
+              - substrates
+              - MIST_source
               - pregrowth/pregrowth_steps
               - growth_run/growth_run_steps
               - samples_cut
@@ -153,66 +153,183 @@ definitions:
         precursors:
           repeats: true
           section:
-            base_sections: 
-            - '#/Precursor'
-        substrate:
+        #     base_sections: 
+        #     - '#/Precursor'
+            quantities: 
+              precursor:
+                type: '#/Precursor'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
+        substrates:
           repeats: true
           section:
-            base_sections: 
-            - '#/Substrate'
-        MIST:
+            # base_sections: 
+            # - '#/Substrate'
+            quantities: 
+              substrate:
+                type: '#/Substrate'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
+        MIST_source:
           repeats: true
           section:
-            base_sections: 
-            - '#/MistSource'
+            # base_sections: 
+            # - '#/MistSource'
+            quantities: 
+              source:
+                type: '#/MistSource'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         pregrowth:
           section:
-            base_sections: 
-            - '#/PreGrowth'
+            # base_sections: 
+            # - '#/PreGrowth'
+            quantities: 
+              process:
+                type: '#/PreGrowth'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         growth_run:
           section:
-            base_sections: 
-            - '#/GrowthRun'
+            # base_sections: 
+            # - '#/GrowthRun'
+            quantities: 
+              process:
+                type: '#/GrowthRun'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         samples_cut:
           repeats: true
           section:
-            base_sections: 
-            - '#/SampleCut'
+            # base_sections: 
+            # - '#/SampleCut'
+            quantities: 
+              process:
+                type: '#/SampleCut'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         contacts_sputtering:
           repeats: true
           section:
-            base_sections: 
-            - '#/ContactSputtering'
+            # base_sections: 
+            # - '#/ContactSputtering'
+            quantities: 
+              process:
+                type: '#/ContactSputtering'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         SEM:
           repeats: true
           section:
-            base_sections: 
-            - '#/SEMmeasurement'
+            # base_sections: 
+            # - '#/SEMmeasurement'
+            quantities: 
+              measurement:
+                type: '#/SEMmeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         AFM:
           repeats: true
           section:
-            base_sections: 
-            - '#/AFMmeasurement'
+            # base_sections: 
+            # - '#/AFMmeasurement'
+            quantities: 
+              measurement:
+                type: '#/AFMmeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         reflectance:
           repeats: true
           section:
-            base_sections: 
-            - '#/ReflectanceMeasurement'
+            # base_sections: 
+            # - '#/ReflectanceMeasurement'
+            quantities: 
+              measurement:
+                type: '#/ReflectanceMeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         UVabsorbance:
           repeats: true
           section:
-            base_sections: 
-            - '#/UVAbsorbanceMeasurement'
+            # base_sections: 
+            # - '#/UVAbsorbanceMeasurement'
+            quantities: 
+              measurement:
+                type: '#/UVAbsorbanceMeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         hall:
           repeats: true
           section:
-            base_sections: 
-            - '#/HallMeasurement'
+            # base_sections: 
+            # - '#/HallMeasurement'
+            quantities: 
+              measurement:
+                type: '#/HallMeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
         HRXRD:
           repeats: true
           section:
-            base_sections: 
-            - '#/HRXRDmeasurement'
+            # base_sections: 
+            # - '#/HRXRDmeasurement'
+            quantities: 
+              measurement:
+                type: '#/HRXRDmeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+                  # tabular_pattern: # use this option to define the names of the new entries created
+                  # # with parser
+                  #   name: my_entry
     Precursor:
       base_sections: 
       - nomad.datamodel.metainfo.eln.Substance
