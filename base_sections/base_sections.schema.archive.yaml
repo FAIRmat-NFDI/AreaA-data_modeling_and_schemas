@@ -1,0 +1,138 @@
+definitions:
+  name: NOMAD Material Processing
+  description: |
+    This is a set of base sections for NOMAD which should be used for material processing.
+  sections:
+    SampleDeposition:
+      base_section: nomad.datamodel.metainfo.basesections.SynthesisMethod
+      links: [http://purl.obolibrary.org/obo/CHMO_0001310]
+      description: |
+        The process of the settling of particles (atoms or molecules) from a solution, 
+        suspension or vapour onto a pre-existing surface, resulting in the growth of a 
+        new phase. [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - deposition
+    CrystalGrowth:
+      base_section: SampleDeposition
+      links: [http://purl.obolibrary.org/obo/CHMO_0002224]
+      description: |
+        Any synthesis method used to grow crystals. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+    CzochralskiProcess:
+      base_section: CrystalGrowth
+      links: [http://purl.obolibrary.org/obo/CHMO_0002158]
+      description: |
+        A method of producing large single crystals (of semiconductors or metals) by 
+        inserting a small seed crystal into a crucible filled with similar molten 
+        material, then slowly pulling the seed up from the melt while rotating it. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+    Epitaxy:
+      base_section: SampleDeposition
+      links: [http://purl.obolibrary.org/obo/CHMO_0001336]
+      description: |
+        A synthesis method which consists of depositing a monocrystalline film (from 
+        liquid or gaseous precursors) on a monocrystalline substrate. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+    MolecularBeamEpitaxy:
+      base_section: Epitaxy
+      links: [http://purl.obolibrary.org/obo/CHMO_0001341]
+      description: |
+        A synthesis method which consists of depositing a monocrystalline film (from a 
+        molecular beam) on a monocrystalline substrate under high vacuum (<10^{-8} Pa). 
+        Molecular beam epitaxy is very slow, with a deposition rate of <1000 nm per hour. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - MBE
+         - molecular-beam epitaxy
+    VaporPhaseEpitaxy:
+      base_section: Epitaxy
+      links: [http://purl.obolibrary.org/obo/CHMO_0001346]
+      description: |
+        A synthesis method which consists of depositing a monocrystalline film (from 
+        vapour-phase precursors) on a monocrystalline substrate. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - vapour-phase epitaxial growth
+         - vapor-phase epitaxy
+         - vapor phase epitaxy
+         - VPE
+         - vapour phase epitaxy
+    MetalOrganicVaporPhaseEpitaxy:
+      base_section: VaporPhaseEpitaxy
+      links: [http://purl.obolibrary.org/obo/CHMO_0001348]
+      description: |
+        A synthesis method which consists of depositing a monocrystalline film, from 
+        organometallic vapour-phase precursors, on a monocrystalline substrate. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - OMVPE
+         - MOVPE
+         - metalorganic vapour phase epitaxy
+         - metal organic vapour phase epitaxy
+         - metalorganic vapor phase epitaxy
+         - organometallic vapor phase epitaxy
+         - metal-organic vapor-phase epitaxy
+         - metal organic vapor phase epitaxy
+         - metal-organic vapour-phase epitaxy
+         - organometallic vapour phase epitaxy
+    PhysicalVaporDeposition:
+      base_section: SampleDeposition
+      links: [http://purl.obolibrary.org/obo/CHMO_0001356]
+      description: |
+        A synthesis technique where vaporized molecules or atoms condense on a surface, 
+        forming a thin layer. The process is purely physical; no chemical reaction occurs 
+        at the surface. [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - PVD
+         - physical vapor deposition
+    PulsedLaserDeposition:
+      base_section: PhysicalVaporDeposition
+      links: [http://purl.obolibrary.org/obo/CHMO_0001363]
+      description: |
+        A synthesis technique where a high-power pulsed laser beam is focused (inside a 
+        vacuum chamber) onto a target of the desired composition. Material is then 
+        vaporized from the target ('ablation') and deposited as a thin film on a 
+        substrate facing the target. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - pulsed laser ablation deposition
+         - PLD
+         - pulsed-laser ablation deposition
+         - laser ablation growth
+         - PLA deposition
+         - pulsed-laser deposition
+    SputterDeposition:
+      base_section: PhysicalVaporDeposition
+      links: [http://purl.obolibrary.org/obo/CHMO_0001364]
+      description: |
+        A synthesis technique where a solid target is bombarded with electrons or 
+        energetic ions (e.g. Ar+) causing atoms to be ejected ('sputtering'). The ejected 
+        atoms then deposit, as a thin-film, on a substrate. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - sputtering
+         - sputter coating
+    ThermalEvaporation:
+      base_section: PhysicalVaporDeposition
+      links: [http://purl.obolibrary.org/obo/CHMO_0001360]
+      description: |
+        A synthesis technique where the material to be deposited is heated until 
+        evaporation in a vacuum (<10^{-4} Pa) and eventually deposits as a thin film by 
+        condensing on a (cold) substrate. 
+        [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+
+        Synonyms:
+         - evaporative deposition)
+         - vacuum thermal evporation
+         - TE
+         - thermal deposition
+         - filament evaporation
+         - vacuum condensation
+        
