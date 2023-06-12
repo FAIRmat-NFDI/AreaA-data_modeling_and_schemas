@@ -457,7 +457,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE AFM"
+          default: "MOVPE Reflectance"
         description: 
           type: str
           default: '#data/SEM/description'
@@ -467,6 +467,16 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Notes"
+        image: 
+          type: str
+          description: image showing the thickness measurement points
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Thickness File
+            browser:
+              adaptor: RawFileAdaptor 
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
           default: '#data/SEM/sample_id'
@@ -1456,6 +1466,16 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        image: 
+          type: str
+          description: image showing the sample cut geometry
+          m_annotations:
+            tabular:
+              name: SampleCut/Sample Cut File
+            browser:
+              adaptor: RawFileAdaptor 
+            eln:
+              component: FileEditQuantity
         parent_sample_id: 
           type: str
           description: FILL
