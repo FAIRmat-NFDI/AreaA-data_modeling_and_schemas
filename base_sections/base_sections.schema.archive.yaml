@@ -3,6 +3,61 @@ definitions:
   description: |
     This is a set of base sections for NOMAD which should be used for material processing.
   sections:
+    ActivityStep:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A step in an activity.
+    Substrate:
+      base_section: nomad.datamodel.metainfo.basesections.Ensemble
+      description: |
+        A thin free standing sheet of material. Not to be confused with the substrate role
+        during a deposition, which can be a `Substrate` with `ThinFilm`(s) on it.
+      quantities:
+        thickness:
+          type: float
+          unit: meter
+          description: |
+            The (average) thickness of the substrate.
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: millimeter
+    ThinFilm:
+      base_section: nomad.datamodel.metainfo.basesections.Ensemble
+      description: |
+        A thin film of material which exists as part of a stack.
+      quantities:
+        thickness:
+          type: float
+          unit: meter
+          description: |
+            The (average) thickness of the thin film.
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+    ThinFilmStack:
+      base_section: nomad.datamodel.metainfo.basesections.Ensemble
+      description: |
+        A stack of `ThinFilm`(s). Typically deposited on a `Substrate`.
+      quantities:
+        substrate:
+          type: Substrate
+          description: |
+            The substrate which the thin film layers of the thin film stack are deposited
+            on.
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        layers:
+          type: ThinFilm
+          shape: ['*']
+          description: |
+            An ordered list (starting at the substrate) of the thin films making up the
+            thin film stacks.
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity  
     SampleDeposition:
       base_section: nomad.datamodel.metainfo.basesections.SynthesisMethod
       links: [http://purl.obolibrary.org/obo/CHMO_0001310]
@@ -130,7 +185,7 @@ definitions:
 
         Synonyms:
          - evaporative deposition)
-         - vacuum thermal evporation
+         - vacuum thermal evaporation
          - TE
          - thermal deposition
          - filament evaporation
