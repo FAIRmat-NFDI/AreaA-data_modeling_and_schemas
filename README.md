@@ -13,7 +13,7 @@ The tree visualization shows the inheritance structure of our data model.
 
 This is a structure under development, for suggestions and contributes please refer to the issues opened in this repo.
 
-See the NOMAD source code containing these classes at ![this link](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/blob/develop/nomad/datamodel/metainfo/basesections.py).
+See the NOMAD source code containing these classes at [this link](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/blob/develop/nomad/datamodel/metainfo/basesections.py).
 ## About this repo:
 
 It is a collection of example schemas that include several kinds of experiment.  
