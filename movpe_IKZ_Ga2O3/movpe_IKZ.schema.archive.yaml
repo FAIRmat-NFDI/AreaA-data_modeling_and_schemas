@@ -1,5 +1,5 @@
 definitions:
-  name: 'MOVPE Experiment (IMEM-CNR)'
+  name: 'MOVPE Experiment (IKZ Ga2O3)'
   sections:
     MovpeExperiment:
       base_sections:
@@ -38,11 +38,10 @@ definitions:
               component: FileEditQuantity
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         method:
           type: str
           default: "MOVPE Experiment"
@@ -368,11 +367,10 @@ definitions:
           default: "MOVPE SEM"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         sample_id:
           type: str
           m_annotations:
@@ -387,6 +385,7 @@ definitions:
               name: AFMReflectanceSEM/Date
             eln:
               component: DateTimeEditQuantity
+              label: "Notes"
         surface_state:
           type: str
           m_annotations:
@@ -408,7 +407,7 @@ definitions:
           default: "MOVPE AFM"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           default: '#data/SEM/description'
           m_annotations:
             eln:
@@ -462,7 +461,6 @@ definitions:
         description:
           type: str
           default: '#data/SEM/description'
-          description: "Notes and comments."
           m_annotations:
             tabular:
               name: AFMReflectanceSEM/Notes
@@ -529,11 +527,10 @@ definitions:
           default: "MOVPE Absorbance"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         sample_id:
           type: str
           m_annotations:
@@ -592,11 +589,10 @@ definitions:
           default: "MOVPE Hall"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         sample_id:
           type: str
           default: '#data/adsorbance/sample_id'
@@ -687,11 +683,10 @@ definitions:
           default: "MOVPE HRXRD"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         sample_id:
           type: str
           m_annotations:
@@ -772,11 +767,10 @@ definitions:
           default: "MOVPE Growth Run"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
       sub_sections:
         growth_run_steps:
           repeats: true
@@ -1125,11 +1119,10 @@ definitions:
           default: "MOVPE Pregrowth"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
       sub_sections:
         pregrowth_steps:
           repeats: true
@@ -1159,13 +1152,12 @@ definitions:
               component: StringEditQuantity
         description:
           type: str
-          description: "Notes and comments."
+          description: FILL
           m_annotations:
             tabular:
               name: Pregrowth/Description
             eln:
               component: StringEditQuantity
-              label: "Notes"
         elapsed_time:
           type: np.float64
           unit: minute
@@ -1244,13 +1236,6 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Substrates
-        description:
-          type: str
-          description: "Notes and comments."
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-              label: "Notes"
         name:
           type: str
           description: FILL
@@ -1259,6 +1244,12 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Material
+        delivery_date:
+          type: Datetime
+          description: Date of the delivery
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
         lab_id:
           type: str
           description: FILL
@@ -1275,14 +1266,15 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Supplier
-        element_list:
+        orientation:
           type: str
-          shape: ['*']
-          description: The Elements and the corresponding isotope which are used in the Substrate.
+          description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity
-        orientation:
+            tabular:
+              name: Substrate/Orientation
+        misorientation:
           type: str
           description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
@@ -1380,12 +1372,16 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-        notes:
+        description:
           type: str
-          description: FILL
+          description: "Notes and comments."
           m_annotations:
             eln:
               component: StringEditQuantity
+              label: "Notes"
+      sub_sections:
+        geometry:
+          section: '#/Geometry'
     MistSource:
       base_sections:
       - nomad.datamodel.metainfo.eln.Entity
@@ -1396,13 +1392,10 @@ definitions:
       quantities:
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
-            tabular:
-              name: Mist/Notes
             eln:
               component: StringEditQuantity
-              label: "Notes"
         item:
           type: str
           description: FILL
@@ -1431,6 +1424,14 @@ definitions:
               defaultDisplyUnit: minute
             tabular:
               name: Mist/Time
+        notes:
+          type: str
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Mist/Notes
+            eln:
+              component: StringEditQuantity
       sub_sections:
         components:
           repeats: true
@@ -1466,11 +1467,10 @@ definitions:
           default: "MOVPE Sample Cut"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         image:
           type: str
           description: image showing the sample cut geometry
@@ -1551,11 +1551,10 @@ definitions:
           default: "MOVPE Contacts Sputtering"
         description:
           type: str
-          description: "Notes and comments."
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: "Notes"
         name:
           type: str
           description: FILL
@@ -1597,3 +1596,109 @@ definitions:
               name: Contacts/Geometry
             eln:
               component: StringEditQuantity
+    Geometry:
+      m_annotations:
+        eln:
+      sub_sections:
+        parallelepiped:
+          section:
+            quantities:
+              height:
+                type: np.float64
+                unit: nanometer
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nanometer
+              width:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              length:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              volume:
+                type: np.float64
+                unit: millimeter ** 3
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 3
+        cylinder:
+          section:
+            quantities:
+              height:
+                type: np.float64
+                unit: nanometer
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nanometer
+              radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              lower_cap_radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              upper_cap_radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              cap_surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              lateral_surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              volume:
+                type: np.float64
+                unit: millimeter ** 3
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 3
