@@ -1708,9 +1708,6 @@ definitions:
               adaptor: RawFileAdaptor 
             eln:
               component: FileEditQuantity
-        method:
-          type: str
-          default: "MOVPE GrowthRun"
       sub_sections:
         GrowthRunSteps:
           repeats: true

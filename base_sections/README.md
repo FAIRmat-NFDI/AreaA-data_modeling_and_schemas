@@ -1,6 +1,6 @@
 # Area A: sample preparation data
 
-## Added B
+## Added Base Sections
 The following base sections are currently added:
 - Sample deposition
     - Crystal growth method
@@ -13,10 +13,10 @@ The following base sections are currently added:
         - Pulsed laser deposition
         - Sputter deposition
         - Thermal evaporation
-## Old base Classes Hierarchy:
+## Old Base Classes Hierarchy:
 
-![Base Classes](https://box.hu-berlin.de/f/d47b44f9f09543768f5b/?dl=1)
+![Base Sections](https://box.hu-berlin.de/f/b72febaaedb54162b74c/?dl=1)
 
-These tree visualization shows the inheritance structure contained in the base_classes file. 
+These tree visualization shows the inheritance structure contained in the base_sections file. 
 
 This is a structure under development, for suggestions and contributes please refer to the issues opened in this repo.
