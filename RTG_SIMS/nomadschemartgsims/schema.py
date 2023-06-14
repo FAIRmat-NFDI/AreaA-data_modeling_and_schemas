@@ -1,38 +1,50 @@
+from nomad.metainfo import Quantity, Package
+from nomad.datamodel.data import EntryData
+from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
+
 from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-from nomad.datamodel.metainfo.eln import Measurement
+from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID
 from nomad.units import ureg
 import numpy as np
+from datetime import datetime
 
 m_package = Package()
+
+#class SimsMatrix(Substance,EntryData):
+#    pass
 
 class DepthProfile(ArchiveSection):#, repeats=True):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
-        a_plot={'label': 'SIMS profile','x': 'depth', 'y': 'intensity'
-        })
+        label_quantity="element",
+        #a_plot={'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
+        )
     element = Quantity(
         type=str,
         description='Method used to collect the data',
-        a_plot={
-            'label': 'SIMS profile','x': 'depth', 'y': 'intensity'
-        })
+        #a_plot={
+        #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
+        )
         
     depth = Quantity(
         type=np.dtype(np.float64),
         unit = "µm",
-        shape = ['*'],
+        shape = ['n_values'],
         a_plot={
-            'label': 'SIMS profile','x': 'depth', 'y': './intensity'
+            'x': 'depth', 'y': 'intensity'
         })
+        #a_plot={
+        #   'label': 'SIMS profile','x': 'depth', 'y': './intensity'        }
+        #)
     intensity = Quantity(
         type=np.dtype(np.float64),
         unit = "1/s",
-        shape = ['*'],
-        a_plot={
-           'label': 'SIMS profile', 'x': 'depth', 'y': 'intensity'
-        })
+        shape = ['n_values'],
+        #a_plot={
+         #  'label': 'SIMS profile', 'x': 'depth', 'y': 'intensity'        }
+            )
 
 class RTGSIMS(Measurement):
     '''
@@ -44,11 +56,11 @@ class RTGSIMS(Measurement):
         type=str,
         description='Method used to collect the data',
         default='SIMS')
-    depth_profile_ID = Quantity(
-        type=str,
+    depth_profile_ID = SubSection(
+        section_def=SampleID,
         description='depth profile ID from RTG')
     Matrix = Quantity(
-        type=str,
+        type=str, #SimsMatrix
         description='Element Matrix for Mass Spectrometer')
     SampleID = Quantity(
         type=str,
@@ -59,8 +71,12 @@ class RTGSIMS(Measurement):
 class RTG_SIMS_measurement(RTGSIMS, EntryData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
-        a_plot={'x': 'depth', 'y': 'intensity'
-        })
+        a_plot=[
+            {'label': 'SIMS depth profile',
+             'x': 'depth_profiles/:/depth', 
+             'y': 'depth_profiles/:/intensity'
+            },]
+        )
     
     name = Quantity(
         type=str,
@@ -130,11 +146,15 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
         if archive.data.data_file:
             with archive.m_context.raw_file(self.data_file) as file:
                 sims_dict=parse_depthprofile_data(file)
+                self.name = sims_dict["depth_profile_id"]
                 self.Matrix = sims_dict["Matrix"]
-                #self.datetime = sims_dict["Date"] # noch in richtiges FOrmat ändern
-                self.SampleID = sims_dict["sample_id"]
-                self.lab_id = sims_dict["depth_profile_id"]
-                self.depth_profile_ID = sims_dict["depth_profile_id"]
+                self.datetime = datetime.strptime(sims_dict["date"],"%d.%m.%y") # noch in richtiges FOrmat ändern
+                #self.depth_profile_id = SampleID()
+                #self.depth_profile_id.sample_short_name = sims_dict['id']
+                #self.SampleID = sims_dict["sample_id"]
+                #self.lab_id = sims_dict["depth_profile_id"]
+                #self.depth_profile_ID.sample_short_name = sims_dict["depth_profile_id"]
+                self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
                 logger.info('parser works')
                 self.depth_profiles=[]
                 #dep_profile_object=DepthProfile()

@@ -55,7 +55,7 @@ You can parse an example archive that uses the schema with `nomad`
 (installed via `nomad-lab` Python package):
 
 ```sh
-nomad parse tests/data/test.archive.yaml --show-archive
+nomad parse tests/data/test.archive.json --show-archive
 ```
 
 ## Developing your schema
