@@ -2,7 +2,7 @@ definitions:
   name: "Electronic Lab Notebook for Hall"
   sections: # Schemes consist of section definitions
     ContactsGrafting:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Activity
       - nomad.datamodel.data.EntryData
       quantities:
@@ -77,24 +77,24 @@ definitions:
           m_annotations:
             eln:
               component: EnumEditQuantity
-    HallMeasurement:    
-      base_sections: 
-        - nomad.datamodel.metainfo.eln.ikz_hall.HallData
+    HallMeasurement:
+      base_sections:
+        - hall_IKZ.HallMeasurement
         - nomad.datamodel.metainfo.eln.Activity
       quantities:
         method:
           type: str
           default: "Hall Measurement"
     SampleWithContacts:
-      base_sections: 
+      base_sections:
         - 'nomad.datamodel.metainfo.eln.Ensemble'
       sub_sections:
         metal_stack:
           repeats: true
           m_annotations:
-            eln: 
+            eln:
           section:
-            base_sections: 
+            base_sections:
             - nomad.datamodel.metainfo.eln.Substance
             quantities:
               thickness:
@@ -109,22 +109,22 @@ definitions:
       base_sections:
       - nomad.datamodel.data.EntryData
       m_annotations:
-        eln: 
+        eln:
       sub_sections:
         instrument:
           section:
-            base_sections: 
-            - 'nomad.datamodel.metainfo.eln.ikz_hall.HallInstrument'
+            base_sections:
+            - 'hall_IKZ.HallInstrument'
         contacts_grafting:
-          section: 
-            base_sections: 
+          section:
+            base_sections:
             - '#/ContactsGrafting'
             m_annotations:
               template:
               eln:
         hall_measurement:
-          section: 
-            base_sections: 
+          section:
+            base_sections:
             - '#/HallMeasurement'
             m_annotations:
               template:
