@@ -192,19 +192,22 @@ definitions:
                   # tabular_pattern: # use this option to define the names of the new entries created
                   # # with parser
                   #   name: my_entry
+        substrate_pre_process:
+          section:
+            quantities:
+              process:
+                type: '#/SubstratePreProcess'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
         pregrowth:
           section:
-            # base_sections:
-            # - '#/PreGrowth'
             quantities:
               process:
                 type: '#/PreGrowth'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         growth_run:
           section:
             # base_sections:
@@ -513,6 +516,53 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer / minute
+    LightMicroscope:
+      more:
+        label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        method:
+          type: str
+          default: "MOVPE IKZ Light Microscope"
+        description:
+          type: str
+          default: '#data/SEM/description'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Notes
+            eln:
+              component: StringEditQuantity
+              label: "Notes"
+        image:
+          type: str
+          description: image showing the thickness measurement points
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Thickness File
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        sample_id:
+          type: str
+          default: '#data/SEM/sample_id'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Sample
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          default: '#data/SEM/datetime'
+          m_annotations:
+            tabular:
+              name: AFMReflectanceSEM/Date
+            eln:
+              component: DateTimeEditQuantity
     UVAbsorbanceMeasurement:
       more:
         label_quantity: sample_id
@@ -1702,3 +1752,148 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: millimeter ** 3
+    Etching:
+      m_annotations:
+        eln:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.data.EntryData
+      quantities:
+        method:
+          type: str
+          default: "MOVPE IKZ Etching"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Deposition Date
+            eln:
+              component: DateTimeEditQuantity
+              label: deposition_date
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: Past time since process started (minutes)
+          m_annotations:
+            eln:
+              component: NumberEditQuantity #DateTimeEditQuantity
+              defaultDisplayUnit: minute
+      sub_sections:
+        etching_reagents:
+          section:
+            quantities:
+              etching_reagent:
+                type: 'nomad.datamodel.metainfo.eln.Substance'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+    Annealing:
+      m_annotations:
+        eln:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.data.EntryData
+      quantities:
+        method:
+          type: str
+          default: "MOVPE IKZ Annealing"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          description: FILL
+          m_annotations:
+            tabular:
+              name: Contacts/Deposition Date
+            eln:
+              component: DateTimeEditQuantity
+              label: deposition_date
+        temperature:
+          type: np.float64
+          unit: celsius
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        elapsed_time:
+          type: np.float64
+          unit: minute
+          description: Past time since process started (minutes)
+          m_annotations:
+            eln:
+              component: NumberEditQuantity #DateTimeEditQuantity
+              defaultDisplayUnit: minute
+      sub_sections:
+        anealing_reagents:
+          section:
+            quantities:
+              etching_reagent:
+                type: 'nomad.datamodel.metainfo.eln.Substance'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+    SubstratePreProcess:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        method:
+          type: str
+          default: "MOVPE Pregrowth"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        afm_as_received:
+          section:
+            base_sections:
+            - '#/AFMmeasurement'
+        light_microscope_as_received:
+          section:
+            base_sections:
+            - '#/LightMicroscope'
+        etching:
+          section:
+            base_sections:
+            - '#/Etching'
+        light_microscope_after_etching:
+          section:
+            base_sections:
+            - '#/AFMmeasurement'
+        annealing:
+          section:
+            base_sections:
+            - '#/Annealing'
+        afm_after_annealing:
+          section:
+            base_sections:
+            - '#/AFMmeasurement'
+        light_microscope_after_annealing:
+          section:
+            base_sections:
+            - '#/LightMicroscope'
