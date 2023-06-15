@@ -14,8 +14,38 @@ m_package = Package()
 
 #class SimsMatrix(Substance,EntryData):
 #    pass
+class DepthProfileQuantitative(ArchiveSection):#, repeats=True):
+    m_def = Section(
+        a_eln=dict(lane_width='600px'),
+        label_quantity="element",
+        #a_plot={'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
+        )
+    element = Quantity(
+        type=str,
+        description='Method used to collect the data',
+        #a_plot={
+        #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
+        )
+        
+    depth = Quantity(
+        type=np.dtype(np.float64),
+        unit = "µm",
+        shape = ['n_values'],
+        a_plot={
+            'x': 'depth', 'y': 'atomic_concentration'
+        })
+        #a_plot={
+        #   'label': 'SIMS profile','x': 'depth', 'y': './intensity'        }
+        #)
+    atomic_concentration = Quantity(
+        type=np.dtype(np.float64),
+        unit = "1/cm^3",
+        shape = ['n_values'],
+        #a_plot={
+         #  'label': 'SIMS profile', 'x': 'depth', 'y': 'intensity'        }
+            )
 
-class DepthProfile(ArchiveSection):#, repeats=True):
+class DepthProfileQualitative(ArchiveSection):#, repeats=True):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         label_quantity="element",
@@ -65,16 +95,17 @@ class RTGSIMS(Measurement):
     SampleID = Quantity(
         type=str,
         description='IKZ sampleID, make use of sample ID class!')
-    depth_profiles = SubSection(section_def=DepthProfile, repeats=True)
-   
+    depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
+    depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
 
 class RTG_SIMS_measurement(RTGSIMS, EntryData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         a_plot=[
             {'label': 'SIMS depth profile',
-             'x': 'depth_profiles/:/depth', 
-             'y': 'depth_profiles/:/intensity'
+             'x': 'depth_profiles_qualitative/:/depth', 
+             'y': ['depth_profiles_qualitative/:/intensity','depth_profiles_quantitative/:/atomic_concentration'],
+             'layout': {'yaxis': {'type': 'log'}},
             },]
         )
     
@@ -101,7 +132,8 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
             Zn_counter = 0 # this is particular for FBH data where different Zn ions were measured
             element = None
             measurement_counter=0
-            depth_profiles=[]
+            depth_profiles_qual=[]
+            depth_profiles_quant=[]
             unit = None
             sims_dict= {}
             for line in data:
@@ -123,22 +155,38 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                     if element == "Zn":
                         Zn_counter += 1
                         element += str(Zn_counter)
-                    element_dict = dict(element=element, depth=[], intensity=[], unit=None)
+                    #element_dict = dict(element=element, depth=[], intensity=[], unit=None)
                 elif "points" in line:
                     points=(int(line.split(" points")[0]))
                     points_counter=0
-                elif "[um]" in line:
+                elif "[c/s]" in line:
+                    element_dict = dict(element=element, depth=[], intensity=[], unit=None)
                     unit = line.split("] ")[1].strip()
                     element_dict["unit"]=unit
+                    depth_profile_type="qual"
+                elif "[Atom/cm3]" in line:
+                    element_dict = dict(element=element, depth=[], atomic_concentration=[], unit=None)
+                    unit = line.split("] ")[1].strip()
+                    element_dict["unit"]=unit
+                    depth_profile_type="quant"
                 elif "E+" in line or "E-" in line:
                     points_counter+=1
-                    element_dict["depth"].append(float(line.split("      ")[0].strip()))
-                    element_dict["intensity"].append(float(line.split("      ")[1].strip()))
-                    if points_counter == points :
-                        depth_profiles.append(element_dict)
-                        points_counter = 0
-                        element_dict= {}
-            sims_dict.update(dict(depth_profiles_of_elements=depth_profiles))
+                    if depth_profile_type == "qual":
+                        element_dict["depth"].append(float(line.split("      ")[0].strip()))
+                        element_dict["intensity"].append(float(line.split("      ")[1].strip()))
+                        if points_counter == points :
+                            depth_profiles_qual.append(element_dict)
+                            points_counter = 0
+                            element_dict= {}
+                    if depth_profile_type == "quant":
+                        element_dict["depth"].append(float(line.split("      ")[0].strip()))
+                        element_dict["atomic_concentration"].append(float(line.split("      ")[1].strip()))
+                        if points_counter == points :
+                            depth_profiles_quant.append(element_dict)
+                            points_counter = 0
+                            element_dict= {}
+            sims_dict.update(dict(depth_profiles_of_elements_qual=depth_profiles_qual))
+            sims_dict.update(dict(depth_profiles_of_elements_quant=depth_profiles_quant))
             return sims_dict
 
         #if not self.data_file:
@@ -156,14 +204,22 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                 #self.depth_profile_ID.sample_short_name = sims_dict["depth_profile_id"]
                 self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
                 logger.info('parser works')
-                self.depth_profiles=[]
+                self.depth_profiles_qualitative=[]
                 #dep_profile_object=DepthProfile()
-                for count,value in enumerate(sims_dict["depth_profiles_of_elements"]):
-                    dep_profile_object=DepthProfile()
-                    dep_profile_object.element = sims_dict["depth_profiles_of_elements"][count]["element"]
-                    dep_profile_object.depth = sims_dict["depth_profiles_of_elements"][count]["depth"]
-                    dep_profile_object.intensity = sims_dict["depth_profiles_of_elements"][count]["intensity"]
-                    self.depth_profiles.append(dep_profile_object)
+                for count,value in enumerate(sims_dict["depth_profiles_of_elements_qual"]):
+                    dep_profile_object=DepthProfileQualitative()
+                    dep_profile_object.element = sims_dict["depth_profiles_of_elements_qual"][count]["element"]
+                    dep_profile_object.depth = sims_dict["depth_profiles_of_elements_qual"][count]["depth"]
+                    dep_profile_object.intensity = sims_dict["depth_profiles_of_elements_qual"][count]["intensity"]
+                    self.depth_profiles_qualitative.append(dep_profile_object)
+                self.depth_profiles_quantitative=[]
+                #dep_profile_object=DepthProfile()
+                for count,value in enumerate(sims_dict["depth_profiles_of_elements_quant"]):
+                    dep_profile_object=DepthProfileQuantitative()
+                    dep_profile_object.element = sims_dict["depth_profiles_of_elements_quant"][count]["element"]
+                    dep_profile_object.depth = sims_dict["depth_profiles_of_elements_quant"][count]["depth"]
+                    dep_profile_object.atomic_concentration = sims_dict["depth_profiles_of_elements_quant"][count]["atomic_concentration"]
+                    self.depth_profiles_quantitative.append(dep_profile_object)
         #self.message = f'Hello {self.name}!'
 
 
