@@ -1,0 +1,73 @@
+definitions:
+  name: Light_Microscopy
+  sections:
+    LiMi:
+      base_sections:
+        - nomad.datamodel.data.EntryData
+        - nomad.datamodel.metainfo.eln.Measurement
+      m_annotations:
+        eln: 
+          hide: ['end_time', 'location']
+      quantities:
+        method:
+          type: str
+          default: Light_Microscopy
+        status:
+          type:
+            type_kind: Enum
+            type_data:
+              - 'as received'
+              - 'after etching'
+              - 'before process'
+              - 'after process'
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        description:
+          type: str
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+              label: Comment
+        #sample:
+        #  type: '#/Limisample'
+        #  m_annotations:
+        #    eln:
+        #      component: ReferenceEditQuantity
+      sub_sections: 
+        sample:
+          section:
+            quantities:
+              sample_name:
+                type: 'nomad.datamodel.metainfo.eln.Substance'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+        image:
+          section:
+            quantities:
+              magnification:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              scale:
+                type: np.float64
+                unit: µm
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: µm
+    # Limisample:
+    #   base_sections:
+    #     - nomad.datamodel.metainfo.eln.System
+    #     - nomad.datamodel.data.EntryData
+    #   quantities:
+    #     name:
+    #       type: str
+    #       description: FILL
+    #       m_annotations:
+    #         eln:
+    #           component: StringEditQuantity
+    #           label: Sample Name
+        
