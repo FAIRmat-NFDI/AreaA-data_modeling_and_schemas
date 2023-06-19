@@ -1277,14 +1277,36 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Doping Species
-        size:
-          type: str
-          description: FILL
+        size_diameter:
+          type: np.float64
+          unit: inch
+          description: diameter
           m_annotations:
             eln:
-              component: StringEditQuantity
+              component: NumberEditQuantity
+              defaultDisplyUnit: inch
             tabular:
-              name: Substrate/Size
+              name: Substrate/Size Diameter
+        size_X:
+          type: np.float64
+          unit: millimeter
+          description: X length
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplyUnit: millimeter
+            tabular:
+              name: Substrate/Size X
+        size_Y:
+          type: np.float64
+          unit: millimeter
+          description: Y length
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplyUnit: millimeter
+            tabular:
+              name: Substrate/Size Y
         susceptor:
           type: str
           description: FILL
