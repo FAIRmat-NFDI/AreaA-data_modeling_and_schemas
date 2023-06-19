@@ -199,7 +199,6 @@ definitions:
         description:
           type: str
           description: description
-          default: '#data/SEM/description'
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -318,7 +317,6 @@ definitions:
           default: "MOVPE IKZ Light Microscope"
         description:
           type: str
-          default: '#data/SEM/description'
           m_annotations:
             tabular:
               name: AFMReflectanceSEM/Notes
