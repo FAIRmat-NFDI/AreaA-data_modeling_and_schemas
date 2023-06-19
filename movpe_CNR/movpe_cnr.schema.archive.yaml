@@ -1703,13 +1703,13 @@ definitions:
               comment: '#'
               mode: row
               target_sub_section: 
-              - GrowthRunSteps
+              - growth_run_steps
             browser:
               adaptor: RawFileAdaptor 
             eln:
               component: FileEditQuantity
       sub_sections:
-        GrowthRunSteps:
+        growth_run_steps:
           repeats: true
           section:
             base_sections: 

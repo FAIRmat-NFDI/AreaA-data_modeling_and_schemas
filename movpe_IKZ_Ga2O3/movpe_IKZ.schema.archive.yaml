@@ -19,19 +19,11 @@ definitions:
               sep: ','
               comment: '#'
               entry_sections: # list of subsections to be parsed by data_file in entry mode
-              - precursors
+              # - precursors
               - substrates
-              - MIST_source
-              - pregrowth/pregrowth_steps
-              - growth_run/growth_run_steps
-              - samples_cut
-              - contacts_sputtering
-              - SEM
-              - AFM
-              - reflectance
-              - UVabsorbance
-              - hall
-              - HRXRD
+              # - growth_run/growth_run_steps
+              # - substrate_pre_process
+              # - substrate_pre_process_test
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -44,25 +36,10 @@ definitions:
               component: StringEditQuantity
         method:
           type: str
-          default: "MOVPE Experiment"
+          default: "MOVPE IKZ Experiment"
         location:
           type: str
           m_annotations:
-            eln:
-              component: StringEditQuantity
-        goal:
-          type: str
-          description: indicate here the goal aimed with this experiment
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sample:
-          type: str
-          shape: [1]
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Overview/Sample
             eln:
               component: StringEditQuantity
         date:
@@ -70,8 +47,6 @@ definitions:
           shape: [1]
           description: FILL
           m_annotations:
-            tabular:
-              name: Overview/Date
             eln:
               component: DateTimeEditQuantity
         operator:
@@ -79,119 +54,46 @@ definitions:
           shape: [1]
           description: FILL
           m_annotations:
-            tabular:
-              name: Overview/Operator
             eln:
               component: StringEditQuantity
-        film:
-          type: str
-          shape: [1]
-          description: Film material (Material:Dopant species)
+        sample:
+          type: '#/Sample'
           m_annotations:
-            tabular:
-              name: Overview/Film
             eln:
-              component: StringEditQuantity
-        substrate_name:
-          type: str
-          shape: [1]
-          description: Substrates placed into the reactor for film growth
-          m_annotations:
-            tabular:
-              name: Overview/Substrate
-            eln:
-              component: StringEditQuantity
-        substrate_temperature:
-          type: np.float64
-          shape: [1]
-          unit: celsius
-          description: temperature of the substrate
-          m_annotations:
-            tabular:
-              name: Overview/Substrate T
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: celsius
-        carrier_gas:
-          type: str
-          shape: [1]
-          m_annotations:
-            tabular:
-              name: Overview/Carrier Gas
-            eln:
-              component: StringEditQuantity
-        VI_III_ratio:
+              component: ReferenceEditQuantity
+        project:
           type: str
           shape: [1]
           description: FILL THE DESCRIPTION
           m_annotations:
-            tabular:
-              name: Overview/VI III Ratio
             eln:
               component: StringEditQuantity
-        growth_time:
-          type: np.float64
-          shape: [1]
-          unit: minute
-          description: FILL THE DESCRIPTION
-          m_annotations:
-            tabular:
-              name: Overview/Growth Time
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: minute
         notes:
           type: str
           shape: [1]
           description: FILL THE DESCRIPTION
           m_annotations:
-            tabular:
-              name: Overview/Notes
             eln:
               component: StringEditQuantity
       sub_sections:
         precursors:
           repeats: true
           section:
-        #     base_sections:
-        #     - '#/Precursor'
             quantities:
               precursor:
                 type: '#/Precursor'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         substrates:
           repeats: true
           section:
-            # base_sections:
-            # - '#/Substrate'
             quantities:
               substrate:
                 type: '#/Substrate'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        MIST_source:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/MistSource'
-            quantities:
-              source:
-                type: '#/MistSource'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         substrate_pre_process:
           section:
             quantities:
@@ -200,133 +102,19 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-        pregrowth:
+        substrate_pre_process_test:
           section:
             quantities:
               process:
-                type: '#/PreGrowth'
+                type: '#/SubstratePreProcessTest'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
         growth_run:
           section:
-            # base_sections:
-            # - '#/GrowthRun'
             quantities:
               process:
                 type: '#/GrowthRun'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        samples_cut:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/SampleCut'
-            quantities:
-              process:
-                type: '#/SampleCut'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        contacts_sputtering:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/ContactSputtering'
-            quantities:
-              process:
-                type: '#/ContactSputtering'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        SEM:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/SEMmeasurement'
-            quantities:
-              measurement:
-                type: '#/SEMmeasurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        AFM:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/AFMmeasurement'
-            quantities:
-              measurement:
-                type: '#/AFMmeasurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        reflectance:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/ReflectanceMeasurement'
-            quantities:
-              measurement:
-                type: '#/ReflectanceMeasurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        UVabsorbance:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/UVAbsorbanceMeasurement'
-            quantities:
-              measurement:
-                type: '#/UVAbsorbanceMeasurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        hall:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/HallMeasurement'
-            quantities:
-              measurement:
-                type: '#/HallMeasurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
-        HRXRD:
-          repeats: true
-          section:
-            # base_sections:
-            # - '#/HRXRDmeasurement'
-            quantities:
-              measurement:
-                type: '#/HRXRDmeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
@@ -1157,120 +945,23 @@ definitions:
                     name: GrowthRun/MIST Valve
                   eln:
                     component: BoolEditQuantity
-    PreGrowth:
+    Sample:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.metainfo.eln.Ensemble
       - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
       quantities:
-        method:
-          type: str
-          default: "MOVPE Pregrowth"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        pregrowth_steps:
-          repeats: true
-          section:
-            base_sections:
-            - '#/PregrowthStep'
-    PregrowthStep:
-      m_annotations:
-        eln:
-          # hide: [descritpion]
-      quantities:
-        step_number:
-          type: int
-          description: sequential number of the step on going
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-            tabular:
-              name: Pregrowth/Step Index
         name:
           type: str
-          description: what this step consists of
+          description: FILL
           m_annotations:
-            tabular:
-              name: Pregrowth/Step Name
             eln:
               component: StringEditQuantity
-        description:
+            tabular:
+              name: Substrate/Material
+        test_quantities:
           type: str
-          description: FILL
+          description: Test quantity
           m_annotations:
-            tabular:
-              name: Pregrowth/Description
-            eln:
-              component: StringEditQuantity
-        elapsed_time:
-          type: np.float64
-          unit: minute
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-            tabular:
-              name: Pregrowth/Duration
-        carrier_gas_flow:
-          type: np.float64
-          unit: cm ** 3 / minute
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: cm ** 3 / minute
-            tabular:
-              name: Pregrowth/Carrier Gas Flow
-        carrier_gas:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Pregrowth/Carrier Gas
-            eln:
-              component: StringEditQuantity
-        chamber_pressure:
-          type: np.float64
-          unit: mbar
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: mbar
-            tabular:
-              name: Pregrowth/Chamber Pressure
-        substrate_temperature:
-          type: np.float64
-          unit: celsius
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: celsius
-            tabular:
-              name: Pregrowth/Substrate Temperature
-        carrier_rotation:
-          type: int
-          unit: rpm
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: rpm
-            tabular:
-              name: Pregrowth/Carrier Rotation
-        notes:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Pregrowth/Notes
             eln:
               component: StringEditQuantity
     Substrate:
@@ -1278,14 +969,6 @@ definitions:
       - nomad.datamodel.metainfo.eln.Ensemble
       - nomad.datamodel.data.EntryData
       quantities:
-        alias:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Substrates
         name:
           type: str
           description: FILL
@@ -1300,6 +983,8 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
+            tabular:
+              name: Substrate/Delivery Date
         lab_id:
           type: str
           description: FILL
@@ -1307,7 +992,7 @@ definitions:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Substrate ID
+              name: Substrate/Substrates
         supplier:
           type: str
           description: FILL
@@ -1324,23 +1009,22 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Orientation
-        misorientation:
+        miscut_b:
           type: str
           description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Orientation
-        off_cut:
-          type: np.float64
-          unit: degrees
-          description: Off-cut angle to the substrates surface
+              name: Substrate/Miscut b
+        miscut_c:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
-              component: NumberEditQuantity
+              component: StringEditQuantity
             tabular:
-              name: Substrate/Off-cut
+              name: Substrate/Miscut c
         doping_level:
           type: np.float64
           #unit: wt %
@@ -1358,62 +1042,54 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Doping Species
-        size:
+        size_x:
           type: str
           description: FILL
           m_annotations:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Size
-        susceptor:
+              name: Substrate/Size X
+        size_y:
           type: str
           description: FILL
           m_annotations:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Susceptor
-        mask:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Mask
-        pocket:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Pocket
-        annealing:
+              name: Substrate/Size Y
+        as_received:
           type: bool
           description: Is the sample annealed?
           m_annotations:
             eln:
               component: BoolEditQuantity
             tabular:
-              name: Substrate/Annealing
-        cleaning:
+              name: Substrate/As Received
+        usable:
           type: bool
-          description: FILL
+          description: Usable Sample
           m_annotations:
             eln:
               component: BoolEditQuantity
             tabular:
-              name: Substrate/Cleaning
-        regrowth:
+              name: Substrate/Usable
+        epi_ready:
           type: bool
-          description: FILL
+          description: Sample ready for epitaxy
           m_annotations:
             eln:
               component: BoolEditQuantity
             tabular:
-              name: Substrate/Regrowth
+              name: Substrate/Epi Ready
+        defective:
+          type: bool
+          description: Defective Sample
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+            tabular:
+              name: Substrate/Defective
         documentation:
           type: str
           description: pdf files containing certificate and other documentation
@@ -1432,220 +1108,6 @@ definitions:
       sub_sections:
         geometry:
           section: '#/Geometry'
-    MistSource:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Entity
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-          # hide: [descritpion]
-      quantities:
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        item:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Mist/Item
-            eln:
-              component: StringEditQuantity
-        temperature:
-          type: np.float64
-          unit: celsius
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplyUnit: celsius
-            tabular:
-              name: Mist/Temperature
-        time:
-          type: np.float64
-          unit: minute
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplyUnit: minute
-            tabular:
-              name: Mist/Time
-        notes:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Mist/Notes
-            eln:
-              component: StringEditQuantity
-      sub_sections:
-        components:
-          repeats: true
-          section:
-            quantities:
-              material:
-                type: str
-                description: FILL
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-                  tabular:
-                    name: Mist/Material
-              concentration:
-                type: np.float64
-                unit: mol / liter
-                description: FILL
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplyUnit: mol / liter
-                  tabular:
-                    name: Mist/Concentration
-    SampleCut:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Process
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "MOVPE Sample Cut"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        image:
-          type: str
-          description: image showing the sample cut geometry
-          m_annotations:
-            tabular:
-              name: SampleCut/Sample Cut File
-            browser:
-              adaptor: RawFileAdaptor
-            eln:
-              component: FileEditQuantity
-        parent_sample_id:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: SampleCut/Parent Sample ID
-            eln:
-              component: StringEditQuantity
-        children_sample_id:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: SampleCut/Children Sample ID
-            eln:
-              component: StringEditQuantity
-        cut_date:
-          type: Datetime
-          description: FILL
-          m_annotations:
-            tabular:
-              name: SampleCut/Cut Date
-            eln:
-              component: DateTimeEditQuantity
-        position:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: SampleCut/Position
-            eln:
-              component: StringEditQuantity
-        purpose:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: SampleCut/Experiment
-            eln:
-              component: StringEditQuantity
-        size:
-          type: np.float64
-          unit: millimeter ** 2
-          description: FILL
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplyUnit: millimeter ** 2
-            tabular:
-              name: SampleCut/Size
-        collaborator:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: SampleCut/Collaborator
-            eln:
-              component: StringEditQuantity
-    ContactSputtering:
-      m_annotations:
-        eln:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Process
-      - nomad.datamodel.data.EntryData
-      quantities:
-        method:
-          type: str
-          default: "MOVPE Contacts Sputtering"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        name:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Contacts/Sample Piece
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Contacts/Deposition Date
-            eln:
-              component: DateTimeEditQuantity
-              label: deposition_date
-        # category:
-        #   type: str
-        #   description: FILL
-        #   m_annotations:
-        #     tabular:
-        #       name: Contacts/Activity Category
-        #     eln:
-        #       component: StringEditQuantity
-        contact_type:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Contacts/Contact Type
-            eln:
-              component: StringEditQuantity
-        contact_geometry:
-          type: str
-          description: FILL
-          m_annotations:
-            tabular:
-              name: Contacts/Geometry
-            eln:
-              component: StringEditQuantity
     Geometry:
       m_annotations:
         eln:
@@ -1854,20 +1316,25 @@ definitions:
                     component: ReferenceEditQuantity
     SubstratePreProcess:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.metainfo.eln.Activity
       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
       quantities:
         method:
           type: str
-          default: "MOVPE Pregrowth"
+          default: "MOVPE IKZ Pre-Process"
         description:
           type: str
           description: description
           m_annotations:
             eln:
               component: StringEditQuantity
+        sample:
+          type: '#/Substrate'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
       sub_sections:
         afm_as_received:
           section:
@@ -1897,3 +1364,29 @@ definitions:
           section:
             base_sections:
             - '#/LightMicroscope'
+    SubstratePreProcessTest:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        method:
+          type: str
+          default: "MOVPE IKZ Pre-Process"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sample:
+          type: '#/Substrate'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+      sub_sections:
+        steps:
+          section:
+            base_sections:
+            - nomad.datamodel.metainfo.eln.Activity
