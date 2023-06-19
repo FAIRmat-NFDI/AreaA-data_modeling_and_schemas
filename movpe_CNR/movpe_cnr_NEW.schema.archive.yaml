@@ -154,183 +154,118 @@ definitions:
         precursors:
           repeats: true
           section:
-        #     base_sections:
-        #     - '#/Precursor'
             quantities:
               precursor:
                 type: '#/Precursor'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         substrates:
           repeats: true
           section:
-            # base_sections:
-            # - '#/Substrate'
             quantities:
               substrate:
                 type: '#/Substrate'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         MIST_source:
           repeats: true
           section:
-            # base_sections:
-            # - '#/MistSource'
             quantities:
               source:
                 type: '#/MistSource'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         pregrowth:
           section:
-            # base_sections:
-            # - '#/PreGrowth'
             quantities:
               process:
                 type: '#/PreGrowth'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         growth_run:
           section:
-            # base_sections:
-            # - '#/GrowthRun'
             quantities:
               process:
                 type: '#/GrowthRun'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         samples_cut:
           repeats: true
           section:
-            # base_sections:
-            # - '#/SampleCut'
             quantities:
               process:
                 type: '#/SampleCut'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         contacts_sputtering:
           repeats: true
           section:
-            # base_sections:
-            # - '#/ContactSputtering'
             quantities:
               process:
                 type: '#/ContactSputtering'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         SEM:
           repeats: true
           section:
-            # base_sections:
-            # - '#/SEMmeasurement'
             quantities:
               measurement:
                 type: '#/SEMmeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         AFM:
           repeats: true
           section:
-            # base_sections:
-            # - '#/AFMmeasurement'
             quantities:
               measurement:
                 type: '#/AFMmeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         reflectance:
           repeats: true
           section:
-            # base_sections:
-            # - '#/ReflectanceMeasurement'
             quantities:
               measurement:
                 type: '#/ReflectanceMeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         UVabsorbance:
           repeats: true
           section:
-            # base_sections:
-            # - '#/UVAbsorbanceMeasurement'
             quantities:
               measurement:
                 type: '#/UVAbsorbanceMeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         hall:
           repeats: true
           section:
-            # base_sections:
-            # - '#/HallMeasurement'
             quantities:
               measurement:
                 type: '#/HallMeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
         HRXRD:
           repeats: true
           section:
-            # base_sections:
-            # - '#/HRXRDmeasurement'
             quantities:
               measurement:
                 type: '#/HRXRDmeasurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
     Precursor:
       base_sections:
       - nomad.datamodel.metainfo.eln.Substance
@@ -373,6 +308,15 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Notes"
+        image:
+          type: str
+          shape: ['*']
+          description: image from SEM measurement
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
           m_annotations:
@@ -414,6 +358,15 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Notes"
+        image:
+          type: str
+          shape: ['*']
+          description: image from AFM measurement
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
           default: '#data/SEM/sample_id'
@@ -471,10 +424,9 @@ definitions:
               label: "Notes"
         image:
           type: str
+          shape: ['*']
           description: image showing the thickness measurement points
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Thickness File
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -534,6 +486,15 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Notes"
+        image:
+          type: str
+          shape: ['*']
+          description: image from optical microscopy
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
           m_annotations:
@@ -1473,10 +1434,9 @@ definitions:
               label: "Notes"
         image:
           type: str
+          shape: ['*']
           description: image showing the sample cut geometry
           m_annotations:
-            tabular:
-              name: SampleCut/Sample Cut File
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -1573,14 +1533,6 @@ definitions:
             eln:
               component: DateTimeEditQuantity
               label: deposition_date
-        # category:
-        #   type: str
-        #   description: FILL
-        #   m_annotations:
-        #     tabular:
-        #       name: Contacts/Activity Category
-        #     eln:
-        #       component: StringEditQuantity
         contact_type:
           type: str
           description: FILL
