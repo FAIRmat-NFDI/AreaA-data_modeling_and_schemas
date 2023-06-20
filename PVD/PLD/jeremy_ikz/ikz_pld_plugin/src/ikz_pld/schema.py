@@ -52,6 +52,7 @@ from nomad.metainfo import (
     SubSection,
 )
 from nomad.datamodel.data import (
+    ArchiveSection,
     EntryData,
 )
 from nomad.datamodel.metainfo.annotations import (
@@ -63,6 +64,7 @@ from nomad.datamodel.metainfo.eln import (
     SampleID,
     Substance,
     Component,
+    Ensemble,
 )
 
 m_package = Package(name='IKZ PLD')
@@ -72,7 +74,11 @@ class IKZPLDSubstrateMaterial(Substance, EntryData):
     pass
 
 
-class IKZPLDSubstrate(Substrate, EntryData):
+class IKZPLDPossibleSubstrate(Ensemble):
+    pass
+
+
+class IKZPLDSubstrate(Substrate, IKZPLDPossibleSubstrate, EntryData):
     material=Quantity(
         type=str,
         a_eln=ELNAnnotation(
@@ -85,14 +91,27 @@ class IKZPLDSubstrate(Substrate, EntryData):
             component='StringEditQuantity',
         ),
     )
-    miscut_angle = Quantity(
+    miscut_orientation = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    minimum_miscut_angle = Quantity(
         type=float,
         unit='degree',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
         ),
     )
-    batch = Quantity(
+    maximum_miscut_angle = Quantity(
+        type=float,
+        unit='degree',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    supplier_batch = Quantity(
         type=str,
         a_eln=ELNAnnotation(
             component='StringEditQuantity',
@@ -119,7 +138,154 @@ class IKZPLDSubstrate(Substrate, EntryData):
         super(IKZPLDSubstrate, self).normalize(archive, logger)
 
 
-class IKZPLDSample(ThinFilmStack, EntryData):
+class IKZPLDSubstrateReference(ArchiveSection):
+    substrate_number = Quantity(
+        type=int,
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    substrate = Quantity(
+        type=IKZPLDSubstrate,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        ),
+    )
+
+
+class IKZPLDSubstrateSubBatch(ArchiveSection):
+    name = Quantity(
+        type=str
+    )
+    minimum_miscut_angle = Quantity(
+        type=float,
+        unit='degree',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    maximum_miscut_angle = Quantity(
+        type=float,
+        unit='degree',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    amount = Quantity(
+        type=int,
+        description='''
+        The number of substrates in this sub batch.
+        ''',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    substrates = SubSection(
+        section_def=IKZPLDSubstrateReference,
+        repeats=True,
+    )
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `IKZPLDSubstrateSubBatch` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        if self.name is None and self.minimum_miscut_angle and self.maximum_miscut_angle:
+            mean_angle = (self.maximum_miscut_angle.magnitude + self.minimum_miscut_angle.magnitude) / 2
+            self.name = f'{mean_angle}°'
+
+        super(IKZPLDSubstrateSubBatch, self).normalize(archive, logger)
+
+
+class IKZPLDSubstrateBatch(Ensemble, EntryData):  # TODO: Inherit from batch
+    material=Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    orientation = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    miscut_orientation = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    supplier_batch = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    sub_batches = SubSection(
+        section_def=IKZPLDSubstrateSubBatch,
+        repeats=True,
+    )
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `IKZPLDSubstrateBatch` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        if self.name is None and self.supplier_batch:
+            self.name = self.supplier_batch
+        if (
+            len(self.sub_batches) > 0
+            and any(len(sub.substrates) == 0 for sub in self.sub_batches)
+        ):
+            substance_ref = None
+            if self.material:
+                substance = IKZPLDSubstrateMaterial(
+                    name=self.material,
+                )
+                file_name = f'{datetime.datetime.now().isoformat()}_substance.archive.json'
+                substance_ref = create_archive(substance, archive, file_name)
+                self.components = [Component(system=substance_ref)]
+            for sub_batch_idx, sub_batch in enumerate(self.sub_batches):
+                if len(sub_batch.substrates) > 0:
+                    continue
+                if self.supplier_batch:
+                    batch_name = self.supplier_batch.replace('/','-')
+                else:
+                    batch_name = f'batch-{datetime.datetime.now().isoformat()}'
+                file_name = f'{batch_name}_sub-batch-%d_substrate-%d.archive.json'
+                sub_batch.substrates = [
+                    IKZPLDSubstrateReference(
+                        substrate_number=substrate_idx,
+                        substrate=create_archive(
+                            IKZPLDSubstrate(
+                                name=f'{batch_name} {sub_batch.name} substrate-{substrate_idx}',
+                                material=self.material,
+                                orientation=self.orientation,
+                                miscut_orientation=self.miscut_orientation,
+                                supplier_batch=self.supplier_batch,
+                                minimum_miscut_angle=sub_batch.minimum_miscut_angle.magnitude,
+                                maximum_miscut_angle=sub_batch.maximum_miscut_angle.magnitude,
+                                components=[Component(system=substance_ref)],
+                            ),
+                            archive,
+                            file_name % (sub_batch_idx, substrate_idx),
+                        )
+                    ) for substrate_idx in range(sub_batch.amount)
+                ]
+
+        super(IKZPLDSubstrateBatch, self).normalize(archive, logger)
+
+
+class IKZPLDSample(ThinFilmStack, IKZPLDPossibleSubstrate, EntryData):
     sample_id = SubSection(
         section_def=SampleID
     )
@@ -252,6 +418,12 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                 ),
             ),
         ],
+    )
+    substrate = Quantity(
+        type=IKZPLDPossibleSubstrate,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        ),
     )
     attenuated_laser_energy = Quantity(
         type=float,
