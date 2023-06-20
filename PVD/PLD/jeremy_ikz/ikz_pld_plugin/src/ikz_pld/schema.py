@@ -259,6 +259,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
         default=50e-3,
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
+            defaultDisplayUnit='millijoule',
         ),
     )
     laser_spot_size = Quantity(
@@ -377,18 +378,21 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             for _, row in df_steps.iterrows():
                 data = df_data.loc[
                     (row['time_s'] <= df_data['time_s']) &
-                    (df_data['time_s'] <= (row['time_s'] + row['duration_s']))
+                    (df_data['time_s'] < (row['time_s'] + row['duration_s']))
                 ].copy()
                 data['pressure_mbar'] = data['pressure1_mbar']
                 p2_range = (0.01 <= data['pressure_mbar']) & (data['pressure_mbar'] <= 0.1)
                 data.loc[p2_range, 'pressure_mbar'] = data.loc[p2_range, 'pressure2_mbar']
                 mean_laser_energy = data['laser_energy_mj'].replace(0, np.NaN).mean()
+                if np.isnan(mean_laser_energy):
+                    attenuation = 1
+                else:
+                    attenuation = self.attenuated_laser_energy / (mean_laser_energy * 1e-3)
                 evaporation_source = PLDLaser(
                     power=PVDSourcePower(
                         power=(
                             data['laser_energy_mj'] * 1e-3 * data['frequency_hz']
-                            * self.attenuated_laser_energy
-                            / data['laser_energy_mj'].replace(0, np.NaN).mean()
+                            * attenuation
                         ),
                         process_time=data['time_s']
                     ),

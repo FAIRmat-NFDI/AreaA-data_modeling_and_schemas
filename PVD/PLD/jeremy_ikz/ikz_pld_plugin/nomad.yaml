@@ -3,7 +3,11 @@ normalize:
     include:
     - MetainfoNormalizer
 plugins:
-  include: schemas/example
+  include:
+    - 'schemas/material_processing'
+    - 'schemas/ikz_pld'
   options:
-    schemas/example:
+    schemas/material_processing:
+      python_package: nomad_material_processing
+    schemas/ikz_pld:
       python_package: ikz_pld
