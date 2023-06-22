@@ -18,20 +18,36 @@ definitions:
             tabular_parser:
               sep: ','
               comment: '#'
-              entry_sections: # list of subsections to be parsed by data_file in entry mode
-              - precursors
-              - substrates
-              - MIST_source
-              - pregrowth/pregrowth_steps
-              - growth_run/growth_run_steps
-              - samples_cut
-              - contacts_sputtering
-              - SEM
-              - AFM
-              - reflectance
-              - UVabsorbance
-              - hall
-              - HRXRD
+              # current_entry:
+              #   row_to_sections:
+              #     - MySubsection
+              new_entry:
+                - row_to_sections:
+                  - pregrowth/pregrowth_steps
+                - row_to_sections:
+                  - growth_run/growth_run_steps
+                - row_to_entries:
+                  - precursors
+                - row_to_entries:
+                  - substrates
+                - row_to_entries:
+                  - MIST_source
+                - row_to_entries:
+                  - samples_cut
+                - row_to_entries:
+                  - contacts_sputtering
+                - row_to_entries:
+                  - SEM
+                - row_to_entries:
+                  - AFM
+                - row_to_entries:
+                  - reflectance
+                - row_to_entries:
+                  - UVabsorbance
+                - row_to_entries:
+                  - hall
+                - row_to_entries:
+                  - HRXRD
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -1260,6 +1276,14 @@ definitions:
               component: NumberEditQuantity
             tabular:
               name: Substrate/Off-cut
+        off_cut_orientation:
+          type: str
+          description: Off-cut orientation to the substrates surface
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            tabular:
+              name: Substrate/Off-cut Orientation
         doping_level:
           type: np.float64
           #unit: wt %
