@@ -498,6 +498,24 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
         if self.data_log and self.recipe_log:
             import pandas as pd
             import numpy as np
+
+            # If no substrate is already added
+            # if not any(sub.substrate is not None for step in self.steps for sub in step.substrate):
+            substrate_ref = None
+            if (
+                len(self.steps) > 0
+                and self.steps[0].substrate is not None
+                and self.steps[0].substrate.substrate is not None
+            ):
+                substrate_ref = self.steps[0].substrate.substrate
+            elif isinstance(self.substrate, IKZPLDSubstrate):
+                substrate_ref = create_archive(
+                    IKZPLDSample(
+                        substrate=self.substrate,
+                    )
+                )
+            elif isinstance(self.substrate, IKZPLDSample):
+                substrate_ref = self.substrate
             pattern = re.compile(
                 r'(?P<datetime>\d{8}_\d{4})-(?P<name>.+)\.(?P<type>d|e)log',
             )
@@ -583,6 +601,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                         measurement_type='Heater thermocouple',
                     ),
                     heater='Resistive element',
+                    substrate=substrate_ref,
                 )
                 environment = PVDChamberEnvironment(
                     pressure=PVDPressure(
