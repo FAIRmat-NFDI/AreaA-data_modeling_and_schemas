@@ -5,7 +5,7 @@ from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID
+from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID, System
 from nomad.units import ureg
 import numpy as np
 from datetime import datetime
@@ -86,15 +86,18 @@ class RTGSIMS(Measurement):
         type=str,
         description='Method used to collect the data',
         default='SIMS')
-    depth_profile_ID = SubSection(
-        section_def=SampleID,
-        description='depth profile ID from RTG')
+    #depth_profile_ID = SubSection(
+    #    section_def=SampleID,
+    #    description='depth profile ID from RTG')
     Matrix = Quantity(
         type=str, #SimsMatrix
         description='Element Matrix for Mass Spectrometer')
-    SampleID = Quantity(
-        type=str,
-        description='IKZ sampleID, make use of sample ID class!')
+    Sample = Quantity(
+        type=System,
+        description='IKZ sampleID, make use of sample ID class!',
+        a_eln=dict(
+            component='ReferenceEditQuantity',
+        ))
     depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
     depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
 
@@ -112,7 +115,7 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
     name = Quantity(
         type=str,
         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity))
-    message = Quantity(type=str)
+    #message = Quantity(type=str)
     data_file = Quantity(
         type=str,
         description='Data file containing the RTG depth profile SIMS dat (dp_ascii)',
@@ -200,9 +203,9 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                 #self.depth_profile_id = SampleID()
                 #self.depth_profile_id.sample_short_name = sims_dict['id']
                 #self.SampleID = sims_dict["sample_id"]
-                #self.lab_id = sims_dict["depth_profile_id"]
+                self.lab_id = sims_dict["depth_profile_id"]
                 #self.depth_profile_ID.sample_short_name = sims_dict["depth_profile_id"]
-                self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
+                #self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
                 logger.info('parser works')
                 self.depth_profiles_qualitative=[]
                 #dep_profile_object=DepthProfile()
