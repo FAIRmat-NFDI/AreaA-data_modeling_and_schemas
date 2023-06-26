@@ -1281,7 +1281,7 @@ definitions:
           description: Off-cut orientation to the substrates surface
           m_annotations:
             eln:
-              component: NumberEditQuantity
+              component: StringEditQuantity
             tabular:
               name: Substrate/Off-cut Orientation
         doping_level:
