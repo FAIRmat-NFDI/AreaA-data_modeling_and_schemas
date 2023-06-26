@@ -8,9 +8,9 @@ definitions:
        - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
-          hide: ['end_time', 'lab_id', 'location']
+          hide: ['end_time', 'lab_id', 'location', 'description']
       quantities:
-        data_file:
+        substrate_data_file:
           type: str
           description: |
             A reference to an uploaded .xlsx
@@ -18,22 +18,16 @@ definitions:
             tabular_parser:
               sep: ','
               comment: '#'
-              entry_sections: # list of subsections to be parsed by data_file in entry mode
-              # - precursors
-              - substrates
-              # - growth_run/growth_run_steps
-              # - substrate_pre_process
-              # - substrate_pre_process_test
+              # current_entry:
+              #   row_to_sections:
+              #     - MySubsection
+              new_entry: 
+                - row_to_entries:
+                  - substrates
             browser:
               adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         method:
           type: str
           default: "MOVPE IKZ Experiment"
@@ -49,33 +43,29 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        operator:
-          type: str
-          shape: [1]
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
         sample:
           type: '#/Sample'
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-        project:
-          type: str
-          shape: [1]
-          description: FILL THE DESCRIPTION
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        notes:
-          type: str
-          shape: [1]
-          description: FILL THE DESCRIPTION
-          m_annotations:
-            eln:
-              component: StringEditQuantity
       sub_sections:
+        notes:
+          section:
+            quantities:
+              notes:
+                type: str
+                m_annotations:
+                  eln:
+                    component: RichTextEditQuantity
+        users:
+          section:
+            quantities:
+              user:
+                type: Author
+                shape: ['*']
+                m_annotations:
+                  eln:
+                    component: AuthorEditQuantity
         precursors:
           repeats: true
           section:
@@ -95,21 +85,7 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity
         substrate_pre_process:
-          section:
-            quantities:
-              process:
-                type: '#/SubstratePreProcess'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-        substrate_pre_process_test:
-          section:
-            quantities:
-              process:
-                type: '#/SubstratePreProcessTest'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
+          section: '#/SubstratePreProcess'
         growth_run:
           section:
             quantities:
@@ -1313,65 +1289,15 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity
     SubstratePreProcess:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
-      - nomad.datamodel.data.EntryData
+      # base_sections:
+      # - nomad.datamodel.metainfo.eln.Activity
+      # - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
       quantities:
         method:
           type: str
-          default: "MOVPE IKZ Pre-Process"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sample:
-          type: '#/Substrate'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-      sub_sections:
-        afm_as_received:
-          section:
-            base_sections:
-            - '#/AFMmeasurement'
-        light_microscope_as_received:
-          section:
-            base_sections:
-            - '#/LightMicroscope'
-        etching:
-          section:
-            base_sections:
-            - '#/Etching'
-        light_microscope_after_etching:
-          section:
-            base_sections:
-            - '#/AFMmeasurement'
-        annealing:
-          section:
-            base_sections:
-            - '#/Annealing'
-        afm_after_annealing:
-          section:
-            base_sections:
-            - '#/AFMmeasurement'
-        light_microscope_after_annealing:
-          section:
-            base_sections:
-            - '#/LightMicroscope'
-    SubstratePreProcessTest:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "MOVPE IKZ Pre-Process"
+          default: "MOVPE IKZ Substrate Pre-Process"
         description:
           type: str
           description: description
@@ -1385,6 +1311,11 @@ definitions:
               component: ReferenceEditQuantity
       sub_sections:
         steps:
+          repeats: true
           section:
-            base_sections:
-            - nomad.datamodel.metainfo.eln.Activity
+            quantities:
+              step:
+                type: nomad.datamodel.metainfo.eln.Activity
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
