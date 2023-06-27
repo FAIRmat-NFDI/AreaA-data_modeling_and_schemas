@@ -123,6 +123,7 @@ definitions:
               template:
               eln:
         hall_measurement:
+          repeats: true
           section:
             base_sections:
             - '#/HallMeasurement'

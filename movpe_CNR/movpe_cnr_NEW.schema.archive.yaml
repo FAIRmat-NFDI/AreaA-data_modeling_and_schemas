@@ -16,38 +16,31 @@ definitions:
             A reference to an uploaded .xlsx
           m_annotations:
             tabular_parser:
-              sep: ','
-              comment: '#'
-              # current_entry:
-              #   row_to_sections:
-              #     - MySubsection
-              new_entry:
-                - row_to_sections:
-                  - pregrowth/pregrowth_steps
-                - row_to_sections:
-                  - growth_run/growth_run_steps
-                - row_to_entries:
-                  - precursors
-                - row_to_entries:
-                  - substrates
-                - row_to_entries:
-                  - MIST_source
-                - row_to_entries:
-                  - samples_cut
-                - row_to_entries:
-                  - contacts_sputtering
-                - row_to_entries:
-                  - SEM
-                - row_to_entries:
-                  - AFM
-                - row_to_entries:
-                  - reflectance
-                - row_to_entries:
-                  - UVabsorbance
-                - row_to_entries:
-                  - hall
-                - row_to_entries:
-                  - HRXRD
+              parsing_options:
+                comment: '#'
+              mapping_options:
+                - mapping_mode: row
+                  file_mode: new_entry
+                  sections:
+                    - pregrowth/pregrowth_steps
+                - mapping_mode: row
+                  file_mode: new_entry
+                  sections:
+                    - growth_run/growth_run_steps
+                - mapping_mode: entry
+                  file_mode: new_entries
+                  sections:
+                    - precursors
+                    - substrates
+                    - MIST_source
+                    - samples_cut
+                    - SEM
+                    - contacts_sputtering
+                    - AFM
+                    - reflectance
+                    - UVabsorbance
+                    - hall
+                    - HRXRD
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -1303,12 +1296,12 @@ definitions:
               name: Substrate/Doping Species
         size_diameter:
           type: np.float64
-          unit: inch
+          # unit: inch
           description: diameter
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplyUnit: inch
+              # defaultDisplayUnit: inch
             tabular:
               name: Substrate/Size Diameter
         size_X:
@@ -1318,7 +1311,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplyUnit: millimeter
+              defaultDisplayUnit: millimeter
             tabular:
               name: Substrate/Size X
         size_Y:
@@ -1328,7 +1321,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplyUnit: millimeter
+              defaultDisplayUnit: millimeter
             tabular:
               name: Substrate/Size Y
         susceptor:
@@ -1425,7 +1418,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplyUnit: celsius
+              defaultDisplayUnit: celsius
             tabular:
               name: Mist/Temperature
         time:
@@ -1435,7 +1428,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplyUnit: minute
+              defaultDisplayUnit: minute
             tabular:
               name: Mist/Time
       sub_sections:
@@ -1458,7 +1451,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: NumberEditQuantity
-                    defaultDisplyUnit: mol / liter
+                    defaultDisplayUnit: mol / liter
                   tabular:
                     name: Mist/Concentration
     SampleCut:
@@ -1534,7 +1527,7 @@ definitions:
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplyUnit: millimeter ** 2
+              defaultDisplayUnit: millimeter ** 2
             tabular:
               name: SampleCut/Size
         collaborator:
