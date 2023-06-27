@@ -613,7 +613,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     name=row['recipe'],
                     creates_new_thin_film=row['pulses'] > 0,
                     duration=row['duration_s'],
-                    source=[source],
+                    sources=[source],
                     substrate=[substrate],
                     environment=environment,
                 )
