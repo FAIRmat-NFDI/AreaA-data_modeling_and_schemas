@@ -1,0 +1,363 @@
+definitions:
+  name: PvdProcess
+  description: |
+    Base classes for PVD processes.
+  sections:
+
+    TimeSeries:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A section describing a time series.
+      m_annotations:
+        plot:
+        - x: times
+          y: values
+      quantities:
+        values:
+          description: |
+            The array of values.
+          type: np.float64
+          shape: ['*']
+        times:
+          description: |
+            The array of times for the corresponding values.
+          type: np.float64
+          shape: ['*']
+          unit: s
+        n_times:
+          description: |
+            The number of time points in the series.
+          type: int
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        start_time:
+          description: |
+            The datetime of the first time point.
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        mean:
+          description: |
+            The mean value for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        min:
+          description: |
+            The minimum value for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        max:
+          description: |
+            The maximum value for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        standard_deviation:
+          description: |
+            The standard deviation of the values for all times.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        unit:
+          description: |
+            The unit of the values.
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+    Position:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A section describing a position in 3D space in a an orthonormal coordinate system
+        (x,y,z).
+      quantities:
+        x:
+          description: |
+            The x position in meters.
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        y:
+          description: |
+            The y position in meters.
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        z:
+          description: |
+            The z position in meters.
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        e1:
+          description: |
+            The x component of the euler vector.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        e2:
+          description: |
+            The y component of the euler vector.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        e3:
+          description: |
+            The z component of the euler vector.
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        e_theta:
+          description: |
+            The right hand angle around the euler axis
+          type: np.float64
+          unit: radian
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+            
+    PvdSource:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A source used in a PVD process.
+      m_annotations:
+        eln:
+          overview: true
+        plot:
+          label: Source Parameters (fractions)
+          x: 
+            - power/times
+            - rate/times
+            - shutter/times
+          y:
+            - power/values
+            - rate/values
+            - shutter/values
+          lines:
+            - name: Power
+            - name: Rate / nmol/cm2/10s
+            - name: Shutter (1 open, 0 closed)
+      quantities:
+        name:
+          description: |
+            A short name for the source.
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        material:
+          description: |
+            The material deposited from the source.
+          type: nomad.datamodel.metainfo.eln.Substance
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        source_type:
+          description: |
+            The type of source.
+          type:
+              type_kind: Enum
+              type_data:
+                - Target
+                - Crucible
+                - Cracker
+                - Knudsen
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+      sub_sections:
+        position:
+          description: |
+            The position of the source in the chamber reference system.
+          section: '#/Position'
+        power:
+          description: |
+            The power fed to the source as a function of time.
+          section: '#/TimeSeries'
+        rate:
+          description: |
+            The measured depostion rate from the source as a function of time.
+          section: '#/TimeSeries'
+        shutter:
+          description: |
+            The status of the source shutter as a function of time. 0 for closed and 1 for
+            open.
+          section: '#/TimeSeries'
+
+    PvdGas:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A gas (flow) inside a PVD chamber.
+      quantities:
+        gas_composition:
+          description: |
+            The gas composition.
+          type: nomad.datamodel.metainfo.eln.Ensemble
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+      sub_sections:
+        flow:
+          description: |
+            The flow of the gas as a fucntion of time.
+          section: '#/TimeSeries'
+    
+    PvdAtmosphere:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A description of the atmosphere inside a PVD chamber.
+      sub_sections:
+        chamber_pressure:
+          description: |
+            The pressure inside the PVD chamber as a function of time.
+          section: '#/TimeSeries'
+        gases:
+          description: |
+            The power fed to the source as a function of time.
+          repeats: True
+          section: '#/PvdGas'
+    
+    PvdSubstrate:
+      base_section: nomad.datamodel.data.ArchiveSection
+      description: |
+        A description of a substrate inside a PVD chamber.
+      quantities:
+        thin_film_stack:
+          description: |
+            A reference to the ThinFilmStack used as substrate.
+          type: nomad.datamodel.metainfo.eln.Ensemble  # TODO: Change to ThinFilmStack class when implemented
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        rotating:
+          description: |
+            Whether or not the substrate is rotating during deposition.
+          type: bool
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+      sub_sections:
+        temperature:
+          description: |
+            The temperature of the substrate as a function of time.
+          section: '#/TimeSeries'
+        position:
+          description: |
+            The stationary position of the substrate in the chamber reference system. 
+            Origin of substrate is at the center of mass, the euler axis is normal to the 
+            surface being deposited on.
+          section: '#/Position'
+
+    Synthesis:
+      base_section: nomad.datamodel.metainfo.eln.Process
+      description: |
+        A base class for a synthesis which creates or adds to a sample entity.
+
+    PhysicalVaporDeposition:
+      base_section: Synthesis
+      description: |
+        A base class for a Physical Vapor Deposition (PVD) synthesis process.
+      quantities:
+        chamber_origin:
+          description: |
+            A description of the orthonormal chamber reference coordinate system.
+          type: str
+      sub_sections:
+        sources:
+          description: |
+            The sources in the chamber used for deposition.
+          repeats: True
+          section: '#/PvdSource'
+        atmosphere:
+          description: |
+            The atmospehere inside the chamber during deposition.
+          section: '#/PvdAtmosphere'
+        substrates:
+          description: |
+            The substrates present in the chamber during deposition.
+          repeats: True
+          section: '#/PvdSubstrate'
+
+    PvdThermalSource:
+      base_section: PvdSource
+      description: |
+        A source used in a Thermal PVD process.
+      m_annotations:
+        eln:
+          overview: true
+        plot:
+          - label: Source Parameters
+            x: 
+              - power/times
+              - rate/times
+              - shutter/times
+            y:
+              - power/values
+              - rate/values
+              - shutter/values
+            lines:
+              - name: Power
+              - name: Rate / nmol/cm2/10s
+              - name: Shutter (1 open, 0 closed)
+          - label: Source Temperature (°C)
+            x: temperature/times
+            y: temperature/values
+      sub_sections:
+        temperature:
+          description: |
+            The temperature of the source as a function of time.
+          section: '#/TimeSeries'
+    
+    PvdThermal:
+      base_section: PhysicalVaporDeposition
+      description: |
+        A base class for a thermal PVD synthesis process.
+      sub_sections:
+        sources:
+          description: |
+            The sources in the chamber used for deposition.
+          repeats: True
+          section: '#/PvdThermalSource'
+
+    HzbUnoldLabPvdThermal:
+      base_sections: [PvdThermal, nomad.datamodel.data.EntryData]
+      description: |
+        A schema for a PVD process in the Unold group at HZB.
+      m_annotations:
+        eln:
+        plot:
+        - label: Source Power
+          x: sources/:/power/times
+          y: sources/:/power/values
+        - label: Source Rate
+          x: sources/:/rate/times
+          y: sources/:/rate/values
+
+    HzbUnoldLabPvdSubstance:
+      base_sections: 
+        - nomad.datamodel.metainfo.eln.Substance
+        - nomad.datamodel.data.EntryData
+      description: |
+        Susbtance used to fill the crucibles.
+    

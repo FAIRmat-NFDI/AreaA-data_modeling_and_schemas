@@ -1,0 +1,3 @@
+description: A NOMAD plugin for pulsed laser deposition at IKZ.
+name: IKZ PLD
+plugin_type: schema

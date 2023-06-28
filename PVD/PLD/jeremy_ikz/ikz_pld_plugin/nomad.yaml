@@ -1,0 +1,13 @@
+normalize:
+  normalizers:
+    include:
+    - MetainfoNormalizer
+plugins:
+  include:
+    - 'schemas/material_processing'
+    - 'schemas/ikz_pld'
+  options:
+    schemas/material_processing:
+      python_package: nomad_material_processing
+    schemas/ikz_pld:
+      python_package: ikz_pld

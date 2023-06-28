@@ -1,0 +1,7 @@
+definitions:
+  name: HZB Unold Lab
+  sections:
+    HZBUnoldLabThermalEvaporation:
+      base_sections:
+        - nomad_material_processing.physical_vapor_deposition.ThermalEvaporation
+        - nomad.datamodel.data.EntryData
