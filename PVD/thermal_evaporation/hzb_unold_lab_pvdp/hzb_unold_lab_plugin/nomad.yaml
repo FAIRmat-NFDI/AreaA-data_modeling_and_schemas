@@ -1,0 +1,13 @@
+normalize:
+  normalizers:
+    include:
+    - MetainfoNormalizer
+plugins:
+  include:
+    - schemas/material_processing
+    - schemas/hzb_unold_lab
+  options:
+    schemas/material_processing:
+      python_package: nomad_material_processing
+    schemas/hzb_unold_lab:
+      python_package: hzb_unold_lab
