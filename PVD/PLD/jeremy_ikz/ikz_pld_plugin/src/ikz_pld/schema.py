@@ -66,8 +66,18 @@ from nomad.datamodel.metainfo.eln import (
     Component,
     Ensemble,
 )
+from nomad.metainfo.metainfo import (
+    Category,
+)
+from nomad.datamodel.data import (
+    EntryDataCategory,
+)
 
 m_package = Package(name='IKZ PLD')
+
+
+class IKZPLDCategory(EntryDataCategory):
+    m_def = Category(label='HZB Unold Lab', categories=[EntryDataCategory])
 
 
 class IKZPLDSubstrateMaterial(Substance, EntryData):
@@ -79,6 +89,9 @@ class IKZPLDPossibleSubstrate(Ensemble):
 
 
 class IKZPLDSubstrate(Substrate, IKZPLDPossibleSubstrate, EntryData):
+    m_def=Section(
+        categories=[IKZPLDCategory],
+    )
     material=Quantity(
         type=str,
         a_eln=ELNAnnotation(
@@ -202,6 +215,9 @@ class IKZPLDSubstrateSubBatch(ArchiveSection):
 
 
 class IKZPLDSubstrateBatch(Ensemble, EntryData):  # TODO: Inherit from batch
+    m_def=Section(
+        categories=[IKZPLDCategory],
+    )
     material=Quantity(
         type=str,
         a_eln=ELNAnnotation(
@@ -286,6 +302,9 @@ class IKZPLDSubstrateBatch(Ensemble, EntryData):  # TODO: Inherit from batch
 
 
 class IKZPLDSample(ThinFilmStack, IKZPLDPossibleSubstrate, EntryData):
+    m_def=Section(
+        categories=[IKZPLDCategory],
+    )
     sample_id = SubSection(
         section_def=SampleID
     )
@@ -383,6 +402,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
     Application definition section for a pulsed laser deposition process at IKZ.
     '''
     m_def = Section(
+        categories=[IKZPLDCategory],
         links=['http://purl.obolibrary.org/obo/CHMO_0001363'],
         a_eln=ELNAnnotation(
             properties=SectionProperties(
