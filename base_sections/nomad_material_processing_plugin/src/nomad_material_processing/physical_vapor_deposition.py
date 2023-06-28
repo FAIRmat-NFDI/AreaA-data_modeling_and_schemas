@@ -222,9 +222,10 @@ class PVDSubstrate(ArchiveSection):
         type=float,
         unit='meter',
         shape=['*'],
-        # a_eln=ELNAnnotation(
-        #     defaultDisplayUnit='millimeter',
-        # ),
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter',
+        ),
     )
 
 
@@ -266,9 +267,9 @@ class PVDGasFlow(ArchiveSection):
         type=float,
         unit='second',
         shape=['*'],
-        # a_eln=ELNAnnotation(
-        #     defaultDisplayUnit='second',
-        # ),
+        a_eln=ELNAnnotation(
+            defaultDisplayUnit='second',
+        ),
     )
 
 
@@ -305,7 +306,11 @@ class PVDStep(ActivityStep):
     )
     duration = Quantity(
         type=float,
-        unit='second'
+        unit='second',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='second',
+        )
     )
     sources = SubSection(
         section_def=PVDSource,
@@ -387,6 +392,7 @@ class PLDTargetSource(PVDMaterialSource):
         ''',
         type=PLDTarget,
         a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
             label='Target',
         ),
     )
@@ -396,29 +402,35 @@ class PLDLaser(PVDEvaporationSource):
     wavelength = Quantity(
         type=float,
         unit='meter',
-        # a_eln=ELNAnnotation(
-        #     defaultDisplayUnit='nanometer',
-        # ),
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='nanometer',
+        ),
     )
     repetition_rate = Quantity(
         type=float,
         unit='hertz',
-        # a_eln=ELNAnnotation(
-        #     defaultDisplayUnit='hertz',
-        # ),
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='hertz',
+        ),
     )
     spot_size = Quantity(
         type=float,
         unit='meter ** 2',
-        # a_eln=ELNAnnotation(
-        #     defaultDisplayUnit='millimeter ** 2',
-        # ),
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter ** 2',
+        ),
     )
     pulses = Quantity(
         description='''
         The total number of laser pulses during the deposition step.
         ''',
         type=int,
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
     )
 
 
