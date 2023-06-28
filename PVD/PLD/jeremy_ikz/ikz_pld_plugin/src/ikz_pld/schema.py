@@ -32,7 +32,7 @@ from nomad_material_processing.physical_vapor_deposition import (
     PVDPressure,
     PVDSourcePower,
     PVDSubstrate,
-    PVDTemperature,
+    PVDSubstrateTemperature,
     PulsedLaserDeposition,
     PLDStep,
 )
@@ -323,8 +323,8 @@ class IKZPLDStep(PLDStep):
                 ]
             ),
             dict(
-                x='source/0/evaporation_source/power/process_time',
-                y='source/0/evaporation_source/power/power',
+                x='sources/0/evaporation_source/power/process_time',
+                y='sources/0/evaporation_source/power/power',
             ),
             dict(
                 x='substrate/0/temperature/process_time',
@@ -405,8 +405,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
         ),
         a_plot=[
             dict(
-                x='steps/:/source/:/evaporation_source/power/process_time',
-                y='steps/:/source/:/evaporation_source/power/power',
+                x='steps/:/sources/:/evaporation_source/power/process_time',
+                y='steps/:/sources/:/evaporation_source/power/power',
             ),
             dict(
                 x='steps/:/environment/pressure/process_time',
@@ -595,7 +595,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     evaporation_source=evaporation_source,
                 )
                 substrate = PVDSubstrate(
-                    temperature=PVDTemperature(
+                    temperature=PVDSubstrateTemperature(
                         temperature=data['temperature_degc'] + 273.15,
                         process_time=data['time_s'],
                         measurement_type='Heater thermocouple',
