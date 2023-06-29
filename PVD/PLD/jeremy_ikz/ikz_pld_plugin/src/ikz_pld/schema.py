@@ -77,11 +77,13 @@ m_package = Package(name='IKZ PLD')
 
 
 class IKZPLDCategory(EntryDataCategory):
-    m_def = Category(label='HZB Unold Lab', categories=[EntryDataCategory])
+    m_def = Category(label='IKZ Pulsed Laser Deposition', categories=[EntryDataCategory])
 
 
 class IKZPLDSubstrateMaterial(Substance, EntryData):
-    pass
+    m_def=Section(
+        categories=[IKZPLDCategory],
+    )
 
 
 class IKZPLDPossibleSubstrate(Ensemble):
@@ -209,7 +211,7 @@ class IKZPLDSubstrateSubBatch(ArchiveSection):
         '''
         if self.name is None and self.minimum_miscut_angle and self.maximum_miscut_angle:
             mean_angle = (self.maximum_miscut_angle.magnitude + self.minimum_miscut_angle.magnitude) / 2
-            self.name = f'{mean_angle}°'
+            self.name = f'{mean_angle:.3f}°'
 
         super(IKZPLDSubstrateSubBatch, self).normalize(archive, logger)
 
