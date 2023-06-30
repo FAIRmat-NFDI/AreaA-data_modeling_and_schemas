@@ -19,15 +19,26 @@
 from structlog.stdlib import (
     BoundLogger,
 )
+from nomad_material_processing import (
+    ActivityStep,
+    SampleDeposition,
+    Crystal,
+)
 from nomad.metainfo import (
     Package,
     Section,
+    SubSection,
+    Quantity,
 )
-from nomad_material_processing import (
-    SampleDeposition,
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
 )
 
 m_package = Package(name='Crystal Growth')
+
+
+class CrystalGrowthStep(ActivityStep):
+    pass
 
 
 class CrystalGrowth(SampleDeposition):
@@ -37,6 +48,19 @@ class CrystalGrowth(SampleDeposition):
     '''
     m_def = Section(
         links=["http://purl.obolibrary.org/obo/CHMO_0002224"],
+    )
+    resulting_crystal = Quantity(
+        type=Crystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
+    )
+    steps = SubSection(
+        description='''
+        The steps of the crystal growth.
+        ''',
+        section_def=CrystalGrowthStep,
+        repeats=True,
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -61,6 +85,10 @@ class CzochralskiProcess(CrystalGrowth):
     m_def = Section(
         links=["http://purl.obolibrary.org/obo/CHMO_0002158"],
     )
+    method = Quantity(
+        type=str,
+        default='Czochralski Process'
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         '''
@@ -84,6 +112,10 @@ class BridgmanTechnique(CrystalGrowth):
     '''
     m_def = Section(
         links=["http://purl.obolibrary.org/obo/CHMO_0002160"],
+    )
+    method = Quantity(
+        type=str,
+        default='Bridgman Technique'
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
