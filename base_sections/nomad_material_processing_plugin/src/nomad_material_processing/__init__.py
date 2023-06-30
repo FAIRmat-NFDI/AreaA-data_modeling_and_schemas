@@ -30,6 +30,7 @@ from nomad.datamodel.data import (
 from nomad.datamodel.metainfo.eln import (
     Process,
     Ensemble,
+    Instrument,
 )
 
 m_package = Package(name='Material Processing')
@@ -159,6 +160,12 @@ class ThinFilmStack(Ensemble, ArchiveSection):
 
 class Crystal(Ensemble):
     pass
+
+
+class Furnace(Instrument):
+    model=Quantity(
+        type=str,
+    )
 
 
 class SampleDeposition(Process, ArchiveSection):

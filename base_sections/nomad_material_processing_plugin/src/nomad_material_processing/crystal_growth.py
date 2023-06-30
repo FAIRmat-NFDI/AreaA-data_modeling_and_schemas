@@ -21,6 +21,7 @@ from structlog.stdlib import (
 )
 from nomad_material_processing import (
     ActivityStep,
+    Furnace,
     SampleDeposition,
     Crystal,
 )
@@ -32,6 +33,9 @@ from nomad.metainfo import (
 )
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
+)
+from nomad.datamodel.data import (
+    ArchiveSection,
 )
 
 m_package = Package(name='Crystal Growth')
@@ -102,6 +106,23 @@ class CzochralskiProcess(CrystalGrowth):
         super(CzochralskiProcess, self).normalize(archive, logger)
 
 
+class BridgmanFurnaceSection(ArchiveSection):
+    furnace = Quantity(
+        type=Furnace,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        ),
+    )
+    temperature = Quantity(
+        type=float,
+        unit='kelvin',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius'
+        ),
+    )
+
+
 class BridgmanTechnique(CrystalGrowth):
     '''
     A method of growing a single crystal 'ingot' or 'boule'. The polycrystalline sample is
@@ -115,7 +136,10 @@ class BridgmanTechnique(CrystalGrowth):
     )
     method = Quantity(
         type=str,
-        default='Bridgman Technique'
+        default='Bridgman Technique',
+    )
+    furnace = SubSection(
+        section_def=BridgmanFurnaceSection,
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
