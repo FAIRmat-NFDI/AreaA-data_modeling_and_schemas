@@ -36,9 +36,8 @@ class CrystalGrowth(SampleDeposition):
     [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
     '''
     m_def = Section(
-        links=[
-            "http://purl.obolibrary.org/obo/CHMO_0002224"
-        ],)
+        links=["http://purl.obolibrary.org/obo/CHMO_0002224"],
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         '''
@@ -60,9 +59,8 @@ class CzochralskiProcess(CrystalGrowth):
     [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
     '''
     m_def = Section(
-        links=[
-            "http://purl.obolibrary.org/obo/CHMO_0002158"
-        ],)
+        links=["http://purl.obolibrary.org/obo/CHMO_0002158"],
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         '''
@@ -74,6 +72,30 @@ class CzochralskiProcess(CrystalGrowth):
             logger (BoundLogger): A structlog logger.
         '''
         super(CzochralskiProcess, self).normalize(archive, logger)
+
+
+class BridgmanTechnique(CrystalGrowth):
+    '''
+    A method of growing a single crystal 'ingot' or 'boule'. The polycrystalline sample is
+    heated in a container above its melting point and slowly cooled from one end where a
+    seed crystal is located. Single crystal material is then progressively formed along
+    the length of the container.
+    [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+    '''
+    m_def = Section(
+        links=["http://purl.obolibrary.org/obo/CHMO_0002160"],
+    )
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(BridgmanTechnique, self).normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
