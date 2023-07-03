@@ -32,6 +32,7 @@ from nomad.metainfo import (
     Section,
     SubSection,
     Quantity,
+    Ensemble,
 )
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
@@ -47,6 +48,9 @@ class CrystalGrowthStep(ActivityStep):
     '''
     Details will be added later.
     '''
+    pass
+
+class InitialSynthesisComponent(Ensemble):
     pass
 
 
@@ -154,9 +158,6 @@ class BridgmanFurnaceSection(ArchiveSection):
             component='ReferenceEditQuantity',
         ),
     )
-
-class InitialSynthesisComponent(Ensemble):
-    pass
 
 
 class BridgmanTechnique(CrystalGrowth):
