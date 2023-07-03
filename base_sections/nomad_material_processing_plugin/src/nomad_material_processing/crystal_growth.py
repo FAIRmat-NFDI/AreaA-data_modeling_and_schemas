@@ -48,6 +48,28 @@ class CrystalGrowthStep(ActivityStep):
     pass
 
 
+class BridgmanTechniqueStep(CrystalGrowthStep):
+    '''
+    A step in the Bridgman technique. Contains temperature and pulling rate.
+    '''
+    temperature = Quantity(
+        type=float,
+        unit='kelvin',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius'
+        ),
+    )
+    pulling_rate = Quantity(
+        type=float,
+        unit='meter_per_second',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter_per_minute'
+        ),
+    )
+
+
 class CrystalGrowth(SampleDeposition):
     '''
     Any synthesis method used to grow crystals.
@@ -116,14 +138,6 @@ class BridgmanFurnaceSection(ArchiveSection):
             component='ReferenceEditQuantity',
         ),
     )
-    temperature = Quantity(
-        type=float,
-        unit='kelvin',
-        a_eln=ELNAnnotation(
-            component='NumberEditQuantity',
-            defaultDisplayUnit='celsius'
-        ),
-    )
 
 
 class BridgmanTechnique(CrystalGrowth):
@@ -143,6 +157,13 @@ class BridgmanTechnique(CrystalGrowth):
     )
     furnace = SubSection(
         section_def=BridgmanFurnaceSection,
+    )
+    steps = SubSection(
+        description='''
+        The step of the Bridgman Technique.
+        ''',
+        section_def=BridgmanTechniqueStep,
+        repeats=True,
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
