@@ -42,6 +42,9 @@ m_package = Package(name='Crystal Growth')
 
 
 class CrystalGrowthStep(ActivityStep):
+    '''
+    Details will be added later.
+    '''
     pass
 
 
