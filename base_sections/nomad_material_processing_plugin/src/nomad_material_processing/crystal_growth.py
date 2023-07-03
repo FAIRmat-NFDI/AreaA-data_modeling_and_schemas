@@ -24,6 +24,8 @@ from nomad_material_processing import (
     Furnace,
     SampleDeposition,
     Crystal,
+    Crucible,
+    Tube,
 )
 from nomad.metainfo import (
     Package,
@@ -67,6 +69,15 @@ class BridgmanTechniqueStep(CrystalGrowthStep):
             component='NumberEditQuantity',
             defaultDisplayUnit='millimeter_per_minute'
         ),
+    )
+    Furnace = SubSection(
+        section_def=Furnace,
+    )
+    Crucible = SubSection(
+        section_def=Crucible,
+    )
+    Tube = SubSection(
+        section_def=Tube,
     )
 
 
@@ -154,9 +165,6 @@ class BridgmanTechnique(CrystalGrowth):
     method = Quantity(
         type=str,
         default='Bridgman Technique',
-    )
-    furnace = SubSection(
-        section_def=BridgmanFurnaceSection,
     )
     steps = SubSection(
         description='''
