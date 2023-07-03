@@ -165,7 +165,55 @@ class Crystal(Ensemble):
 class Furnace(Instrument):
     model=Quantity(
         type=str,
+        description='''
+        The model type of the furnace.
+        ''',
     )
+
+class Crucible(Instrument):
+    material=Quantity(
+        type=str,
+        description='''
+        The material of the crucible.
+        ''',
+    )
+    diameter=Quantity(
+        type=float,
+        description='''
+        The diameter of the crucible.
+        ''',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "millimeter"
+        },
+        unit="meter",
+    )
+
+class Tube(Instrument):
+    material=Quantity(
+        type=str,
+        description='''
+        The material of the tube.
+        ''',
+    )
+    diameter=Quantity(
+        type=float,
+        description='''
+        The diameter of the tube.
+        ''',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "millimeter"
+        },
+        unit="meter",
+    )
+    filling=Quantity(
+        type=str,
+        description='''
+        The filling of the tube.
+        ''',
+    )
+
 
 
 class SampleDeposition(Process, ArchiveSection):
