@@ -70,15 +70,20 @@ class BridgmanTechniqueStep(CrystalGrowthStep):
             defaultDisplayUnit='millimeter_per_minute'
         ),
     )
-    Furnace = SubSection(
+    furnace = SubSection(
         section_def=Furnace,
     )
-    Crucible = SubSection(
+    crucible = SubSection(
         section_def=Crucible,
     )
-    Tube = SubSection(
+    tube = SubSection(
         section_def=Tube,
     )
+    initial_materials = SubSection(
+        section_def=InitialSynthesisComponent,
+        repeats=True,
+    )
+
 
 
 class CrystalGrowth(SampleDeposition):
@@ -149,6 +154,9 @@ class BridgmanFurnaceSection(ArchiveSection):
             component='ReferenceEditQuantity',
         ),
     )
+
+class InitialSynthesisComponent(Ensemble):
+    pass
 
 
 class BridgmanTechnique(CrystalGrowth):
