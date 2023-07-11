@@ -96,6 +96,14 @@ definitions:
                   # tabular_pattern: # use this option to define the names of the new entries created
                   # # with parser
                   #   name: my_entry
+        hall_measurement:
+          section:
+            quantities:
+              measurement:
+                type: '#/HallMeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
     Precursor:
       base_sections:
       - nomad.datamodel.metainfo.eln.Substance
@@ -105,8 +113,6 @@ definitions:
           type: str
           description: FILL
           m_annotations:
-            tabular:
-              name: Precursors/Name
             eln:
               component: StringEditQuantity
               label: Substance Name
@@ -114,51 +120,9 @@ definitions:
           type: str
           description: FILL
           m_annotations:
-            tabular:
-              name: Precursors/CAS
             eln:
               component: StringEditQuantity
               label: CAS number
-    SEMmeasurement:
-      more:
-        label_quantity: sample_id
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Measurement
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "SEM (MOVPE IKZ)"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sample_id:
-          type: str
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Sample
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Date
-            eln:
-              component: DateTimeEditQuantity
-              label: "Notes"
-        surface_state:
-          type: str
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Surface State
-            eln:
-              component: StringEditQuantity
     AFMmeasurement:
       more:
         label_quantity: sample_id
@@ -178,6 +142,14 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Notes"
+        image:
+          type: str
+          description: image showing the thickness measurement points
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
           m_annotations:
@@ -221,7 +193,7 @@ definitions:
               label: "Notes"
         image:
           type: str
-          description: image showing the thickness measurement points
+          description: image
           m_annotations:
             browser:
               adaptor: RawFileAdaptor
@@ -310,23 +282,17 @@ definitions:
         sample_id:
           type: str
           m_annotations:
-            tabular:
-              name: HRXRD/Sample
             eln:
               component: StringEditQuantity
         datetime:
           type: Datetime
           m_annotations:
-            tabular:
-              name: HRXRD/Date
             eln:
               component: DateTimeEditQuantity
         phase:
           type: str
           description: Phase type obtained from HRXRD
           m_annotations:
-            tabular:
-              name: HRXRD/Phase
             eln:
               component: StringEditQuantity
         peak_position_2theta:
@@ -334,8 +300,6 @@ definitions:
           unit: degree
           description: "Peak Position - 2theta"
           m_annotations:
-            tabular:
-              name: HRXRD/Peak Position - 2theta
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -344,8 +308,6 @@ definitions:
           unit: degree
           description: "Peak Position - 2theta"
           m_annotations:
-            tabular:
-              name: HRXRD/Peak FWHM - 2theta
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -354,8 +316,6 @@ definitions:
           unit: degree
           description: "Peak Position - Omega"
           m_annotations:
-            tabular:
-              name: HRXRD/Peak Position - Omega
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -363,16 +323,12 @@ definitions:
           type: str
           description: Peak FWHM Rocking Curve
           m_annotations:
-            tabular:
-              name: HRXRD/Peak FWHM Rocking Curve
             eln:
               component: StringEditQuantity
         reflection:
           type: str
           description: Peak FWHM Rocking Curve
           m_annotations:
-            tabular:
-              name: HRXRD/Reflection
             eln:
               component: StringEditQuantity
     GrowthRun:
@@ -1016,8 +972,6 @@ definitions:
           type: Datetime
           description: FILL
           m_annotations:
-            tabular:
-              name: Contacts/Deposition Date
             eln:
               component: DateTimeEditQuantity
               label: deposition_date
@@ -1066,8 +1020,6 @@ definitions:
           type: Datetime
           description: FILL
           m_annotations:
-            tabular:
-              name: Contacts/Deposition Date
             eln:
               component: DateTimeEditQuantity
               label: deposition_date
