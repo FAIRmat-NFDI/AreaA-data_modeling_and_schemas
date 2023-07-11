@@ -54,7 +54,7 @@ definitions:
               label: "Notes"
         method:
           type: str
-          default: "MOVPE Experiment"
+          default: "Experiment (MOVPE CNR)"
         location:
           type: str
           m_annotations:
@@ -309,7 +309,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE SEM"
+          default: "SEM (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -358,7 +358,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE AFM"
+          default: "AFM (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -420,7 +420,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Reflectance"
+          default: "Reflectance (MOVPE CNR)"
         description:
           type: str
           default: '#data/SEM/description'
@@ -487,7 +487,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Absorbance"
+          default: "Absorbance (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -559,7 +559,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Hall"
+          default: "Hall (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -654,7 +654,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE HRXRD"
+          default: "HRXRD (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -739,7 +739,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Growth Run"
+          default: "Growth Run (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -1092,7 +1092,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Pregrowth"
+          default: "Pregrowth (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -1463,7 +1463,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Sample Cut"
+          default: "Sample Cut (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
@@ -1547,7 +1547,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Contacts Sputtering"
+          default: "Contacts Sputtering (MOVPE CNR)"
         description:
           type: str
           description: "Notes and comments."
