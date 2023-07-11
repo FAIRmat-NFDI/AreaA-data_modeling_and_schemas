@@ -20,15 +20,15 @@ definitions:
                 comment: '#'
               mapping_options:
                 - mapping_mode: row
-                  file_mode: new_entry
+                  file_mode: single_new_entry
                   sections:
                     - pregrowth/pregrowth_steps
                 - mapping_mode: row
-                  file_mode: new_entry
+                  file_mode: single_new_entry
                   sections:
                     - growth_run/growth_run_steps
                 - mapping_mode: entry
-                  file_mode: new_entries
+                  file_mode: multiple_new_entries
                   sections:
                     - precursors
                     - substrates
@@ -68,7 +68,7 @@ definitions:
               component: StringEditQuantity
         sample:
           type: str
-          shape: [1]
+          # shape: [1]
           description: FILL
           m_annotations:
             tabular:
