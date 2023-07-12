@@ -24,8 +24,6 @@ from nomad_material_processing import (
     Furnace,
     SampleDeposition,
     Crystal,
-    Crucible,
-    Tube,
 )
 from nomad.metainfo import (
     Package,
@@ -53,6 +51,52 @@ class CrystalGrowthStep(ActivityStep):
 class InitialSynthesisComponent(Ensemble):
     pass
 
+class Crucible(ArchiveSection):
+    material=Quantity(
+        type=str,
+        description='''
+        The material of the crucible.
+        ''',
+    )
+    diameter=Quantity(
+        type=float,
+        description='''
+        The diameter of the crucible.
+        ''',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "millimeter"
+        },
+        unit="meter",
+    )
+
+class Tube(ArchiveSection):
+    material=Quantity(
+        type=str,
+        description='''
+        The material of the tube.
+        ''',
+    )
+    diameter=Quantity(
+        type=float,
+        description='''
+        The diameter of the tube.
+        ''',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "millimeter"
+        },
+        unit="meter",
+    )
+    filling=Quantity(
+        type=str,
+        description='''
+        The filling of the tube.
+        ''',
+    )
+
+
+
 
 class BridgmanTechniqueStep(CrystalGrowthStep):
     '''
@@ -68,10 +112,10 @@ class BridgmanTechniqueStep(CrystalGrowthStep):
     )
     pulling_rate = Quantity(
         type=float,
-        unit='meter_per_second',
+        unit='meter/second',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
-            defaultDisplayUnit='millimeter_per_minute'
+            defaultDisplayUnit='millimeter/minute'
         ),
     )
     furnace = SubSection(

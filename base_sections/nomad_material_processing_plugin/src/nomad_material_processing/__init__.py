@@ -23,6 +23,7 @@ from nomad.metainfo import (
     Package,
     Quantity,
     Section,
+    SampleID,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -159,6 +160,17 @@ class ThinFilmStack(Ensemble, ArchiveSection):
 
 
 class Crystal(Ensemble):
+
+    sample_id = Quantity(
+        type=str,
+        description='''
+        Sample ID given by the grower.
+        ''',
+    )
+
+    internal_sample_id = SubSection(
+        section_def=SampleID,
+    )
     pass
 
 
@@ -169,52 +181,6 @@ class Furnace(Instrument):
         The model type of the furnace.
         ''',
     )
-
-class Crucible(Instrument):
-    material=Quantity(
-        type=str,
-        description='''
-        The material of the crucible.
-        ''',
-    )
-    diameter=Quantity(
-        type=float,
-        description='''
-        The diameter of the crucible.
-        ''',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "millimeter"
-        },
-        unit="meter",
-    )
-
-class Tube(Instrument):
-    material=Quantity(
-        type=str,
-        description='''
-        The material of the tube.
-        ''',
-    )
-    diameter=Quantity(
-        type=float,
-        description='''
-        The diameter of the tube.
-        ''',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "millimeter"
-        },
-        unit="meter",
-    )
-    filling=Quantity(
-        type=str,
-        description='''
-        The filling of the tube.
-        ''',
-    )
-
-
 
 class SampleDeposition(Process, ArchiveSection):
     '''
