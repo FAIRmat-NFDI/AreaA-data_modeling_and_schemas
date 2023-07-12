@@ -21,7 +21,7 @@ definitions:
               # current_entry:
               #   row_to_sections:
               #     - MySubsection
-              new_entry: 
+              new_entry:
                 - row_to_entries:
                   - substrates
             browser:
@@ -30,7 +30,7 @@ definitions:
               component: FileEditQuantity
         method:
           type: str
-          default: "MOVPE IKZ Experiment"
+          default: "Experiment (MOVPE IKZ)"
         location:
           type: str
           m_annotations:
@@ -38,7 +38,6 @@ definitions:
               component: StringEditQuantity
         date:
           type: Datetime
-          shape: [1]
           description: FILL
           m_annotations:
             eln:
@@ -97,6 +96,14 @@ definitions:
                   # tabular_pattern: # use this option to define the names of the new entries created
                   # # with parser
                   #   name: my_entry
+        hall_measurement:
+          section:
+            quantities:
+              measurement:
+                type: '#/HallMeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
     Precursor:
       base_sections:
       - nomad.datamodel.metainfo.eln.Substance
@@ -106,8 +113,6 @@ definitions:
           type: str
           description: FILL
           m_annotations:
-            tabular:
-              name: Precursors/Name
             eln:
               component: StringEditQuantity
               label: Substance Name
@@ -115,51 +120,9 @@ definitions:
           type: str
           description: FILL
           m_annotations:
-            tabular:
-              name: Precursors/CAS
             eln:
               component: StringEditQuantity
               label: CAS number
-    SEMmeasurement:
-      more:
-        label_quantity: sample_id
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Measurement
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "MOVPE SEM"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sample_id:
-          type: str
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Sample
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Date
-            eln:
-              component: DateTimeEditQuantity
-              label: "Notes"
-        surface_state:
-          type: str
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Surface State
-            eln:
-              component: StringEditQuantity
     AFMmeasurement:
       more:
         label_quantity: sample_id
@@ -171,7 +134,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE AFM"
+          default: "AFM (IKZ MOVPE)"
         description:
           type: str
           description: description
@@ -179,20 +142,22 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Notes"
+        image:
+          type: str
+          description: image showing the thickness measurement points
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
-          default: '#data/SEM/sample_id'
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Sample
             eln:
               component: StringEditQuantity
         datetime:
           type: Datetime
-          default: '#data/SEM/datetime'
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Date
             eln:
               component: DateTimeEditQuantity
         roughness:
@@ -200,85 +165,14 @@ definitions:
           unit: nanometer
           description: RMS roughness value obtained by AFM
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Roughness
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: nanometer
         surface_features:
           type: str
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Surface Features
             eln:
               component: StringEditQuantity
-    ReflectanceMeasurement:
-      more:
-        label_quantity: sample_id
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Measurement
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "MOVPE Reflectance"
-        description:
-          type: str
-          default: '#data/SEM/description'
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Notes
-            eln:
-              component: StringEditQuantity
-              label: "Notes"
-        image:
-          type: str
-          description: image showing the thickness measurement points
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Thickness File
-            browser:
-              adaptor: RawFileAdaptor
-            eln:
-              component: FileEditQuantity
-        sample_id:
-          type: str
-          default: '#data/SEM/sample_id'
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Sample
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          default: '#data/SEM/datetime'
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Date
-            eln:
-              component: DateTimeEditQuantity
-        thickness:
-          type: np.float64
-          unit: nanometer
-          description: Thickness from Reflectance
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Thickness
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: nanometer
-        growth_rate:
-          type: np.float64
-          unit: nanometer / minute
-          description: Growth rate calculated
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Growth Rate
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: nanometer / minute
     LightMicroscope:
       more:
         label_quantity: sample_id
@@ -290,103 +184,31 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE IKZ Light Microscope"
+          default: "Light Microscope (MOVPE IKZ)"
         description:
           type: str
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Notes
             eln:
               component: StringEditQuantity
               label: "Notes"
         image:
           type: str
-          description: image showing the thickness measurement points
+          description: image
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Thickness File
             browser:
               adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
         sample_id:
           type: str
-          default: '#data/SEM/sample_id'
           m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Sample
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          default: '#data/SEM/datetime'
-          m_annotations:
-            tabular:
-              name: AFMReflectanceSEM/Date
-            eln:
-              component: DateTimeEditQuantity
-    UVAbsorbanceMeasurement:
-      more:
-        label_quantity: sample_id
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Measurement
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "MOVPE Absorbance"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sample_id:
-          type: str
-          m_annotations:
-            tabular:
-              name: ElectroOptical/Sample
             eln:
               component: StringEditQuantity
         datetime:
           type: Datetime
           m_annotations:
-            tabular:
-              name: ElectroOptical/Date
             eln:
               component: DateTimeEditQuantity
-        energy_gap:
-          type: np.float64
-          unit: eV
-          description: FILL
-          m_annotations:
-            tabular:
-              name: ElectroOptical/Energy Gap ABS
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: eV
-        abs_coefficient:
-          type: np.float64
-          unit: 1 / cm
-          description: FILL
-          m_annotations:
-            tabular:
-              name: ElectroOptical/ABS coefficient
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: 1 / cm
-        thickness:
-          type: np.float64
-          unit: nanometer
-          description: Thickness from ABS
-          m_annotations:
-            tabular:
-              name: ElectroOptical/Thickness
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: nanometer
     HallMeasurement:
       more:
         label_quantity: sample_id
@@ -398,7 +220,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Hall"
+          :: "Hall (MOVPE IKZ)"
         description:
           type: str
           description: description
@@ -407,18 +229,12 @@ definitions:
               component: StringEditQuantity
         sample_id:
           type: str
-          default: '#data/adsorbance/sample_id'
           m_annotations:
-            # tabular:
-            #   name: ElectroOptical/Sample
             eln:
               component: StringEditQuantity
         datetime:
           type: Datetime
-          default: '#data/adsorbance/datetime'
           m_annotations:
-            tabular:
-              name: ElectroOptical/Date
             eln:
               component: DateTimeEditQuantity
         resistivity:
@@ -426,8 +242,6 @@ definitions:
           unit: ohm / cm
           description: FILL
           m_annotations:
-            tabular:
-              name: ElectroOptical/Resistivity
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: ohm / cm
@@ -436,8 +250,6 @@ definitions:
           unit: cm**2 / volt / second
           description: FILL
           m_annotations:
-            tabular:
-              name: ElectroOptical/Mobility
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: cm**2 / volt / second
@@ -446,41 +258,9 @@ definitions:
           unit: 1 / cm**3
           description: FILL
           m_annotations:
-            tabular:
-              name: ElectroOptical/Carrier Concentration
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: 1 / cm**3
-        energy_gap_PC:
-          type: np.float64
-          unit: eV
-          description: Photo current spectroscopy
-          m_annotations:
-            tabular:
-              name: ElectroOptical/Energy Gap PC
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: eV
-        responsivity:
-          type: np.float64
-          unit: ampere / watt
-          description: FILL
-          m_annotations:
-            tabular:
-              name: ElectroOptical/Responsivity
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: ampere / watt
-        rejection_ratio:
-          type: np.float64
-          #unit:
-          description: Rejection Ratio (250/400)
-          m_annotations:
-            tabular:
-              name: ElectroOptical/Rejection Ratio
-            eln:
-              component: NumberEditQuantity
-              #defaultDisplayUnit:
     HRXRDmeasurement:
       more:
         label_quantity: sample_id
@@ -492,7 +272,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE HRXRD"
+          default: "HRXRD (MOVPE IKZ)"
         description:
           type: str
           description: description
@@ -502,23 +282,17 @@ definitions:
         sample_id:
           type: str
           m_annotations:
-            tabular:
-              name: HRXRD/Sample
             eln:
               component: StringEditQuantity
         datetime:
           type: Datetime
           m_annotations:
-            tabular:
-              name: HRXRD/Date
             eln:
               component: DateTimeEditQuantity
         phase:
           type: str
           description: Phase type obtained from HRXRD
           m_annotations:
-            tabular:
-              name: HRXRD/Phase
             eln:
               component: StringEditQuantity
         peak_position_2theta:
@@ -526,8 +300,6 @@ definitions:
           unit: degree
           description: "Peak Position - 2theta"
           m_annotations:
-            tabular:
-              name: HRXRD/Peak Position - 2theta
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -536,8 +308,6 @@ definitions:
           unit: degree
           description: "Peak Position - 2theta"
           m_annotations:
-            tabular:
-              name: HRXRD/Peak FWHM - 2theta
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -546,8 +316,6 @@ definitions:
           unit: degree
           description: "Peak Position - Omega"
           m_annotations:
-            tabular:
-              name: HRXRD/Peak Position - Omega
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: degree
@@ -555,16 +323,12 @@ definitions:
           type: str
           description: Peak FWHM Rocking Curve
           m_annotations:
-            tabular:
-              name: HRXRD/Peak FWHM Rocking Curve
             eln:
               component: StringEditQuantity
         reflection:
           type: str
           description: Peak FWHM Rocking Curve
           m_annotations:
-            tabular:
-              name: HRXRD/Reflection
             eln:
               component: StringEditQuantity
     GrowthRun:
@@ -576,7 +340,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE Growth Run"
+          default: "Growth (MOVPE IKZ)"
         description:
           type: str
           description: description
@@ -1197,7 +961,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE IKZ Etching"
+          default: "Etching (MOVPE IKZ)"
         description:
           type: str
           description: description
@@ -1208,8 +972,6 @@ definitions:
           type: Datetime
           description: FILL
           m_annotations:
-            tabular:
-              name: Contacts/Deposition Date
             eln:
               component: DateTimeEditQuantity
               label: deposition_date
@@ -1247,7 +1009,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE IKZ Annealing"
+          default: "Annealing (MOVPE IKZ)"
         description:
           type: str
           description: description
@@ -1258,8 +1020,6 @@ definitions:
           type: Datetime
           description: FILL
           m_annotations:
-            tabular:
-              name: Contacts/Deposition Date
             eln:
               component: DateTimeEditQuantity
               label: deposition_date
@@ -1297,7 +1057,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "MOVPE IKZ Substrate Pre-Process"
+          default: "Substrate Pre-Process (MOVPE IKZ)"
         description:
           type: str
           description: description
