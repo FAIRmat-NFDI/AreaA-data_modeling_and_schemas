@@ -62,7 +62,21 @@ from nomad.datamodel.metainfo.eln import (
 m_package = Package(name='MPI CPFS BRIDGMAN')
 
 
-class CPFSBridgmanTechnique(BridgmanTechnique):
-    pass
+class CPFSBridgmanTechnique(BridgmanTechnique, EntryData):
+    '''
+    Application definition section for a Bridgman technique at MPI CPFS.
+    '''
+    m_def = Section()
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `CrystalGrowth` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(BridgmanTechnique, self).normalize(archive, logger)
 
 m_package.__init_metainfo__()

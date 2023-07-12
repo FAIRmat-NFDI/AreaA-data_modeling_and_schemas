@@ -22,6 +22,7 @@ from structlog.stdlib import (
 from nomad.metainfo import (
     Package,
     Quantity,
+    SubSection,
     Section,
     SampleID,
 )
@@ -171,7 +172,6 @@ class Crystal(Ensemble):
     internal_sample_id = SubSection(
         section_def=SampleID,
     )
-    pass
 
 
 class Furnace(Instrument):
