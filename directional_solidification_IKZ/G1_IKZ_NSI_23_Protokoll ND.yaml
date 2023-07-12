@@ -1,0 +1,64 @@
+Legend:
+ - THIS "<<< >>>" CONTAINS COMMENTS TO THE DATA
+ - WHEN YOU FIND "???", IT MEANS I NEED A DESCRIPTIVE NAME OF THAT INFO
+ - WHENEVER SOME INFO IS A LIST (like grower names), PLEASE USE THESE DASHES IN NEW LINE
+ - IN THE FOLLOWING YOU FIND THE GLOBAL INFO FROM "Rezeptur" FILE, FEEL FREE TO ADD OTHER INFO YOU MAY WANT TO RECORD
+
+(MERGE WITH REZEPTUR)
+
+Versuch_number: NSI-G1-23
+Based_on: NSI-G1-17
+Date:  yyyy-mm-dd <<< please use this format for date>>>
+Grower:  <<< Use extended names>>>
+ - Kie
+ - ND
+ - IB
+Experiment_aim: Process recipe according to NSI-G1-17 with markers and Wackerfeedstock
+Instrument: <<< try to divide these info into section of an instrument>>>
+  Furnace_description: (VGF-M 006_Si)
+    also as a text: Wieder ausgebaute, niedrigere Suszeptor Wände + TiC-Deckel aus NSI-22 + neues Saphirfenster +Tiegelscherben ELKEM_02 zur Befestigung
+Wieder ausgebaute, niedrigere Suszeptor Wände + TiC-Deckel aus NSI-22 + neues Saphirfenster +Tiegelscherben ELKEM_02 zur Befestigung
+  ( moved from rezeptur file ) Equipment: TiC Dekel + Graphit Suszeptor <<< may be also split in two different fields>>>
+  Add_all_the_sections_of_the_instrument:
+   see figure 1 b and c
+Vacuum_before_gas_inlet_mbar: < 3 x 10-3
+Crucible_model: EW02057 M1744002039
+Crucible_weight_grams: 7811.5
+Crucible_coating: VESUVIUS coated at IKZ with HC Stark  <<< VESIUVIUS producer>>>
+Crucible_coating_preparation: crucible blown out with compressed air <<< prepare a section for coatng recipe >>>
+Weight: <<< "(sg-Si)" solar grade Silicon, for Feedstock material>>>
+<<< the info from crucible to mass_loss will go in the specific Einwaage activity in the eln>>>
+components:
+  - component: Wacker Feedstock Size 1  "(sg-Si)"
+    weight_grams: 500
+  - component: Wacker Feedstock Size 2  "(sg-Si)"
+    weight_grams: 3100.0
+  - component: Cz-Si:P
+    weight_grams: 1.5029
+  - component: Wacker Feedstock Size 4  "(sg-Si)"
+    weight_grams: 10400.0
+net_mass_before:
+brutto_mass_before:
+atmosphere:
+oven:
+net_mass_after:
+mass_loss:
+
+magnetic_field_settings: "(f1 = 20 Hz: up Hz 4 270°, Hz5: 0°, Hz 6: 90° with 40 A, f2 = 200 Hz: down)"
+  - f1: (upwards)
+      DC_current:
+      frequency:
+      AC_current:
+      phase_shift:
+  - f2: (downwards)
+      frequency:
+      current:
+      phase_shift:
+<<< above there are sections of the magnetic field settings>>>
+<<< from the docx, I_AC, phi is the phase shift, I_gesamt is total current I_DC + I_AC>>>
+
+gas_settings:
+  argon_gas_flow_liter_min: 5.9
+  argon_gas_flow_mbar: 600
+  nitrogen_gas_flow_liter_min: 0
+  notes: new N2 Bottle
