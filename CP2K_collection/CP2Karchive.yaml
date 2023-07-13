@@ -1,0 +1,59 @@
+definitions:
+  name: 'CP2K single points collection'
+  sections:
+    Calculation_bundle:
+      m_annotations:
+        eln:
+      base_sections:
+       - nomad.datamodel.data.EntryData
+      sub_sections:
+        calculation_run:
+          repeats: true
+          section:
+            more:
+              label_quantity: name
+            quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              cp2k_output_entry:
+                type: nomad.datamodel.data.ArchiveSection
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+              restart_file:
+                type: str
+                description: CP2K restart file
+                m_annotations:
+                  browser:
+                    adaptor: RawFileAdaptor
+                  eln:
+                    component: FileEditQuantity
+              output_file:
+                type: str
+                description: CP2K output file
+                m_annotations:
+                  browser:
+                    adaptor: RawFileAdaptor
+                  eln:
+                    component: FileEditQuantity
+              pdos_file:
+                type: str
+                description: CP2K pdos file
+                shape: ['*']
+                m_annotations:
+                  browser:
+                    adaptor: RawFileAdaptor
+                  eln:
+                    component: FileEditQuantity
+              images:
+                type: str
+                description: generated images of the current structure
+                shape: ['*']
+                m_annotations:
+                  browser:
+                    adaptor: RawFileAdaptor
+                  eln:
+                    component: FileEditQuantity

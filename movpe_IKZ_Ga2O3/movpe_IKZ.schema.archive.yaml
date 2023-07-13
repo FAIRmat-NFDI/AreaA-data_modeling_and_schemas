@@ -96,6 +96,14 @@ definitions:
                   # tabular_pattern: # use this option to define the names of the new entries created
                   # # with parser
                   #   name: my_entry
+        in_situ_monitoring:
+          section:
+            quantities:
+              process:
+                type: 'lay_tec_epi_tt_schema.LayTec_EpiTT_Measurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
         hall_measurement:
           section:
             quantities:
