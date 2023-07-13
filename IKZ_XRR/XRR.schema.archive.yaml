@@ -1,0 +1,200 @@
+definitions:
+  name: XRR measurement schema
+  sections:
+    X-ray Reflectivity: 
+      base_sections:
+        - 'nomad.datamodel.data.EntryData'
+      m_annotations:
+        eln: 
+      quantities: 
+        raw_data:
+          type: str
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        measurement_ID:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sample_ID:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Date:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+      sub_sections:
+        Instrument:
+          section:
+            description: Information of the diffractometer and the lab.
+
+            quantities:
+              instrument:
+                type: 
+                  type_kind: Enum
+                  type_data: 
+                    - "Rigaku Smartlab"
+                    - "Bruker D8"
+                description:
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
+              energy:
+                type: np.float64
+                unit: keV
+                default: 8.048
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: keV
+              scale:
+                type: np.float64
+                default: 1E9
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              offset:
+                type: np.float64
+                default: 0
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              resolution:
+                type: np.float64
+                default: 0.005
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              polarization:
+                type: np.float64
+                default: 0
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              background:
+                type: np.float64
+                default: 1
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+        User:
+          repeats: true
+          section:
+            description: 
+            quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              email:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              affiliation:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              address:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              orcid:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              orcid_platform:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              telephone_number:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              role:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        sample:
+          section:
+            description: Information of layers of the sample.
+            m_annotations:
+              eln:
+            quantities:
+              sample_id:
+                type: str
+                base_sections: nomad.datamodel.metainfo.eln.SampleID
+                m_annotations:
+                  template: 
+                  eln:
+                    component: StringEditQuantity                               
+              sample_history:
+                type: str
+                description: details of the material, its microstructure, and its thermo-chemo-mechanical processing/preparation history.
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              sample_width:
+                description: sample width perpendicular to beam direction.
+                type: np.float64
+                unit: mm
+                default: 20
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    degaultDisplayUnit: mm
+            sub_sections:
+              layers:
+                repeats: true
+                section: 
+                  desctiption: Layers' information of sample
+                  quantities:
+                    chemical_composition:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    alias:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity                      
+                    thickness:
+                      type: np.float64
+                      unit: nm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nm
+                    roughness:
+                      type: np.float64
+                      unit: nm
+                      default: 0.1
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nm
+                    density:
+                      type: np.float64
+                      unit: g/cm^3
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: g/cm^3
+
+
+
+
