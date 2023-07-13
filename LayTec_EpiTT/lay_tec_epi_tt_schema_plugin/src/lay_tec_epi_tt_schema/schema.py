@@ -80,18 +80,18 @@ class ReflectanceWavelengthTransient(ArchiveSection):
     #    unit = "",
     #    shape = ['n_values'],
     #    )
-    time_transient = Quantity(
+    process_time = Quantity(
         type=np.dtype(np.float64),
         unit = "seconds",
         shape = ['n_values'],
-        default = '#data/LayTec_EpiTT_Measurement/time_transient'
+        default = '#data/LayTec_EpiTT_Measurement/process_time'
         )
     intensity= Quantity(
         type=np.dtype(np.float64),
         #unit = "µm",
         shape = ['n_values'],
         a_plot={
-            'x': 'time_transient', 'y': 'intensity'
+            'x': 'process_time', 'y': 'intensity'
         })
 
 class LayTecEpiTT(Measurement):
@@ -133,7 +133,7 @@ class LayTecEpiTT(Measurement):
         type=str, #'AlGa510mm90',
         description='RUNTYPE_NAME',
         )
-    time_transient = Quantity(
+    process_time = Quantity(
         type=np.dtype(np.float64),
         unit = "seconds",
         shape = ['n_values'],
@@ -154,9 +154,9 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
         a_eln=dict(lane_width='600px'),
         a_plot=[
             {'label': 'EpiTT transients',
-             'x': 'time_transient',
+             'x': 'process_time',
              'y': ['pyrometer_temperature','Reflectance_Wavelength/:/intensity'],
-             'layout': {'yaxis': {'type': 'log'}},
+             #'layout': {'yaxis': {'type': 'log'}},
             },]
         )
 
