@@ -1,7 +1,0 @@
-definitions:
-  name: LayTec EpiTT Schema
-  sections:
-    LayTec_EpiTT_Measurement:
-      base_sections:
-        - nomad.datamodel.metainfo.basections.Measurement
-        - nomad.datamodel.data.EntryData
