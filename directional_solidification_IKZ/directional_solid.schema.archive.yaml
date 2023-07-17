@@ -80,6 +80,11 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
+        process:
+          section:
+            m_annotations:
+              eln:
+            sub_sections:
               magnetic_field_settings:
                 repeats: true
                 section:
@@ -146,11 +151,6 @@ definitions:
                         eln:
                           component: NumberEditQuantity
                           defaultDisplayUnit: mbar
-        process:
-          section:
-            m_annotations:
-              eln:
-            sub_sections:
               recipe:
                 section: '#/Recipe'
               preparation_setup_parts:
