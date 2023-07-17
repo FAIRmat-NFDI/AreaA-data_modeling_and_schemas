@@ -1,7 +1,7 @@
 definitions:
   name: 'Directional Solidification Experiment'
   sections:  # Schemas consist of section definitions
-    DirectionalSolidificationExperiment:  
+    DirectionalSolidificationExperiment:
       base_sections:
        - nomad.datamodel.metainfo.eln.Activity
        - nomad.datamodel.data.EntryData
@@ -11,7 +11,7 @@ definitions:
         method:
           type: str
           default: "Directional Solidification (DS)"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
@@ -31,7 +31,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        goal:
+        experiment_aim:
           type: str
           description: FILL
           m_annotations:
@@ -43,71 +43,30 @@ definitions:
             m_annotations:
               eln:
             quantities:
-              setup_notes:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
-              furnace_id:
-                type: str
-                m_annotations:
-                  eln:
-                    component: StringEditQuantity
               vacuum_before_gas_inlet:
-                type: str
+                type: np.float64
+                unit: mbar
+                description: FILL THE DESCRIPTION
                 m_annotations:
                   eln:
-                    component: StringEditQuantity
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
             sub_sections:
-              permanent_setup:
+              furnace:
                 section:
                   quantities:
-                    test1:
+                    furnace_id:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              actual_setup:
-                section:
-                  quantities:
-                    test2:
+                    furnace_description:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              crucible_setup:
-                section: 
-                  m_annotations:
-                    eln:
-                  quantities:
-                    crucible_Support_side_and_bottom_shape:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    crucible_top_cover:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                          suggestions: ['slot opening', 'plate']
-                    crucible_top_cover_material:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: EnumEditQuantity
-                          suggestions: ['SiC', 'TiC', 'graphite']
-                    crucible_top_cover_age:
-                      type: np.float64
-                      unit: hour
-                      description: crucible_top_cover_age in hours
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: hour
-                  sub_sections:
-                    crucible:
-                      section: '#/Crucible'
+              crucible:
+                section: '#/Crucible'
               susceptor:
                 section:
                   quantities:
@@ -121,17 +80,50 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              magnetic_field_setup:
+              magnetic_field_settings:
+                repeats: true
                 section:
                   quantities:
-                    test3:
+                    name:
                       type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              gas_setup:
+                    dc_current:
+                      type: np.float64
+                      unit: ampere
+                      description: FILL THE DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: ampere
+                    frequency:
+                      type: np.float64
+                      unit: Hz
+                      description: FILL THE DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: Hz
+                    ac_current:
+                      type: np.float64
+                      unit: ampere
+                      description: FILL THE DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: ampere
+                    phase_shift:
+                      type: np.float64
+                      unit: deg
+                      description: FILL THE DESCRIPTION
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: deg
+              gas_settings:
                 repeats: true
-                section:  
+                section:
                   quantities:
                     gas:
                       type: nomad.datamodel.metainfo.eln.Entity # to be specified!
@@ -163,21 +155,21 @@ definitions:
                 section: '#/Recipe'
               preparation_setup_parts:
                 section:
-                  base_sections: 
+                  base_sections:
                     - nomad.datamodel.metainfo.eln.Process
                     - nomad.datamodel.data.EntryData
                   quantities:
                     method:
                       type: str
                       default: "DS Preparation Setup Parts"
-                    description: 
+                    description:
                       type: str
                       description: description
                       m_annotations:
                         eln:
                           component: StringEditQuantity
                     test:
-                      type: str 
+                      type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
@@ -185,21 +177,21 @@ definitions:
                 section: '#/Weighing'
               feedstock_filling:
                 section:
-                  base_sections: 
+                  base_sections:
                     - nomad.datamodel.metainfo.eln.Process
                     - nomad.datamodel.data.EntryData
                   quantities:
                     method:
                       type: str
                       default: "DS Feedstock Filling"
-                    description: 
+                    description:
                       type: str
                       description: description
                       m_annotations:
                         eln:
                           component: StringEditQuantity
                     notes:
-                      type: str 
+                      type: str
                       m_annotations:
                         eln:
                           component: StringEditQuantity
@@ -218,14 +210,14 @@ definitions:
               basic_characterization:
                 section: '#/BasicCharacterization'
     TemperatureRamp:
-      base_sections: 
+      base_sections:
        - nomad.datamodel.metainfo.eln.Process
        - nomad.datamodel.data.EntryData
       quantities:
         method:
           type: str
           default: "DS Temperature Ramp"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
@@ -243,12 +235,12 @@ definitions:
         temperature:
           type: np.float64
           shape: ['*']
-          unit: kelvin 
+          unit: kelvin
           description: Temperature at the end of the ramp
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplayUnit: kelvin 
+              defaultDisplayUnit: kelvin
         dwell_time:
           type: np.float64
           shape: ['*']
@@ -259,14 +251,14 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: hour
     Weighing:
-      base_sections: 
+      base_sections:
        - nomad.datamodel.metainfo.eln.Process
        - nomad.datamodel.data.EntryData
       quantities:
         method:
           type: str
           default: "DS Weighing"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
@@ -275,7 +267,7 @@ definitions:
         dose:
           type: np.float64
           # unit: celsius
-          description: dose 
+          description: dose
           m_annotations:
             eln:
               component: NumberEditQuantity
@@ -348,32 +340,32 @@ definitions:
               #defaultDisplayUnit: gram / gram
       sub_sections:
         components:
-          repeats: true 
+          repeats: true
           section: nomad.datamodel.metainfo.eln.Component
         steps:
           repeats: true
           section: '#/TemperatureRamp'
     ManualProtocol:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Process
       - nomad.datamodel.data.EntryData
       quantities:
         method:
           type: str
           default: "DS Manual Protocol"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
             eln:
               component: StringEditQuantity
         test:
-          type: str 
+          type: str
           m_annotations:
             eln:
               component: StringEditQuantity
     DigitalProtocol:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Process
       - nomad.parsing.tabular.TableData
       - nomad.datamodel.data.EntryData
@@ -381,7 +373,7 @@ definitions:
         plot:
         - label: Temperature, T(˚C)
           x: timestamp
-          y:     
+          y:
             - ./t_ist_h1
             - ./t_ist_h2
             - ./t_ist_h3
@@ -421,7 +413,7 @@ definitions:
               color: rgb(39, 87, 107)
         - label: Direct Current Intensity, I_DC(A)
           x: timestamp
-          y:     
+          y:
             - ./i_dc_ist_h1
             - ./i_dc_ist_h2
             - ./i_dc_ist_h3
@@ -463,7 +455,7 @@ definitions:
         method:
           type: str
           default: "DS Digital Protocol"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
@@ -1546,7 +1538,7 @@ definitions:
               x: timestamp
               y: ./no_messwert_ppm
     Recipe:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Process
       - nomad.parsing.tabular.TableData
       - nomad.datamodel.data.EntryData
@@ -1554,7 +1546,7 @@ definitions:
         plot:
         - label: My_custom_plot_label
           x: step_number
-          y:     
+          y:
             - ./mysub/h1_soll_p
           lines:
           - mode: lines
@@ -1564,7 +1556,7 @@ definitions:
         method:
           type: str
           default: "DS Recipe"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
@@ -1579,7 +1571,7 @@ definitions:
               # sep: ';'
               comment: '#'
               mode: row
-              target_sub_section: 
+              target_sub_section:
                - mysub
             browser:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
@@ -1626,8 +1618,8 @@ definitions:
                     label: My label
                     x: step_number
                     y: ./h1_soll_p
-    Feedstock: 
-      base_sections: 
+    Feedstock:
+      base_sections:
       - nomad.datamodel.metainfo.eln.Entity
       quantities:
         supplier:
@@ -1651,23 +1643,54 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: gram
-        crucible_name:
+        crucible_model:
           type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        crucible_coating:
-          type: str
-          description: see preprocess activity for details 
           m_annotations:
             eln:
               component: StringEditQuantity
         crucible_pretreatment:
           type: str
-          description: FILL 
+          description: FILL
           m_annotations:
             eln:
               component: StringEditQuantity
+        crucible_coating:
+          type: str
+          description: see preprocess activity for details
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_coating_pretreatment:
+          type: str
+          description: see preprocess activity for details
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        support_side_and_bottom_shape:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        top_cover:
+          type: str
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+              suggestions: ['slot opening', 'plate']
+        top_cover_material:
+          type: str
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+              suggestions: ['SiC', 'TiC', 'graphite']
+        top_cover_age:
+          type: np.float64
+          unit: hour
+          description: crucible_top_cover_age in hours
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: hour
     BasicCharacterization:
       base_sections:
       - nomad.datamodel.metainfo.eln.Measurement
@@ -1676,29 +1699,29 @@ definitions:
         method:
           type: str
           default: "DS Basic Characterization"
-        description: 
+        description:
           type: str
           description: description
           m_annotations:
             eln:
               component: StringEditQuantity
         kopfmasse_b:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         kopfmasse_l:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         bodenmasse_b:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         bodenmasse_l:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
@@ -1711,27 +1734,27 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: gram
         height_north_in_middle:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         height_south:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         height_east:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         height_west:
-          type: np.float64 
+          type: np.float64
           m_annotations:
             eln:
               component: NumberEditQuantity
         surface_inspection:
-          type: str 
+          type: str
           m_annotations:
             eln:
               component: StringEditQuantity

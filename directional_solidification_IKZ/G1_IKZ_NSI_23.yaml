@@ -1,0 +1,63 @@
+rezeptur_name: "G1_IKZ_NSI_23"
+versuch_number: "NSI-G1-23"
+protocol_based_on: "NSI-G1-17"
+date:  2023-07-17  # yyyy-mm-dd
+grower:
+ - Kie
+ - ND
+ - IB
+rezeptur_filename: "xxx.xlsx"
+protocol_filename: "yyy.xlsx"
+protocol_comment: |
+  erster Schritt ist KEINE Rampe (Anfangsbedingung eintragen) alle anderen ja
+  Argonfluss: 5, 9 aufschmelzen, dann 1,9 l/min
+  Stickstoff: 0,0 l/min
+  Rezept wie G1_IKZ_NSI_10 (AC-f2/f1 = 0,100 bei  gesamt AC = 40 A
+  (Temperaturen in Klammeren VGF-M_012 fett immer ENDE des vorherigen Segments)
+  (sg-Si) solar grade Silicon, for Feedstock material
+experiment_aim: "Process recipe according to NSI-G1-17 with markers and Wackerfeedstock"
+furnace_description: "(VGF-M 006_Si) Wieder ausgebaute,
+  niedrigere Suszeptor Wände + TiC-Deckel aus NSI-22 + neues Saphirfenster +Tiegelscherben ELKEM_02 zur Befestigung.
+  Equipment: TiC Dekel + Graphit Suszeptor. See https://doi.org/10.1016/j.jcrysgro.2020.125692 Fig. 1b and 1c"
+vacuum_before_gas_inlet_mbar: 0.003
+crucible_model: "EW02057 M1744002039"
+crucible_weight_grams: 7811.5
+crucible_coating: "VESUVIUS producer. Coated at IKZ with HC Stark"
+crucible_coating_preparation: "crucible blown out with compressed air" <<< prepare a section for coatng recipe >>>
+components:
+  - component: Wacker Feedstock Size 1  "(sg-Si)"
+    weight_grams: 500
+  - component: Wacker Feedstock Size 2  "(sg-Si)"
+    weight_grams: 3100.0
+  - component: Cz-Si:P
+    weight_grams: 1.5029
+  - component: Wacker Feedstock Size 4  "(sg-Si)"
+    weight_grams: 10400.0
+net_mass_before:
+brutto_mass_before:
+atmosphere:
+oven:
+net_mass_after:
+mass_loss:
+magnetic_field_settings:
+  - name: f1
+    comment: "(upwards)"
+    DC_current_A: 0
+    frequency_Hz: 20
+    AC_current_A: 20
+    phase_shift: 270
+  - name: f2
+    comment: "(downwards)"
+    DC_current_A: 0
+    frequency_Hz: 200
+    AC_current_A: 40
+    phase_shift: 90
+  # <<< from the docx, I_AC, phi is the phase shift, I_gesamt is total current I_DC + I_AC>>>
+gas_settings:
+  - gas: argon
+    flow_liter_min: 5.9
+    flow_mbar: 600
+    notes: ok
+  - gas: nitrogen
+    flow_liter_min: 0
+    notes: new N2 Bottle
