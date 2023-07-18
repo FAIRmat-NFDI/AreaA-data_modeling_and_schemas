@@ -18,11 +18,11 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              cp2k_output_entry:
-                type: nomad.datamodel.data.ArchiveSection
+              notes:
+                type: str
                 m_annotations:
                   eln:
-                    component: ReferenceEditQuantity
+                    component: StringEditQuantity
               restart_file:
                 type: str
                 description: CP2K restart file
