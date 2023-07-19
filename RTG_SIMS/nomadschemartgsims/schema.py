@@ -26,7 +26,7 @@ class DepthProfileQuantitative(ArchiveSection):#, repeats=True):
         #a_plot={
         #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
         )
-        
+
     depth = Quantity(
         type=np.dtype(np.float64),
         unit = "µm",
@@ -57,7 +57,7 @@ class DepthProfileQualitative(ArchiveSection):#, repeats=True):
         #a_plot={
         #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
         )
-        
+
     depth = Quantity(
         type=np.dtype(np.float64),
         unit = "µm",
@@ -86,12 +86,16 @@ class RTGSIMS(Measurement):
         type=str,
         description='Method used to collect the data',
         default='SIMS')
-    #depth_profile_ID = SubSection(
-    #    section_def=SampleID,
-    #    description='depth profile ID from RTG')
+    # lab_id = Quantity(
+    #     type=SampleID,
+    #     description='ID of the SIMS depth profile given by RTG Mikroanalyse ',
+    #     a_eln=dict(label = "depth_profile_ID"))
     Matrix = Quantity(
         type=str, #SimsMatrix
         description='Element Matrix for Mass Spectrometer')
+    #SampleID = Quantity(
+    #    type=SampleID, #SimsMatrix
+    #    description='ID of the sample that was measured in SIMS')
     Sample = Quantity(
         type=System,
         description='IKZ sampleID, make use of sample ID class!',
@@ -105,13 +109,13 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         a_plot=[
-            {'label': 'SIMS depth profile',
-             'x': 'depth_profiles_qualitative/:/depth', 
+            {#'label': 'SIMS depth profile',
+             'x': 'depth_profiles_qualitative/:/depth',
              'y': ['depth_profiles_qualitative/:/intensity','depth_profiles_quantitative/:/atomic_concentration'],
-             'layout': {'yaxis': {'type': 'log'}},
+             #'layout': {'yaxis': {'type': 'log'}},
             },]
         )
-    
+
     name = Quantity(
         type=str,
         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity))
@@ -151,7 +155,7 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                     sims_dict.update(dict(Matrix=matrix))
                 elif "Sample name" in line:
                     sample_id = (line.split(":")[1]).strip()
-                    sims_dict.update(dict(sample_id=sample_id))         
+                    sims_dict.update(dict(sample_id=sample_id))
                 elif "ELEMENT" in line:
                     element = (line.split("T ")[1]).strip("\n")
                     measurement_counter=+1
@@ -202,7 +206,7 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                 self.datetime = datetime.strptime(sims_dict["date"],"%d.%m.%y") # noch in richtiges FOrmat ändern
                 #self.depth_profile_id = SampleID()
                 #self.depth_profile_id.sample_short_name = sims_dict['id']
-                #self.SampleID = sims_dict["sample_id"]
+                self.SampleID = sims_dict["sample_id"]
                 self.lab_id = sims_dict["depth_profile_id"]
                 #self.depth_profile_ID.sample_short_name = sims_dict["depth_profile_id"]
                 #self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
