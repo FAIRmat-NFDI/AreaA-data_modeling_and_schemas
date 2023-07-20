@@ -1,0 +1,46 @@
+definitions:
+  name: GaO_epiTT_analysis
+  sections:
+    epiTT_analysis:
+      base_sections:
+        - nomad.datamodel.data.EntryData
+        - nomad.datamodel.metainfo.eln.Measurement
+      m_annotations:
+        eln:
+          hide: ['end_time', 'location']
+      quantities:
+        description:
+          type: str
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+              label: Comment
+        sample:
+          type: 'nomad.datamodel.metainfo.eln.System'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        MOVPE_Process:
+          type: 'nomad.datamodel.metainfo.eln.Process'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        EpiTT_Measurement:
+          type: 'nomad.datamodel.metainfo.eln.Measurement'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        growth_rate:
+          type: np.float64
+          unit: nanometer/second
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer/second
+        substrate_temperature:
+          type: np.float64
+          unit: °C
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: °C
