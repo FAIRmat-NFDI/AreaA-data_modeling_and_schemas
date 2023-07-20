@@ -50,6 +50,7 @@ from nomad.metainfo import (
     Quantity,
     Section,
     SubSection,
+    MProxy,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -83,6 +84,7 @@ class IKZPLDCategory(EntryDataCategory):
 class IKZPLDSubstrateMaterial(Substance, EntryData):
     m_def=Section(
         categories=[IKZPLDCategory],
+        label='Substrate Material',
     )
 
 
@@ -93,6 +95,7 @@ class IKZPLDPossibleSubstrate(Ensemble):
 class IKZPLDSubstrate(Substrate, IKZPLDPossibleSubstrate, EntryData):
     m_def=Section(
         categories=[IKZPLDCategory],
+        label='Substrate',
     )
     material=Quantity(
         type=str,
@@ -219,6 +222,7 @@ class IKZPLDSubstrateSubBatch(ArchiveSection):
 class IKZPLDSubstrateBatch(Ensemble, EntryData):  # TODO: Inherit from batch
     m_def=Section(
         categories=[IKZPLDCategory],
+        label='Batch of Substrates',
     )
     material=Quantity(
         type=str,
@@ -306,6 +310,7 @@ class IKZPLDSubstrateBatch(Ensemble, EntryData):  # TODO: Inherit from batch
 class IKZPLDSample(ThinFilmStack, IKZPLDPossibleSubstrate, EntryData):
     m_def=Section(
         categories=[IKZPLDCategory],
+        label='Sample',
     )
     sample_id = SubSection(
         section_def=SampleID
@@ -405,6 +410,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
     '''
     m_def = Section(
         categories=[IKZPLDCategory],
+        label='Pulsed Laser Deposition',
         links=['http://purl.obolibrary.org/obo/CHMO_0001363'],
         a_eln=ELNAnnotation(
             properties=SectionProperties(
@@ -429,6 +435,10 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             dict(
                 x='steps/:/sources/:/evaporation_source/power/process_time',
                 y='steps/:/sources/:/evaporation_source/power/power',
+            ),
+            dict(
+                x='steps/:/substrate/:/temperature/process_time',
+                y='steps/:/substrate/:/temperature/temperature',
             ),
             dict(
                 x='steps/:/environment/pressure/process_time',
@@ -477,7 +487,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             adaptor='RawFileAdaptor'
         ),
         a_eln=ELNAnnotation(
-            component='FileEditQuantity'
+            component='FileEditQuantity',
+            label='Data log (.dlog)',
         ),
     )
     recipe_log = Quantity(
@@ -489,7 +500,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             adaptor='RawFileAdaptor'
         ),
         a_eln=ELNAnnotation(
-            component='FileEditQuantity'
+            component='FileEditQuantity',
+            label='Data log (.elog)',
         ),
     )
     location = Quantity(
@@ -524,17 +536,20 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             # If no substrate is already added
             # if not any(sub.substrate is not None for step in self.steps for sub in step.substrate):
             substrate_ref = None
+            if isinstance(self.substrate, MProxy):
+                self.substrate.m_proxy_resolve()
             if (
                 len(self.steps) > 0
-                and self.steps[0].substrate is not None
-                and self.steps[0].substrate.substrate is not None
+                and len(self.steps[0].substrate) > 0
+                and self.steps[0].substrate[0].substrate is not None
             ):
                 substrate_ref = self.steps[0].substrate.substrate
             elif isinstance(self.substrate, IKZPLDSubstrate):
+                sample_id = f'{self.lab_id}-PLD-Sample'
                 substrate_ref = create_archive(
-                    IKZPLDSample(
-                        substrate=self.substrate,
-                    )
+                    entity=IKZPLDSample(substrate=self.substrate, lab_id=sample_id),
+                    archive=archive,
+                    file_name=f'{sample_id}.archive.json',
                 )
             elif isinstance(self.substrate, IKZPLDSample):
                 substrate_ref = self.substrate
