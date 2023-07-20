@@ -16,14 +16,30 @@ definitions:
             A reference to an uploaded .xlsx
           m_annotations:
             tabular_parser:
-              sep: ','
-              comment: '#'
-              # current_entry:
-              #   row_to_sections:
-              #     - MySubsection
-              new_entry:
-                - row_to_entries:
-                  - substrates
+              parsing_options:
+                comment: '#'
+              mapping_options:
+              - mapping_mode: entry
+                file_mode: multiple_new_entries
+                sections:
+                - substrates
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        growth_data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              parsing_options:
+                comment: '#'
+              mapping_options:
+              - mapping_mode: entry
+                file_mode: multiple_new_entries
+                sections:
+                - growth_run/growth_run_steps
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -86,6 +102,7 @@ definitions:
         substrate_pre_process:
           section: '#/SubstratePreProcess'
         growth_run:
+          repeats: true
           section:
             quantities:
               process:
@@ -100,7 +117,7 @@ definitions:
           section:
             quantities:
               process:
-                type: 'lay_tec_epi_tt_schema.LayTec_EpiTT_Measurement'
+                type: 'nomad.datamodel.metainfo.eln.Activity' #'lay_tec_epi_tt_schema.LayTec_EpiTT_Measurement'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
@@ -109,6 +126,14 @@ definitions:
             quantities:
               measurement:
                 type: '#/HallMeasurement'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+        activities:
+          section:
+            quantities:
+              measurement:
+                type: 'nomad.datamodel.metainfo.eln.Activity'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
@@ -372,6 +397,30 @@ definitions:
           m_annotations:
             tabular:
               name: GrowthRun/Name
+            eln:
+              component: StringEditQuantity
+        sample_name:
+          type: str
+          description: what this step consists of
+          m_annotations:
+            tabular:
+              name: GrowthRun/Sample Name
+            eln:
+              component: StringEditQuantity
+        substrate_name:
+          type: str
+          description: what this step consists of
+          m_annotations:
+            tabular:
+              name: GrowthRun/Substrate Name
+            eln:
+              component: StringEditQuantity
+        recipe_name:
+          type: str
+          description: what this step consists of
+          m_annotations:
+            tabular:
+              name: GrowthRun/Recipe Name
             eln:
               component: StringEditQuantity
         elapsed_time:
