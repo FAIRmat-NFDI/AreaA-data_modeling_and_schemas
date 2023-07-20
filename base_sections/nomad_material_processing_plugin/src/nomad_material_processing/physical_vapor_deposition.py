@@ -38,7 +38,7 @@ from nomad.datamodel.metainfo.eln import (
     Substance,
 )
 from nomad_material_processing import (
-    ActivityStep,
+    ProcessStep,
     SampleDeposition,
     ThinFilmStack,
 )
@@ -289,7 +289,7 @@ class PVDChamberEnvironment(ArchiveSection):
     )
 
 
-class PVDStep(ActivityStep):
+class PVDStep(ProcessStep):
     '''
     A step of any physical vapor deposition process.
     '''

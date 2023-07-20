@@ -23,6 +23,7 @@ from nomad.metainfo import (
     Package,
     Quantity,
     Section,
+    Datetime,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -30,6 +31,9 @@ from nomad.datamodel.data import (
 from nomad.datamodel.metainfo.eln import (
     Process,
     Ensemble,
+)
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
 )
 
 m_package = Package(name='Material Processing')
@@ -44,7 +48,22 @@ class ActivityStep(ArchiveSection):
         type=str,
         description='''
         A short and descriptive name for this step.
-        '''
+        ''',
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+            label='Step name',
+        ),
+    )
+    start_time = Quantity(
+        type=Datetime,
+        description='''
+        Optionally, the starting time of the activity step. If omitted, it is assumed to
+        follow directly after the previous step.
+        ''',
+        a_eln=ELNAnnotation(
+            component='DateTimeEditQuantity',
+            label='Starting time'
+        ),
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -57,6 +76,23 @@ class ActivityStep(ArchiveSection):
             logger (BoundLogger): A structlog logger.
         '''
         super(ActivityStep, self).normalize(archive, logger)
+
+
+class ProcessStep(ActivityStep):
+    '''
+    Any dependant step of an `Process`.
+    '''
+    duration = Quantity(
+        type=float,
+        unit='second',
+        description='''
+        The duration time of the activity step.
+        ''',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='second',
+        ),
+    )
 
 
 class Substrate(Ensemble, ArchiveSection):
