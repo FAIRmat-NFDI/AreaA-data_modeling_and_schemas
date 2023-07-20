@@ -680,6 +680,13 @@ class ThermalEvaporation(PhysicalVaporDeposition):
         type=str,
         default='Thermal Evaporation'
     )
+    steps = SubSection(
+        description='''
+        The steps of the deposition process.
+        ''',
+        section_def=ThermalEvaporationStep,
+        repeats=True,
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         '''

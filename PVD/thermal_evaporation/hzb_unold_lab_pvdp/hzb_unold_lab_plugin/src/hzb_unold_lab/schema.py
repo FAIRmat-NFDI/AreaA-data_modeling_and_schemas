@@ -87,10 +87,10 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
                 x='steps/:/sources/:/material_source/rate/process_time',
                 y='steps/:/sources/:/material_source/rate/rate',
             ),
-            # dict(
-            #     x='steps/:/sources/:/evaporation_source/temperature/process_time',
-            #     y='steps/:/sources/:/evaporation_source/temperature/temperature',
-            # ),
+            dict(
+                x='steps/:/sources/:/evaporation_source/temperature/process_time',
+                y='steps/:/sources/:/evaporation_source/temperature/temperature',
+            ),
             dict(
                 x='steps/:/environment/pressure/process_time',
                 y='steps/:/environment/pressure/pressure',
