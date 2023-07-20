@@ -42,96 +42,12 @@ from nomad.datamodel.data import (
 m_package = Package(name='Crystal Growth')
 
 
+
 class CrystalGrowthStep(ActivityStep):
     '''
     Details will be added later.
     '''
     pass
-
-class InitialSynthesisComponent(Ensemble):
-    pass
-
-class Crucible(ArchiveSection):
-    material=Quantity(
-        type=str,
-        description='''
-        The material of the crucible.
-        ''',
-    )
-    diameter=Quantity(
-        type=float,
-        description='''
-        The diameter of the crucible.
-        ''',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "millimeter"
-        },
-        unit="meter",
-    )
-
-class Tube(ArchiveSection):
-    material=Quantity(
-        type=str,
-        description='''
-        The material of the tube.
-        ''',
-    )
-    diameter=Quantity(
-        type=float,
-        description='''
-        The diameter of the tube.
-        ''',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "millimeter"
-        },
-        unit="meter",
-    )
-    filling=Quantity(
-        type=str,
-        description='''
-        The filling of the tube.
-        ''',
-    )
-
-
-
-
-class BridgmanTechniqueStep(CrystalGrowthStep):
-    '''
-    A step in the Bridgman technique. Contains temperature and pulling rate.
-    '''
-    temperature = Quantity(
-        type=float,
-        unit='kelvin',
-        a_eln=ELNAnnotation(
-            component='NumberEditQuantity',
-            defaultDisplayUnit='celsius'
-        ),
-    )
-    pulling_rate = Quantity(
-        type=float,
-        unit='meter/second',
-        a_eln=ELNAnnotation(
-            component='NumberEditQuantity',
-            defaultDisplayUnit='millimeter/minute'
-        ),
-    )
-    furnace = SubSection(
-        section_def=Furnace,
-    )
-    crucible = SubSection(
-        section_def=Crucible,
-    )
-    tube = SubSection(
-        section_def=Tube,
-    )
-    initial_materials = SubSection(
-        section_def=InitialSynthesisComponent,
-        repeats=True,
-    )
-
 
 
 class CrystalGrowth(SampleDeposition):
@@ -193,50 +109,6 @@ class CzochralskiProcess(CrystalGrowth):
             logger (BoundLogger): A structlog logger.
         '''
         super(CzochralskiProcess, self).normalize(archive, logger)
-
-
-class BridgmanFurnaceSection(ArchiveSection):
-    furnace = Quantity(
-        type=Furnace,
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        ),
-    )
-
-
-class BridgmanTechnique(CrystalGrowth):
-    '''
-    A method of growing a single crystal 'ingot' or 'boule'. The polycrystalline sample is
-    heated in a container above its melting point and slowly cooled from one end where a
-    seed crystal is located. Single crystal material is then progressively formed along
-    the length of the container.
-    [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
-    '''
-    m_def = Section(
-        links=["http://purl.obolibrary.org/obo/CHMO_0002160"],
-    )
-    method = Quantity(
-        type=str,
-        default='Bridgman Technique',
-    )
-    steps = SubSection(
-        description='''
-        The step of the Bridgman Technique.
-        ''',
-        section_def=BridgmanTechniqueStep,
-        repeats=True,
-    )
-
-    def normalize(self, archive, logger: BoundLogger) -> None:
-        '''
-        The normalizer for the `BridgmanTechnique` class.
-
-        Args:
-            archive (EntryArchive): The archive containing the section that is being
-            normalized.
-            logger (BoundLogger): A structlog logger.
-        '''
-        super(BridgmanTechnique, self).normalize(archive, logger)
 
 
 m_package.__init_metainfo__()

@@ -159,29 +159,6 @@ class ThinFilmStack(Ensemble, ArchiveSection):
         '''
         super(ThinFilmStack, self).normalize(archive, logger)
 
-
-class Crystal(Ensemble):
-
-    sample_id = Quantity(
-        type=str,
-        description='''
-        Sample ID given by the grower.
-        ''',
-    )
-
-    internal_sample_id = SubSection(
-        section_def=SampleID,
-    )
-
-
-class Furnace(Instrument):
-    model=Quantity(
-        type=str,
-        description='''
-        The model type of the furnace.
-        ''',
-    )
-
 class SampleDeposition(Process, ArchiveSection):
     '''
     The process of the settling of particles (atoms or molecules) from a solution,
