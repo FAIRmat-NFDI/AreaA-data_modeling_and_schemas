@@ -122,8 +122,6 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         '''
-        # import json
-        # print(json.dumps(dir(archive), indent=2))
         if self.log_file:
             import pandas as pd
             import numpy as np
