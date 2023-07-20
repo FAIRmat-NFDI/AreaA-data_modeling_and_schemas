@@ -42,6 +42,8 @@ from nomad.metainfo import (
     Quantity,
     Section,
     SubSection,
+    MEnum,
+    Datetime,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -70,6 +72,9 @@ class Crystal(Ensemble):
         description='''
         Sample ID given by the grower.
         ''',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
     )
 
     internal_sample_id = SubSection(
@@ -84,6 +89,34 @@ class Furnace(Instrument):
         The model type of the furnace.
         ''',
     )
+    material=Quantity(
+        type=str,
+        description='''
+        The material the furnace is made of.
+        '''
+    )
+    geometry=Quantity(
+        type=str,
+        description='''
+        The geometry of the furnace.
+        '''
+    )
+    heating=Quantity(
+        type=str,
+        description='''
+        The heating type of the furnace.
+        '''
+    )
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(Instrument, self).normalize(archive, logger)
 
 class InitialSynthesisComponent(Ensemble):
     pass
@@ -94,6 +127,9 @@ class Crucible(ArchiveSection):
         description='''
         The material of the crucible.
         ''',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
     )
     diameter=Quantity(
         type=float,
@@ -107,12 +143,15 @@ class Crucible(ArchiveSection):
         unit="meter",
     )
 
-class Tube(ArchiveSection):
+class BridgmanTube(ArchiveSection):
     material=Quantity(
         type=str,
         description='''
         The material of the tube.
         ''',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
     )
     diameter=Quantity(
         type=float,
@@ -130,6 +169,9 @@ class Tube(ArchiveSection):
         description='''
         The filling of the tube.
         ''',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
     )
 
 
@@ -154,19 +196,6 @@ class BridgmanTechniqueStep(CrystalGrowthStep):
             defaultDisplayUnit='millimeter/minute'
         ),
     )
-    furnace = SubSection(
-        section_def=Furnace,
-    )
-    crucible = SubSection(
-        section_def=Crucible,
-    )
-    tube = SubSection(
-        section_def=Tube,
-    )
-    initial_materials = SubSection(
-        section_def=InitialSynthesisComponent,
-        repeats=True,
-    )
 
 
 class BridgmanTechnique(CrystalGrowth):
@@ -184,12 +213,31 @@ class BridgmanTechnique(CrystalGrowth):
         type=str,
         default='Bridgman Technique',
     )
+    furnace = SubSection(
+        section_def=Furnace,
+    )
+    crucible = SubSection(
+        section_def=Crucible,
+    )
+    tube = SubSection(
+        section_def=BridgmanTube,
+    )
+    initial_materials = SubSection(
+        section_def=InitialSynthesisComponent,
+        repeats=True,
+    )
     steps = SubSection(
         description='''
         The step of the Bridgman Technique.
         ''',
         section_def=BridgmanTechniqueStep,
         repeats=True,
+    )
+    resulting_crystal = Quantity(
+        type=Crystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -204,6 +252,145 @@ class BridgmanTechnique(CrystalGrowth):
         super(BridgmanTechnique, self).normalize(archive, logger)
 
 
+
+
+class CPFSFurnace(Furnace,EntryData):
+    m_def = Section(
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'model',
+                    'material',
+                    'geometry',
+                    'heating',
+                ],
+            ),
+            lane_width='800px',
+        ),
+    )
+    name = Quantity(
+        type=MEnum(
+            'Furnace1',
+            'Furnace2',
+            'Furnace3',
+        ),
+        a_eln=ELNAnnotation(
+            component='EnumEditQuantity',
+        ),
+    )
+    datetime = Quantity(
+        type=Datetime,
+        description='The date and time associated with this section.',
+    )
+    lab_id = Quantity(
+        type=str,
+        description='''An ID string that is unique at least for the lab that produced this
+            data.''',
+    )
+    description = Quantity(
+        type=str,
+        description='Any information that cannot be captured in the other fields.',
+    )
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `CPFSFurnace` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(Furnace, self).normalize(archive, logger)
+        if self.name:
+            furnace_list=[
+                ["Furnace1","FurnaceModel1","Steel","Box","Induction"],
+                ["Furnace2","FurnaceModel2","Cast Iron","Cube","Resistance"],
+                ["Furnace3","FurnaceModel3","Titanium","",""],
+            ]
+            for li in furnace_list:
+                if self.name==li[0]:
+                    self.model=li[1]
+                    self.material=li[2]
+                    self.geometry=li[3]
+                    self.heating=li[4]
+                    break
+
+
+class CPFSBridgmanTube(BridgmanTube,EntryData):
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(BridgmanTube, self).normalize(archive, logger)
+
+
+class CPFSCrucible(Crucible,EntryData):
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(Crucible, self).normalize(archive, logger)
+
+
+
+class CPFSCrystal(Crystal,EntryData):
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(Crystal, self).normalize(archive, logger)
+
+
+class CPFSInitialSynthesisComponent(InitialSynthesisComponent,EntryData):
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(InitialSynthesisComponent, self).normalize(archive, logger)
+
+
+class CPFSBridgmanTechniqueStep(BridgmanTechniqueStep,EntryData):
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `BridgmanTechnique` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(BridgmanTechniqueStep, self).normalize(archive, logger)
+
+
+
+
+
+
+
+
+
+
 class CPFSBridgmanTechnique(BridgmanTechnique, EntryData):
     '''
     Application definition section for a Bridgman technique at MPI CPFS.
@@ -216,12 +403,42 @@ class CPFSBridgmanTechnique(BridgmanTechnique, EntryData):
                     'name',
                     'datetime',
                     'end_time',
-                    'lab_id',
-                    'steps',
                 ],
             ),
             lane_width='800px',
         ),
+    )
+    furnace = SubSection(
+        section_def=CPFSFurnace,
+    )
+    crucible = SubSection(
+        section_def=CPFSCrucible,
+    )
+    tube = SubSection(
+        section_def=CPFSBridgmanTube,
+    )
+    initial_materials = SubSection(
+        section_def=CPFSInitialSynthesisComponent,
+        repeats=True,
+    )
+    steps = SubSection(
+        section_def=CPFSBridgmanTechniqueStep,
+        repeats=True,
+    )
+    resulting_crystal = Quantity(
+        type=CPFSCrystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
+    )
+    lab_id = Quantity(
+        type=str,
+        description='''An ID string that is unique at least for the lab that produced this
+            data.''',
+    )
+    description = Quantity(
+        type=str,
+        description='Any information that cannot be captured in the other fields.',
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
