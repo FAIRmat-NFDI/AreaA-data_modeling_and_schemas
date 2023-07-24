@@ -62,10 +62,27 @@ m_package = Package(name='LayTec EpiTT Schema')
 >>>> 5. RLo
 '''
 
+class LayTecEpiTT_process_time(ArchiveSection):
+    '''
+    LayTec's EpiTT is an emissivity-corrected pyrometer and
+    reflectance measurement for in-situ measurement during
+    growth processes (https://www.laytec.de/epitt)
+    '''
+    process_time = Quantity(
+        type=np.dtype(np.float64),
+        unit = "seconds",
+        shape = ['*'],
+        )
+
 class ReflectanceWavelengthTransient(ArchiveSection):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         label_quantity="wavelength",
+        a_plot=[
+            {'label': 'EpiTT transient',
+             'x': 'process_time',
+             'y': 'intensity'
+            }]
         )
     wavelength = Quantity(
         type=str,
@@ -80,21 +97,19 @@ class ReflectanceWavelengthTransient(ArchiveSection):
     #    unit = "",
     #    shape = ['n_values'],
     #    )
-    # process_time = Quantity(
-    #     type=np.dtype(np.float64),
-    #     unit = "seconds",
-    #     shape = ['n_values'],
-    #     default = '#data/LayTec_EpiTT_Measurement/process_time'
-    #     )
+    process_time = Quantity(
+        type=LayTecEpiTT_process_time.process_time, #dict(type_kind='reference',type_data='#/definitions/section_definitions/1/quantities/8'),
+        default = '#data/process_time'
+        )
     intensity= Quantity(
         type=np.dtype(np.float64),
         #unit = "µm",
-        shape = ['n_values'],
+        shape = ['*'],
         a_plot={
             'x': 'process_time', 'y': 'intensity'
         })
 
-class LayTecEpiTT(Measurement):
+class LayTecEpiTT(Measurement, LayTecEpiTT_process_time):
     '''
     LayTec's EpiTT is an emissivity-corrected pyrometer and
     reflectance measurement for in-situ measurement during
@@ -133,18 +148,18 @@ class LayTecEpiTT(Measurement):
         type=str, #'AlGa510mm90',
         description='RUNTYPE_NAME',
         )
-    process_time = Quantity(
-        type=np.dtype(np.float64),
-        unit = "seconds",
-        shape = ['n_values'],
-        )
+    # process_time = Quantity(
+    #     type=np.dtype(np.float64),
+    #     unit = "seconds",
+    #     shape = ['n_values'],
+    #     )
     pyrometer_temperature = Quantity(
         type=np.dtype(np.float64),
         description="PyroTemp transient. LayTec's TrueTemperature of the substrate surface --> Emissivity-corrected pyrometer ",
         unit = "°C",
-        shape = ['n_values'],
+        shape = ['*'],
         )
-    Reflectance_Wavelength = SubSection(section_def=ReflectanceWavelengthTransient, repeats=True)
+    reflectance_wavelength = SubSection(section_def=ReflectanceWavelengthTransient, repeats=True)
 
     #growth_analysis = SubSection(section)
 
@@ -157,7 +172,7 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
         a_plot=[
             {'label': 'EpiTT transients',
              'x': 'process_time',
-             'y': ['pyrometer_temperature','Reflectance_Wavelength/:/intensity'],
+             'y': ['pyrometer_temperature','reflectance_wavelength/:/intensity'],
              #'layout': {'yaxis': {'type': 'log'}},
             },]
         )
@@ -224,14 +239,14 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
                 #self.time_transient = epitt_data[1]["BEGIN"]
                 self.process_time = epitt_data[1]["BEGIN"]
                 self.pyrometer_temperature = epitt_data[1]["PyroTemp"]
-                self.Reflectance_Wavelength = []
+                self.reflectance_wavelength = []
                 for wl, datacolname in zip(['REFLEC_WAVELENGTH', 'PYRO_WAVELENGTH', 'WHITE_WAVELENGTH'],["DetReflec", "RLo", "DetWhite"]):
                     if wl in epitt_data[0].keys():
                         transient_object = ReflectanceWavelengthTransient()
                         transient_object.wavelength = epitt_data[0][wl]
                         transient_object.wavelength_name = wl#epitt_data[0]["REFLEC_WAVELENGTH"]
                         transient_object.intensity = epitt_data[1][datacolname]
-                        self.Reflectance_Wavelength.append(transient_object)
+                        self.reflectance_wavelength.append(transient_object)
 
         #def rolling_average_insitu_reflectance(wavelength, start, period):
         #    df_refl_data=pd.DataFrame([self.process_time,self.)
