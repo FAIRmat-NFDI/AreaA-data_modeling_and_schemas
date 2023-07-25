@@ -19,28 +19,28 @@ definitions:
               parsing_options:
                 comment: '#'
               mapping_options:
-                - mapping_mode: row
-                  file_mode: single_new_entry
-                  sections:
-                    - pregrowth/pregrowth_steps
-                - mapping_mode: row
-                  file_mode: single_new_entry
-                  sections:
-                    - growth_run/growth_run_steps
-                - mapping_mode: entry
-                  file_mode: multiple_new_entries
-                  sections:
-                    - precursors
-                    - substrates
-                    - MIST_source
-                    - samples_cut
-                    - SEM
-                    - contacts_sputtering
-                    - AFM
-                    - reflectance
-                    - UVabsorbance
-                    - hall
-                    - HRXRD
+              - mapping_mode: row
+                file_mode: single_new_entry
+                sections:
+                - pregrowth/pregrowth_steps
+              - mapping_mode: row
+                file_mode: single_new_entry
+                sections:
+                - growth_run/growth_run_steps
+              - mapping_mode: entry
+                file_mode: multiple_new_entries
+                sections:
+                - precursors
+                - substrates
+                - MIST_source
+                - samples_cut
+                - SEM
+                - contacts_sputtering
+                - AFM
+                - reflectance
+                - UVabsorbance
+                - hall
+                - HRXRD
             browser:
               adaptor: RawFileAdaptor
             eln:

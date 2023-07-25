@@ -396,14 +396,6 @@ definitions:
           description: what this step consists of
           m_annotations:
             tabular:
-              name: GrowthRun/Name
-            eln:
-              component: StringEditQuantity
-        sample_name:
-          type: str
-          description: what this step consists of
-          m_annotations:
-            tabular:
               name: GrowthRun/Sample Name
             eln:
               component: StringEditQuantity
@@ -433,21 +425,33 @@ definitions:
             eln:
               component: NumberEditQuantity #DateTimeEditQuantity
               defaultDisplayUnit: minute
-        step_number:
-          type: int
-          description: sequential number of the step on going
-          m_annotations:
-            tabular:
-              name: GrowthRun/Step
-            eln:
-              component: NumberEditQuantity
-        temperature:
+        temperature_shaft:
           type: np.float64
           unit: celsius
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
-              name: GrowthRun/Temperature
+              name: GrowthRun/T Shaft
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        temperature_filament:
+          type: np.float64
+          unit: celsius
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/T Filament
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: celsius
+        temperature_laytec:
+          type: np.float64
+          unit: celsius
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/T LayTec
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: celsius
@@ -461,96 +465,54 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: mbar
-        flow_metal_carrier:
+        rotation:
           type: np.float64
-          unit: mbar
+          unit: rpm
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
-              name: GrowthRun/Flow Metal Carrier
+              name: GrowthRun/Rotation
             eln:
               component: NumberEditQuantity
-              defaultDisplayUnit: mbar
-        metal_inner_valve:
-          type: int
-          description: inner valve (0-200)
-          m_annotations:
-            tabular:
-              name: GrowthRun/Metal Inner Valve
-            eln:
-              component: SliderEditQuantity
-              minValue: 0
-              maxValue: 200
-        metal_outer_valve:
-          type: int
-          description: outer valve (0-200)
-          m_annotations:
-            tabular:
-              name: GrowthRun/Metal Outer Valve
-            eln:
-              component: SliderEditQuantity
-              minValue: 0
-              maxValue: 200
-        flow_oxydant_carrier:
-          type: np.float64
-          unit: mbar
+              defaultDisplayUnit: rpm
+        carrier_gas:
+          type: str
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
-              name: GrowthRun/Flow Oxydant Carrier
+              name: GrowthRun/Carrier Gas
             eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: mbar
-        oxydant_inner_valve:
-          type: int
-          description: inner valve (0-200)
-          m_annotations:
-            tabular:
-              name: GrowthRun/Oxydant Inner Valve
-            eln:
-              component: SliderEditQuantity
-              minValue: 0
-              maxValue: 200
-        oxydant_outer_valve:
-          type: int
-          description: outer valve (0-200)
-          m_annotations:
-            tabular:
-              name: GrowthRun/Oxydant Outer Valve
-            eln:
-              component: SliderEditQuantity
-              minValue: 0
-              maxValue: 200
-        purge_flow:
+              component: StringEditQuantity
+        push_gas_valve:
           type: np.float64
           unit: cm ** 3 / minute
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
-              name: GrowthRun/Purge Flow
+              name: GrowthRun/Purgegas Valve
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: cm ** 3 / minute
         uniform_valve:
-          type: int
-          description: inner valve (0-200)
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
               name: GrowthRun/Uniform Valve
             eln:
-              component: SliderEditQuantity
-              minValue: 0
-              maxValue: 200
-        purge_valve:
-          type: int
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        showerhead_distance:
+          type: np.float64
+          unit: millimeter
           description: inner valve (0-200)
           m_annotations:
             tabular:
-              name: GrowthRun/Purge Valve
+              name: GrowthRun/Distance of Showerhead
             eln:
-              component: SliderEditQuantity
-              minValue: 0
-              maxValue: 200
+              component: NumberEditQuantity
+              defaultDisplayUnit: millimeter
         notes:
           type: str
           description: FILL THE DESCRIPTION
@@ -574,23 +536,13 @@ definitions:
                     name: GrowthRun/Bubbler Material
                   eln:
                     component: StringEditQuantity
-              dilution:
+              flux_oxygen_mfc:
                 type: np.float64
                 unit: cm ** 3 / minute
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/Bubbler Dilution
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              inject:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Inject
+                    name: GrowthRun/MFC
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: cm ** 3 / minute
@@ -604,6 +556,36 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
+              dilution:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Bubbler Dilution
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              source:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Source
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
+              inject:
+                type: np.float64
+                unit: cm ** 3 / minute
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Inject
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: cm ** 3 / minute
               temperature:
                 type: np.float64
                 unit: mbar
@@ -627,24 +609,16 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              flow_carrier:
+              molar_flux:
                 type: np.float64
-                unit: cm ** 3 / minute
+                unit: mol / minute
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/Flow Carrier
+                    name: GrowthRun/Molar Flux
                   eln:
                     component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              valve:
-                type: bool
-                description: is valve open? true/false
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Valve
-                  eln:
-                    component: BoolEditQuantity
+                    defaultDisplayUnit: mol / minute
         GasSource:
           repeats: true
           section:
@@ -656,17 +630,9 @@ definitions:
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/Gas Cylinder Material
+                    name: GrowthRun/Gas Material
                   eln:
                     component: StringEditQuantity
-              dilution_in_cylinder:
-                type: np.float64
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Dilution in Cylinder
-                  eln:
-                    component: NumberEditQuantity
               flow_from_mfc:
                 type: np.float64
                 unit: cm ** 3 / minute
@@ -677,16 +643,6 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: cm ** 3 / minute
-              effective_flow:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Effective Flow
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
               partial_pressure:
                 type: np.float64
                 unit: mbar
@@ -694,52 +650,9 @@ definitions:
                 m_annotations:
                   tabular:
                     name: GrowthRun/Gas Partial Pressure
-                  # plot:
-                  #   x: duration
-                  #   y: TMG_partial_pressure
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
-              cylinder_pressure:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Cylinder Pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              valve:
-                type: bool
-                description: is valve open? true/false
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Gas Valve
-                  eln:
-                    component: BoolEditQuantity
-        MistSource1:
-          repeats: true
-          section:
-            more:
-              label_quantity: material
-            quantities:
-              material:
-                type: str
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/MIST Flow MFC
-                  eln:
-                    component: StringEditQuantity
-              valve:
-                type: bool
-                description: is valve open? true/false
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/MIST Valve
-                  eln:
-                    component: BoolEditQuantity
     Sample:
       base_sections:
       - nomad.datamodel.metainfo.eln.Ensemble
@@ -804,22 +717,30 @@ definitions:
               component: StringEditQuantity
             tabular:
               name: Substrate/Orientation
-        miscut_b:
+        miscut_b_angle:
           type: str
           description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Miscut b
-        miscut_c:
+              name: Substrate/Miscut b angle
+        miscut_c_angle:
           type: str
           description: crystallographic orientation of the substrate in [hkl]
           m_annotations:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Miscut c
+              name: Substrate/Miscut c angle
+        miscut_c_orientation:
+          type: str
+          description: crystallographic orientation of the substrate in [hkl]
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Miscut c Orientation
         doping_level:
           type: np.float64
           #unit: wt %
@@ -836,23 +757,7 @@ definitions:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Doping Species
-        size_x:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Size X
-        size_y:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Size Y
+              name: Substrate/Doping species
         as_received:
           type: bool
           description: Is the sample annealed?
@@ -861,14 +766,14 @@ definitions:
               component: BoolEditQuantity
             tabular:
               name: Substrate/As Received
-        usable:
+        annealing:
           type: bool
           description: Usable Sample
           m_annotations:
             eln:
               component: BoolEditQuantity
             tabular:
-              name: Substrate/Usable
+              name: Substrate/Annealing
         epi_ready:
           type: bool
           description: Sample ready for epitaxy
@@ -877,14 +782,14 @@ definitions:
               component: BoolEditQuantity
             tabular:
               name: Substrate/Epi Ready
-        defective:
-          type: bool
+        quality:
+          type: str
           description: Defective Sample
           m_annotations:
             eln:
-              component: BoolEditQuantity
+              component: StringEditQuantity
             tabular:
-              name: Substrate/Defective
+              name: Substrate/Quality
         documentation:
           type: str
           description: pdf files containing certificate and other documentation
@@ -893,7 +798,7 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-        description:
+        notes:
           type: str
           description: "Notes and comments."
           m_annotations:
@@ -903,6 +808,20 @@ definitions:
       sub_sections:
         geometry:
           section: '#/Geometry'
+        elemental_composition:
+          repeats: true
+          section: '#/ElementalComposition'
+    ElementalComposition:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.ElementalComposition
+      quantities:
+        element:
+          type: str
+          m_annotations:
+            tabular:
+              name: Substrate/Elements
+            eln:
+              component: StringEditQuantity
     Geometry:
       m_annotations:
         eln:
@@ -921,19 +840,23 @@ definitions:
               width:
                 type: np.float64
                 unit: millimeter
-                description: docs
+                description: substrate dimension X
                 m_annotations:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: millimeter
+                  tabular:
+                    name: Substrate/Size X
               length:
                 type: np.float64
                 unit: millimeter
-                description: docs
+                description: substrate dimension Y
                 m_annotations:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: millimeter
+                  tabular:
+                    name: Substrate/Size Y
               surface_area:
                 type: np.float64
                 unit: millimeter ** 2
