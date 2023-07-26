@@ -99,15 +99,6 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-        substrate_pre_process:
-          repeats: true
-          section:
-            quantities:
-              substrate:
-                type: '#/SubstratePreProcess'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
         growth_run:
           repeats: true
           section:
@@ -179,25 +170,37 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-    Precursor:
+    SubstratePreProcess:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.metainfo.eln.Activity
       - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
       quantities:
-        name:
+        method:
           type: str
-          description: FILL
+          default: "Substrate Pre-Process (MOVPE IKZ)"
+        description:
+          type: str
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: Substance Name
-        cas_number:
-          type: str
-          description: FILL
+        substrate:
+          type: '#/Substrate'
           m_annotations:
             eln:
-              component: StringEditQuantity
-              label: CAS number
+              component: ReferenceEditQuantity
+      sub_sections:
+        steps:
+          repeats: true
+          section:
+            quantities:
+              step:
+                type: nomad.datamodel.metainfo.eln.Activity
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
     AFMmeasurement:
       more:
         label_quantity: sample_id
@@ -534,7 +537,7 @@ definitions:
           description: FILL THE DESCRIPTION
           m_annotations:
             tabular:
-              name: GrowthRun/Purgegas Valve
+              name: GrowthRun/Pushgas Valve
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: cm ** 3 / minute
@@ -729,7 +732,7 @@ definitions:
             eln:
               component: StringEditQuantity
             tabular:
-              name: Substrate/Material
+              name: Substrate/Substrates
         delivery_date:
           type: Datetime
           description: Date of the delivery
@@ -738,14 +741,14 @@ definitions:
               component: DateTimeEditQuantity
             tabular:
               name: Substrate/Delivery Date
-        lab_id:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Substrates
+        # lab_id:
+        #   type: str
+        #   description: FILL
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+        #     tabular:
+        #       name: Substrate/Substrates
         supplier:
           type: str
           description: FILL
@@ -852,131 +855,148 @@ definitions:
               label: "Notes"
       sub_sections:
         geometry:
-          section: '#/Geometry'
+          section:
+            m_annotations:
+              eln:
+            sub_sections:
+              parallelepiped:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    width:
+                      type: np.float64
+                      unit: millimeter
+                      description: substrate dimension X
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                        tabular:
+                          name: Substrate/Size X
+                    length:
+                      type: np.float64
+                      unit: millimeter
+                      description: substrate dimension Y
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                        tabular:
+                          name: Substrate/Size Y
+                    surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
+              cylinder:
+                section:
+                  quantities:
+                    height:
+                      type: np.float64
+                      unit: nanometer
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    lower_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    upper_cap_radius:
+                      type: np.float64
+                      unit: millimeter
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    cap_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    lateral_surface_area:
+                      type: np.float64
+                      unit: millimeter ** 2
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 2
+                    volume:
+                      type: np.float64
+                      unit: millimeter ** 3
+                      description: docs
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter ** 3
         elemental_composition:
           repeats: true
-          section: '#/ElementalComposition'
-    ElementalComposition:
+          section:
+            base_sections:
+              - nomad.datamodel.metainfo.basesections.ElementalComposition
+            quantities:
+              element:
+                type: str
+                m_annotations:
+                  tabular:
+                    name: Substrate/Elements
+                  eln:
+                    component: StringEditQuantity
+    Precursor:
       base_sections:
-        - nomad.datamodel.metainfo.basesections.ElementalComposition
+      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.data.EntryData
       quantities:
-        element:
+        name:
           type: str
+          description: FILL
           m_annotations:
-            tabular:
-              name: Substrate/Elements
             eln:
               component: StringEditQuantity
-    Geometry:
-      m_annotations:
-        eln:
-      sub_sections:
-        parallelepiped:
-          section:
-            quantities:
-              height:
-                type: np.float64
-                unit: nanometer
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: nanometer
-              width:
-                type: np.float64
-                unit: millimeter
-                description: substrate dimension X
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-                  tabular:
-                    name: Substrate/Size X
-              length:
-                type: np.float64
-                unit: millimeter
-                description: substrate dimension Y
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-                  tabular:
-                    name: Substrate/Size Y
-              surface_area:
-                type: np.float64
-                unit: millimeter ** 2
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 2
-              volume:
-                type: np.float64
-                unit: millimeter ** 3
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 3
-        cylinder:
-          section:
-            quantities:
-              height:
-                type: np.float64
-                unit: nanometer
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: nanometer
-              radius:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              lower_cap_radius:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              upper_cap_radius:
-                type: np.float64
-                unit: millimeter
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter
-              cap_surface_area:
-                type: np.float64
-                unit: millimeter ** 2
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 2
-              lateral_surface_area:
-                type: np.float64
-                unit: millimeter ** 2
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 2
-              volume:
-                type: np.float64
-                unit: millimeter ** 3
-                description: docs
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: millimeter ** 3
+              label: Substance Name
+        cas_number:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: CAS number
     Etching:
       m_annotations:
         eln:
@@ -1070,37 +1090,6 @@ definitions:
             quantities:
               etching_reagent:
                 type: 'nomad.datamodel.metainfo.eln.Substance'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-    SubstratePreProcess:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
-      quantities:
-        method:
-          type: str
-          default: "Substrate Pre-Process (MOVPE IKZ)"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        sample:
-          type: '#/Substrate'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
-      sub_sections:
-        steps:
-          repeats: true
-          section:
-            quantities:
-              step:
-                type: nomad.datamodel.metainfo.eln.Activity
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
