@@ -570,7 +570,7 @@ definitions:
             eln:
               component: StringEditQuantity
       sub_sections:
-        Bubblers:
+        bubblers:
           repeats: true
           section:
             more:
@@ -667,7 +667,7 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mol / minute
-        GasSource:
+        gas_source:
           repeats: true
           section:
             more:
