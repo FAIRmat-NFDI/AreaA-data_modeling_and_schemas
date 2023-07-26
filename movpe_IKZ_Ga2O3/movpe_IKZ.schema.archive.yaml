@@ -100,7 +100,14 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity
         substrate_pre_process:
-          section: '#/SubstratePreProcess'
+          repeats: true
+          section:
+            quantities:
+              substrate:
+                type: '#/SubstratePreProcess'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
         growth_run:
           repeats: true
           section:
@@ -134,6 +141,41 @@ definitions:
             quantities:
               measurement:
                 type: 'nomad.datamodel.metainfo.eln.Activity'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+    SubstrateInventory:
+      base_sections:
+       - nomad.parsing.tabular.TableData
+       #### THIS WILL BE A SYSTEMCOLLECTION CLASS
+       - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        substrate_data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              parsing_options:
+                comment: '#'
+              mapping_options:
+              - mapping_mode: entry
+                file_mode: multiple_new_entries
+                sections:
+                - substrates
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+      sub_sections:
+        substrates:
+          repeats: true
+          section:
+            quantities:
+              substrate:
+                type: '#/Substrate'
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
@@ -387,6 +429,9 @@ definitions:
             base_sections:
             - '#/GrowthRunStep'
     GrowthRunStep:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
           # hide: [descritpion]
@@ -969,7 +1014,7 @@ definitions:
           description: Past time since process started (minutes)
           m_annotations:
             eln:
-              component: NumberEditQuantity #DateTimeEditQuantity
+              component: NumberEditQuantity
               defaultDisplayUnit: minute
       sub_sections:
         etching_reagents:
@@ -1017,7 +1062,7 @@ definitions:
           description: Past time since process started (minutes)
           m_annotations:
             eln:
-              component: NumberEditQuantity #DateTimeEditQuantity
+              component: NumberEditQuantity
               defaultDisplayUnit: minute
       sub_sections:
         anealing_reagents:
@@ -1029,9 +1074,9 @@ definitions:
                   eln:
                     component: ReferenceEditQuantity
     SubstratePreProcess:
-      # base_sections:
-      # - nomad.datamodel.metainfo.eln.Activity
-      # - nomad.datamodel.data.EntryData
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
       quantities:
