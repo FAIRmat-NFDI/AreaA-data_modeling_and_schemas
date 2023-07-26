@@ -81,6 +81,7 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
     '''
     m_def = Section(
         categories=[HZBUnoldLabCategory],
+        label='Thermal Evaporation Process',
         links=["http://purl.obolibrary.org/obo/CHMO_0001360"],
         a_plot=[
             dict(

@@ -1,3 +1,7 @@
 description: This is a plugin schema generated from a yaml schema.
-name: HZB Unold Lab
-plugin_type: schema
+name: parsers/hzb_unold_lab
+plugin_type: parser
+# mainfile_name_re: ^hzb-unold-lab_pvdp.*\.(t|c)sv$
+mainfile_name_re: ^.*$
+parser_class_name: hzb_unold_lab.PVDPParser
+code_name: HZB Unold Lab Parser
