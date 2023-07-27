@@ -10,23 +10,6 @@ definitions:
         eln:
           hide: ['end_time', 'lab_id', 'location', 'description']
       quantities:
-        substrate_data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
-          m_annotations:
-            tabular_parser:
-              parsing_options:
-                comment: '#'
-              mapping_options:
-              - mapping_mode: entry
-                file_mode: multiple_new_entries
-                sections:
-                - substrates
-            browser:
-              adaptor: RawFileAdaptor
-            eln:
-              component: FileEditQuantity
         growth_data_file:
           type: str
           description: |
@@ -376,13 +359,13 @@ definitions:
                     name: GrowthRun/Bubbler Material
                   eln:
                     component: StringEditQuantity
-              flux_oxygen_mfc:
+              mass_flow_controller:
                 type: np.float64
                 unit: cm ** 3 / minute
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/MFC
+                    name: GrowthRun/Bubbler MFC
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: cm ** 3 / minute
@@ -455,7 +438,7 @@ definitions:
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/Molar Flux
+                    name: GrowthRun/Bubbler Molar Flux
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mol / minute
@@ -473,23 +456,23 @@ definitions:
                     name: GrowthRun/Gas Material
                   eln:
                     component: StringEditQuantity
-              flow_from_mfc:
+              mass_flow_controller:
                 type: np.float64
                 unit: cm ** 3 / minute
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/MFC
+                    name: GrowthRun/Gas MFC
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: cm ** 3 / minute
-              partial_pressure:
+              molar_flux:
                 type: np.float64
                 unit: mbar
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   tabular:
-                    name: GrowthRun/Molar Flux
+                    name: GrowthRun/Gas Molar Flux
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
@@ -725,14 +708,10 @@ definitions:
       - nomad.datamodel.metainfo.eln.Ensemble
       - nomad.datamodel.data.EntryData
       quantities:
-        name:
-          type: str
-          description: FILL
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-            tabular:
-              name: Substrate/Substrates
+        # SEE issue 1638 on gitlab
+        # name:
+        #   type: '#/definitions/section_definitions/10/quantities/2'
+        #   default: '#/data/lab_id'
         delivery_date:
           type: Datetime
           description: Date of the delivery
@@ -741,14 +720,14 @@ definitions:
               component: DateTimeEditQuantity
             tabular:
               name: Substrate/Delivery Date
-        # lab_id:
-        #   type: str
-        #   description: FILL
-        #   m_annotations:
-        #     eln:
-        #       component: StringEditQuantity
-        #     tabular:
-        #       name: Substrate/Substrates
+        lab_id:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+            tabular:
+              name: Substrate/Substrates
         supplier:
           type: str
           description: FILL
