@@ -51,6 +51,11 @@ definitions:
                   eln:
                     component: NumberEditQuantity
                     defaultDisplayUnit: mbar
+              crucible:
+                type: '#/Crucible'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
             sub_sections:
               furnace:
                 section:
@@ -65,8 +70,6 @@ definitions:
                       m_annotations:
                         eln:
                           component: StringEditQuantity
-              crucible:
-                section: '#/Crucible'
               susceptor:
                 section:
                   quantities:
@@ -1629,6 +1632,9 @@ definitions:
             eln:
               component: StringEditQuantity
     Crucible:
+      base_sections:
+       - nomad.datamodel.metainfo.eln.Entity
+       - nomad.datamodel.data.EntryData
       quantities:
         crucible_id:
           type: str
@@ -1645,12 +1651,6 @@ definitions:
               defaultDisplayUnit: gram
         crucible_model:
           type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        crucible_pretreatment:
-          type: str
-          description: FILL
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -1691,6 +1691,20 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: hour
+    CruciblePretreatment:
+      section:
+        quantities:
+          crucible:
+            type: '#/Crucible'
+            m_annotations:
+              eln:
+                component: ReferenceEditQuantity
+          test:
+            type: str
+            description: FILL
+            m_annotations:
+              eln:
+                component: StringEditQuantity
     BasicCharacterization:
       base_sections:
       - nomad.datamodel.metainfo.eln.Measurement
