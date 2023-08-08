@@ -320,13 +320,13 @@ class CzochralskiProcessStep(CrystalGrowthStep):
     '''
     A step in the Czochralski Process.
     '''
-    melting_power_percent = Quantity(
+    melting_power_in_percent = Quantity(
         type=float,
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
         ),
     )
-    growth_power_percent = Quantity(
+    growth_power_in_percent = Quantity(
         type=float,
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',

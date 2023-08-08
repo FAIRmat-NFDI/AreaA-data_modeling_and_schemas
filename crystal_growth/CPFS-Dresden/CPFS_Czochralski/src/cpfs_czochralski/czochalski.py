@@ -154,8 +154,8 @@ class CPFSCzochralskiProcess(CzochralskiProcess, EntryData):
                     )
                     step=[]
                     step.append(CPFSCzochralskiProcessStep(
-                        melting_power_percent=float(inp.loc[32][2]),
-                        growth_power_percent=float(inp.loc[33][2]),
+                        melting_power_in_percent=float(inp.loc[32][2]),
+                        growth_power_in_percent=float(inp.loc[33][2]),
                         rotation_speed=float(inp.loc[34][2]),
                         rotation_direction=str(inp.loc[35][2]),
                         pulling_rate = float(inp.loc[36][2])/1000/60,
