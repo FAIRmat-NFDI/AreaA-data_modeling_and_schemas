@@ -5,29 +5,80 @@ definitions:
       base_sections:
        - nomad.datamodel.metainfo.eln.Activity
        - nomad.datamodel.data.EntryData
+       - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
+        template:
+          # activities: {
+          #   DigitalProtocol: {
+          #     name: 'test'
+          #   }
+          # }
       quantities:
         method:
           type: str
-          default: "Directional Solidification (DS)"
+          default: "Directional Solidification (DS IKZ)"
         description:
           type: str
           description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-        protocol_file:
+        recipe_filename:
           type: str
           description: protocol file
           m_annotations:
+            tabular_parser:
+              parsing_options:
+                comment: '#'
+              mapping_options:
+              - mapping_mode: column
+                file_mode: single_new_entry
+                sections:
+                - process/recipe
+        digital_protocol_filename:
+          type: str
+          description: |
+            A reference to an uploaded .csv
+          m_annotations:
+            tabular_parser:
+              parsing_options:
+                comment: '#'
+              mapping_options:
+              - mapping_mode: column
+                file_mode: single_new_entry
+                sections:
+                - process/digital_protocol
             browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        manual_protocol_filename:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              parsing_options:
+                comment: '#'
+              mapping_options:
+              - mapping_mode: column
+                file_mode: single_new_entry
+                sections:
+                - process/manual_protocol
+            browser:
+              adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
         protocol_based_on:
           type: str
           description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        protocol_comment:
+          type: str
+          description: description
           m_annotations:
             eln:
               component: StringEditQuantity
@@ -56,33 +107,16 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-            sub_sections:
               furnace:
-                section:
-                  quantities:
-                    furnace_id:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    furnace_description:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
+                type: '#/Furnace'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
               susceptor:
-                section:
-                  quantities:
-                    susceptor_material:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    susceptor_mass:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
+                type: '#/Susceptor'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
         process:
           section:
             m_annotations:
@@ -164,7 +198,7 @@ definitions:
                   quantities:
                     method:
                       type: str
-                      default: "DS Preparation Setup Parts"
+                      default: "Preparation Setup Parts (DS IKZ)"
                     description:
                       type: str
                       description: description
@@ -186,7 +220,7 @@ definitions:
                   quantities:
                     method:
                       type: str
-                      default: "DS Feedstock Filling"
+                      default: "Feedstock Filling (DS IKZ)"
                     description:
                       type: str
                       description: description
@@ -206,12 +240,44 @@ definitions:
                 section: '#/TemperatureRamp'
               manual_protocol:
                 section: '#/ManualProtocol'
-              digital_protocol:
-                section: '#/DigitalProtocol'
               # crystal_cutting:
               #   section: basesections_IKZ.SampleCut
               basic_characterization:
                 section: '#/BasicCharacterization'
+              digital_protocol:
+                section:
+                  quantities:
+                    measurement:
+                      type: '#/DigitalProtocol'
+                      m_annotations:
+                        eln:
+                          component: ReferenceEditQuantity
+        activities:
+          repeats: True
+          section:
+            quantities:
+              measurement:
+                type: 'nomad.datamodel.metainfo.eln.Activity'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+    CruciblePretreatment:
+      base_sections:
+       - nomad.datamodel.metainfo.eln.Process
+       - nomad.datamodel.data.EntryData
+      section:
+        quantities:
+          crucible:
+            type: '#/Crucible'
+            m_annotations:
+              eln:
+                component: ReferenceEditQuantity
+          test:
+            type: str
+            description: FILL
+            m_annotations:
+              eln:
+                component: StringEditQuantity
     TemperatureRamp:
       base_sections:
        - nomad.datamodel.metainfo.eln.Process
@@ -219,7 +285,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "DS Temperature Ramp"
+          default: "Temperature Ramp (DS IKZ)"
         description:
           type: str
           description: description
@@ -260,7 +326,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "DS Weighing"
+          default: "Weighing (DS IKZ)"
         description:
           type: str
           description: description
@@ -348,6 +414,254 @@ definitions:
         steps:
           repeats: true
           section: '#/TemperatureRamp'
+    Recipe:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Process
+      - nomad.parsing.tabular.TableData
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        plot:
+        - label: My_custom_plot_label
+          x: step_number
+          y:
+            - ./mysub/h1_soll_p
+          lines:
+          - mode: lines
+            line:
+              color: rgb(50, 138, 46)
+      quantities:
+        method:
+          type: str
+          default: "Recipe (DS IKZ)"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            tabular_parser:
+              # sep: ';'
+              comment: '#'
+              mode: row
+              target_sub_section:
+               - mysub
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
+      sub_sections:
+        mysub:
+          repeats: true
+          section:
+            quantities:
+              timestamp:
+                type: Datetime
+                # shape: ['*']
+                description: "FILL THE DESCRIPTION"
+                # unit:
+                # m_annotations:
+                #   tabular:
+                #     name: "T Ist H1 Time"
+              duration:
+                type: Datetime
+                # shape: []
+                description: "FILL THE DESCRIPTION"
+                # unit:
+                m_annotations:
+                  tabular:
+                    name: "Duration"
+              step_number:
+                type: int
+                #shape: ['*']
+                description: "FILL THE DESCRIPTION"
+                # unit:
+                m_annotations:
+                  tabular:
+                    name: "Schritt"
+              h1_soll_p:
+                type: np.float64
+                #shape: ['*']
+                description: "FILL THE DESCRIPTION"
+                # unit:
+                m_annotations:
+                  tabular:
+                    name: "H1"
+                  plot:
+                    label: My label
+                    x: step_number
+                    y: ./h1_soll_p
+    Feedstock:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Entity
+      quantities:
+        supplier:
+          type: str
+          description: Sample preparation including orientating, polishing, cutting done by this company
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Crucible:
+      base_sections:
+       - nomad.datamodel.metainfo.eln.Entity
+       - nomad.datamodel.data.EntryData
+      quantities:
+        crucible_id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_weight:
+          type: np.float64
+          unit: gram
+          description: Weight in grams
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_coating:
+          type: str
+          description: see preprocess activity for details
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_coating_pretreatment:
+          type: str
+          description: see preprocess activity for details
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        support_side_and_bottom_shape:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        top_cover:
+          type: str
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+              suggestions: ['slot opening', 'plate']
+        top_cover_material:
+          type: str
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+              suggestions: ['SiC', 'TiC', 'graphite']
+        top_cover_age:
+          type: np.float64
+          unit: hour
+          description: crucible_top_cover_age in hours
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: hour
+    Furnace:
+      base_sections:
+       - nomad.datamodel.metainfo.eln.Entity
+       - nomad.datamodel.data.EntryData
+      quantities:
+        furnace_id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        furnace_description:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Susceptor:
+      base_sections:
+       - nomad.datamodel.metainfo.eln.Entity
+       - nomad.datamodel.data.EntryData
+      quantities:
+        susceptor_material:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        susceptor_mass:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    BasicCharacterization:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - nomad.datamodel.data.EntryData
+      quantities:
+        method:
+          type: str
+          default: "Basic Characterization (DS IKZ)"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        kopfmasse_b:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        kopfmasse_l:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        bodenmasse_b:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        bodenmasse_l:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        weight:
+          type: np.float64
+          unit: gram
+          description: Weight in grams
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        height_north_in_middle:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        height_south:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        height_east:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        height_west:
+          type: np.float64
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        surface_inspection:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     ManualProtocol:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
@@ -355,22 +669,575 @@ definitions:
       quantities:
         method:
           type: str
-          default: "DS Manual Protocol"
+          default: "Manual Protocol (DS IKZ)"
         description:
           type: str
           description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-        test:
-          type: str
+        timestamp:
+          type: Datetime
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
           m_annotations:
-            eln:
-              component: StringEditQuantity
+            tabular:
+              name: "Sheet1/Ending time"
+        f1:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f1"
+            plot:
+              x: timestamp
+              y: ./f1
+        f2:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f2"
+            plot:
+              x: timestamp
+              y: ./f2
+        f3:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f3"
+            plot:
+              x: timestamp
+              y: ./f3
+        f4:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f4"
+            plot:
+              x: timestamp
+              y: ./f4
+        f5:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f5"
+            plot:
+              x: timestamp
+              y: ./f5
+        f6:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f6"
+            plot:
+              x: timestamp
+              y: ./f6
+        f7:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f7"
+            plot:
+              x: timestamp
+              y: ./f7
+        f8:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f8"
+            plot:
+              x: timestamp
+              y: ./f8
+        f9:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: Hz
+          m_annotations:
+            tabular:
+              name: "Sheet1/f9"
+            plot:
+              x: timestamp
+              y: ./f9
+        phi1:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi1"
+            plot:
+              x: timestamp
+              y: ./phi1
+        phi2:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi2"
+            plot:
+              x: timestamp
+              y: ./phi2
+        phi3:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi3"
+            plot:
+              x: timestamp
+              y: ./phi3
+        phi4:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi4"
+            plot:
+              x: timestamp
+              y: ./phi4
+        phi5:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi5"
+            plot:
+              x: timestamp
+              y: ./phi5
+        phi6:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi6"
+            plot:
+              x: timestamp
+              y: ./phi6
+        phi7:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi7"
+            plot:
+              x: timestamp
+              y: ./phi7
+        phi8:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi8"
+            plot:
+              x: timestamp
+              y: ./phi8
+        phi9:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: deg
+          m_annotations:
+            tabular:
+              name: "Sheet1/phi9"
+            plot:
+              x: timestamp
+              y: ./phi9
+        i_ac1:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac1"
+            plot:
+              x: timestamp
+              y: ./i_ac1
+        i_ac2:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac2"
+            plot:
+              x: timestamp
+              y: ./i_ac2
+        i_ac3:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac3"
+            plot:
+              x: timestamp
+              y: ./i_ac3
+        i_ac4:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac4"
+            plot:
+              x: timestamp
+              y: ./i_ac4
+        i_ac5:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac5"
+            plot:
+              x: timestamp
+              y: ./i_ac5
+        i_ac6:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac6"
+            plot:
+              x: timestamp
+              y: ./i_ac6
+        i_ac7:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac7"
+            plot:
+              x: timestamp
+              y: ./i_ac7
+        i_ac8:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac8"
+            plot:
+              x: timestamp
+              y: ./i_ac8
+        i_ac9:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iac9"
+            plot:
+              x: timestamp
+              y: ./i_ac9
+        i_ges1:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges1"
+            plot:
+              x: timestamp
+              y: ./i_ges1
+        i_ges2:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges2"
+            plot:
+              x: timestamp
+              y: ./i_ges2
+        i_ges3:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges3"
+            plot:
+              x: timestamp
+              y: ./i_ges3
+        i_ges4:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges4"
+            plot:
+              x: timestamp
+              y: ./i_ges4
+        i_ges5:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges5"
+            plot:
+              x: timestamp
+              y: ./i_ges5
+        i_ges6:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges6"
+            plot:
+              x: timestamp
+              y: ./i_ges6
+        i_ges7:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges7"
+            plot:
+              x: timestamp
+              y: ./i_ges7
+        i_ges8:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges8"
+            plot:
+              x: timestamp
+              y: ./i_ges8
+        i_ges9:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: ampere
+          m_annotations:
+            tabular:
+              name: "Sheet1/Iges9"
+            plot:
+              x: timestamp
+              y: ./i_ges9
+        temp1:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T1"
+            plot:
+              x: timestamp
+              y: ./temp1
+        temp2:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T2"
+            plot:
+              x: timestamp
+              y: ./temp2
+        temp3:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T3"
+            plot:
+              x: timestamp
+              y: ./temp3
+        temp4:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T4"
+            plot:
+              x: timestamp
+              y: ./temp4
+        temp5:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T5"
+            plot:
+              x: timestamp
+              y: ./temp5
+        temp6:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T6"
+            plot:
+              x: timestamp
+              y: ./temp6
+        temp7:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T7"
+            plot:
+              x: timestamp
+              y: ./temp7
+        temp8:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T8"
+            plot:
+              x: timestamp
+              y: ./temp8
+        temp9:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T9"
+            plot:
+              x: timestamp
+              y: ./temp9
+        temp1_2:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T12"
+            plot:
+              x: timestamp
+              y: ./temp1_2
+        temp1_3:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T13"
+            plot:
+              x: timestamp
+              y: ./temp1_3
+        temp1_4:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/T14"
+            plot:
+              x: timestamp
+              y: ./temp1_4
+        temp_tp:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/Ttp"
+            plot:
+              x: timestamp
+              y: ./temp_tp
+        temp_pyr:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          unit: celsius
+          m_annotations:
+            tabular:
+              name: "Sheet1/Tpyr"
+            plot:
+              x: timestamp
+              y: ./temp_pyr
     DigitalProtocol:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
-      - nomad.parsing.tabular.TableData
+      #- nomad.parsing.tabular.TableData
       - nomad.datamodel.data.EntryData
       m_annotations:
         plot:
@@ -457,25 +1324,30 @@ definitions:
       quantities:
         method:
           type: str
-          default: "DS Digital Protocol"
+          default: "Digital Protocol (DS IKZ)"
         description:
           type: str
           description: description
           m_annotations:
             eln:
               component: StringEditQuantity
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .csv
-          m_annotations:
-            tabular_parser:
-              sep: ';'
-              comment: '#'
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
+        # data_file:
+        #   type: str
+        #   description: |
+        #     A reference to an uploaded .csv
+        #   m_annotations:
+        #     tabular_parser:
+        #       parsing_options:
+        #         comment: '#'
+        #       mapping_options:
+        #       - mapping_mode: column
+        #         file_mode: current_entry
+        #         # sections:
+        #         # - root
+        #     browser:
+        #       adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+        #     eln:
+        #       component: FileEditQuantity  # A form field that allows to drop and select files.
         timestamp:
           type: Datetime
           shape: ['*']
@@ -1540,236 +2412,3 @@ definitions:
               label: My label
               x: timestamp
               y: ./no_messwert_ppm
-    Recipe:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Process
-      - nomad.parsing.tabular.TableData
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        plot:
-        - label: My_custom_plot_label
-          x: step_number
-          y:
-            - ./mysub/h1_soll_p
-          lines:
-          - mode: lines
-            line:
-              color: rgb(50, 138, 46)
-      quantities:
-        method:
-          type: str
-          default: "DS Recipe"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
-          m_annotations:
-            tabular_parser:
-              # sep: ';'
-              comment: '#'
-              mode: row
-              target_sub_section:
-               - mysub
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
-            eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-      sub_sections:
-        mysub:
-          repeats: true
-          section:
-            quantities:
-              timestamp:
-                type: Datetime
-                # shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                # m_annotations:
-                #   tabular:
-                #     name: "T Ist H1 Time"
-              duration:
-                type: Datetime
-                # shape: []
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Duration"
-              step_number:
-                type: int
-                #shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Schritt"
-              h1_soll_p:
-                type: np.float64
-                #shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Tabelle1/H1"
-                  plot:
-                    label: My label
-                    x: step_number
-                    y: ./h1_soll_p
-    Feedstock:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Entity
-      quantities:
-        supplier:
-          type: str
-          description: Sample preparation including orientating, polishing, cutting done by this company
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-    Crucible:
-      base_sections:
-       - nomad.datamodel.metainfo.eln.Entity
-       - nomad.datamodel.data.EntryData
-      quantities:
-        crucible_id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        crucible_weight:
-          type: np.float64
-          unit: gram
-          description: Weight in grams
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: gram
-        crucible_model:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        crucible_coating:
-          type: str
-          description: see preprocess activity for details
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        crucible_coating_pretreatment:
-          type: str
-          description: see preprocess activity for details
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        support_side_and_bottom_shape:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        top_cover:
-          type: str
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-              suggestions: ['slot opening', 'plate']
-        top_cover_material:
-          type: str
-          m_annotations:
-            eln:
-              component: EnumEditQuantity
-              suggestions: ['SiC', 'TiC', 'graphite']
-        top_cover_age:
-          type: np.float64
-          unit: hour
-          description: crucible_top_cover_age in hours
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: hour
-    CruciblePretreatment:
-      section:
-        quantities:
-          crucible:
-            type: '#/Crucible'
-            m_annotations:
-              eln:
-                component: ReferenceEditQuantity
-          test:
-            type: str
-            description: FILL
-            m_annotations:
-              eln:
-                component: StringEditQuantity
-    BasicCharacterization:
-      base_sections:
-      - nomad.datamodel.metainfo.eln.Measurement
-      - nomad.datamodel.data.EntryData
-      quantities:
-        method:
-          type: str
-          default: "DS Basic Characterization"
-        description:
-          type: str
-          description: description
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        kopfmasse_b:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        kopfmasse_l:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        bodenmasse_b:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        bodenmasse_l:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        weight:
-          type: np.float64
-          unit: gram
-          description: Weight in grams
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-              defaultDisplayUnit: gram
-        height_north_in_middle:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        height_south:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        height_east:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        height_west:
-          type: np.float64
-          m_annotations:
-            eln:
-              component: NumberEditQuantity
-        surface_inspection:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-
