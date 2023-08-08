@@ -1,0 +1,3 @@
+description: A NOMAD plugin for Chemical Vapour Transport at MPI CPFS.
+name: MPI CPFS CVT
+plugin_type: schema
