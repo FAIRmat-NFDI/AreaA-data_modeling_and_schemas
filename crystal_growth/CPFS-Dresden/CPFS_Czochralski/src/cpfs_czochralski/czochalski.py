@@ -140,7 +140,7 @@ class CPFSCzochralskiProcess(CzochralskiProcess, EntryData):
             import pandas as pd
             with archive.m_context.raw_file(self.xlsx_file, 'r') as xlsx:
                 inp=pd.read_csv(xlsx)
-                if inp.loc[2][1].split()[1]=="CPFSCzochalskiProcess":
+                if inp.loc[2][1].split()[1]=="CPFSCzochralskiProcess":
                     self.name=str(inp.loc[10][2])
                     self.furnace = CPFSFurnace(name=str(inp.loc[13][2]))
                     self.furnace.normalize(archive,logger)
@@ -148,14 +148,14 @@ class CPFSCzochralskiProcess(CzochralskiProcess, EntryData):
                     self.crucible.normalize(archive,logger)
                     self.rod_information = CPFSRodInformation(
                         rod_preparation=str(inp.loc[17][2]),
-                        seed_rod_diameter=float(inp.loc[18][2]),
-                        feed_rod_diameter=float(inp.loc[19][2]),
+                        seed_rod_diameter=float(inp.loc[18][2])/1000,
+                        feed_rod_diameter=float(inp.loc[19][2])/1000,
                         feed_rod_crystal_direction=str(inp.loc[20][2]),
                     )
                     step=[]
                     step.append(CPFSCzochralskiProcessStep(
-                        melting_power=float(inp.loc[32][2]),
-                        growth_power=float(inp.loc[33][2]),
+                        melting_power_percent=float(inp.loc[32][2]),
+                        growth_power_percent=float(inp.loc[33][2]),
                         rotation_speed=float(inp.loc[34][2]),
                         rotation_direction=str(inp.loc[35][2]),
                         pulling_rate = float(inp.loc[36][2])/1000/60,
