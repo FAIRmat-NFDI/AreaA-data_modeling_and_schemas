@@ -1,0 +1,131 @@
+definitions:
+  name: "Electronic Lab Notebook for Hall"
+  sections: # Schemes consist of section definitions
+    ContactsGrafting:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.data.EntryData
+      quantities:
+        method:
+          type: str
+          default: "Contact Grafting"
+        dose:
+          type: np.float64
+          # unit: celsius
+          description: dose
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              # defaultDisplayUnit: celsius
+        net_mass_before:
+          type: np.float64
+          unit: gram
+          description: net mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        crucible_model:
+          type: str
+          description: The name of the chemical that is typically used in literature
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        crucible_mass:
+          type: np.float64
+          unit: gram
+          description: crucible mass
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        brutto_mass_before:
+          type: np.float64
+          unit: gram
+          description: brutto mass before the process step
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: gram
+        atmosphere:
+          type: str
+          description: which atmosphere is choosen for th experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        oven:
+          type: str
+          description: oven used in the experiment
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        steps:
+          repeats: True
+          section: '../upload/raw/base_classes.schema.archive.yaml#ActivityStep'
+    MeasurementGeometry:
+      quantities:
+        geometry:
+          type:
+            type_kind: Enum
+            type_data:
+              - Van_der_Pauw_square
+              - Van_der_Pauw_rectangular
+              - Van_der_Pauw_arbitrary
+              - Hall_bar_1221
+              - Hall_bar_1311
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+    HallMeasurement:
+      base_sections:
+        - hall_IKZ.HallMeasurement
+        - nomad.datamodel.metainfo.eln.Activity
+      quantities:
+        method:
+          type: str
+          default: "Hall Measurement"
+    SampleWithContacts:
+      base_sections:
+        - 'nomad.datamodel.metainfo.eln.Ensemble'
+      sub_sections:
+        metal_stack:
+          repeats: true
+          m_annotations:
+            eln:
+          section:
+            base_sections:
+            - nomad.datamodel.metainfo.eln.Substance
+            quantities:
+              thickness:
+                type: np.float64
+                unit: micrometer
+                description: "FILL THE DESCRIPTION"
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: micrometer
+    HallExperiment:
+      base_sections:
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      sub_sections:
+        instrument:
+          section:
+            base_sections:
+            - 'hall_IKZ.HallInstrument'
+        contacts_grafting:
+          section:
+            base_sections:
+            - '#/ContactsGrafting'
+            m_annotations:
+              template:
+              eln:
+        hall_measurement:
+          section:
+            base_sections:
+            - '#/HallMeasurement'
+            m_annotations:
+              template:
+              eln:

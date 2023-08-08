@@ -1,36 +1,30 @@
-# Area A: sample preparation data
+# Area A: materials synthesis and processing
 
-## Keywords:  
+## Keywords:
+- Electronic Lab Notebook (ELN)
+- Data Structures
+- Custom YAML Schemas
+- NOMAD Uploads
 
-### Electronic Lab Notebook (ELN) / Schemas / Data structures / NOMAD Uploads
-
-## Base Sections Hierarchy:
-
-![Base Sections](https://box.hu-berlin.de/f/b72febaaedb54162b74c/?dl=1)
-
-
-The tree visualization shows the inheritance structure of our data model. 
-
-This is a structure under development, for suggestions and contributes please refer to the issues opened in this repo.
-
-See the NOMAD source code containing these classes at [this link](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/blob/develop/nomad/datamodel/metainfo/basesections.py).
 ## About this repo:
 
-It is a collection of example schemas that include several kinds of experiment.  
+It is a collection of example custom schemas shaped on the needs of different users.
 
 The schemas here implemented adapt to the NOMAD data structure: the hierarchy is composed by instances of Sections, Subsections and Quantities (data fields).
 
 The users can follow the info in this repo to build their own schema for their experiment :thumbsup:.
 
-Further explanations on NOMAD Metainfo and Archive [here](https://nomad-lab.eu/prod/v1/staging/docs/archive.html#custom-metainfo-schemas-eg-for-elns)
+
+
+Further explanations on NOMAD are availbale in the [official documentation page](https://nomad-lab.eu/prod/v1/staging/docs/index.html)
 
 Each folder contains several kind of files, the user can try to drag and drop all of them in the upload page in [Nomad](https://nomad-lab.eu/), they will be automatically parsed to create "Entries" containing the experimental data in a structured fashion:
 
 * schema file: it is a NOMAD archive file (**.archive.yaml** extension) containing only one section called "definitions". It defines the structure that will host your data.
 
-  Sections, subsections and quantities are the elements that compose the hierarchical structure of data. 
+  Sections, subsections and quantities are the elements that compose the hierarchical structure of data.
 
-  An important part in the schema is the **annotations** section, enabling the available ELN features such as: 
+  An important part in the schema is the **annotations** section, enabling the available ELN features such as:
     * [editability of quantities](https://nomad-lab.eu/prod/v1/staging/gui/dev/editquantity)
     * [automatic plot of quantities](https://nomad-lab.eu/prod/v1/staging/gui/dev/plot)
     * inheritance from specific Nomad base classes (ReferenceEditQuantity, AuthorEditQuantity)
@@ -39,9 +33,27 @@ Each folder contains several kind of files, the user can try to drag and drop al
 
 * data set: depending on the experiment, the user will have one or more files where the logged parameters and metadata are stored. The data set files have **.png**, **.tif**, **.txt.**, **.dat**, **.csv** or **.xlsx** extension.
 
+## Base Sections Hierarchy:
+
+
+The tree visualization shows the inheritance structure of our data model.
+This structure is in continuous development and may quickly change from week to week.
+
+For suggestions and contributes please refer to the issues opened in this repo.
+
+See the NOMAD source code containing these classes at [this link](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/blob/develop/nomad/datamodel/metainfo/basesections.py).
+
+We are developing a more verbose documentation to describe the Base Section contained in each of the examples in this repo.
+
+![Base Sections](https://box.hu-berlin.de/f/b72febaaedb54162b74c/?dl=1)
+
+
+
 - - - -
 
-In the subfolders, a dedicated README documents the file set for each use case.
+### In the subfolders, a dedicated README documents the file set for each use case. ###
+
+The folders contain either YAML schemas or Plugins available for installation in your own NOMAD Oasis
 
 - - - -
 ## The Structured Use Cases:

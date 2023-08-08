@@ -1,0 +1,10 @@
+normalize:
+  normalizers:
+    include:
+      - MetainfoNormalizer
+plugins:
+  include:
+    - 'schemas/hall_IKZ'
+  options:
+    schemas/hall_IKZ:
+      python_package: hall_IKZ
