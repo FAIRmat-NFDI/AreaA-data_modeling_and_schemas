@@ -564,6 +564,79 @@ class FloatingZoneProcess(CrystalGrowth):
         '''
         super(FloatingZoneProcess, self).normalize(archive, logger)
 
+class FluxGrowthProcessStep(CrystalGrowthStep):
+    '''
+    A step in the Flux Growth Process.
+    '''
+    process_time = Quantity(
+        type=float,
+        unit='second',
+        shape=['*'],
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='hour',
+        )
+    )
+    temperature = Quantity(
+        type=float,
+        unit='kelvin',
+        shape=['*'],
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius',
+        )
+    )
+
+
+class FluxGrowthProcess(CrystalGrowth):
+    '''
+    To be added, is not in CHMO
+    '''
+    m_def = Section(
+        links=[""],
+    )
+    method = Quantity(
+        type=str,
+        default='Flux Growth Process',
+    )
+    furnace = SubSection(
+        section_def=Furnace,
+    )
+    crucible = SubSection(
+        section_def=Crucible,
+    )
+    tube = SubSection(
+        section_def=CrystalGrowthTube,
+    )
+    initial_materials = SubSection(
+        section_def=InitialSynthesisComponent,
+        repeats=True,
+    )
+    steps = SubSection(
+        description='''
+        The step of the FluxGrowthProcesss.
+        ''',
+        section_def=FluxGrowthProcessStep,
+        repeats=True,
+    )
+    resulting_crystal = Quantity(
+        type=Crystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
+    )
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `FluxGrowthProcess` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(FluxGrowthProcess, self).normalize(archive, logger)
+
 m_package.__init_metainfo__()
 
 
