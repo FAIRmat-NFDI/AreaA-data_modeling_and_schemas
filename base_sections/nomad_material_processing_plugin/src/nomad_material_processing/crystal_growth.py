@@ -21,22 +21,13 @@ from structlog.stdlib import (
 )
 from nomad_material_processing import (
     ActivityStep,
-    Furnace,
     SampleDeposition,
-    Crystal,
 )
 from nomad.metainfo import (
     Package,
     Section,
     SubSection,
     Quantity,
-    Ensemble,
-)
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
-from nomad.datamodel.data import (
-    ArchiveSection,
 )
 
 m_package = Package(name='Crystal Growth')
@@ -57,12 +48,6 @@ class CrystalGrowth(SampleDeposition):
     '''
     m_def = Section(
         links=["http://purl.obolibrary.org/obo/CHMO_0002224"],
-    )
-    resulting_crystal = Quantity(
-        type=Crystal,
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        )
     )
     steps = SubSection(
         description='''

@@ -22,9 +22,7 @@ from structlog.stdlib import (
 from nomad.metainfo import (
     Package,
     Quantity,
-    SubSection,
     Section,
-    SampleID,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -32,7 +30,6 @@ from nomad.datamodel.data import (
 from nomad.datamodel.metainfo.eln import (
     Process,
     Ensemble,
-    Instrument,
 )
 
 m_package = Package(name='Material Processing')

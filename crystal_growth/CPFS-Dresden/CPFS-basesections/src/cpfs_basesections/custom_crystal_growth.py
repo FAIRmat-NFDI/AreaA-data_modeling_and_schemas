@@ -405,6 +405,165 @@ class CzochralskiProcess(CrystalGrowth):
         '''
         super(CzochralskiProcess, self).normalize(archive, logger)
 
+
+class ChemicalVapourTransportStep(CrystalGrowthStep):
+    '''
+    A step in the Chemical Vapour Transport. Contains 2 temperatures and transport agent.
+    '''
+    temperature_one = Quantity(
+        type=float,
+        unit='kelvin',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius'
+        ),
+    )
+    temperature_two = Quantity(
+        type=float,
+        unit='kelvin',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius'
+        ),
+    )
+    transport_agent = SubSection(
+        section_def=Ensemble,
+    )
+
+
+class ChemicalVapourTransport(CrystalGrowth):
+    '''
+    A crystal growth method for metal dichalcogenides in which the starting materials
+    (high purity metal and chalcogen) are placed in a quartz ampoule together with a
+    transport agent (e.g. iodine) and heated in a furnace under a temperature gradient.
+    [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
+    '''
+    m_def = Section(
+        links=["http://purl.obolibrary.org/obo/CHMO_0002652"],
+    )
+    method = Quantity(
+        type=str,
+        default='Chemical Vapour Transport',
+    )
+    furnace = SubSection(
+        section_def=Furnace,
+    )
+    tube = SubSection(
+        section_def=CrystalGrowthTube,
+    )
+    initial_materials = SubSection(
+        section_def=InitialSynthesisComponent,
+        repeats=True,
+    )
+    steps = SubSection(
+        description='''
+        The step of the ChemicalVapourTransport.
+        ''',
+        section_def=ChemicalVapourTransportStep,
+        repeats=True,
+    )
+    resulting_crystal = Quantity(
+        type=Crystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
+    )
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `ChemicalVapourTransport` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(ChemicalVapourTransport, self).normalize(archive, logger)
+
+
+class FloatingZoneProcessStep(CrystalGrowthStep):
+    '''
+    A step in the Floating Zone Process, for now same as CzochralskiProcessStep.
+    '''
+    melting_power_in_percent = Quantity(
+        type=float,
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    growth_power_in_percent = Quantity(
+        type=float,
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
+    rotation_speed = Quantity(
+        type=float,
+        unit='hertz',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='hertz'
+        ),
+    )
+    rotation_direction = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    pulling_rate = Quantity(
+        type=float,
+        unit='meter/second',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter/minute'
+        ),
+    )
+
+
+class FloatingZoneProcess(CrystalGrowth):
+    '''
+    To be added, is not in CHMO
+    '''
+    m_def = Section(
+        links=[""],
+    )
+    method = Quantity(
+        type=str,
+        default='Floating Zone Process',
+    )
+    furnace = SubSection(
+        section_def=Furnace,
+    )
+    initial_materials = SubSection(
+        section_def=InitialSynthesisComponent,
+        repeats=True,
+    )
+    steps = SubSection(
+        description='''
+        The step of the Floating Zone Process.
+        ''',
+        section_def=FloatingZoneProcessStep,
+        repeats=True,
+    )
+    resulting_crystal = Quantity(
+        type=Crystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
+    )
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `FloatingZoneProcess` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(FloatingZoneProcess, self).normalize(archive, logger)
+
 m_package.__init_metainfo__()
 
 
