@@ -1,0 +1,3 @@
+description: A NOMAD plugin for Floating zone technique at MPI CPFS.
+name: MPI CPFS Floating Zone
+plugin_type: schema

@@ -156,7 +156,6 @@ class ThinFilmStack(Ensemble, ArchiveSection):
         '''
         super(ThinFilmStack, self).normalize(archive, logger)
 
-
 class SampleDeposition(Process, ArchiveSection):
     '''
     The process of the settling of particles (atoms or molecules) from a solution,

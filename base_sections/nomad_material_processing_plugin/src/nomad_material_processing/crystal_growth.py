@@ -19,15 +19,26 @@
 from structlog.stdlib import (
     BoundLogger,
 )
+from nomad_material_processing import (
+    ActivityStep,
+    SampleDeposition,
+)
 from nomad.metainfo import (
     Package,
     Section,
-)
-from nomad_material_processing import (
-    SampleDeposition,
+    SubSection,
+    Quantity,
 )
 
 m_package = Package(name='Crystal Growth')
+
+
+
+class CrystalGrowthStep(ActivityStep):
+    '''
+    Details will be added later.
+    '''
+    pass
 
 
 class CrystalGrowth(SampleDeposition):
@@ -36,9 +47,15 @@ class CrystalGrowth(SampleDeposition):
     [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
     '''
     m_def = Section(
-        links=[
-            "http://purl.obolibrary.org/obo/CHMO_0002224"
-        ],)
+        links=["http://purl.obolibrary.org/obo/CHMO_0002224"],
+    )
+    steps = SubSection(
+        description='''
+        The steps of the crystal growth.
+        ''',
+        section_def=CrystalGrowthStep,
+        repeats=True,
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         '''
@@ -60,9 +77,12 @@ class CzochralskiProcess(CrystalGrowth):
     [database_cross_reference: https://orcid.org/0000-0002-0640-0422]
     '''
     m_def = Section(
-        links=[
-            "http://purl.obolibrary.org/obo/CHMO_0002158"
-        ],)
+        links=["http://purl.obolibrary.org/obo/CHMO_0002158"],
+    )
+    method = Quantity(
+        type=str,
+        default='Czochralski Process'
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         '''
