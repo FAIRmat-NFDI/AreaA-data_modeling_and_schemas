@@ -33,7 +33,7 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
 from nomad.datamodel.metainfo.eln import (
-    Ensemble,
+    CompositeSystem,
     SampleID,
     Substance,
 )
@@ -89,7 +89,7 @@ class PVDMaterialSource(ArchiveSection):
         description='''
         The material that is being evaporated.
         ''',
-        type=Ensemble,
+        type=CompositeSystem,
     )
     rate = SubSection(
         section_def=PVDMaterialEvaporationRate,
@@ -379,7 +379,7 @@ class PhysicalVaporDeposition(SampleDeposition):
         super(PhysicalVaporDeposition, self).normalize(archive, logger)
 
 
-class PLDTarget(Ensemble):
+class PLDTarget(CompositeSystem):
     target_id = SubSection(
         section_def = SampleID,
     )

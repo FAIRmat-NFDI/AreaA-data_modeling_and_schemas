@@ -65,7 +65,7 @@ from nomad.datamodel.metainfo.eln import (
     SampleID,
     Substance,
     Component,
-    Ensemble,
+    CompositeSystem,
 )
 from nomad.metainfo.metainfo import (
     Category,
@@ -88,7 +88,7 @@ class IKZPLDSubstrateMaterial(Substance, EntryData):
     )
 
 
-class IKZPLDPossibleSubstrate(Ensemble):
+class IKZPLDPossibleSubstrate(CompositeSystem):
     pass
 
 
@@ -219,7 +219,7 @@ class IKZPLDSubstrateSubBatch(ArchiveSection):
         super(IKZPLDSubstrateSubBatch, self).normalize(archive, logger)
 
 
-class IKZPLDSubstrateBatch(Ensemble, EntryData):  # TODO: Inherit from batch
+class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from batch
     m_def=Section(
         categories=[IKZPLDCategory],
         label='Batch of Substrates',

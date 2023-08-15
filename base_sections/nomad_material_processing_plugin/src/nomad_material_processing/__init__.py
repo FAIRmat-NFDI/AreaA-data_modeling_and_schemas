@@ -30,7 +30,7 @@ from nomad.datamodel.data import (
 )
 from nomad.datamodel.metainfo.eln import (
     Process,
-    Ensemble,
+    CompositeSystem,
 )
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
@@ -95,7 +95,7 @@ class ProcessStep(ActivityStep):
     )
 
 
-class Substrate(Ensemble, ArchiveSection):
+class Substrate(CompositeSystem, ArchiveSection):
     '''
     A thin free standing sheet of material. Not to be confused with the substrate role
     during a deposition, which can be a `Substrate` with `ThinFilm`(s) on it.
@@ -125,7 +125,7 @@ class Substrate(Ensemble, ArchiveSection):
         super(Substrate, self).normalize(archive, logger)
 
 
-class ThinFilm(Ensemble, ArchiveSection):
+class ThinFilm(CompositeSystem, ArchiveSection):
     '''
     A thin film of material which exists as part of a stack.
     '''
@@ -154,7 +154,7 @@ class ThinFilm(Ensemble, ArchiveSection):
         super(ThinFilm, self).normalize(archive, logger)
 
 
-class ThinFilmStack(Ensemble, ArchiveSection):
+class ThinFilmStack(CompositeSystem, ArchiveSection):
     '''
     A stack of `ThinFilm`(s). Typically deposited on a `Substrate`.
     '''
