@@ -8,12 +8,11 @@ definitions:
        - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
-          hide: ['end_time', 'lab_id', 'location', 'description']
+          # hide: ['end_time', 'lab_id', 'location', 'description']
       quantities:
         growth_data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
+          description: "Upload here the spreadsheet file containing the growth data"
           m_annotations:
             tabular_parser:
               parsing_options:
@@ -128,8 +127,7 @@ definitions:
       quantities:
         substrate_data_file:
           type: str
-          description: |
-            A reference to an uploaded .xlsx
+          description: "Upload here the spreadsheet file containing the growth data"
           m_annotations:
             tabular_parser:
               parsing_options:
@@ -153,7 +151,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-    SubstratePreProcess:
+    SubstrateProcess:
       base_sections:
       - nomad.datamodel.metainfo.eln.Activity
       - nomad.datamodel.data.EntryData
@@ -162,7 +160,7 @@ definitions:
       quantities:
         method:
           type: str
-          default: "Substrate Pre-Process (MOVPE IKZ)"
+          default: "Substrate Process (MOVPE IKZ)"
         description:
           type: str
           description: description
