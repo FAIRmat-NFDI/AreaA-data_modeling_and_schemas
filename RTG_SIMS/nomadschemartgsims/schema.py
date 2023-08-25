@@ -6,6 +6,7 @@ from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID, System
+from nomad.datamodel.metainfo.basesections import CompositeSystemReference
 from nomad.units import ureg
 import numpy as np
 from datetime import datetime
@@ -31,19 +32,23 @@ class DepthProfileQuantitative(ArchiveSection):#, repeats=True):
         type=np.dtype(np.float64),
         unit = "µm",
         shape = ['n_values'],
-        a_plot={
-            'x': 'depth', 'y': 'atomic_concentration'
-        })
+        #a_plot={
+        #    'x': 'depth', 'y': 'atomic_concentration'
+        #})
         #a_plot={
         #   'label': 'SIMS profile','x': 'depth', 'y': './intensity'        }
-        #)
+        )
     atomic_concentration = Quantity(
         type=np.dtype(np.float64),
         unit = "1/cm^3",
         shape = ['n_values'],
+        a_plot={
+            'x': 'depth', 'y': './atomic_concentration',
+            'layout': {'yaxis': {'type': 'log'}},
+        })
         #a_plot={
          #  'label': 'SIMS profile', 'x': 'depth', 'y': 'intensity'        }
-            )
+         #   )
 
 class DepthProfileQualitative(ArchiveSection):#, repeats=True):
     m_def = Section(
@@ -62,20 +67,27 @@ class DepthProfileQualitative(ArchiveSection):#, repeats=True):
         type=np.dtype(np.float64),
         unit = "µm",
         shape = ['n_values'],
-        a_plot={
-            'x': 'depth', 'y': 'intensity'
-        })
+        #a_plot={
+        #    'x': 'depth', 'y': 'intensity'
+        #})
         #a_plot={
         #   'label': 'SIMS profile','x': 'depth', 'y': './intensity'        }
-        #)
+        )
     intensity = Quantity(
         type=np.dtype(np.float64),
         unit = "1/s",
         shape = ['n_values'],
+        a_plot={
+            'x': 'depth', 'y': './intensity',
+        'layout': {'yaxis': {'type': 'log'}},
+        })
         #a_plot={
          #  'label': 'SIMS profile', 'x': 'depth', 'y': 'intensity'        }
-            )
+         #   )
 
+class MeasurementResults(ArchiveSection):
+    depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
+    depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
 class RTGSIMS(Measurement):
     '''
     X-ray diffraction is a technique typically used to characterize the structural
@@ -102,17 +114,21 @@ class RTGSIMS(Measurement):
         a_eln=dict(
             component='ReferenceEditQuantity',
         ))
-    depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
-    depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
+    samples =  SubSection(section_def=CompositeSystemReference)
+    results =  SubSection(section_def=MeasurementResults, label="Results")
+    #depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
+    #depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
 
 class RTG_SIMS_measurement(RTGSIMS, EntryData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         a_plot=[
             {#'label': 'SIMS depth profile',
-             'x': 'depth_profiles_qualitative/:/depth',
-             'y': ['depth_profiles_qualitative/:/intensity','depth_profiles_quantitative/:/atomic_concentration'],
-             #'layout': {'yaxis': {'type': 'log'}},
+             'x': ['results/:/depth_profiles_qualitative/:/depth','results/:/depth_profiles_quantitative/:/depth'],
+             'y': ['results/:/depth_profiles_qualitative/:/intensity','results/:/depth_profiles_quantitative/:/atomic_concentration'],
+             'layout': {'yaxis': {'type': 'log'},
+                        'yaxis2': {'type': 'log'},
+                        'showlegend': 'true',} #makes only one yaxis log scale!
             },]
         )
 
@@ -211,22 +227,27 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                 #self.depth_profile_ID.sample_short_name = sims_dict["depth_profile_id"]
                 #self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
                 logger.info('parser works')
-                self.depth_profiles_qualitative=[]
+                samples=CompositeSystemReference()
+                samples.lab_id=sims_dict["sample_id"]
+                self.samples=[samples]
+                results = MeasurementResults()
+                results.depth_profiles_qualitative=[]#self.depth_profiles_qualitative=[]
                 #dep_profile_object=DepthProfile()
                 for count,value in enumerate(sims_dict["depth_profiles_of_elements_qual"]):
                     dep_profile_object=DepthProfileQualitative()
                     dep_profile_object.element = sims_dict["depth_profiles_of_elements_qual"][count]["element"]
                     dep_profile_object.depth = sims_dict["depth_profiles_of_elements_qual"][count]["depth"]
                     dep_profile_object.intensity = sims_dict["depth_profiles_of_elements_qual"][count]["intensity"]
-                    self.depth_profiles_qualitative.append(dep_profile_object)
-                self.depth_profiles_quantitative=[]
+                    results.depth_profiles_qualitative.append(dep_profile_object)
+                results.depth_profiles_quantitative=[]
                 #dep_profile_object=DepthProfile()
                 for count,value in enumerate(sims_dict["depth_profiles_of_elements_quant"]):
                     dep_profile_object=DepthProfileQuantitative()
                     dep_profile_object.element = sims_dict["depth_profiles_of_elements_quant"][count]["element"]
                     dep_profile_object.depth = sims_dict["depth_profiles_of_elements_quant"][count]["depth"]
                     dep_profile_object.atomic_concentration = sims_dict["depth_profiles_of_elements_quant"][count]["atomic_concentration"]
-                    self.depth_profiles_quantitative.append(dep_profile_object)
+                    results.depth_profiles_quantitative.append(dep_profile_object)
+                self.results = [results]
         #self.message = f'Hello {self.name}!'
 
 
