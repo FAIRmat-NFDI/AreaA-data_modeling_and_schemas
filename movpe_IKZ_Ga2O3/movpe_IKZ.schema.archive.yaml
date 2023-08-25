@@ -4,7 +4,7 @@ definitions:
     MovpeExperiment:
       base_sections:
        - nomad.parsing.tabular.TableData
-       - nomad.datamodel.metainfo.eln.Activity
+       - nomad.datamodel.metainfo.eln.Experiment
        - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
@@ -109,14 +109,8 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-        activities:
-          section:
-            quantities:
-              measurement:
-                type: 'nomad.datamodel.metainfo.eln.Activity'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
+        final_sample:
+          section: 'nomad.datamodel.metainfo.basesections.CompositeSystemReference'
     SubstrateInventory:
       base_sections:
        - nomad.parsing.tabular.TableData
@@ -326,11 +320,12 @@ definitions:
               defaultDisplayUnit: cm ** 3 / minute
         showerhead_distance:
           type: np.float64
-          unit: millimeter
           description: inner valve (0-200)
+          unit: meter
           m_annotations:
             tabular:
               name: GrowthRun/Distance of Showerhead
+              unit: millimeter
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: millimeter
@@ -684,7 +679,7 @@ definitions:
               component: StringEditQuantity
     Sample:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Ensemble
+      - nomad.datamodel.metainfo.eln.CompositeSystem
       - nomad.datamodel.data.EntryData
       quantities:
         name:
@@ -703,7 +698,7 @@ definitions:
               component: StringEditQuantity
     Substrate:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Ensemble
+      - nomad.datamodel.metainfo.eln.CompositeSystem
       - nomad.datamodel.data.EntryData
       quantities:
         # SEE issue 1638 on gitlab
