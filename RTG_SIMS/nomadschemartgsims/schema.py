@@ -6,7 +6,7 @@ from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID, System
-from nomad.datamodel.metainfo.basesections import CompositeSystemReference
+from nomad.datamodel.metainfo.basesections import CompositeSystemReference, InstrumentReference
 from nomad.units import ureg
 import numpy as np
 from datetime import datetime
@@ -94,27 +94,26 @@ class RTGSIMS(Measurement):
     properties of crystalline materials. The data contains `two_theta` values of the scan
     the corresponding counts collected for each channel
     '''
+
+    m_def = Section(
+        a_template=dict(
+            instruments=[dict(name='Some name', lab_id='RTG Mikroanalyse Cameca IMS')],
+        ),)
     method = Quantity(
         type=str,
         description='Method used to collect the data',
         default='SIMS')
-    # lab_id = Quantity(
-    #     type=SampleID,
-    #     description='ID of the SIMS depth profile given by RTG Mikroanalyse ',
-    #     a_eln=dict(label = "depth_profile_ID"))
     Matrix = Quantity(
         type=str, #SimsMatrix
         description='Element Matrix for Mass Spectrometer')
-    #SampleID = Quantity(
-    #    type=SampleID, #SimsMatrix
-    #    description='ID of the sample that was measured in SIMS')
-    Sample = Quantity(
-        type=System,
-        description='IKZ sampleID, make use of sample ID class!',
-        a_eln=dict(
-            component='ReferenceEditQuantity',
-        ))
-    samples =  SubSection(section_def=CompositeSystemReference)
+    location = Quantity(
+        type=str,
+        description='''
+        The location of the process in longitude, latitude.
+        ''',
+        default='52.431685, 13.526855',) #IKZ coordinates
+
+    #samples =  SubSection(section_def=CompositeSystemReference)
     results =  SubSection(section_def=MeasurementResults, label="Results")
     #depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
     #depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
@@ -135,7 +134,6 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
     name = Quantity(
         type=str,
         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity))
-    #message = Quantity(type=str)
     data_file = Quantity(
         type=str,
         description='Data file containing the RTG depth profile SIMS dat (dp_ascii)',
@@ -143,8 +141,6 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
             component='FileEditQuantity',
         )
         )
-
-
     def normalize(self, archive, logger):
         super(RTG_SIMS_measurement, self).normalize(archive, logger)
         logger.info('ExampleSection.normalize called')
@@ -228,8 +224,11 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                 #self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
                 logger.info('parser works')
                 samples=CompositeSystemReference()
+                #samples.normalize(archive, logger)
                 samples.lab_id=sims_dict["sample_id"]
+                samples.normalize(archive, logger)
                 self.samples=[samples]
+                #self.instruments=[InstrumentReference()]
                 results = MeasurementResults()
                 results.depth_profiles_qualitative=[]#self.depth_profiles_qualitative=[]
                 #dep_profile_object=DepthProfile()
