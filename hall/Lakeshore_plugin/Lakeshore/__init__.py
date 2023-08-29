@@ -27,7 +27,7 @@ from .hall_instrument import Instrument
 from .nexus_to_msection import get_measurements, get_instrument
 from nomad.datamodel.metainfo.eln import Activity, Ensemble, Substance
 
-m_package = Package(name='hall_IKZ')
+m_package = Package(name='hall_Lakeshore')
 
 
 class HallMeasurement(ArchiveSection):

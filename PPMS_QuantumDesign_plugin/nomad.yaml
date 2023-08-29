@@ -1,0 +1,10 @@
+normalize:
+  normalizers:
+    include:
+      - MetainfoNormalizer
+plugins:
+  include:
+    - 'schemas/PPMS'
+  options:
+    schemas/PPMS:
+      python_package: PPMS
