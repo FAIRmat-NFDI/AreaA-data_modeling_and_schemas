@@ -8,7 +8,7 @@ definitions:
        - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
-        template:
+        # template:
           # activities: {
           #   DigitalProtocol: {
           #     name: 'test'

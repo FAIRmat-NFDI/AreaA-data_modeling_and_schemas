@@ -321,11 +321,10 @@ definitions:
         showerhead_distance:
           type: np.float64
           description: inner valve (0-200)
-          unit: meter
+          unit: millimeter
           m_annotations:
             tabular:
               name: GrowthRun/Distance of Showerhead
-              unit: millimeter
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: millimeter
