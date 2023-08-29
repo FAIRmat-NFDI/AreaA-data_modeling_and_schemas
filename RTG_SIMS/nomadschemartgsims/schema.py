@@ -1,7 +1,3 @@
-from nomad.metainfo import Quantity, Package
-from nomad.datamodel.data import EntryData
-from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-
 from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
@@ -13,9 +9,7 @@ from datetime import datetime
 
 m_package = Package()
 
-#class SimsMatrix(Substance,EntryData):
-#    pass
-class DepthProfileQuantitative(ArchiveSection):#, repeats=True):
+class DepthProfileQuantitative(ArchiveSection):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         label_quantity="element",
@@ -23,13 +17,13 @@ class DepthProfileQuantitative(ArchiveSection):#, repeats=True):
         )
     element = Quantity(
         type=str,
-        description='Method used to collect the data',
+        description='element which was measured by the mass spectrometer',
         #a_plot={
         #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
         )
-
     depth = Quantity(
         type=np.dtype(np.float64),
+        description='depth of the measurement profile',
         unit = "µm",
         shape = ['n_values'],
         #a_plot={
@@ -40,6 +34,7 @@ class DepthProfileQuantitative(ArchiveSection):#, repeats=True):
         )
     atomic_concentration = Quantity(
         type=np.dtype(np.float64),
+        description='Atomic concentration of the respective element by calibrated measurements. See SIMS report in RTG SIMS experiment entry for details on the calibration standard.',
         unit = "1/cm^3",
         shape = ['n_values'],
         a_plot={
@@ -58,13 +53,14 @@ class DepthProfileQualitative(ArchiveSection):#, repeats=True):
         )
     element = Quantity(
         type=str,
-        description='Method used to collect the data',
+        description='element which was measured by the mass spectrometer',
         #a_plot={
         #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
         )
 
     depth = Quantity(
         type=np.dtype(np.float64),
+        description='depth of the measurement profile',
         unit = "µm",
         shape = ['n_values'],
         #a_plot={
@@ -75,6 +71,7 @@ class DepthProfileQualitative(ArchiveSection):#, repeats=True):
         )
     intensity = Quantity(
         type=np.dtype(np.float64),
+        description='Intensity measured by the mass spectrometer without calibration of the measured signal to an element. Serves for qualitative depth profile measurement.',
         unit = "1/s",
         shape = ['n_values'],
         a_plot={
@@ -90,15 +87,18 @@ class MeasurementResults(ArchiveSection):
     depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
 class RTGSIMS(Measurement):
     '''
-    X-ray diffraction is a technique typically used to characterize the structural
-    properties of crystalline materials. The data contains `two_theta` values of the scan
-    the corresponding counts collected for each channel
+    The secondary ion mass spectrometry is one of the established material analysis
+    techniques. For generating concentration depth profiles of elements SIMS is used as a
+    standard method. Investigations close to the surface set typical range of 5 nm to 20 µm
+    and a lateral range from 50 µm up to 500 µm. The determination of concentrations
+    (quantitative analyses) of all elements in the mass range from hydrogen to uran allow
+    a valuation of the material quality of solids. In addition to depth profiles surface
+    images with a lateral solution up to the µm range facilitates an topografical valuation
+    of the material structure. Additionally, it is possible to determine the spacial
+    element distribution and make it visible by imaging techniques. Using the Cameca
+    spectrometers it is possible to determine elements in concentrations in ranges of ppb.
+    https://www.rtg-berlin.de/
     '''
-
-    m_def = Section(
-        a_template=dict(
-            instruments=[dict(name='Some name', lab_id='RTG Mikroanalyse Cameca IMS')],
-        ),)
     method = Quantity(
         type=str,
         description='Method used to collect the data',
@@ -112,11 +112,7 @@ class RTGSIMS(Measurement):
         The location of the process in longitude, latitude.
         ''',
         default='52.431685, 13.526855',) #IKZ coordinates
-
-    #samples =  SubSection(section_def=CompositeSystemReference)
     results =  SubSection(section_def=MeasurementResults, label="Results")
-    #depth_profiles_qualitative = SubSection(section_def=DepthProfileQualitative, repeats=True)
-    #depth_profiles_quantitative = SubSection(section_def=DepthProfileQuantitative, repeats=True)
 
 class RTG_SIMS_measurement(RTGSIMS, EntryData):
     m_def = Section(
@@ -128,7 +124,10 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
              'layout': {'yaxis': {'type': 'log'},
                         'yaxis2': {'type': 'log'},
                         'showlegend': 'true',} #makes only one yaxis log scale!
-            },]
+            },],
+        a_template=dict(
+            instruments=[dict(name='RTG SIMS', lab_id='RTG Mikroanalyse Cameca IMS')],
+        ),
         )
 
     name = Quantity(
@@ -216,22 +215,15 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                 self.name = sims_dict["depth_profile_id"]
                 self.Matrix = sims_dict["Matrix"]
                 self.datetime = datetime.strptime(sims_dict["date"],"%d.%m.%y") # noch in richtiges FOrmat ändern
-                #self.depth_profile_id = SampleID()
-                #self.depth_profile_id.sample_short_name = sims_dict['id']
                 self.SampleID = sims_dict["sample_id"]
                 self.lab_id = sims_dict["depth_profile_id"]
-                #self.depth_profile_ID.sample_short_name = sims_dict["depth_profile_id"]
-                #self.depth_profile_id = SampleID(sample_short_name = sims_dict['depth_profile_id'])
                 logger.info('parser works')
                 samples=CompositeSystemReference()
-                #samples.normalize(archive, logger)
                 samples.lab_id=sims_dict["sample_id"]
                 samples.normalize(archive, logger)
                 self.samples=[samples]
-                #self.instruments=[InstrumentReference()]
                 results = MeasurementResults()
-                results.depth_profiles_qualitative=[]#self.depth_profiles_qualitative=[]
-                #dep_profile_object=DepthProfile()
+                results.depth_profiles_qualitative=[]
                 for count,value in enumerate(sims_dict["depth_profiles_of_elements_qual"]):
                     dep_profile_object=DepthProfileQualitative()
                     dep_profile_object.element = sims_dict["depth_profiles_of_elements_qual"][count]["element"]
@@ -239,7 +231,6 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                     dep_profile_object.intensity = sims_dict["depth_profiles_of_elements_qual"][count]["intensity"]
                     results.depth_profiles_qualitative.append(dep_profile_object)
                 results.depth_profiles_quantitative=[]
-                #dep_profile_object=DepthProfile()
                 for count,value in enumerate(sims_dict["depth_profiles_of_elements_quant"]):
                     dep_profile_object=DepthProfileQuantitative()
                     dep_profile_object.element = sims_dict["depth_profiles_of_elements_quant"][count]["element"]
@@ -247,7 +238,5 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                     dep_profile_object.atomic_concentration = sims_dict["depth_profiles_of_elements_quant"][count]["atomic_concentration"]
                     results.depth_profiles_quantitative.append(dep_profile_object)
                 self.results = [results]
-        #self.message = f'Hello {self.name}!'
-
 
 m_package.__init_metainfo__()
