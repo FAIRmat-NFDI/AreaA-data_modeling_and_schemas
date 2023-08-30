@@ -1203,7 +1203,7 @@ definitions:
               component: StringEditQuantity
     Substrate:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Ensemble
+      - nomad.datamodel.metainfo.eln.CompositeSystem
       - nomad.datamodel.data.EntryData
       quantities:
         alias:

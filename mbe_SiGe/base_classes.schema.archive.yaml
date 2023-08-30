@@ -14,14 +14,14 @@ definitions:
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-    Experiment: 
-      base_sections: 
+    Experiment:
+      base_sections:
       - 'nomad.datamodel.data.EntryData'
       m_annotations:
         eln:
-    Substrate: 
-      base_sections: 
-      - 'nomad.datamodel.metainfo.eln.Ensemble'
+    Substrate:
+      base_sections:
+      - 'nomad.datamodel.metainfo.eln.CompositeSystem'
       - 'nomad.datamodel.data.EntryData'
       quantities:
         supplier:
@@ -116,7 +116,7 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        documentation: 
+        documentation:
           type: str
           description: pdf files containing certificate and other documentation
           m_annotations:
@@ -130,12 +130,12 @@ definitions:
             base_sections:
               - 'nomad.datamodel.metainfo.eln.SampleID'
             m_annotations:
-              template: 
-              eln: 
+              template:
+              eln:
                 hide: []
         geometry:
           section: '#/Geometry'
-    ActivityStep: 
+    ActivityStep:
       m_annotations:
         eln:
       quantities:
@@ -166,7 +166,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: minute
-    SubstanceBatch: 
+    SubstanceBatch:
       quantities:
         component:
           type: 'nomad.datamodel.metainfo.eln.System'
@@ -200,7 +200,7 @@ definitions:
               - BP grade
               - JP grade
               - Laboratory grade
-              - Purified grade 
+              - Purified grade
               - Technical grade
           description: Purity of the Chemical. [Wikipedia](https://en.wikipedia.org/wiki/Chemical_purity)
           m_annotations:
@@ -224,7 +224,7 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        documentation: 
+        documentation:
           type: str
           description: pdf files containing certificate and other documentation
           m_annotations:
@@ -232,7 +232,7 @@ definitions:
               adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
             eln:
               component: FileEditQuantity
-    AmountOfMaterial: 
+    AmountOfMaterial:
       quantities:
         component:
           type: 'nomad.datamodel.metainfo.eln.System'
@@ -294,7 +294,7 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: mL/minute
     Sensor:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.ElnBaseSection
       quantities:
         model:

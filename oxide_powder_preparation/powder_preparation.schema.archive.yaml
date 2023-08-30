@@ -2,7 +2,7 @@ definitions:
   name: 'Set your name here'
   sections:
     PowderPreparation:
-      base_sections: 
+      base_sections:
         - ../upload/raw/base_classes.schema.archive.yaml#Experiment
       quantities:
         total_mass:
@@ -20,7 +20,7 @@ definitions:
             eln:
               component: StringEditQuantity
     TemperatureRamp:
-      base_sections: 
+      base_sections:
         - nomad.datamodel.metainfo.workflow2.Task
       quantities:
         rate:
@@ -35,12 +35,12 @@ definitions:
         temperature:
           type: np.float64
           shape: ['*']
-          unit: kelvin 
+          unit: kelvin
           description: Temperature at the end of the ramp
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplayUnit: kelvin 
+              defaultDisplayUnit: kelvin
         dwell_time:
           type: np.float64
           shape: ['*']
@@ -51,13 +51,13 @@ definitions:
               component: NumberEditQuantity
               defaultDisplayUnit: hour
     ThermalTreatment:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Activity
       quantities:
         dose:
           type: np.float64
           # unit: celsius
-          description: dose 
+          description: dose
           m_annotations:
             eln:
               component: NumberEditQuantity
@@ -133,23 +133,23 @@ definitions:
           repeats: true
           section: '#/TemperatureRamp'
     My_test:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Sample_cut
     My_test2:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Sample_cut
     My_test3:
-      base_sections: 
+      base_sections:
       - '#/My_test'
     Powder_sample:
-      base_sections: 
-      - nomad.datamodel.metainfo.eln.Ensemble
+      base_sections:
+      - nomad.datamodel.metainfo.eln.CompositeSystem
       - nomad.datamodel.data.EntryData
     Component:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Component
       - nomad.datamodel.data.EntryData
     Substance:
-      base_sections: 
+      base_sections:
       - nomad.datamodel.metainfo.eln.Substance
       - nomad.datamodel.data.EntryData
