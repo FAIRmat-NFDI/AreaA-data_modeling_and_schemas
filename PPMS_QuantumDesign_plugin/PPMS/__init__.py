@@ -37,34 +37,62 @@ class PPMSHeader(ArchiveSection):
     software = Quantity(
         type=str,
         description='FILL')
-    sample_1_name = Quantity(
+    sample1_name = Quantity(
         type=str,
         description='FILL')
-    sample_1_type = Quantity(
+    sample1_type = Quantity(
         type=str,
         description='FILL')
-    sample_1_material = Quantity(
+    sample1_material = Quantity(
         type=str,
         description='FILL')
-    sample_1_voltage_lead_preparation = Quantity(
+    sample1_voltage_lead_preparation = Quantity(
         type=str,
         description='FILL')
-    sample_1_cross_sectional_area = Quantity(
+    sample1_cross_sectional_area = Quantity(
         type=str,
         description='FILL')
-    sample_2_name = Quantity(
+    sample2_name = Quantity(
         type=str,
         description='FILL')
-    sample_2_type = Quantity(
+    sample2_type = Quantity(
         type=str,
         description='FILL')
-    sample_2_material = Quantity(
+    sample2_material = Quantity(
         type=str,
+        description='FILL')
+
+
+class PPMSChannelData(ArchiveSection):
+    '''Data section from Channels in PPMS'''
+    m_def = Section(
+        label_quantity='name',
+    )
+    name = Quantity(
+        type=str,
+        description='FILL')
+    resistance = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    resistance_std_dev = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    phase_angle = Quantity(
+        type=np.dtype(np.float64),
+        unit='deg',
+        shape=['*'],
         description='FILL')
 
 
 class PPMSData(ArchiveSection):
     '''Data section from PPMS'''
+    m_def = Section(
+        a_eln=dict(lane_width='600px'),
+    )
     timestamp = Quantity(
         type=np.dtype(np.float64),
         unit='second',
@@ -75,6 +103,22 @@ class PPMSData(ArchiveSection):
         unit='kelvin',
         shape=['*'],
         description='FILL')
+    field = Quantity(
+        type=np.dtype(np.float64),
+        unit='gauss',
+        shape=['*'],
+        description='FILL')
+    sample_position = Quantity(
+        type=np.dtype(np.float64),
+        unit='deg',
+        shape=['*'],
+        description='FILL')
+    chamber_pressure = Quantity(
+        type=np.dtype(np.float64),
+        unit='torr',
+        shape=['*'],
+        description='FILL')
+    channels = SubSection(section_def=PPMSChannelData, repeats=True)
 
 
 class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
@@ -95,6 +139,8 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
     def normalize(self, archive, logger):
         super(PPMSMeasurement, self).normalize(archive, logger)
 
+        # def parse_ppms_header(self):
+
         if archive.data.data_file:
             logger.info('Parsing PPMS measurement file.')
             with archive.m_context.raw_file(self.data_file) as file:
@@ -103,11 +149,26 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
             header_match = re.search(r'\[Header\](.*?)\[Data\]', data, re.DOTALL)
             header_section = header_match.group(1).strip()
             header_lines = header_section.split('\n')
-            header_dict = {}
-            for line in header_lines:
-                if line.strip() != "":
-                    key, *values = line.split(',')
-                    header_dict[key] = [value.strip() for value in values]
+            info_lines = [line for line in header_lines if line.startswith("INFO")]
+            info_dict = {}
+            for line in info_lines:
+                parts = re.split(r',\s*', line)
+                info_dict[parts[2]] = parts[1]
+            startupaxis_lines = [line for line in header_lines if line.startswith("STARTUPAXIS")]
+            startupaxis_dict = {}
+            for line in startupaxis_lines:
+                parts = re.split(r',\s*', line)
+                startupaxis_dict[parts[1]] = [parts[2], parts[3], parts[4]]
+
+            self.header = PPMSHeader()
+            for key, value in info_dict.items():
+                print(key.lower())
+                print(hasattr(self.header, key.lower()))
+                if hasattr(self.header, key.lower()):
+                    setattr(self.header,
+                            key.lower(),
+                            value # * ureg(data_template[f'{key}/@units'])
+                    )
 
             data_section = header_match.string[header_match.end():]
             data_buffer = StringIO(data_section)
@@ -116,16 +177,41 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
 
-            # Now you can access the header values using the header_dict
-            file_open_time = header_dict['FILEOPENTIME'][1]
-            # ... (other header values)
 
-            # Print the data DataFrame and header values
-            print("Header Values:")
-            print("FILEOPENTIME:", file_open_time)
-            # ... (print other header values)
+            print(data_df.keys())
 
-            print("\nData DataFrame:")
-            print(data_df)
+            channel_1_data = [key for key in data_df.keys() if 'Ch1' in key]
+            channel_2_data = [key for key in data_df.keys() if 'Ch2' in key]
+            other_data = [key for key in data_df.keys() if 'Ch1' not in key and 'Ch2' not in key]
+            self.data = PPMSData()
+            for key in other_data:
+                clean_key = key.split('(')[0].strip().lower().replace('time stamp','timestamp')
+                if hasattr(self.data, clean_key):
+                    setattr(self.data,
+                            clean_key,
+                            data_df[key] # * ureg(data_template[f'{key}/@units'])
+                            )
+            if channel_1_data:
+                channel_1 = PPMSChannelData()
+                setattr(channel_1, 'name', 'Channel 1')
+                for key in channel_1_data:
+                    clean_key = key.split('(')[0].replace('Ch1','').strip().lower().replace(' ','_').replace('3rd','third').replace('2nd','second')
+                    if hasattr(channel_1, clean_key):
+                        setattr(channel_1,
+                                clean_key,
+                                data_df[key] # * ureg(data_template[f'{key}/@units'])
+                                )
+                self.data.m_add_sub_section(PPMSData.channels, channel_1)
+            if channel_2_data:
+                channel_2 = PPMSChannelData()
+                setattr(channel_2, 'name', 'Channel 2')
+                for key in channel_2_data:
+                    clean_key = key.split('(')[0].replace('Ch2','').strip().lower().replace(' ','_').replace('3rd','third').replace('2nd','second')
+                    if hasattr(channel_2, clean_key):
+                        setattr(channel_2,
+                                clean_key,
+                                data_df[key] # * ureg(data_template[f'{key}/@units'])
+                                )
+                self.data.m_add_sub_section(PPMSData.channels, channel_2)
 
 m_package.__init_metainfo__()
