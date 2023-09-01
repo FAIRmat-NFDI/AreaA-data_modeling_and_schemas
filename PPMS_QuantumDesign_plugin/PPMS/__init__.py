@@ -21,47 +21,31 @@ import re
 from io import StringIO
 import numpy as np
 import pandas as pd
+from datetime import datetime
 
 from nomad.metainfo import Package, Quantity, MEnum, SubSection, Section, MSection
 from nomad.datamodel.data import EntryData, ArchiveSection
-from nomad.datamodel.metainfo.eln import Activity, Ensemble, Substance, Measurement
+from nomad.datamodel.metainfo.basesections import Activity, CompositeSystem, Measurement, PureSubstance
 
 m_package = Package(name='PPMS')
 
 
-class PPMSHeader(ArchiveSection):
-    '''Header section from PPMS'''
-    file_open_time = Quantity(
+class Sample(CompositeSystem):
+    name = Quantity(
         type=str,
         description='FILL')
-    software = Quantity(
+    type = Quantity(
         type=str,
         description='FILL')
-    sample1_name = Quantity(
+    material = Quantity(
         type=str,
         description='FILL')
-    sample1_type = Quantity(
+    voltage_lead_preparation = Quantity(
         type=str,
         description='FILL')
-    sample1_material = Quantity(
+    cross_sectional_area = Quantity(
         type=str,
         description='FILL')
-    sample1_voltage_lead_preparation = Quantity(
-        type=str,
-        description='FILL')
-    sample1_cross_sectional_area = Quantity(
-        type=str,
-        description='FILL')
-    sample2_name = Quantity(
-        type=str,
-        description='FILL')
-    sample2_type = Quantity(
-        type=str,
-        description='FILL')
-    sample2_material = Quantity(
-        type=str,
-        description='FILL')
-
 
 class PPMSChannelData(ArchiveSection):
     '''Data section from Channels in PPMS'''
@@ -70,7 +54,9 @@ class PPMSChannelData(ArchiveSection):
     )
     name = Quantity(
         type=str,
-        description='FILL')
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"})
     resistance = Quantity(
         type=np.dtype(np.float64),
         unit='ohm',
@@ -121,7 +107,7 @@ class PPMSData(ArchiveSection):
     channels = SubSection(section_def=PPMSChannelData, repeats=True)
 
 
-class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
+class PPMSMeasurement(Measurement, EntryData):
     """A parser for PPMS measurement data"""
 
     m_def = Section(
@@ -132,8 +118,18 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
         type=str,
         a_eln=dict(component='FileEditQuantity'),
         a_browser=dict(adaptor='RawFileAdaptor'))
+    file_open_time = Quantity(
+        type=str,
+        description='FILL')
+    software = Quantity(
+        type=str,
+        description='FILL')
+    startupaxis = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
 
-    header = SubSection(section_def=PPMSHeader)
+
     data = SubSection(section_def=PPMSData)
 
     def normalize(self, archive, logger):
@@ -149,26 +145,47 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
             header_match = re.search(r'\[Header\](.*?)\[Data\]', data, re.DOTALL)
             header_section = header_match.group(1).strip()
             header_lines = header_section.split('\n')
-            info_lines = [line for line in header_lines if line.startswith("INFO")]
-            info_dict = {}
-            for line in info_lines:
-                parts = re.split(r',\s*', line)
-                info_dict[parts[2]] = parts[1]
-            startupaxis_lines = [line for line in header_lines if line.startswith("STARTUPAXIS")]
-            startupaxis_dict = {}
-            for line in startupaxis_lines:
-                parts = re.split(r',\s*', line)
-                startupaxis_dict[parts[1]] = [parts[2], parts[3], parts[4]]
 
-            self.header = PPMSHeader()
-            for key, value in info_dict.items():
-                print(key.lower())
-                print(hasattr(self.header, key.lower()))
-                if hasattr(self.header, key.lower()):
-                    setattr(self.header,
-                            key.lower(),
-                            value # * ureg(data_template[f'{key}/@units'])
-                    )
+            sample1_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE1_' in line]
+            if sample1_headers:
+                sample_1 = Sample()
+                for line in sample1_headers:
+                    parts = re.split(r',\s*', line)
+                    key = parts[2].lower().replace('SAMPLE1_','')
+                    if hasattr(sample_1, key):
+                        setattr(sample_1, key, parts[1])
+
+            sample2_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE2_' in line]
+            if sample2_headers:
+                sample_2 = Sample()
+                for line in sample2_headers:
+                    parts = re.split(r',\s*', line)
+                    key = parts[2].lower().replace('SAMPLE2_','')
+                    if hasattr(sample_2, key):
+                        setattr(sample_2, key, parts[1])
+
+                while self.samples:
+                    self.m_remove_sub_section(PPMSMeasurement.samples, 0)
+                self.m_add_sub_section(PPMSMeasurement.samples, sample_1)
+                self.m_add_sub_section(PPMSMeasurement.samples, sample_2)
+
+            startupaxis_headers = [line for line in header_lines if line.startswith("STARTUPAXIS")]
+            if startupaxis_headers:
+                startupaxis = []
+                for line in startupaxis_headers:
+                    parts = line.split(',', 1)
+                    startupaxis.append(parts[1])
+                if hasattr(self, 'startupaxis'):
+                    setattr(self, 'startupaxis', startupaxis)
+
+            for line in header_lines:
+                if line.startswith("FILEOPENTIME"):
+                    if hasattr(self, 'datetime'):
+                        iso_date = datetime.strptime(line.split(',')[3], "%d/%m/%Y %H:%M:%S")
+                        setattr(self, 'datetime', iso_date)
+                if line.startswith("BYAPP"):
+                    if hasattr(self, 'software'):
+                        setattr(self, 'software', line.replace('BYAPP,', ''))
 
             data_section = header_match.string[header_match.end():]
             data_buffer = StringIO(data_section)
@@ -180,8 +197,6 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
 
             print(data_df.keys())
 
-            channel_1_data = [key for key in data_df.keys() if 'Ch1' in key]
-            channel_2_data = [key for key in data_df.keys() if 'Ch2' in key]
             other_data = [key for key in data_df.keys() if 'Ch1' not in key and 'Ch2' not in key]
             self.data = PPMSData()
             for key in other_data:
@@ -191,6 +206,7 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
                             clean_key,
                             data_df[key] # * ureg(data_template[f'{key}/@units'])
                             )
+            channel_1_data = [key for key in data_df.keys() if 'Ch1' in key]
             if channel_1_data:
                 channel_1 = PPMSChannelData()
                 setattr(channel_1, 'name', 'Channel 1')
@@ -202,6 +218,7 @@ class PPMSMeasurement(Measurement, EntryData, ArchiveSection):
                                 data_df[key] # * ureg(data_template[f'{key}/@units'])
                                 )
                 self.data.m_add_sub_section(PPMSData.channels, channel_1)
+            channel_2_data = [key for key in data_df.keys() if 'Ch2' in key]
             if channel_2_data:
                 channel_2 = PPMSChannelData()
                 setattr(channel_2, 'name', 'Channel 2')
