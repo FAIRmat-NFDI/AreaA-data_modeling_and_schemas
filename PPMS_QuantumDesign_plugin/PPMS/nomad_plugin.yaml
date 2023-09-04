@@ -1,5 +1,7 @@
-plugin_type: schema
-name: NOMAD's PPMS plugin
+plugin_type: parser #schema
+name: NOMAD PPMS schema and parser plugin
 description: |
-  This is a simple hello world schema. This is meant as a template.
-  Fork the github project to create your own schemas.
+  This is a schema and parser for PPMS measurements
+mainfile_name_re: 'testPPMS.dat' # added
+parser_class_name: PPMS.PPMSParser # added
+code_name: PPMS Parser
