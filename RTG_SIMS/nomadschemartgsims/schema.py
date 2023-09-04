@@ -114,7 +114,7 @@ class RTGSIMS(Measurement):
         default='52.431685, 13.526855',) #IKZ coordinates
     results =  SubSection(section_def=MeasurementResults, label="Results")
 
-class RTG_SIMS_measurement(RTGSIMS, EntryData):
+class RTGSIMSMeasurement(RTGSIMS, EntryData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         a_plot=[
@@ -141,7 +141,7 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
         )
         )
     def normalize(self, archive, logger):
-        super(RTG_SIMS_measurement, self).normalize(archive, logger)
+        #super(RTGSIMSMeasurement, self).normalize(archive, logger)
         logger.info('ExampleSection.normalize called')
 
         def parse_depthprofile_data(self):
@@ -238,5 +238,6 @@ class RTG_SIMS_measurement(RTGSIMS, EntryData):
                     dep_profile_object.atomic_concentration = sims_dict["depth_profiles_of_elements_quant"][count]["atomic_concentration"]
                     results.depth_profiles_quantitative.append(dep_profile_object)
                 self.results = [results]
-
+        super(RTGSIMSMeasurement, self).normalize(archive, logger)
+        #should come here
 m_package.__init_metainfo__()

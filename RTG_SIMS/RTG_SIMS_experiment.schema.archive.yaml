@@ -1,0 +1,24 @@
+definitions:
+  name: 'RTG SIMS Experiment'
+  sections:
+    RTG_SIMS_Experiment:
+      base_sections:
+       - nomad.datamodel.metainfo.basesections.Experiment
+       - nomad.datamodel.data.EntryData
+      quantities:
+        RTG_dp_ascii_files:
+          type: str
+          description: RTG SIMS measurement files of depth profile measurements, single *.dp_ascii files or zipped folders.
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        RTG_measurement_protocoll:
+          type: str
+          description: The PFF file containing the measurement protocol by RTG Mikroanalyse
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity
