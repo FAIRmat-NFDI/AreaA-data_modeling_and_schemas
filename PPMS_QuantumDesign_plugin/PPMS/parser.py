@@ -55,7 +55,7 @@ class PPMSParser(MatchingParser):
         data_file = mainfile.split('/')[-1]
         entry = PPMSMeasurement()
         entry.data_file = data_file
-        file_name = f'{data_file[:-9]}.archive.json'
+        file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
         archive.data = PPMSFile(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' measurement file'

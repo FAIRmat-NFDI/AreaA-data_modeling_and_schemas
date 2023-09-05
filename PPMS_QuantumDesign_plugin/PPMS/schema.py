@@ -27,6 +27,15 @@ from nomad.metainfo import Package, Quantity, MEnum, SubSection, Section, MSecti
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.basesections import Activity, CompositeSystem, Measurement, PureSubstance
 
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+    BrowserAnnotation,
+    SectionProperties,
+)
+
+from nomad.files import UploadFiles
+from nomad.datamodel.util import parse_path
+
 m_package = Package(name='PPMS')
 
 
@@ -248,8 +257,6 @@ class PPMSMeasurement(Measurement, EntryData):
 
     def normalize(self, archive, logger):
         super(PPMSMeasurement, self).normalize(archive, logger)
-
-        # def parse_ppms_header(self):
 
         if archive.data.data_file:
             logger.info('Parsing PPMS measurement file.')
