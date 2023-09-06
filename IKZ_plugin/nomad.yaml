@@ -1,0 +1,22 @@
+normalize:
+  normalizers:
+    include:
+      - MetainfoNormalizer
+plugins:
+  include:
+    - 'schemas/basesections_IKZ'
+    - 'schemas/cz_IKZ'
+    - 'schemas/ds_IKZ'
+    - 'schemas/mbe_IKZ'
+    - 'schemas/movpe_IKZ'
+  options:
+    schemas/basesections_IKZ:
+      python_package: basesections_IKZ
+    schemas/cz_IKZ:
+      python_package: cz_IKZ
+    schemas/cz_IKZ:
+      python_package: ds_IKZ
+    schemas/mbe_IKZ:
+      python_package: mbe_IKZ
+    schemas/movpe_IKZ:
+      python_package: movpe_IKZ
