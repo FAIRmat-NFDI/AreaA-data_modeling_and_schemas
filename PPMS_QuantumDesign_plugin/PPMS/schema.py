@@ -260,7 +260,7 @@ class PPMSMeasurement(Measurement, EntryData):
 
         if archive.data.data_file:
             logger.info('Parsing PPMS measurement file.')
-            with archive.m_context.raw_file(self.data_file) as file:
+            with archive.m_context.raw_file(self.data_file, 'r') as file:
                 data = file.read()
 
             header_match = re.search(r'\[Header\](.*?)\[Data\]', data, re.DOTALL)
@@ -310,7 +310,7 @@ class PPMSMeasurement(Measurement, EntryData):
 
             data_section = header_match.string[header_match.end():]
             data_buffer = StringIO(data_section)
-            data_df = pd.read_csv(data_buffer, header=None, skipinitialspace=True)
+            data_df = pd.read_csv(data_buffer, header=None, skipinitialspace=True, sep=',')
             # Rename columns using the first row of data
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
