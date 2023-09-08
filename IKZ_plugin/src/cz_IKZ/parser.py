@@ -30,11 +30,11 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from cz_IKZ import MeltCzochralskiExperiment
+from cz_IKZ import MeltCzochralskiExperiment, Sensors
 
 class CSVFile(EntryData):
     measurement = Quantity(
-        type=MeltCzochralskiExperiment,
+        type=Sensors,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
@@ -53,7 +53,7 @@ class CzParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = MeltCzochralskiExperiment()
+        entry = Sensors()
         entry.data_file = data_file
         file_name = f'{data_file[:-12]}.archive.json'
         #entry.normalize(archive, logger)

@@ -4,7 +4,7 @@ definitions:
     MovpeExperiment:
       base_sections:
        - nomad.parsing.tabular.TableData
-       - nomad.datamodel.metainfo.eln.Experiment
+       - nomad.datamodel.metainfo.basesections.Experiment
        - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
@@ -114,7 +114,7 @@ definitions:
     SubstrateInventory:
       base_sections:
        - nomad.parsing.tabular.TableData
-       #### THIS WILL BE A SYSTEMCOLLECTION CLASS
+       - nomad.datamodel.metainfo.basesections.Collection
        - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
@@ -130,17 +130,17 @@ definitions:
               - mapping_mode: entry
                 file_mode: multiple_new_entries
                 sections:
-                - substrates
+                - entities
             browser:
               adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
       sub_sections:
-        substrates:
+        entities:
           repeats: true
           section:
             quantities:
-              substrate:
+              reference:
                 type: '#/Substrate'
                 m_annotations:
                   eln:
@@ -192,6 +192,15 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        lab_id:
+          type: str
+          description: the ID from RTG
+          m_annotations:
+            tabular:
+              name: GrowthRun/Recipe Name
+            eln:
+              component: StringEditQuantity
+              label: "Growth ID"
       sub_sections:
         growth_run_steps:
           repeats: true
@@ -201,19 +210,28 @@ definitions:
     GrowthRunStep:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
-      - nomad.datamodel.data.EntryData
+      - nomad.datamodel.data.EntryData # REMOVE ENTRYDATA
       m_annotations:
         eln:
           # hide: [descritpion]
       quantities:
-        name:
+        lab_id:
+          type: str
+          description: the ID from RTG
+          m_annotations:
+            tabular:
+              name: GrowthRun/Step Index
+            eln:
+              component: StringEditQuantity
+              label: "Step ID"
+        sample_name:
           type: str
           description: what this step consists of
           m_annotations:
             tabular:
               name: GrowthRun/Sample Name
             eln:
-              component: StringEditQuantity
+              component: StringEditQuantity # make it REFERENCEEDIT QUANTITY
         substrate_name:
           type: str
           description: what this step consists of
@@ -221,7 +239,7 @@ definitions:
             tabular:
               name: GrowthRun/Substrate Name
             eln:
-              component: StringEditQuantity
+              component: StringEditQuantity # make it REFERENCEEDIT QUANTITY
         recipe_name:
           type: str
           description: what this step consists of
