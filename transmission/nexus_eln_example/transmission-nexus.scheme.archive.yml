@@ -44,35 +44,6 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        instrument:
-          section:
-            sub_sections:
-              common_beam_mask:
-                section:
-                  m_annotations:
-                    eln:
-                      overview: true
-                  quantities:
-                    y_gap:
-                      type: int
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          minValue: 0
-                          maxValue: 100
-            quantities:
-              polarizer:
-                type: int
-                m_annotations:
-                  eln:
-                    component: NumberEditQuantity
-                    minValue: 0
-                    maxValue: 360
-              common_beam_depolarizer:
-                type: bool
-                m_annotations:
-                  eln:
-                    component: BoolEditQuantity
         Sample:
           section:
             m_annotations:
