@@ -18,7 +18,7 @@
 from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID, System
+#from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID, System
 from nomad.units import ureg
 import numpy as np
 from datetime import datetime
@@ -40,6 +40,10 @@ from nomad.datamodel.data import (
 )
 from nomad.metainfo.metainfo import (Category)
 
+from nomad_measurements import (
+    InSituMeasurement,
+    ProcessReference
+    )
 
 m_package = Package(name='LayTec EpiTT Schema')
 
@@ -144,7 +148,8 @@ class MeasurementSettings(ArchiveSection):
         description='RUNTYPE_NAME',
         )
 
-class LayTecEpiTT(Measurement ):
+#class Process()
+class LayTecEpiTT(InSituMeasurement ):
     '''
     LayTec's EpiTT is an emissivity-corrected pyrometer and
     reflectance measurement for in-situ measurement during
@@ -171,6 +176,7 @@ class LayTecEpiTT(Measurement ):
     #     type=str, #'1',
     #     description='WAFER',
     #     )
+    #process = SubSection(section_def=Process)
     run_ID = Quantity(
         type=str, #'200827_158_TEOS',
         description='RUNTYPE_ID',
@@ -202,7 +208,9 @@ class LayTecEpiTT(Measurement ):
     #     shape = ['*'],
     #     )
     measurement_settings = SubSection(section_def=MeasurementSettings)
-    results =  SubSection(section_def=MeasurementResults, label="Results")
+    #results =  SubSection(section_def=MeasurementResults, label="Results")
+    results = Measurement.results.m_copy()
+    results.section_def = MeasurementResults
     #reflectance_wavelength = SubSection(section_def=ReflectanceWavelengthTransient, repeats=True)
 
     #growth_analysis = SubSection(section)
@@ -283,6 +291,10 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
                 if "RUNTYPE_NAME" in epitt_data[0].keys():
                     self.measurement_settings.runtype_name = epitt_data[0]["RUNTYPE_NAME"]
                 #self.time_transient = epitt_data[1]["BEGIN"]
+                process = ProcessReference()
+                process.lab_id=epitt_data[0]["RUN_ID"]
+                process.normalize(archive, logger)
+                self.process=process
                 results = MeasurementResults()
                 results.process_time = epitt_data[1]["BEGIN"]
                 results.pyrometer_temperature = epitt_data[1]["PyroTemp"]
