@@ -29,7 +29,8 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-from nomad_material_processing.utils import create_archive
+#from nomad_material_processing.utils import create_archive
+from nomad_measurements.utils import create_archive
 from nomadschemartgsims.schema import RTGSIMSMeasurement #HZBUnoldLabThermalEvaporation
 
 class RTGSIMSDPFile(EntryData):
