@@ -1,0 +1,42 @@
+  # Data revision for SEM Images
+institute: IKZ # can be mapped to NXuser affiliation or should there be an own NXproject_details group where such pieces of information can be added?
+    section: Experimental Characterization # implicitly clear because data will be stored using NXem appdef
+        sub section: Electron Microscopy # implicitly clear because data will be stored using NXem appdef
+        sub sub section: service # what is this field used for at IKZ?
+user: Sabine Bergmann # covered by NXuser
+userID: # which ID from IKZ or ORCID? --> NOMAD
+measurement_date: 2021-11-09  # covered by NXem time_stamping
+measurement_method: Images Electron Microscopy  # implicit because using NXem
+equipment: z.B. SEM Apreo S or Nova # much better described than here with NXem
+measurement_goal: z.B. SEM Images from AlN dislocations  # should be entered in the ELN and then become mapped to entry/experiment_description
+measurement_meta:
+    detector: T1, T2, T3  # will be clear via NXem because for each used detector there is the possibility to have an own group with its metadata
+    Accelerating voltage: 5 KV # covered by NXem
+    lens mod: optiplan, immersion # this is a tricky one, its a qualitative description of what? an option in the control software, a term from the technology partner? no clue? 
+    # Eigenschaften von den Geräten, Methode um ein gutes Bild aufzunehmen
+    # this needs an additional field in NXem if it is super relevant
+    magnification: 3250 -50000 # magnification in NXem has a field but it does not allow
+    # to define a range, because this large range here is certainly because
+    # maybe you have taken multiple images and then you just give the entire range of 
+    # magnification taken
+    # but itself this is not very useful because for a given image there is one 
+    # magnification and this is what NXem can do, define the magnification if desired 
+    # for each individual image
+    # or globally once but not a range, if you talk about uncertainty of the magnification 
+    # that is indeed a field not yet in NXem
+    # yes --> this is the whole range of magnification used
+    working distance: 5 mm  # you mean "working distance" i.e. this one ? https://codebase.helmholtz.cloud/em_glossary/em_glossary/-/blob/main/terms/working_distance.yml
+    tild: 0°  # you mean of the entire stage interpretation depends on local coordinate system and stage system used please specify
+    # yes, tild of the sample stage (and sample)
+material: z.B. AlN  # offered by NXsample
+SampleID: ??? # offered by NXsample
+    sample_owner: z.B. Lucinda Mative  # this must be an IKZ internal thingi sample owner mhhh, that should be clear from the ELN metadata who created the sample in the first place or the IKZ sample tracking system right, or do we need an additional field in NXsample ?
+    sample_ownerID:  # same story if needed should be solved with adding an additional NXuser and then make in NXsample a link to this specific NXuser
+    sample_short_name: # offered by NXsample
+sample_preperation: z. B. sample sputtering with carbon against charging  # preparation by Sabine before measuring in SEM
+    # hehe, this should be harmonized between Areas A and B, NXem can make a link to another application definition or schema
+# this was the entire idea behind NXsample/sample_history...
+data_folder: z.B. AlN images  # irrelevant for NeXus as data can be stored in the file and will be documented therein
+data_files: tiff files (filesize: 10 MB) #werden von Nomade nicht gelesen, anderes imagefiles? wirklich alle Bilder zu nomade?
+# 10MB .... well put it in the NeXus file, I have a tiff reader, but give me an example file that I have s.th. to test with if your data are supported
+

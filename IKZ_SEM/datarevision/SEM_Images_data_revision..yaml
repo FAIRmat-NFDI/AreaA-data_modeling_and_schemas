@@ -1,0 +1,27 @@
+  # Data revision for SEM Images
+institute: IKZ
+    section: Experimental Characterization 
+        sub section: Electron Microscopy
+        sub sub section: service 
+user: Sabine Bergmann 
+userID:
+measurement_date: 2021-11-09
+measurement_method: Images Electron Microscopy
+equipment: z.B. SEM Apreo S or Nova
+measurement_goal: z.B. SEM Images from AlN dislocations
+measurement_meta:
+    detector: T1, T2, T3
+    Accelerating voltage: 5 KV
+    lens mod: optiplan, immersion
+    magnification: 3250 -50000
+    work distance: 5 mm
+    tild: 0°
+material: z.B. AlN
+SampleID: ???
+    sample_owner: z.B. Lucinda Mative
+    sample_ownerID:
+    sample_short_name:
+sample_preperation: z. B. sample sputtering with carbon against charging     
+data_folder: z.B. AlN images
+data_files: tiff files (filesize: 10 MB) #werden von Nomade nicht gelesen, anderes imagefiles? wirklich alle Bilder zu nomade?
+

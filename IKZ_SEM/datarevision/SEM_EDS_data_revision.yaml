@@ -1,0 +1,41 @@
+# Data revision for SEM EDS
+
+institute: IKZ
+    section: Experimental Characterization 
+        sub section: Electron Microscopy
+        sub sub section: service 
+user: Sabine Bergmann 
+userID:
+measurement_date: z. B. 2021-11-09
+measurement_method: EDS Electron Microscopy
+measurement_software: EDS APEX
+equipment: z.B. SEM Nova
+measurement_goal: z.B. spectrum full area or spot, or line scane, or mapping 
+measurement_meta:
+    detector: z.B. ETD, TLD
+    Accelerating voltage: z.B. 5 KV
+    lens mod: z.B. normal, immersion, EDX
+    magnification: z.B. 3250
+    work distance: 5 mm
+    tild: 0°
+
+material: z.B. GeSn
+sample:
+    SampleID: ???
+    sample_owner: z.B. Carsten Richter
+    sample_ownerID:
+    sample_short_name:
+    sample_eds_project_name: z.B. GeSn
+    sample_preperation: z. B. sample sputtering with carbon against charging     
+
+data_file_types: 
+- .h5  (filesize >100 MB ) #werden von Nomade nicht gelesen, Umwandlung in .nxs, Datenmenge!!!!
+- .xls
+- .csv
+- .mdc #Software eigenes format
+- .png
+- .doc
+- .tiff #directly from REM
+            
+
+
