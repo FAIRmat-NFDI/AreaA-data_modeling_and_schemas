@@ -31,7 +31,7 @@ from nomad.datamodel.data import (
 
 #from nomad_material_processing.utils import create_archive
 from nomad_measurements.utils import create_archive
-from lay_tec_epi_tt_schema.schema import LayTec_EpiTT_Measurement #HZBUnoldLabThermalEvaporation
+from laytec_epitt.schema import LayTec_EpiTT_Measurement #HZBUnoldLabThermalEvaporation
 
 class LAYTECEPITTFile(EntryData):
     measurement = Quantity(

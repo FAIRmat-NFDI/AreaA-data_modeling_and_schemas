@@ -6,4 +6,4 @@ plugins:
   include: 'schemas/laytecepitt'
   options:
     schemas/laytecepitt:
-      python_package: lay_tec_epi_tt_schema
+      python_package: laytec_epitt

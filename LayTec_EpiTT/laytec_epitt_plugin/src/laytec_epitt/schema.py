@@ -18,7 +18,6 @@
 from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-#from nomad.datamodel.metainfo.eln import Measurement, Substance, SampleID, System
 from nomad.units import ureg
 import numpy as np
 from datetime import datetime
@@ -49,8 +48,6 @@ m_package = Package(name='LayTec EpiTT Schema')
 
 class IKZLayTecEpiTTCategory(EntryDataCategory):
     m_def = Category(label='IKZ LayTec EpiTT', categories=[EntryDataCategory])
-
-
 
 # class LayTecEpiTT_process_time(ArchiveSection):
 #     '''
@@ -148,7 +145,6 @@ class MeasurementSettings(ArchiveSection):
         description='RUNTYPE_NAME',
         )
 
-#class Process()
 class LayTecEpiTT(InSituMeasurement ):
     '''
     LayTec's EpiTT is an emissivity-corrected pyrometer and
@@ -159,28 +155,7 @@ class LayTecEpiTT(InSituMeasurement ):
         type=str,
         description='Method used to collect the data',
         default='LayTec_EpiTT')
-    #'TIME': '2020-08-27-11-11-30',
-    # module_name = Quantity(
-    #     type=str, #'Ring TT1 1',
-    #     description='MODULE_NAME',
-    #     )
-    # wafer_label = Quantity(
-    #     type=str, #'Al Zone 1 (Center)',
-    #     description='WAFER_LABEL',
-    #     )
-    # wafer_zone = Quantity(
-    #     type=str, #'Center',
-    #     description='WAFER_ZONE',
-    #     )
-    # wafer = Quantity(
-    #     type=str, #'1',
-    #     description='WAFER',
-    #     )
-    #process = SubSection(section_def=Process)
-    #run_ID = Quantity(
-    #    type=str, #'200827_158_TEOS',
-    #    description='RUNTYPE_ID',
-    #    )
+
     location = Quantity(
         type=str,
         description='''
@@ -188,32 +163,11 @@ class LayTecEpiTT(InSituMeasurement ):
         ''',
         default='52.431685, 13.526855', #IKZ coordinates
     )
-    # runtype_ID = Quantity(
-    #     type=str, #'20',
-    #     description='RUNTYPE_ID',
-    #     )
-    # runtype_name = Quantity(
-    #     type=str, #'AlGa510mm90',
-    #     description='RUNTYPE_NAME',
-    #     )
-    # process_time = Quantity(
-    #     type=np.dtype(np.float64),
-    #     unit = "seconds",
-    #     shape = ['n_values'],
-    #     )
-    # pyrometer_temperature = Quantity(
-    #     type=np.dtype(np.float64),
-    #     description="PyroTemp transient. LayTec's TrueTemperature of the substrate surface --> Emissivity-corrected pyrometer ",
-    #     unit = "°C",
-    #     shape = ['*'],
-    #     )
+
     measurement_settings = SubSection(section_def=MeasurementSettings)
-    #results =  SubSection(section_def=MeasurementResults, label="Results")
+
     results = Measurement.results.m_copy()
     results.section_def = MeasurementResults
-    #reflectance_wavelength = SubSection(section_def=ReflectanceWavelengthTransient, repeats=True)
-
-    #growth_analysis = SubSection(section)
 
 class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
     '''
@@ -244,10 +198,10 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
         super(LayTec_EpiTT_Measurement, self).normalize(archive, logger)
         logger.info('ExampleSection.normalize called')
 
-        def parse_epitt_data(self):
+        def parse_epitt_data(file):
             #with open (fp, "rt") as f:
             #data = self.readlines()
-            line = self.readline().strip()
+            line = file.readline().strip()
             parameters = {}
             header = []
             while line.startswith(("##","!",)) or line.strip()=="":
@@ -260,9 +214,9 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
                         parameters[parameter_name] = yunits
                     else:
                         parameters[parameter_name] = parameter_value
-                line = self.readline().strip()
+                line = file.readline().strip()
             header=line.split("\t")
-            data_in_df = pd.read_csv(self,sep="\t",names=header,skipfooter=1)
+            data_in_df = pd.read_csv(file,sep="\t",names=header,skipfooter=1)
             return parameters, data_in_df
 
         if archive.data.data_file:
@@ -311,43 +265,4 @@ class LayTec_EpiTT_Measurement(LayTecEpiTT, EntryData, ArchiveSection):
                         results.reflectance_wavelengths.append(transient_object)
                 self.results = [results]
 
-        #def rolling_average_insitu_reflectance(wavelength, start, period):
-        #    df_refl_data=pd.DataFrame([self.process_time,self.)
-
-
 m_package.__init_metainfo__()
-'''
-with open (fp, "rt") as f:
-    line = f.readline().strip()
-        # Extract parameters
-    parameters = {}
-    header = []
-    #print(line)
-    while line.startswith(("##","!",)) or line.strip()=="":
-        #if "=" in line:
-        #if line.startswith("##")==True:# or line.startswith("!")==True :
-        #line=f.readline()
-            #print(line)
-        #if line.startswith("##"):
-            #print(line)
-            match = re.match(r"##(\w+)\s*=\s*(.*)", line.strip())
-            if match:
-                parameter_name = match.group(1)
-                parameter_value = match.group(2)
-                if parameter_name == "YUNITS":
-                    yunits = parameter_value.split("\t")
-                    parameters[parameter_name] = yunits
-                else:
-                    parameters[parameter_name] = parameter_value
-            line = f.readline().strip()
-            #print("l:",line,":e")
-
-        #elif line.startswith("BEGIN"):
-        #print(f.readlines())
-    header=line.split("\t")
-    data_in_df = pd.read_csv(f,sep="\t",names=header,skipfooter=1)
-        #elif line.startswith("BEGIN"):
-        #    print("pipi")
-        #elif line.strip()  != "":
-        #    print(line)
-        #    header = line.split("\t")'''
