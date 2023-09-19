@@ -23,6 +23,7 @@ import datetime
 from typing import Union
 from nomad_material_processing import (
     Substrate,
+    ThinFilm,
     ThinFilmStack,
 )
 from nomad_material_processing.physical_vapor_deposition import (
@@ -61,11 +62,13 @@ from nomad.datamodel.metainfo.annotations import (
     BrowserAnnotation,
     SectionProperties,
 )
-from nomad.datamodel.metainfo.eln import (
-    SampleID,
-    Substance,
-    Component,
+from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
+    PureSubstance,
+    PureSubstanceComponent,
+    PubChemPureSubstanceSection,
+    ReadableIdentifiers,
+    CompositeSystemReference,
 )
 from nomad.metainfo.metainfo import (
     Category,
@@ -79,13 +82,6 @@ m_package = Package(name='IKZ PLD')
 
 class IKZPLDCategory(EntryDataCategory):
     m_def = Category(label='IKZ Pulsed Laser Deposition', categories=[EntryDataCategory])
-
-
-class IKZPLDSubstrateMaterial(Substance, EntryData):
-    m_def=Section(
-        categories=[IKZPLDCategory],
-        label='Substrate Material',
-    )
 
 
 class IKZPLDPossibleSubstrate(CompositeSystem):
@@ -146,13 +142,11 @@ class IKZPLDSubstrate(Substrate, IKZPLDPossibleSubstrate, EntryData):
             logger (BoundLogger): A structlog logger.
         '''
         if self.material and len(self.components) == 0:
-            substance = IKZPLDSubstrateMaterial(
-                name=self.material,
-            )
-            file_name = f'{datetime.datetime.now().isoformat()}_substance.archive.json'
-            self.components = [Component(
-                system=create_archive(substance, archive, file_name),
-            )]
+            self.components = [PureSubstanceComponent(
+                    pure_substance=PubChemPureSubstanceSection(
+                        name=self.material
+                    )
+                )]
         super(IKZPLDSubstrate, self).normalize(archive, logger)
 
 
@@ -268,14 +262,12 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
             len(self.sub_batches) > 0
             and any(len(sub.substrates) == 0 for sub in self.sub_batches)
         ):
-            substance_ref = None
             if self.material:
-                substance = IKZPLDSubstrateMaterial(
-                    name=self.material,
-                )
-                file_name = f'{datetime.datetime.now().isoformat()}_substance.archive.json'
-                substance_ref = create_archive(substance, archive, file_name)
-                self.components = [Component(system=substance_ref)]
+                self.components = [PureSubstanceComponent(
+                    pure_substance=PubChemPureSubstanceSection(
+                        name=self.material
+                    )
+                )]
             for sub_batch_idx, sub_batch in enumerate(self.sub_batches):
                 if len(sub_batch.substrates) > 0:
                     continue
@@ -296,7 +288,7 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
                                 supplier_batch=self.supplier_batch,
                                 minimum_miscut_angle=sub_batch.minimum_miscut_angle.magnitude,
                                 maximum_miscut_angle=sub_batch.maximum_miscut_angle.magnitude,
-                                components=[Component(system=substance_ref)],
+                                components=self.components
                             ),
                             archive,
                             file_name % (sub_batch_idx, substrate_idx),
@@ -313,7 +305,14 @@ class IKZPLDSample(ThinFilmStack, IKZPLDPossibleSubstrate, EntryData):
         label='Sample',
     )
     sample_id = SubSection(
-        section_def=SampleID
+        section_def=ReadableIdentifiers
+    )
+
+
+class IKZPLDLayer(ThinFilm, EntryData):
+    m_def=Section(
+        categories=[IKZPLDCategory],
+        label='Layer',
     )
 
 
@@ -512,7 +511,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
         default='52.431685, 13.526855',
     )
     process_identifiers = SubSection(
-        section_def=SampleID,
+        section_def=ReadableIdentifiers,
         description='''
         Sub section containing the identifiers used to generate the process ID.
         ''',
@@ -533,26 +532,6 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             import pandas as pd
             import numpy as np
 
-            # If no substrate is already added
-            # if not any(sub.substrate is not None for step in self.steps for sub in step.substrate):
-            substrate_ref = None
-            if isinstance(self.substrate, MProxy):
-                self.substrate.m_proxy_resolve()
-            if (
-                len(self.steps) > 0
-                and len(self.steps[0].substrate) > 0
-                and self.steps[0].substrate[0].substrate is not None
-            ):
-                substrate_ref = self.steps[0].substrate.substrate
-            elif isinstance(self.substrate, IKZPLDSubstrate):
-                sample_id = f'{self.lab_id}-PLD-Sample'
-                substrate_ref = create_archive(
-                    entity=IKZPLDSample(substrate=self.substrate, lab_id=sample_id),
-                    archive=archive,
-                    file_name=f'{sample_id}.archive.json',
-                )
-            elif isinstance(self.substrate, IKZPLDSample):
-                substrate_ref = self.substrate
             pattern = re.compile(
                 r'(?P<datetime>\d{8}_\d{4})-(?P<name>.+)\.(?P<type>d|e)log',
             )
@@ -562,12 +541,32 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                 r'%d%m%Y_%H%M',
             ).astimezone()
             self.name = match['name']
-            self.process_identifiers = SampleID(
-                sample_short_name=self.name,
-                creation_datetime=self.datetime,
+            self.process_identifiers = ReadableIdentifiers(
+                short_name=self.name,
+                datetime=self.datetime,
             )
             self.process_identifiers.normalize(archive, logger)
-            self.lab_id = self.process_identifiers.sample_id
+            self.lab_id = self.process_identifiers.lab_id
+
+            substrate_ref = None
+            if isinstance(self.substrate, MProxy):
+                self.substrate.m_proxy_resolve()
+            if (
+                len(self.steps) > 0
+                and len(self.steps[0].substrate) > 0
+                and self.steps[0].substrate[0].substrate is not None
+            ):
+                substrate_ref = self.steps[0].substrate[0].substrate
+            elif isinstance(self.substrate, IKZPLDSubstrate):
+                sample_id = f'{self.lab_id}-PLD-Sample'
+                substrate_ref = create_archive(
+                    entity=IKZPLDSample(substrate=self.substrate.m_proxy_value, lab_id=sample_id),
+                    archive=archive,
+                    file_name=f'{sample_id}.archive.json',
+                )
+            elif isinstance(self.substrate, IKZPLDSample):
+                substrate_ref = self.substrate
+
             with archive.m_context.raw_file(self.recipe_log, 'r') as e_log:
                 df_recipe = pd.read_csv(
                     e_log,
@@ -656,6 +655,10 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                 )
                 steps.append(step)
             self.steps = steps
+            if len(self.steps) > 0:
+                self.samples = [CompositeSystemReference(
+                    reference=self.steps[-1].substrate[0].substrate,
+                )]
 
 
 m_package.__init_metainfo__()
