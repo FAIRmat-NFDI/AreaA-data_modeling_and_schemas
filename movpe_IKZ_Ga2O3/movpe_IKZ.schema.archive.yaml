@@ -18,7 +18,7 @@ definitions:
               parsing_options:
                 comment: '#'
               mapping_options:
-              - mapping_mode: entry
+              - mapping_mode: row
                 file_mode: multiple_new_entries
                 sections:
                 - growth_run/growth_run_steps
@@ -127,7 +127,7 @@ definitions:
               parsing_options:
                 comment: '#'
               mapping_options:
-              - mapping_mode: entry
+              - mapping_mode: row
                 file_mode: multiple_new_entries
                 sections:
                 - entities
@@ -182,6 +182,7 @@ definitions:
       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
+          hide: ['steps']
       quantities:
         method:
           type: str
@@ -202,6 +203,45 @@ definitions:
               component: StringEditQuantity
               label: "Growth ID"
       sub_sections:
+        sample:
+          section:
+            base_sections:
+            - nomad.datamodel.metainfo.basesections.CompositeSystemReference
+            quantities:
+              lab_id:
+                type: str
+                description: the sample used for this step of growth
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Sample Name
+                  eln:
+                    label: "Sample ID"
+        parent_sample:
+          section:
+            base_sections:
+            - nomad.datamodel.metainfo.basesections.EntityReference
+            quantities:
+              lab_id:
+                type: str
+                description: the sample used for this step of growth
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Previous Layer Name
+                  eln:
+                    label: "Previous Layer ID"
+        substrate:
+          section:
+            base_sections:
+            - nomad.datamodel.metainfo.basesections.CompositeSystemReference
+            quantities:
+              lab_id:
+                type: str
+                description: the Substrate used for the growth
+                m_annotations:
+                  tabular:
+                    name: GrowthRun/Substrate Name
+                  eln:
+                    label: "Substrate ID"
         growth_run_steps:
           repeats: true
           section:
@@ -224,30 +264,6 @@ definitions:
             eln:
               component: StringEditQuantity
               label: "Step ID"
-        sample_name:
-          type: str
-          description: what this step consists of
-          m_annotations:
-            tabular:
-              name: GrowthRun/Sample Name
-            eln:
-              component: StringEditQuantity # make it REFERENCEEDIT QUANTITY
-        substrate_name:
-          type: str
-          description: what this step consists of
-          m_annotations:
-            tabular:
-              name: GrowthRun/Substrate Name
-            eln:
-              component: StringEditQuantity # make it REFERENCEEDIT QUANTITY
-        recipe_name:
-          type: str
-          description: what this step consists of
-          m_annotations:
-            tabular:
-              name: GrowthRun/Recipe Name
-            eln:
-              component: StringEditQuantity
         elapsed_time:
           type: np.float64
           unit: minute
