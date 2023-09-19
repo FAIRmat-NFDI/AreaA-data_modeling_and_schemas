@@ -23,13 +23,17 @@ from nomad.metainfo import (
     Package,
     Quantity,
     Section,
+    Datetime,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
 )
 from nomad.datamodel.metainfo.eln import (
     Process,
-    Ensemble,
+    CompositeSystem,
+)
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
 )
 
 m_package = Package(name='Material Processing')
@@ -44,7 +48,22 @@ class ActivityStep(ArchiveSection):
         type=str,
         description='''
         A short and descriptive name for this step.
-        '''
+        ''',
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+            label='Step name',
+        ),
+    )
+    start_time = Quantity(
+        type=Datetime,
+        description='''
+        Optionally, the starting time of the activity step. If omitted, it is assumed to
+        follow directly after the previous step.
+        ''',
+        a_eln=ELNAnnotation(
+            component='DateTimeEditQuantity',
+            label='Starting time'
+        ),
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -59,7 +78,24 @@ class ActivityStep(ArchiveSection):
         super(ActivityStep, self).normalize(archive, logger)
 
 
-class Substrate(Ensemble, ArchiveSection):
+class ProcessStep(ActivityStep):
+    '''
+    Any dependant step of an `Process`.
+    '''
+    duration = Quantity(
+        type=float,
+        unit='second',
+        description='''
+        The duration time of the activity step.
+        ''',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='second',
+        ),
+    )
+
+
+class Substrate(CompositeSystem, ArchiveSection):
     '''
     A thin free standing sheet of material. Not to be confused with the substrate role
     during a deposition, which can be a `Substrate` with `ThinFilm`(s) on it.
@@ -89,7 +125,7 @@ class Substrate(Ensemble, ArchiveSection):
         super(Substrate, self).normalize(archive, logger)
 
 
-class ThinFilm(Ensemble, ArchiveSection):
+class ThinFilm(CompositeSystem, ArchiveSection):
     '''
     A thin film of material which exists as part of a stack.
     '''
@@ -118,7 +154,7 @@ class ThinFilm(Ensemble, ArchiveSection):
         super(ThinFilm, self).normalize(archive, logger)
 
 
-class ThinFilmStack(Ensemble, ArchiveSection):
+class ThinFilmStack(CompositeSystem, ArchiveSection):
     '''
     A stack of `ThinFilm`(s). Typically deposited on a `Substrate`.
     '''
