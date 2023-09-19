@@ -9,7 +9,7 @@ description = "A NOMAD plugin for pulsed laser deposition at IKZ"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [ "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.9",]
-dependencies = [ "nomad-lab>=1.2.0-pre", "pytest", "typing-extensions==4.4.0",]
+dependencies = [ "nomad-lab>=1.2.1-pre", "pytest", "typing-extensions==4.4.0", "nomad-material-processing>=0.0.1"]
 
 [project.license]
 file = "LICENSE"
