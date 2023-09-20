@@ -263,10 +263,12 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
             and any(len(sub.substrates) == 0 for sub in self.sub_batches)
         ):
             if self.material:
+                substance_section = PubChemPureSubstanceSection(
+                    name=self.material
+                )
+                substance_section.normalize(archive, logger)
                 self.components = [PureSubstanceComponent(
-                    pure_substance=PubChemPureSubstanceSection(
-                        name=self.material
-                    )
+                    pure_substance=substance_section
                 )]
             for sub_batch_idx, sub_batch in enumerate(self.sub_batches):
                 if len(sub_batch.substrates) > 0:
