@@ -1,5 +1,8 @@
-plugin_type: schema
-name: NOMAD's example schema plugin
+plugin_type: parser #schema
+name: NOMAD movpe IKZ schema and parser plugin
 description: |
-  This is a simple hello world schema. This is meant as a template.
-  Fork the github project to create your own schemas.
+  This is a schema and parser for movpe IKZ
+mainfile_name_re: ^.+\.growth.movpe.ikz.xlsx$ # added
+mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+parser_class_name: movpe_IKZ.MovpeParser # added
+code_name: movpe IKZ Parser
