@@ -918,8 +918,8 @@ class GrowthRun(Process, EntryData):
             "label": "Growth ID"
         },
     )
-    sample = SubSection(
-        section_def=Sample,
+    samples = SubSection(
+        section_def=Samples,
     )
     parent_sample = SubSection(
         section_def=ParentSamples,
