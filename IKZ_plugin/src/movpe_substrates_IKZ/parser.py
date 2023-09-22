@@ -30,18 +30,18 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from movpe_IKZ import MovpeExperiment
+from movpe_IKZ import SubstrateInventory
 
-class GrowthFile(EntryData):
+class SubstratesFile(EntryData):
     measurement = Quantity(
-        type=MovpeExperiment,
+        type=SubstrateInventory,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
     )
 
 
-class MovpeParser(MatchingParser):
+class MovpeSubstrateParser(MatchingParser):
 
     def __init__(self):
         super().__init__(
@@ -53,9 +53,9 @@ class MovpeParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = MovpeExperiment()
-        entry.growth_data_file = data_file
+        entry = SubstrateInventory()
+        entry.substrate_data_file = data_file
         file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = GrowthFile(measurement=create_archive(entry,archive,file_name))
+        archive.data = SubstratesFile(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' growth file'
