@@ -1,0 +1,8 @@
+plugin_type: parser
+name: NOMAD movpe IMEM-CNR schema and parser plugin
+description: |
+  This is a schema and parser for movpe IMEM-CNR
+# mainfile_name_re: ^.+\.growth.movpe.ikz.xlsx$
+mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+parser_class_name: movpe_IMEM.MovpeParserIMEM
+code_name: movpe IMEM-CNR Parser

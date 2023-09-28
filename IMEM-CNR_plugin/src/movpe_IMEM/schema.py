@@ -43,7 +43,7 @@ from nomad.datamodel.data import (
 
 from laytec_epitt import LayTec_EpiTT_Measurement
 
-m_package = Package(name='movpe_IKZ')
+m_package = Package(name='movpe_IMEM')
 
 
 class Notes(ArchiveSection):
@@ -53,10 +53,11 @@ class Notes(ArchiveSection):
     m_def = Section()
     notes = Quantity(
         type=str,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Overview/Notes"},
         a_eln={
-            "component": "RichTextEditQuantity"
-        },
-    )
+            "component": "RichTextEditQuantity"})
 
 
 class Users(ArchiveSection):
@@ -66,11 +67,11 @@ class Users(ArchiveSection):
     m_def = Section()
     user = Quantity(
         type=Author,
+        description='FILL',
+        a_tabular={
+            "name": "Overview/Operator"},
         a_eln={
-            "component": "AuthorEditQuantity"
-        },
-        shape=["*"],
-    )
+            "component": "AuthorEditQuantity"})
 
 
 class ElementalComposition(ElementalComposition):
@@ -175,9 +176,11 @@ class Cylinder(ArchiveSection):
         description='docs',
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "millimeter"
+            "defaultDisplayUnit": "inch"
         },
-        unit="millimeter",
+        unit="inch",
+        a_tabular={
+            "name": "Substrate/Size Diameter"}
     )
     upper_cap_radius = Quantity(
         type=np.float64,
@@ -251,6 +254,62 @@ class Precursor(PureSubstance, EntryData):
             "component": "StringEditQuantity",
             "label": "CAS number"
         },
+        a_tabular={
+            "name": "Precursors/CAS"},
+    )
+    phase = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+        a_tabular={
+            "name": "Precursors/Phase"},
+    )
+    description = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+        a_tabular={
+            "name": "Precursors/Description"},
+    )
+    supplier = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+        a_tabular={
+            "name": "Precursors/Supplier"},
+    )
+    buying_date = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+        a_tabular={
+            "name": "Precursors/Buying date"},
+    )
+    opening_date = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+        a_tabular={
+            "name": "Precursors/Opening date"},
+    )
+    notes = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+        a_tabular={
+            "name": "Precursors/Notes"},
     )
 
 
@@ -277,202 +336,118 @@ class Substrate(CompositeSystem, EntryData):
         label_quantity='lab_id'
     )
 
-    delivery_date = Quantity(
-        type=Datetime,
-        description='Date of the delivery',
+    alias = Quantity(
+        type=str,
+        description='FILL',
         a_eln={
-            "component": "DateTimeEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Delivery Date"
-        },
-    )
+            "name": "Substrate/Substrate ID"})
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"},
+        a_tabular={
+            "name": "Substrate/Material"})
     lab_id = Quantity(
         type=str,
         description='FILL',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Substrates"
-        },
-    )
+            "name": "Substrate/Substrates"})
     supplier = Quantity(
         type=str,
         description='FILL',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Supplier"
-        },
-    )
+            "name": "Substrate/Supplier"})
     orientation = Quantity(
         type=str,
         description='crystallographic orientation of the substrate in [hkl]',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Orientation"
-        },
-    )
-    miscut_b_angle = Quantity(
-        type=str,
-        description='crystallographic orientation of the substrate in [hkl]',
+            "name": "Substrate/Orientation"})
+    off_cut = Quantity(
+        type=np.float64,
+        description='Off-cut angle to the substrates surface',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "NumberEditQuantity"},
         a_tabular={
-            "name": "Substrate/Miscut b angle"
-        },
+            "name": "Substrate/Off-cut"},
     )
-    miscut_c_angle = Quantity(
+    off_cut_orientation = Quantity(
         type=str,
-        description='crystallographic orientation of the substrate in [hkl]',
+        description='orientation of Off-cut angle to the substrates surface',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Miscut c angle"
-        },
-    )
-    miscut_c_orientation = Quantity(
-        type=str,
-        description='crystallographic orientation of the substrate in [hkl]',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/Miscut c Orientation"
-        },
-    )
+            "name": "Substrate/Off-cut Orientation"},
+        )
     doping_level = Quantity(
         type=np.float64,
         description='Chemical doping level of electrically conductive substrates',
         a_eln={
             "component": "NumberEditQuantity"},
         a_tabular={
-            "name": "Substrate/Doping Level"},
-    )
+            "name": "Substrate/Doping Level"})
     doping_species = Quantity(
         type=str,
         description='Doping species to obtain electrical conductivity in the substrates',
         a_eln={
             "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Doping species"},
-    )
-    as_received = Quantity(
-        type=bool,
-        description='Is the sample annealed?',
-        a_eln={
-            "component": "BoolEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/As Received"
-        },
-    )
-    etching = Quantity(
-        type=bool,
-        description='Usable Sample',
-        a_eln={
-            "component": "BoolEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/Etching"
-        },
-    )
-    annealing = Quantity(
-        type=bool,
-        description='Usable Sample',
-        a_eln={
-            "component": "BoolEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/Annealing"
-        },
-    )
-    annealing_temperature = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "Substrate/Annealing Temperature"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "celsius"
-        },
-        unit="celsius",
-    )
-    re_etching = Quantity(
-        type=bool,
-        description='Usable Sample',
-        a_eln={
-            "component": "BoolEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/Re-Etching"
-        },
-    )
-    re_annealing = Quantity(
-        type=bool,
-        description='Usable Sample',
-        a_eln={
-            "component": "BoolEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/Re-Annealing"
-        },
-    )
-    epi_ready = Quantity(
-        type=bool,
-        description='Sample ready for epitaxy',
-        a_eln={
-            "component": "BoolEditQuantity"
-        },
-        a_tabular={
-            "name": "Substrate/Epi Ready"
-        },
-    )
-    box = Quantity(
+            "name": "Substrate/Doping species"})
+    susceptor = Quantity(
         type=str,
         description='FILL',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Box"
-        },
-    )
-    quality = Quantity(
+            "name": "Substrate/Susceptor"})
+    mask = Quantity(
         type=str,
-        description='Defective Sample',
+        description='FILL',
         a_eln={
-            "component": "StringEditQuantity"
-        },
+            "component": "StringEditQuantity"},
         a_tabular={
-            "name": "Substrate/Quality"
-        },
-    )
-    documentation = Quantity(
+            "name": "Substrate/Mask"})
+    pocket = Quantity(
         type=str,
-        description='pdf files containing certificate and other documentation',
-        a_browser={
-            "adaptor": "RawFileAdaptor"
-        },
+        description='FILL',
         a_eln={
-            "component": "FileEditQuantity"
-        },
-    )
+            "component": "StringEditQuantity"},
+        a_tabular={
+            "name": "Substrate/Pocket"})
+    annealing = Quantity(
+        type=bool,
+        description='Is the sample annealed?',
+        a_eln={
+            "component": "BoolEditQuantity"},
+        a_tabular={
+            "name": "Substrate/Annealing"})
+    cleaning = Quantity(
+        type=bool,
+        description='FILL',
+        a_eln={
+            "component": "BoolEditQuantity"},
+        a_tabular={
+            "name": "Substrate/Cleaning"})
+    regrowth = Quantity(
+        type=bool,
+        description='FILL',
+        a_eln={
+            "component": "BoolEditQuantity"},
+        a_tabular={
+            "name": "Substrate/Regrowth"})
     notes = Quantity(
         type=str,
-        description='Notes and comments.',
+        description='FILL',
         a_eln={
-            "component": "StringEditQuantity",
-            "label": "Notes"
-        },
-    )
+            "component": "StringEditQuantity"})
     geometry = SubSection(
         section_def=Geometry,
     )
@@ -486,19 +461,6 @@ class Substrates(CompositeSystemReference):
     '''
     A section used for referencing a Substrate.
     '''
-
-    lab_id = Quantity(
-        type=str,
-        description='the Substrate used for the growth',
-        a_tabular={
-            "name": "GrowthRun/Substrate Name"
-        },
-        a_eln=ELNAnnotation(
-            component='StringEditQuantity',
-            label='Substrate ID',
-        ),
-    )
-
     reference = Quantity(
         type=Substrate,
         description='A reference to a NOMAD `Substrate` entry.',
@@ -507,6 +469,15 @@ class Substrates(CompositeSystemReference):
             label='Substrate Reference',
         ),
     )
+    substrate_temperature = Quantity(
+        type=np.float64,
+        description='temperature of the substrate',
+        a_tabular={
+            "name": "Overview/Substrate T"},
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"},
+        unit="celsius")
 
     # def normalize(self, archive, logger: BoundLogger) -> None:
     #     '''
@@ -745,156 +716,257 @@ class GasSource(ArchiveSection):
     )
 
 
+class MistSourceComponents(ArchiveSection):
+    '''Class autogenerated from yaml schema.'''
+
+    material = Quantity(
+        type=str, description='FILL', a_eln={
+            "component": "StringEditQuantity"}, a_tabular={
+            "name": "Mist/Material"})
+    concentration = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplyUnit": "mol / liter"},
+        a_tabular={
+            "name": "Mist/Concentration"},
+        unit="mol / liter")
+
+
+class MistSource(ArchiveSection):
+    '''Class autogenerated from yaml schema.'''
+
+    m_def = Section(more={"label_quantity": "material"})
+
+    material_flow = Quantity(
+        type=str,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/MIST Flow MFC"},
+        a_eln={
+            "component": "StringEditQuantity"})
+    valve = Quantity(
+        type=bool,
+        description='is valve open? True/False',
+        a_tabular={
+            "name": "GrowthRun/MIST Valve"},
+        a_eln={
+            "component": "BoolEditQuantity"})
+    item = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Mist/Item"},
+        a_eln={
+            "component": "StringEditQuantity"})
+    temperature = Quantity(
+        type=np.float64, description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity", "defaultDisplyUnit": "celsius"},
+        a_tabular={
+            "name": "Mist/Temperature"},
+        unit="celsius")
+    time = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplyUnit": "minute"},
+        a_tabular={
+            "name": "Mist/Time"},
+        unit="minute")
+    notes = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Mist/Notes"},
+        a_eln={
+            "component": "StringEditQuantity"})
+
+    components = SubSection(section_def=MistSourceComponents, repeats=True)
+
+
+class PregrowthStep(ArchiveSection):
+    '''Class autogenerated from yaml schema.'''
+    m_def = Section(a_eln=None)
+    step_number = Quantity(
+        type=int, description='sequential number of the step on going', a_eln={
+            "component": "NumberEditQuantity"}, a_tabular={
+            "name": "Pregrowth/Step Index"})
+    name = Quantity(type=str, description='what this step consists of', a_tabular={
+                    "name": "Pregrowth/Step Name"}, a_eln={"component": "StringEditQuantity"})
+    description = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Pregrowth/Description"},
+        a_eln={
+            "component": "StringEditQuantity"})
+    elapsed_time = Quantity(
+        type=np.float64, description='FILL', a_eln={
+            "component": "NumberEditQuantity"}, a_tabular={
+            "name": "Pregrowth/Duration"}, unit="minute")
+    carrier_gas_flow = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute"},
+        a_tabular={
+            "name": "Pregrowth/Carrier Gas Flow"},
+        unit="cm ** 3 / minute")
+    carrier_gas = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Pregrowth/Carrier Gas"},
+        a_eln={
+            "component": "StringEditQuantity"})
+    chamber_pressure = Quantity(
+        type=np.float64,
+        description='FILL', a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "mbar"},
+        a_tabular={
+            "name": "Pregrowth/Chamber Pressure"},
+        unit="mbar")
+    substrate_temperature = Quantity(
+        type=np.float64, description='FILL', a_eln={
+            "component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"}, a_tabular={
+            "name": "Pregrowth/Substrate Temperature"}, unit="celsius")
+    carrier_rotation = Quantity(
+        type=int, description='FILL', a_eln={
+            "component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"}, a_tabular={
+            "name": "Pregrowth/Carrier Rotation"}, unit="rpm")
+    notes = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Pregrowth/Notes"},
+        a_eln={
+            "component": "StringEditQuantity"})
+
+
+class Pregrowth(Process, EntryData):  # (Process, TableData):
+    '''Class autogenerated from yaml schema.'''
+    m_def = Section(a_eln=None)
+
+    pregrowth_steps = SubSection(section_def=PregrowthStep, repeats=True)
+
+
+class Pregrowths(SectionReference):
+    '''
+    A section used for referencing a Pregrowth.
+    '''
+    reference = Quantity(
+        type=Pregrowth,
+        description='A reference to a NOMAD `Pregrowth` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Pregrowth Reference',
+        ),
+    )
+
+
 class GrowthRunStep(ArchiveSection):
     '''
     Class autogenerated from yaml schema.
     '''
     m_def = Section(
         a_eln=None,)
-    step_index = Quantity(
+    name = Quantity(
         type=str,
-        description='the ID from RTG',
+        description='what this step consists of',
         a_tabular={
-            "name": "GrowthRun/Step Index"
-        },
+            "name": "GrowthRun/Name"},
         a_eln={
-            "component": "StringEditQuantity",
-        },
-    )
+            "component": "StringEditQuantity"
+            }
+        )
     elapsed_time = Quantity(
         type=np.float64,
         description='Past time since process start',
         a_tabular={
-            "name": "GrowthRun/Duration"
-        },
+            "name": "GrowthRun/Duration"},
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "minute"
-        },
-        unit="minute",
-    )
-    temperature_shaft = Quantity(
+            "defaultDisplayUnit": "minute"},
+        unit="minute"
+        )
+    step_number = Quantity(
+        type=int,
+        description='sequential number of the step on going',
+        a_tabular={
+            "name": "GrowthRun/Step"},
+        a_eln={
+            "component": "NumberEditQuantity"}
+        )
+    temperature = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/T Shaft"
-        },
+            "name": "GrowthRun/Temperature"},
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "celsius"
-        },
-        unit="celsius",
-    )
-    temperature_filament = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/T Filament"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "celsius"
-        },
-        unit="celsius",
-    )
-    temperature_laytec = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/T LayTec"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "celsius"
-        },
-        unit="celsius",
-    )
+            "defaultDisplayUnit": "celsius"},
+        unit="celsius"
+        )
     pressure = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/Pressure"
-        },
+            "name": "GrowthRun/Pressure"},
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "mbar"
-        },
-        unit="mbar",
-    )
-    rotation = Quantity(
+            "defaultDisplayUnit": "mbar"},
+        unit="mbar"
+        )
+    description = Quantity(
+        type=str, description='FILL THE DESCRIPTION', a_eln={
+            "component": "StringEditQuantity"}
+        )
+    purge_flow = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/Rotation"
-        },
+            "name": "GrowthRun/Purge Flow"},
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "rpm"
-        },
-        unit="rpm",
-    )
-    carrier_gas = Quantity(
-        type=str,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/Carrier Gas"
-        },
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    push_gas_valve = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/Pushgas Valve"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute"
-        },
-        unit="cm ** 3 / minute",
-    )
+            "defaultDisplayUnit": "cm ** 3 / minute"},
+        unit="cm ** 3 / minute"
+        )
     uniform_valve = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/Uniform Valve"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute"
-        },
-        unit="cm ** 3 / minute",
-    )
-    showerhead_distance = Quantity(
-        type=np.float64,
+        type=int,
         description='inner valve (0-200)',
         a_tabular={
-            "name": "GrowthRun/Distance of Showerhead"
-        },
+            "name": "GrowthRun/Uniform Valve"},
         a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "millimeter"
-        },
-        unit="millimeter",
-    )
-    comments = Quantity(
-        type=str,
-        description='FILL THE DESCRIPTION',
+            "component": "SliderEditQuantity",
+            "minValue": 0,
+            "maxValue": 200}
+        )
+    purge_valve = Quantity(
+        type=int,
+        description='inner valve (0-200)',
         a_tabular={
-            "name": "GrowthRun/Comments"
-        },
+            "name": "GrowthRun/Purge Valve"},
         a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
+            "component": "SliderEditQuantity",
+            "minValue": 0,
+            "maxValue": 200}
+        )
+
     bubblers = SubSection(
         section_def=Bubblers,
         repeats=True,
     )
     gas_source = SubSection(
         section_def=GasSource,
+        repeats=True,
+    )
+    mist_source = SubSection(
+        section_def=MistSource,
         repeats=True,
     )
 
@@ -942,10 +1014,6 @@ class GrowthRun(Process, EntryData):
     )
     parent_sample = SubSection(
         section_def=ParentSamples,
-        repeats=True
-    )
-    substrate = SubSection(
-        section_def=Substrates,
         repeats=True
     )
     growth_run_steps = SubSection(
@@ -1366,7 +1434,7 @@ class SubstratePreparation(Process, EntryData):
     )
 
 
-class MovpeExperimentIKZ(TableData, EntryData):
+class MovpeExperimentIMEM(TableData, EntryData):
     '''
     Class autogenerated from yaml schema.
     '''
@@ -1382,9 +1450,26 @@ class MovpeExperimentIKZ(TableData, EntryData):
             "mapping_options": [
                 {
                     "mapping_mode": "row",
+                    "file_mode": "current_entry",
+                    "sections": [
+                        "#root"
+                    ]
+                },
+                {
+                    "mapping_mode": "row",
                     "file_mode": "multiple_new_entries",
                     "sections": [
                         "growth_run/substrate",
+                        "substrate",
+                        "precursors",
+
+                    ]
+                },
+                {
+                    "mapping_mode": "row",
+                    "file_mode": "single_new_entry",
+                    "sections": [
+                        "pregrowth/pregrowth_steps",
                         "growth_run/growth_run_steps"
                     ]
                 },
@@ -1398,19 +1483,19 @@ class MovpeExperimentIKZ(TableData, EntryData):
 
     method = Quantity(
         type=str,
-        default="Experiment (MOVPE IKZ)",
-    )
-    location = Quantity(
-        type=str,
-        a_eln={
-            "component": "StringEditQuantity"
-        },
+        default="Experiment (MOVPE IMEM)",
     )
     date = Quantity(
         type=Datetime,
         description='FILL',
+        a_tabular={
+            "name": "Overview/Date"},
         a_eln={
-            "component": "DateTimeEditQuantity"
+            "component": "DateTimeEditQuantity"})
+    location = Quantity(
+        type=str,
+        a_eln={
+            "component": "StringEditQuantity"
         },
     )
     notes = SubSection(
@@ -1419,10 +1504,55 @@ class MovpeExperimentIKZ(TableData, EntryData):
     users = SubSection(
         section_def=Users,
     )
+    sample = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Overview/Sample"},
+        a_eln={
+            "component": "StringEditQuantity"})
+    film = Quantity(
+        type=str,
+        description='Film material (Material:Dopant species)',
+        a_tabular={
+            "name": "Overview/Film"},
+        a_eln={
+            "component": "StringEditQuantity"}
+    )
+    carrier_gas = Quantity(
+        type=str,
+        a_tabular={
+            "name": "Overview/Carrier Gas"},
+        a_eln={
+            "component": "StringEditQuantity"}
+    )
+    VI_III_ratio = Quantity(
+        type=str,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Overview/VI III Ratio"},
+        a_eln={
+            "component": "StringEditQuantity"}
+    )
+    growth_time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Overview/Growth Time"},
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"},
+        unit="minute"
+    )
     precursors = SubSection(
         section_def=Precursors,
         repeats=True,
     )
+    substrate = SubSection(
+        section_def=Substrates,
+        repeats=True
+    )
+    pregrowth = SubSection(section_def=Pregrowths)
     growth_run = SubSection(
         section_def=GrowthRuns,
         #repeats=True,

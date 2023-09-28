@@ -30,30 +30,30 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from movpe_IKZ import MovpeExperimentIKZ
+from movpe_IMEM import MovpeExperimentIMEM
 
 class GrowthFile(EntryData):
     measurement = Quantity(
-        type=MovpeExperimentIKZ,
+        type=MovpeExperimentIMEM,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
     )
 
 
-class MovpeParserIKZ(MatchingParser):
+class MovpeParserIMEM(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='NOMAD movpe IKZ schema and parser plugin',
-            code_name= 'movpe IKZ Parser',
+            name='NOMAD movpe IMEM-CNR schema and parser plugin',
+            code_name= 'movpe IMEM-CNR Parser',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = MovpeExperimentIKZ()
+        entry = MovpeExperimentIMEM()
         entry.growth_data_file = data_file
         file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)

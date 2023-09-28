@@ -1,0 +1,13 @@
+normalize:
+  normalizers:
+    include:
+      - MetainfoNormalizer
+plugins:
+  include:
+    - 'schemas/movpe_IMEM'
+    - 'parsers/movpe_IMEM'
+  options:
+    schemas/movpe_IMEM:
+      python_package: movpe_IMEM
+    parsers/movpe_IMEM:
+      python_package: movpe_IMEM
