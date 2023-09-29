@@ -574,47 +574,11 @@ class Bubblers(ArchiveSection):
             "component": "StringEditQuantity"
         },
     )
-    mass_flow_controller = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/Bubbler MFC"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute"
-        },
-        unit="cm ** 3 / minute",
-    )
-    pressure = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/Bubbler Pressure"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "mbar"
-        },
-        unit="mbar",
-    )
     dilution = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
             "name": "GrowthRun/Bubbler Dilution"
-        },
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute"
-        },
-        unit="cm ** 3 / minute",
-    )
-    source = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_tabular={
-            "name": "GrowthRun/Source"
         },
         a_eln={
             "component": "NumberEditQuantity",
@@ -633,6 +597,18 @@ class Bubblers(ArchiveSection):
             "defaultDisplayUnit": "cm ** 3 / minute"
         },
         unit="cm ** 3 / minute",
+    )
+    pressure = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Bubbler Pressure"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "mbar"
+        },
+        unit="mbar",
     )
     temperature = Quantity(
         type=np.float64,
@@ -658,17 +634,27 @@ class Bubblers(ArchiveSection):
         },
         unit="mbar",
     )
-    molar_flux = Quantity(
+    flow_carrier = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/Bubbler Molar Flux"
+            "name": "GrowthRun/Flow Carrier"
         },
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "mol / minute"
+            "defaultDisplayUnit": "cm ** 3 / minute"
         },
-        unit="mol / minute",
+        unit="cm ** 3 / minute",
+    )
+    valve = Quantity(
+        type=bool,
+        description='is valve open? True/False',
+        a_tabular={
+            "name": "GrowthRun/Bubbler Valve"
+        },
+        a_eln={
+            "component": "BoolEditQuantity"
+        },
     )
 
 
@@ -684,17 +670,27 @@ class GasSource(ArchiveSection):
         type=str,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/Gas Material"
+            "name": "GrowthRun/Gas Cylinder Material"
         },
         a_eln={
             "component": "StringEditQuantity"
         },
     )
-    mass_flow_controller = Quantity(
+    dilution_in_cylinder = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/Gas MFC"
+            "name": "GrowthRun/Dilution in Cylinder"
+        },
+        a_eln={
+            "component": "NumberEditQuantity"
+        },
+    )
+    flow_from_mfc = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Flow from MFC"
         },
         a_eln={
             "component": "NumberEditQuantity",
@@ -702,11 +698,23 @@ class GasSource(ArchiveSection):
         },
         unit="cm ** 3 / minute",
     )
-    molar_flux = Quantity(
+    effective_flow = Quantity(
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/Gas Molar Flux"
+            "name": "GrowthRun/Effective Flow"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute"
+        },
+        unit="cm ** 3 / minute",
+    )
+    partial_pressure = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Gas Partial Pressure"
         },
         a_eln={
             "component": "NumberEditQuantity",
@@ -714,7 +722,28 @@ class GasSource(ArchiveSection):
         },
         unit="mbar",
     )
-
+    cylinder_pressure = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Cylinder Pressure"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "mbar"
+        },
+        unit="mbar",
+    )
+    valve = Quantity(
+        type=bool,
+        description='is valve open? True/False',
+        a_tabular={
+            "name": "GrowthRun/Gas Valve"
+        },
+        a_eln={
+            "component": "BoolEditQuantity"
+        },
+    )
 
 class MistSourceComponents(ArchiveSection):
     '''Class autogenerated from yaml schema.'''
@@ -739,13 +768,25 @@ class MistSource(ArchiveSection):
 
     m_def = Section(more={"label_quantity": "material"})
 
-    material_flow = Quantity(
+    material = Quantity(
         type=str,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "GrowthRun/MIST Flow MFC"},
+            "name": "GrowthRun/MIST Source 1"},
         a_eln={
             "component": "StringEditQuantity"})
+    flow = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/MIST Flow MFC"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute"
+        },
+        unit="cm ** 3 / minute",
+    )
     valve = Quantity(
         type=bool,
         description='is valve open? True/False',
@@ -922,9 +963,73 @@ class GrowthRunStep(ArchiveSection):
             "defaultDisplayUnit": "mbar"},
         unit="mbar"
         )
-    description = Quantity(
-        type=str, description='FILL THE DESCRIPTION', a_eln={
+    carrier_gas = Quantity(
+        type=str,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Pressure"},
+        a_eln={
             "component": "StringEditQuantity"}
+        )
+    metal_carrier_flow = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Flow Metal Carrier"},
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute"},
+        unit="cm ** 3 / minute"
+        )
+    metal_inner_valve = Quantity(
+        type=int,
+        description='inner valve (0-200)',
+        a_tabular={
+            "name": "GrowthRun/Metal Inner Valve"},
+        a_eln={
+            "component": "SliderEditQuantity",
+            "minValue": 0,
+            "maxValue": 200}
+        )
+    metal_outer_valve = Quantity(
+        type=int,
+        description='inner valve (0-200)',
+        a_tabular={
+            "name": "GrowthRun/Metal Outer Valve"},
+        a_eln={
+            "component": "SliderEditQuantity",
+            "minValue": 0,
+            "maxValue": 200}
+        )
+    oxydant_carrier_flow = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "GrowthRun/Flow Oxydant Carrier"},
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute"},
+        unit="cm ** 3 / minute"
+        )
+    oxydant_inner_valve = Quantity(
+        type=int,
+        description='inner valve (0-200)',
+        a_tabular={
+            "name": "GrowthRun/Oxydant Inner Valve"},
+        a_eln={
+            "component": "SliderEditQuantity",
+            "minValue": 0,
+            "maxValue": 200}
+        )
+    oxydant_outer_valve = Quantity(
+        type=int,
+        description='inner valve (0-200)',
+        a_tabular={
+            "name": "GrowthRun/Oxydant Outer Valve"},
+        a_eln={
+            "component": "SliderEditQuantity",
+            "minValue": 0,
+            "maxValue": 200}
         )
     purge_flow = Quantity(
         type=np.float64,
@@ -1036,21 +1141,7 @@ class GrowthRuns(SectionReference):
     )
 
 
-class InSituMonitorings(SectionReference):
-    '''
-    A section used for referencing a InSituMonitoring.
-    '''
-    reference = Quantity(
-        type=LayTec_EpiTT_Measurement,
-        description='A reference to a NOMAD `InSituMonitoring` entry.',
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-            label='In situ Monitoring Reference',
-        ),
-    )
-
-
-class HallMeasurement(Measurement, EntryData):
+class AFMmeasurement(Measurement, EntryData):
     '''
     Class autogenerated from yaml schema.
     '''
@@ -1061,252 +1152,54 @@ class HallMeasurement(Measurement, EntryData):
         },)
     method = Quantity(
         type=str,
-        default= "Hall (MOVPE IKZ)",
+        default="AFM (MOVPE CNR)",
     )
     description = Quantity(
         type=str,
-        description='description',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    sample_id = Quantity(
-        type=str,
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    datetime = Quantity(
-        type=Datetime,
-        a_eln={
-            "component": "DateTimeEditQuantity"
-        },
-    )
-    resistivity = Quantity(
-        type=np.float64,
-        description='FILL',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "ohm / cm"
-        },
-        unit="ohm / cm",
-    )
-    mobility = Quantity(
-        type=np.float64,
-        description='FILL',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm**2 / volt / second"
-        },
-        unit="cm**2 / volt / second",
-    )
-    carrier_concentration = Quantity(
-        type=np.float64,
-        description='FILL',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "1 / cm**3"
-        },
-        unit="1 / cm**3",
-    )
-
-
-class HallMeasurements(SectionReference):
-    '''
-    A section used for referencing a HallMeasurement.
-    '''
-    reference = Quantity(
-        type=HallMeasurement,
-        description='A reference to a NOMAD `HallMeasurement` entry.',
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-            label='Hall Measurement Reference',
-        ),
-    )
-
-
-class SubstrateInventory(TableData, EntryData):
-    '''
-    Class autogenerated from yaml schema.
-    '''
-    m_def = Section(
-        a_eln=None,)
-    substrate_data_file = Quantity(
-        type=str,
-        description='Upload here the spreadsheet file containing the growth data',
-        a_tabular_parser={
-            "parsing_options": {
-                "comment": "#"},
-            "mapping_options": [
-                {
-                    "mapping_mode": "row",
-                    "file_mode": "multiple_new_entries",
-                    "sections": ["substrates"]}]},
-        a_browser={
-            "adaptor": "RawFileAdaptor"},
-        a_eln={
-            "component": "FileEditQuantity"},
-    )
-    substrates = SubSection(
-        section_def=Substrates,
-        repeats=True,
-    )
-
-
-class SubstratePreparationSteps(Activity):
-    '''
-    A section used for referencing Activity.
-    '''
-    m_def = Section()
-    substrates = SubSection(
-        section_def=Substrates,
-        repeats=True,
-    )
-
-
-class Etching(SubstratePreparationSteps, Process, EntryData):
-    '''
-    Class autogenerated from yaml schema.
-    '''
-    m_def = Section(
-        a_eln=None,)
-    method = Quantity(
-        type=str,
-        default="Etching (MOVPE IKZ)",
-    )
-    description = Quantity(
-        type=str,
-        description='description',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    datetime = Quantity(
-        type=Datetime,
-        description='FILL',
-        a_eln={
-            "component": "DateTimeEditQuantity",
-            "label": "deposition_date"
-        },
-    )
-    temperature = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "celsius"
-        },
-        unit="celsius",
-    )
-    elapsed_time = Quantity(
-        type=np.float64,
-        description='Past time since process started (minutes)',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "minute"
-        },
-        unit="minute",
-    )
-    etching_reagents = SubSection(
-        section_def=CompositeSystem,
-        repeats=True
-    )
-
-
-class Annealing(SubstratePreparationSteps, Process, EntryData):
-    '''
-    Class autogenerated from yaml schema.
-    '''
-    m_def = Section(
-        a_eln=None,)
-    method = Quantity(
-        type=str,
-        default="Annealing (MOVPE IKZ)",
-    )
-    description = Quantity(
-        type=str,
-        description='description',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    datetime = Quantity(
-        type=Datetime,
-        description='FILL',
-        a_eln={
-            "component": "DateTimeEditQuantity",
-            "label": "deposition_date"
-        },
-    )
-    temperature = Quantity(
-        type=np.float64,
-        description='FILL THE DESCRIPTION',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "celsius"
-        },
-        unit="celsius",
-    )
-    elapsed_time = Quantity(
-        type=np.float64,
-        description='Past time since process started (minutes)',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "minute"
-        },
-        unit="minute",
-    )
-    anealing_reagents = SubSection(
-        section_def=CompositeSystemReference,
-    )
-
-
-class AFMmeasurement(SubstratePreparationSteps, Measurement, EntryData):
-    '''
-    Class autogenerated from yaml schema.
-    '''
-    m_def = Section(
-        a_eln=None,
-        more={
-            "label_quantity": "sample_id"
-        },)
-    method = Quantity(
-        type=str,
-        default="AFM (IKZ MOVPE)",
-    )
-    description = Quantity(
-        type=str,
-        description='description',
+        description='Notes and comments.',
         a_eln={
             "component": "StringEditQuantity",
             "label": "Notes"
         },
+        default="#data/SEM/description",
     )
     image = Quantity(
         type=str,
-        description='image showing the thickness measurement points',
+        description='image from AFM measurement',
         a_browser={
             "adaptor": "RawFileAdaptor"
         },
         a_eln={
             "component": "FileEditQuantity"
         },
+        shape=["*"],
     )
     sample_id = Quantity(
         type=str,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Sample"
+        },
         a_eln={
             "component": "StringEditQuantity"
         },
+        default="#data/SEM/sample_id",
     )
     datetime = Quantity(
         type=Datetime,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Date"
+        },
         a_eln={
             "component": "DateTimeEditQuantity"
         },
+        default="#data/SEM/datetime",
     )
     roughness = Quantity(
         type=np.float64,
         description='RMS roughness value obtained by AFM',
+        a_tabular={
+            "name": "AFMReflectanceSEM/Roughness"
+        },
         a_eln={
             "component": "NumberEditQuantity",
             "defaultDisplayUnit": "nanometer"
@@ -1315,6 +1208,9 @@ class AFMmeasurement(SubstratePreparationSteps, Measurement, EntryData):
     )
     surface_features = Quantity(
         type=str,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Surface Features"
+        },
         a_eln={
             "component": "StringEditQuantity"
         },
@@ -1335,7 +1231,7 @@ class AFMmeasurements(SectionReference):
     )
 
 
-class LightMicroscope(SubstratePreparationSteps, Measurement, EntryData):
+class SEMmeasurement(Measurement, EntryData):
     '''
     Class autogenerated from yaml schema.
     '''
@@ -1346,10 +1242,11 @@ class LightMicroscope(SubstratePreparationSteps, Measurement, EntryData):
         },)
     method = Quantity(
         type=str,
-        default="Light Microscope (MOVPE IKZ)",
+        default="SEM (MOVPE CNR)",
     )
     description = Quantity(
         type=str,
+        description='Notes and comments.',
         a_eln={
             "component": "StringEditQuantity",
             "label": "Notes"
@@ -1357,12 +1254,275 @@ class LightMicroscope(SubstratePreparationSteps, Measurement, EntryData):
     )
     image = Quantity(
         type=str,
-        description='image',
+        description='image from SEM measurement',
         a_browser={
             "adaptor": "RawFileAdaptor"
         },
         a_eln={
             "component": "FileEditQuantity"
+        },
+        shape=["*"],
+    )
+    sample_id = Quantity(
+        type=str,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Sample"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    datetime = Quantity(
+        type=Datetime,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Date"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity"
+        },
+    )
+    surface_state = Quantity(
+        type=str,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Surface State"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+
+
+class SEMmeasurements(SectionReference):
+    '''
+    A section used for referencing a SEMmeasurement.
+    '''
+    reference = Quantity(
+        type=SEMmeasurement,
+        description='A reference to a NOMAD `SEMmeasurement` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='SEMmeasurement Reference',
+        ),
+    )
+
+
+class ReflectanceMeasurement(Measurement, EntryData):
+    '''
+    Class autogenerated from yaml schema.
+    '''
+    m_def = Section(
+        a_eln=None,
+        more={
+            "label_quantity": "sample_id"
+        },)
+    method = Quantity(
+        type=str,
+        default="Reflectance (MOVPE CNR)",
+    )
+    description = Quantity(
+        type=str,
+        description='Notes and comments.',
+        a_tabular={
+            "name": "AFMReflectanceSEM/Notes"
+        },
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Notes"
+        },
+        default="#data/SEM/description",
+    )
+    image = Quantity(
+        type=str,
+        description='image showing the thickness measurement points',
+        a_browser={
+            "adaptor": "RawFileAdaptor"
+        },
+        a_eln={
+            "component": "FileEditQuantity"
+        },
+        shape=["*"],
+    )
+    sample_id = Quantity(
+        type=str,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Sample"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+        default="#data/SEM/sample_id",
+    )
+    datetime = Quantity(
+        type=Datetime,
+        a_tabular={
+            "name": "AFMReflectanceSEM/Date"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity"
+        },
+        default="#data/SEM/datetime",
+    )
+    thickness = Quantity(
+        type=np.float64,
+        description='Thickness from Reflectance',
+        a_tabular={
+            "name": "AFMReflectanceSEM/Thickness"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "nanometer"
+        },
+        unit="nanometer",
+    )
+    growth_rate = Quantity(
+        type=np.float64,
+        description='Growth rate calculated',
+        a_tabular={
+            "name": "AFMReflectanceSEM/Growth Rate"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "nanometer / minute"
+        },
+        unit="nanometer / minute",
+    )
+
+
+class ReflectanceMeasurements(SectionReference):
+    '''
+    A section used for referencing a ReflectanceMeasurement.
+    '''
+    reference = Quantity(
+        type=ReflectanceMeasurement,
+        description='A reference to a NOMAD `ReflectanceMeasurement` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='ReflectanceMeasurement Reference',
+        ),
+    )
+
+
+class UVAbsorbanceMeasurement(Measurement, EntryData):
+    '''
+    Class autogenerated from yaml schema.
+    '''
+    m_def = Section(
+        a_eln=None,
+        more={
+            "label_quantity": "sample_id"
+        },)
+    method = Quantity(
+        type=str,
+        default="Absorbance (MOVPE CNR)",
+    )
+    description = Quantity(
+        type=str,
+        description='Notes and comments.',
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Notes"
+        },
+    )
+    image = Quantity(
+        type=str,
+        description='image from optical microscopy',
+        a_browser={
+            "adaptor": "RawFileAdaptor"
+        },
+        a_eln={
+            "component": "FileEditQuantity"
+        },
+        shape=["*"],
+    )
+    sample_id = Quantity(
+        type=str,
+        a_tabular={
+            "name": "ElectroOptical/Sample"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    datetime = Quantity(
+        type=Datetime,
+        a_tabular={
+            "name": "ElectroOptical/Date"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity"
+        },
+    )
+    energy_gap = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_tabular={
+            "name": "ElectroOptical/Energy Gap ABS"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "eV"
+        },
+        unit="eV",
+    )
+    abs_coefficient = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_tabular={
+            "name": "ElectroOptical/ABS coefficient"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "1 / cm"
+        },
+        unit="1 / cm",
+    )
+    thickness = Quantity(
+        type=np.float64,
+        description='Thickness from ABS',
+        a_tabular={
+            "name": "ElectroOptical/Thickness"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "nanometer"
+        },
+        unit="nanometer",
+    )
+
+
+class UVAbsorbanceMeasurements(SectionReference):
+    '''
+    A section used for referencing a UVAbsorbanceMeasurement.
+    '''
+    reference = Quantity(
+        type=UVAbsorbanceMeasurement,
+        description='A reference to a NOMAD `UVAbsorbanceMeasurement` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='UVAbsorbanceMeasurement Reference',
+        ),
+    )
+
+
+class HallMeasurement(Measurement, EntryData):
+    '''
+    Class autogenerated from yaml schema.
+    '''
+    m_def = Section(
+        a_eln=None,
+        more={
+            "label_quantity": "sample_id"
+        },)
+    method = Quantity(
+        type=str,
+        default="Hall (MOVPE CNR)",
+    )
+    description = Quantity(
+        type=str,
+        description='Notes and comments.',
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Notes"
         },
     )
     sample_id = Quantity(
@@ -1370,44 +1530,226 @@ class LightMicroscope(SubstratePreparationSteps, Measurement, EntryData):
         a_eln={
             "component": "StringEditQuantity"
         },
+        default="#data/adsorbance/sample_id",
     )
     datetime = Quantity(
         type=Datetime,
+        a_tabular={
+            "name": "ElectroOptical/Date"
+        },
         a_eln={
             "component": "DateTimeEditQuantity"
+        },
+        default="#data/adsorbance/datetime",
+    )
+    resistivity = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_tabular={
+            "name": "ElectroOptical/Resistivity"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "ohm / cm"
+        },
+        unit="ohm / cm",
+    )
+    mobility = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_tabular={
+            "name": "ElectroOptical/Mobility"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm**2 / volt / second"
+        },
+        unit="cm**2 / volt / second",
+    )
+    carrier_concentration = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_tabular={
+            "name": "ElectroOptical/Carrier Concentration"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "1 / cm**3"
+        },
+        unit="1 / cm**3",
+    )
+    energy_gap_PC = Quantity(
+        type=np.float64,
+        description='Photo current spectroscopy',
+        a_tabular={
+            "name": "ElectroOptical/Energy Gap PC"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "eV"
+        },
+        unit="eV",
+    )
+    responsivity = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_tabular={
+            "name": "ElectroOptical/Responsivity"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "ampere / watt"
+        },
+        unit="ampere / watt",
+    )
+    rejection_ratio = Quantity(
+        type=np.float64,
+        description='Rejection Ratio (250/400)',
+        a_tabular={
+            "name": "ElectroOptical/Rejection Ratio"
+        },
+        a_eln={
+            "component": "NumberEditQuantity"
         },
     )
 
 
-class LiMimeasurements(SectionReference):
+class HallMeasurements(SectionReference):
     '''
-    A section used for referencing a LightMicroscope.
+    A section used for referencing a HallMeasurement.
     '''
     reference = Quantity(
-        type=LightMicroscope,
-        description='A reference to a NOMAD `LightMicroscope` entry.',
+        type=HallMeasurement,
+        description='A reference to a NOMAD `HallMeasurement` entry.',
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
-            label='Light Microscope Measurement Reference',
+            label='Hall Measurement Reference',
         ),
     )
 
 
-class Steps(SectionReference):
+class HRXRDmeasurement(Measurement, EntryData):
     '''
-    A section used for referencing SubstratePreparationSteps.
+    Class autogenerated from yaml schema.
+    '''
+    m_def = Section(
+        a_eln=None,
+        more={
+            "label_quantity": "sample_id"
+        },)
+    method = Quantity(
+        type=str,
+        default="HRXRD (MOVPE CNR)",
+    )
+    description = Quantity(
+        type=str,
+        description='Notes and comments.',
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Notes"
+        },
+    )
+    sample_id = Quantity(
+        type=str,
+        a_tabular={
+            "name": "HRXRD/Sample"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    datetime = Quantity(
+        type=Datetime,
+        a_tabular={
+            "name": "HRXRD/Date"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity"
+        },
+    )
+    phase = Quantity(
+        type=str,
+        description='Phase type obtained from HRXRD',
+        a_tabular={
+            "name": "HRXRD/Phase"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    peak_position_2theta = Quantity(
+        type=np.float64,
+        description='Peak Position - 2theta',
+        a_tabular={
+            "name": "HRXRD/Peak Position - 2theta"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "degree"
+        },
+        unit="degree",
+    )
+    peak_fwhm_2theta = Quantity(
+        type=np.float64,
+        description='Peak Position - 2theta',
+        a_tabular={
+            "name": "HRXRD/Peak FWHM - 2theta"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "degree"
+        },
+        unit="degree",
+    )
+    peak_position_omega = Quantity(
+        type=np.float64,
+        description='Peak Position - Omega',
+        a_tabular={
+            "name": "HRXRD/Peak Position - Omega"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "degree"
+        },
+        unit="degree",
+    )
+    peak_fwhm_rocking_curve = Quantity(
+        type=str,
+        description='Peak FWHM Rocking Curve',
+        a_tabular={
+            "name": "HRXRD/Peak FWHM Rocking Curve"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    reflection = Quantity(
+        type=str,
+        description='Peak FWHM Rocking Curve',
+        a_tabular={
+            "name": "HRXRD/Reflection"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+
+
+class HRXRDmeasurements(SectionReference):
+    '''
+    A section used for referencing a HRXRDmeasurement.
     '''
     reference = Quantity(
-        type=SubstratePreparationSteps,
-        description='A reference to a NOMAD `SubstratePreparationSteps` entry.',
+        type=HRXRDmeasurement,
+        description='A reference to a NOMAD `HRXRDmeasurement` entry.',
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
-            label='SubstratePreparationSteps Reference',
+            label='HRXRDmeasurement Reference',
         ),
     )
 
 
-class SubstratePreparation(Process, EntryData):
+class SampleCut(Process, EntryData):
     '''
     Class autogenerated from yaml schema.
     '''
@@ -1415,22 +1757,187 @@ class SubstratePreparation(Process, EntryData):
         a_eln=None,)
     method = Quantity(
         type=str,
-        default="Substrate Process (MOVPE IKZ)",
+        default="Sample Cut (MOVPE CNR)",
     )
     description = Quantity(
         type=str,
-        description='description',
+        description='Notes and comments.',
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Notes"
+        },
+    )
+    image = Quantity(
+        type=str,
+        description='image showing the sample cut geometry',
+        a_browser={
+            "adaptor": "RawFileAdaptor"
+        },
+        a_eln={
+            "component": "FileEditQuantity"
+        },
+        shape=["*"],
+    )
+    parent_sample_id = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "SampleCut/Parent Sample ID"
+        },
         a_eln={
             "component": "StringEditQuantity"
         },
     )
-    substrates = SubSection(
-        section_def=Substrates,
-        repeats=True,
+    children_sample_id = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "SampleCut/Children Sample ID"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
     )
-    steps = SubSection(
-        section_def=Steps,
-        repeats=True,
+    cut_date = Quantity(
+        type=Datetime,
+        description='FILL',
+        a_tabular={
+            "name": "SampleCut/Cut Date"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity"
+        },
+    )
+    position = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "SampleCut/Position"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    purpose = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "SampleCut/Experiment"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    size = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "millimeter ** 2"
+        },
+        a_tabular={
+            "name": "SampleCut/Size"
+        },
+        unit="millimeter ** 2",
+    )
+    collaborator = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "SampleCut/Collaborator"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+
+
+class SampleCuts(SectionReference):
+    '''
+    A section used for referencing a SampleCut.
+    '''
+    reference = Quantity(
+        type=SampleCut,
+        description='A reference to a NOMAD `SampleCut` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='SampleCut Reference',
+        ),
+    )
+
+
+class ContactSputtering(Process, EntryData, ArchiveSection):
+    '''
+    Class autogenerated from yaml schema.
+    '''
+    m_def = Section(
+        a_eln=None,)
+    method = Quantity(
+        type=str,
+        default="Contacts Sputtering (MOVPE CNR)",
+    )
+    description = Quantity(
+        type=str,
+        description='Notes and comments.',
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Notes"
+        },
+    )
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Contacts/Sample Piece"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    datetime = Quantity(
+        type=Datetime,
+        description='FILL',
+        a_tabular={
+            "name": "Contacts/Deposition Date"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity",
+            "label": "deposition_date"
+        },
+    )
+    contact_type = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Contacts/Contact Type"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+    contact_geometry = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Contacts/Geometry"
+        },
+        a_eln={
+            "component": "StringEditQuantity"
+        },
+    )
+
+
+class ContactSputterings(SectionReference):
+    '''
+    A section used for referencing a ContactSputtering.
+    '''
+    reference = Quantity(
+        type=ContactSputtering,
+        description='A reference to a NOMAD `ContactSputtering` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='ContactSputtering Reference',
+        ),
     )
 
 
@@ -1459,9 +1966,17 @@ class MovpeExperimentIMEM(TableData, EntryData):
                     "mapping_mode": "row",
                     "file_mode": "multiple_new_entries",
                     "sections": [
-                        "growth_run/substrate",
-                        "substrate",
                         "precursors",
+                        "substrates",
+                        "MIST_source",
+                        "samples_cut",
+                        "SEM",
+                        "contacts_sputtering",
+                        "AFM",
+                        "reflectance",
+                        "UVabsorbance",
+                        "hall",
+                        "HRXRD"
 
                     ]
                 },
@@ -1557,99 +2072,26 @@ class MovpeExperimentIMEM(TableData, EntryData):
         section_def=GrowthRuns,
         #repeats=True,
     )
-    in_situ_monitoring = SubSection(
-        section_def=InSituMonitorings,
+    contacts_sputtering = SubSection(
+        section_def=ContactSputterings,
+    )
+    sem_measurement = SubSection(
+        section_def=SEMmeasurements,
+    )
+    reflectance_measurement = SubSection(
+        section_def=ReflectanceMeasurements,
+    )
+    uv_measurement = SubSection(
+        section_def=UVAbsorbanceMeasurements,
+    )
+    hrhrd_measurement = SubSection(
+        section_def=HRXRDmeasurements,
     )
     hall_measurement = SubSection(
         section_def=HallMeasurements,
     )
     afm_measurement = SubSection(
         section_def=AFMmeasurements,
-    )
-    limi_measurement = SubSection(
-        section_def=LiMimeasurements,
-    )
-
-
-class HRXRDmeasurement(Measurement, EntryData):
-    '''
-    Class autogenerated from yaml schema.
-    '''
-    m_def = Section(
-        a_eln=None,
-        more={
-            "label_quantity": "sample_id"
-        },)
-    method = Quantity(
-        type=str,
-        default="HRXRD (MOVPE IKZ)",
-    )
-    description = Quantity(
-        type=str,
-        description='description',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    sample_id = Quantity(
-        type=str,
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    datetime = Quantity(
-        type=Datetime,
-        a_eln={
-            "component": "DateTimeEditQuantity"
-        },
-    )
-    phase = Quantity(
-        type=str,
-        description='Phase type obtained from HRXRD',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    peak_position_2theta = Quantity(
-        type=np.float64,
-        description='Peak Position - 2theta',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "degree"
-        },
-        unit="degree",
-    )
-    peak_fwhm_2theta = Quantity(
-        type=np.float64,
-        description='Peak Position - 2theta',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "degree"
-        },
-        unit="degree",
-    )
-    peak_position_omega = Quantity(
-        type=np.float64,
-        description='Peak Position - Omega',
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "degree"
-        },
-        unit="degree",
-    )
-    peak_fwhm_rocking_curve = Quantity(
-        type=str,
-        description='Peak FWHM Rocking Curve',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
-    reflection = Quantity(
-        type=str,
-        description='Peak FWHM Rocking Curve',
-        a_eln={
-            "component": "StringEditQuantity"
-        },
     )
 
 
