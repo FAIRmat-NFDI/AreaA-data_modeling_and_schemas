@@ -16,9 +16,11 @@
 # limitations under the License.
 #
 
+import datetime
+
+
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
-    MSection,
     Quantity,
 )
 from nomad.parsing import MatchingParser
@@ -29,13 +31,20 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
+from nomad.datamodel.metainfo.basesections import (
+    Activity,
+)
+
+
 from nomad_material_processing.utils import create_archive
-from hzb_unold_lab.schema import HZBUnoldLabThermalEvaporation
+from baseclasses.helper.utilities import set_sample_reference
+from hzb_unold_lab.schema import (HZBUnoldLabThermalEvaporation, HZBUnoldXRFLibrary, HZBUnoldUVvisReflectionLibrary,
+                                  HZBUnoldUVvisTransmissionLibrary, HZBUnoldPLLibrary, HZBUnoldConductivityLibrary)
 
 
-class PVDPLogFile(EntryData):
-    process = Quantity(
-        type=HZBUnoldLabThermalEvaporation,
+class ParsedFile(EntryData):
+    activity = Quantity(
+        type=Activity,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
@@ -53,8 +62,32 @@ class PVDPParser(MatchingParser):
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        log_file = mainfile.split('/')[-1]
-        entry = HZBUnoldLabThermalEvaporation(log_file=log_file)
-        file_name = f'{log_file[:-4]}.archive.json'
-        archive.data = PVDPLogFile(process=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = log_file[:-4] + ' log file'
+        entry = None
+        file = mainfile.split('/')[-1]
+
+        if "pvdp" in file:
+            entry = HZBUnoldLabThermalEvaporation(log_file=file)
+
+        if file.endswith("reflection_spec.csv"):
+            entry = HZBUnoldUVvisReflectionLibrary(data_file=file)
+
+        if file.endswith("transmission_spec.csv"):
+            entry = HZBUnoldUVvisTransmissionLibrary(data_file=file)
+
+        if file.endswith("cond.csv"):
+            entry = HZBUnoldConductivityLibrary(data_file=file)
+
+        if file.endswith("spx.xlsx") or file.endswith("spx.csv"):
+            entry = HZBUnoldXRFLibrary(composition_file=file)
+        if entry is None:
+            return
+
+        search_id = file.split("#")[0]
+        set_sample_reference(archive, entry, search_id)
+
+        entry.datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        entry.name = f"{search_id}"
+
+        file_name = f'{file}.archive.json'
+        archive.data = ParsedFile(activity=create_archive(entry, archive, file_name))
+        archive.metadata.entry_name = file
