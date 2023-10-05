@@ -2,7 +2,7 @@
 
 ## Getting started
 
-your nomad.yaml in your local installation should have this:
+The `nomad.yaml` file in your local installation should have these lines added:
 
 ```yaml
 keycloak:
@@ -15,89 +15,39 @@ normalize:
       - MetainfoNormalizer
 plugins:
   include:
-    - 'schemas/basesections_IKZ'
-    - 'schemas/hall_IKZ'
-    - 'schemas/mbe_IKZ'
-    - 'schemas/ds_ikz'
+    - 'schemas/NomadMaterialProcessing'
+    - 'schemas/MovpeIMEM'
+    - 'parsers/MovpeIMEM'
   options:
-    schemas/basesections_IKZ:
-      python_package: basesections_IKZ
-    schemas/hall_IKZ:
-      python_package: hall_IKZ
-    schemas/mbe_IKZ:
-      python_package: mbe_IKZ
-    schemas/ds_IKZ:
-      python_package: ds_IKZ
+    schemas/NomadMaterialProcessing:
+      python_package: nomad_material_processing
+    schemas/MovpeIMEM:
+      python_package: movpe_IMEM
+    parsers/MovpeIMEM:
+      python_package: movpe_IMEM
 ```
 
-do not forget to export the package in the same terminal where you run NOMAD (`nomad admin run appworker`):
+Export the path of the package in the `PYTHONPATH` system variable inside the same terminal where you run NOMAD `nomad admin run appworker` (to make it persistent, add it to your .pyenv/bin/activate file):
 
 ```python
-export PYTHONPATH="$PYTHONPATH:/your/path/nomad-to/nomad-schema-plugin-x-ray-diffraction"
+export PYTHONPATH="$PYTHONPATH:/your/path/AreaA-data_modeling_and_schemas/IMEM-CNR_plugin/src"
 ```
 
-or to make this path persistent, write into the .pyenv/bin/activate file of your virtual env. Use the path of your local OS where you cloned this repo.
+In the path there is `AreaA-data_modeling_and_schemas` because the best practice would be to clone this full repo in local as it may contain several plugins correlated. Note that the python package included in the `nomad.yaml` is inside the `src` folder.
 
-### Fork the project
+The first plugin being included in the `nomad.yaml` file is contained in the following repo, it is called inside the IMEM plugin, so it must be loaded as well:
+https://github.com/FAIRmat-NFDI/nomad-material-processing
+The plugin in the following repo is also becoming important and will be at some point called inside the IMEM-CNR one:
+https://github.com/FAIRmat-NFDI/nomad-measurements
 
-Go to the github project page https://github.com/nomad-coe/nomad-schema-plugin-example, hit
-fork (and leave a star, thanks!). Maybe you want to rename the project while forking!
 
-### Clone your fork
+To run this plugin as a standalone tool without NOMAD, follow [this tutorial](https://www.youtube.com/watch?v=_5hADA1QVw8&list=PLrRaxjvn6FDW-_DzZ4OShfMPcTtnFoynT&index=1&ab_channel=FAIRmatandNOMAD)
 
-Follow the github instructions. The URL and directory depends on your user name or organization and the
-project name you choose. But, it should look somewhat like this:
-
-```
-git clone git@github.com:markus1978/my-nomad-schema.git
-cd my-nomad-schema
-```
-
-### Install the dependencies
-
-You should create a virtual environment. You will need the `nomad-lab` package (and `pytest`).
-You need at least Python 3.9.
-
-```sh
-python3 -m venv .pyenv
-source .pyenv/bin/activate
-pip install -r requirements.txt --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
-```
-
-**Note!**
-Until we have an official pypi NOMAD release with the plugins functionality. Make
-sure to include NOMAD's internal package registry (e.g. via `--index-url`). Follow the instructions
-in `requirements.txt`.
-
-### Run the tests
-
-Make sure the current directory is in your path:
-
-```sh
-export PYTHONPATH=.
-```
-
-You can run automated tests with `pytest`:
-
-```sh
-pytest -svx tests
-```
-
-You can parse an example archive that uses the schema with `nomad`
-(installed via `nomad-lab` Python package):
-
-```sh
-nomad parse tests/data/test.archive.yaml --show-archive
-```
-
-## Developing your schema
-
-You can now start to develop you schema. Here are a few things that you might want to change:
-
-- The metadata in `nomad_plugin.yaml`.
-- The name of the Python package `nomadschemaexample`. If you want to define multiple plugins, you can nest packages.
-- The name of the example section `ExampleSection`. You will also want to define more than one section.
-- When you change module and class names, make sure to update the `nomad_plugin.yaml` accordingly.
+It is a tutorial to get started with plugin implementation, and it also shows how to run it as standalone tool, test it, etc.
+The example used there can be found here: https://github.com/nomad-coe/nomad-schema-plugin-example
 
 To learn more about plugins, how to add them to an Oasis, how to publish them, read our
 documentation on plugins: https://nomad-lab/prod/v1/staging/docs/plugins.html
+
+For any further question, consult the forum: https://matsci.org/c/nomad/32
+or contact directly the team mantaining this plugin: andrea.albino@physik.hu-berlin.de hampus.naesstroem@physik.hu-berlin.de sebastian.brueckner@physik.hu-berlin.de
