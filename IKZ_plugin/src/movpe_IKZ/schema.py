@@ -1384,7 +1384,7 @@ class MovpeExperimentIKZ(EntryData, TableData):
                     "mapping_mode": "row",
                     "file_mode": "multiple_new_entries",
                     "sections": [
-                        "growth_run/substrate",
+                        #"growth_run/substrate",
                         "growth_run/growth_run_steps"
                     ]
                 },
