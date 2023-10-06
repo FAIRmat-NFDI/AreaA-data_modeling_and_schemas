@@ -1,0 +1,119 @@
+definitions:
+  name: 'CaP Experiment'
+  sections:
+    CaP_Experiment:
+      base_sections:
+       - nomad.datamodel.metainfo.basesections.Experiment
+       - nomad.datamodel.data.EntryData
+      # quantities:
+      #   LayTec_EpiTT_dat_files:
+      #     type: str
+      #     description: LayTec EpiTT *.dat files exported from epinet software, single *.dat files or zipped folders.
+      #     m_annotations:
+      #       browser:
+      #         adaptor: RawFileAdaptor
+      #       eln:
+      #         component: FileEditQuantity
+      sub_sections:
+        solutions:
+          repeats: true
+          section:
+            quantities:
+              precursor:
+                type: '#/Solution'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+        reactor_program:
+          repeats: true
+          section:
+            quantities:
+              synthesis:
+                type: '#/ReactorProgram'
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+    Solution:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.CompositeSystem
+      - nomad.datamodel.data.EntryData
+    ReactorProgram:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - nomad.datamodel.data.EntryData
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/ProgramSteps'
+    ProgramSteps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ProcessStep
+    WaitingStep:
+      base_sections:
+       - '#/ProgramSteps'
+    AddingSolutionStep:
+      base_sections:
+      - '#/ProgramSteps'
+      quantities:
+        Solution:
+          type: '#/Solution'
+          description:
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        AmountOfSolution:
+          type: np.float64
+          shape: [1]
+          unit: milliliter
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: milliliter
+        Rate:
+          type: np.float64
+          shape: [1]
+          unit: milliliter/minute
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: milliliter/minute
+    SpinCoatingStep:
+      base_sections:
+      - '#/ProgramSteps'
+      quantities:
+        RotationalSpeed :
+          type: np.float64
+          shape: [1]
+          unit: 1/minute
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: 1/minute
+    SetTemperatureStep:
+      base_sections:
+      - '#/ProgramSteps'
+      quantities:
+        TemperatureSetpoint :
+          type: np.float64
+          shape: [1]
+          unit: °C
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: °C
+        HeatingRate :
+          type: np.float64
+          shape: [1]
+          unit: Kelvin/minute
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: Kelvin/minute
+    EndProgramStep:
+      base_sections:
+      - '#/ProgramSteps'
