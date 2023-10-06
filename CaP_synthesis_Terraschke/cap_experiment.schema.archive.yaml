@@ -108,12 +108,12 @@ definitions:
         HeatingRate :
           type: np.float64
           shape: [1]
-          unit: Kelvin/minute
+          unit: K/minute
           description:
           m_annotations:
             eln:
               component: NumberEditQuantity
-              defaultDisplayUnit: Kelvin/minute
+              defaultDisplayUnit: K/minute
     EndProgramStep:
       base_sections:
       - '#/ProgramSteps'
