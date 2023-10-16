@@ -22,6 +22,10 @@ definitions:
                 file_mode: multiple_new_entries
                 sections:
                 - growth_run/growth_run_steps
+              - mapping_mode: column
+                file_mode: current_entry
+                sections:
+                 "#root"
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -34,6 +38,16 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
+        lab_id:
+          type: str
+          description: the ID from RTG
+          shape: [1]
+          m_annotations:
+            tabular:
+              name: GrowthRun/Recipe Name
+            eln:
+              component: StringEditQuantity
+              label: "Recipe ID"
         date:
           type: Datetime
           description: FILL
@@ -52,12 +66,16 @@ definitions:
           repeats: true
           section: '#/GrowthRuns'
         in_situ_monitoring:
+          repeats: true
           section: '#/InSituMonitorings'
         hall_measurement:
+          repeats: true
           section: '#/HallMeasurements'
         afm_measurements:
+          repeats: true
           section: '#/AFMmeasurements'
         limi_measurements:
+          repeats: true
           section: '#/LiMiMeasurements'
     SubstrateInventory:
       base_sections:
@@ -126,15 +144,15 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        lab_id:
-          type: str
-          description: the ID from RTG
-          m_annotations:
-            tabular:
-              name: GrowthRun/Recipe Name
-            eln:
-              component: StringEditQuantity
-              label: "Growth ID"
+        # lab_id:
+        #   type: str
+        #   description: the ID from RTG
+        #   m_annotations:
+        #     tabular:
+        #       name: GrowthRun/Recipe Name
+        #     eln:
+        #       component: StringEditQuantity
+        #       label: "Growth ID"
       sub_sections:
         grown_samples:
           repeats: true
@@ -323,6 +341,14 @@ definitions:
         image:
           type: str
           description: image showing the thickness measurement points
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        crop_image:
+          type: str
+          description: crop image ready to be used for AI-based analysis
           m_annotations:
             browser:
               adaptor: RawFileAdaptor
@@ -816,6 +842,15 @@ definitions:
       base_sections:
       - nomad.datamodel.metainfo.basesections.CompositeSystemReference
       quantities:
+        lab_id:
+          type: str
+          description: the ID from RTG
+          m_annotations:
+            tabular:
+              name: GrowthRun/Sample Name
+            eln:
+              component: StringEditQuantity
+              label: "Grown Sample ID"
         reference:
           type: '#/GrownSample'
           description: 'A reference to a NOMAD `GrownSamples` entry.'
