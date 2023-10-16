@@ -3,9 +3,9 @@ definitions:
   sections:
     MovpeExperiment:
       base_sections:
-       - nomad.parsing.tabular.TableData
        - nomad.datamodel.metainfo.basesections.Experiment
        - nomad.datamodel.data.EntryData
+       - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
           # hide: ['end_time', 'lab_id', 'location', 'description']
@@ -40,88 +40,35 @@ definitions:
           m_annotations:
             eln:
               component: DateTimeEditQuantity
-        sample:
-          type: '#/Sample'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
       sub_sections:
         notes:
-          section:
-            quantities:
-              notes:
-                type: str
-                m_annotations:
-                  eln:
-                    component: RichTextEditQuantity
+          section: '#/Notes'
         users:
-          section:
-            quantities:
-              user:
-                type: Author
-                shape: ['*']
-                m_annotations:
-                  eln:
-                    component: AuthorEditQuantity
+          section: '#/Users'
         precursors:
           repeats: true
-          section:
-            quantities:
-              precursor:
-                type: '#/Precursor'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-        substrates:
-          repeats: true
-          section:
-            quantities:
-              substrate:
-                type: '#/Substrate'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
+          section: '#/Precursors'
         growth_run:
           repeats: true
-          section:
-            quantities:
-              process:
-                type: '#/GrowthRun'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-                  # tabular_pattern: # use this option to define the names of the new entries created
-                  # # with parser
-                  #   name: my_entry
+          section: '#/GrowthRuns'
         in_situ_monitoring:
-          section:
-            quantities:
-              process:
-                type: 'nomad.datamodel.metainfo.eln.Activity' #'lay_tec_epi_tt_schema.LayTec_EpiTT_Measurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
+          section: '#/InSituMonitorings'
         hall_measurement:
-          section:
-            quantities:
-              measurement:
-                type: '#/HallMeasurement'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-        final_sample:
-          section: 'nomad.datamodel.metainfo.basesections.CompositeSystemReference'
+          section: '#/HallMeasurements'
+        afm_measurements:
+          section: '#/AFMmeasurements'
+        limi_measurements:
+          section: '#/LiMiMeasurements'
     SubstrateInventory:
       base_sections:
-       - nomad.parsing.tabular.TableData
-       - nomad.datamodel.metainfo.basesections.Collection
        - nomad.datamodel.data.EntryData
+       - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
       quantities:
         substrate_data_file:
           type: str
-          description: "Upload here the spreadsheet file containing the growth data"
+          description: "Upload here the spreadsheet file containing the Substrates data"
           m_annotations:
             tabular_parser:
               parsing_options:
@@ -130,24 +77,18 @@ definitions:
               - mapping_mode: row
                 file_mode: multiple_new_entries
                 sections:
-                - entities
+                - substrates
             browser:
               adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
       sub_sections:
-        entities:
+        substrates:
           repeats: true
-          section:
-            quantities:
-              reference:
-                type: '#/Substrate'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-    SubstrateProcess:
+          section: '#/Substrates'
+    SubstratePreparation:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.metainfo.eln.Process
       - nomad.datamodel.data.EntryData
       m_annotations:
         eln:
@@ -161,21 +102,13 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        substrate:
-          type: '#/Substrate'
-          m_annotations:
-            eln:
-              component: ReferenceEditQuantity
       sub_sections:
+        substrates:
+          repeats: true
+          section: '#/Substrates'
         steps:
           repeats: true
-          section:
-            quantities:
-              step:
-                type: nomad.datamodel.metainfo.eln.Activity
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
+          section: '#/Steps'
     GrowthRun:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
@@ -203,50 +136,29 @@ definitions:
               component: StringEditQuantity
               label: "Growth ID"
       sub_sections:
-        sample:
-          section:
-            base_sections:
-            - nomad.datamodel.metainfo.basesections.CompositeSystemReference
-            quantities:
-              lab_id:
-                type: str
-                description: the sample used for this step of growth
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Sample Name
-                  eln:
-                    label: "Sample ID"
+        grown_samples:
+          repeats: true
+          section: '#/GrownSamples'
         parent_sample:
-          section:
-            base_sections:
-            - nomad.datamodel.metainfo.basesections.EntityReference
-            quantities:
-              lab_id:
-                type: str
-                description: the sample used for this step of growth
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Previous Layer Name
-                  eln:
-                    label: "Previous Layer ID"
+          repeats: true
+          section: '#/ParentSamples'
         substrate:
-          section:
-            base_sections:
-            - nomad.datamodel.metainfo.basesections.CompositeSystemReference
-            quantities:
-              lab_id:
-                type: str
-                description: the Substrate used for the growth
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Substrate Name
-                  eln:
-                    label: "Substrate ID"
+          repeats: true
+          section: '#/Substrates'
         growth_run_steps:
           repeats: true
-          section:
-            base_sections:
-            - '#/GrowthRunStep'
+          section: '#/GrowthRunStep'
+    GrowthRuns:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/GrowthRun'
+          description: 'A reference to a NOMAD `GrowthRun` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'GrowthRun Reference'
     GrowthRunStep:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
@@ -255,7 +167,7 @@ definitions:
         eln:
           # hide: [descritpion]
       quantities:
-        lab_id:
+        step_index:
           type: str
           description: the ID from RTG
           m_annotations:
@@ -373,141 +285,28 @@ definitions:
       sub_sections:
         bubblers:
           repeats: true
-          section:
-            more:
-              label_quantity: material
-            quantities:
-              material:
-                type: str
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Material
-                  eln:
-                    component: StringEditQuantity
-              mass_flow_controller:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler MFC
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              pressure:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              dilution:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Dilution
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              source:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Source
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              inject:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Inject
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              temperature:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Temp
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              partial_pressure:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Partial Pressure
-                  # plot:
-                  #   x: duration
-                  #   y: TMG_partial_pressure
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              molar_flux:
-                type: np.float64
-                unit: mol / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Bubbler Molar Flux
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mol / minute
+          section: '#/Bubbler'
         gas_source:
           repeats: true
-          section:
-            more:
-              label_quantity: material
-            quantities:
-              material:
-                type: str
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Gas Material
-                  eln:
-                    component: StringEditQuantity
-              mass_flow_controller:
-                type: np.float64
-                unit: cm ** 3 / minute
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Gas MFC
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: cm ** 3 / minute
-              molar_flux:
-                type: np.float64
-                unit: mbar
-                description: FILL THE DESCRIPTION
-                m_annotations:
-                  tabular:
-                    name: GrowthRun/Gas Molar Flux
-                  eln:
-                    component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
+          section: '#/GasSource'
+    InSituMonitorings:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: nomad.datamodel.data.ArchiveSection #laytec_epitt.LayTec_EpiTT_Measurement
+          description: 'A reference to a `LayTec_EpiTT_Measurement` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'In situ Monitoring Reference'
     AFMmeasurement:
-      more:
-        label_quantity: sample_id
       base_sections:
       - nomad.datamodel.metainfo.eln.Measurement
+      - '#/SubstratePreparationSteps'
       - nomad.datamodel.data.EntryData
+      more:
+        label_quantity: sample_id
       m_annotations:
         eln:
       quantities:
@@ -552,42 +351,17 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    LightMicroscope:
-      more:
-        label_quantity: sample_id
+    AFMmeasurements:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Measurement
-      - nomad.datamodel.data.EntryData
-      m_annotations:
-        eln:
+      - nomad.datamodel.metainfo.basesections.SectionReference
       quantities:
-        method:
-          type: str
-          default: "Light Microscope (MOVPE IKZ)"
-        description:
-          type: str
+        reference:
+          type: '#/AFMmeasurement'
+          description: 'A reference to a `AFMmeasurement` entry.'
           m_annotations:
             eln:
-              component: StringEditQuantity
-              label: "Notes"
-        image:
-          type: str
-          description: image
-          m_annotations:
-            browser:
-              adaptor: RawFileAdaptor
-            eln:
-              component: FileEditQuantity
-        sample_id:
-          type: str
-          m_annotations:
-            eln:
-              component: StringEditQuantity
-        datetime:
-          type: Datetime
-          m_annotations:
-            eln:
-              component: DateTimeEditQuantity
+              component: ReferenceEditQuantity
+              label: 'AFM measurement Reference'
     HallMeasurement:
       more:
         label_quantity: sample_id
@@ -640,6 +414,65 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: 1 / cm**3
+    HallMeasurements:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/HallMeasurement'
+          description: 'A reference to a `HallMeasurement` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Hall measurement Reference'
+    LightMicroscope:
+      more:
+        label_quantity: sample_id
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Measurement
+      - '#/SubstratePreparationSteps'
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        method:
+          type: str
+          default: "Light Microscope (MOVPE IKZ)"
+        description:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: "Notes"
+        image:
+          type: str
+          description: image
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        sample_id:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        datetime:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+    LiMiMeasurements:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/LightMicroscope'
+          description: 'A reference to a `LightMicroscope` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'LightMicroscope Reference'
     HRXRDmeasurement:
       more:
         label_quantity: sample_id
@@ -710,9 +543,9 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-    Sample:
+    Precursor:
       base_sections:
-      - nomad.datamodel.metainfo.eln.CompositeSystem
+      - nomad.datamodel.metainfo.eln.PureSubstance
       - nomad.datamodel.data.EntryData
       quantities:
         name:
@@ -721,18 +554,31 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-            tabular:
-              name: Substrate/Material
-        test_quantities:
+              label: Substance Name
+        cas_number:
           type: str
-          description: Test quantity
+          description: FILL
           m_annotations:
             eln:
               component: StringEditQuantity
+              label: CAS number
+    Precursors:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.EntityReference
+      quantities:
+        reference:
+          type: '#/Precursor'
+          description: 'A reference to a NOMAD `Precursor` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Precursor Reference'
     Substrate:
       base_sections:
       - nomad.datamodel.metainfo.eln.CompositeSystem
       - nomad.datamodel.data.EntryData
+      more:
+        label_quantity: lab_id
       quantities:
         # SEE issue 1638 on gitlab
         # name:
@@ -901,153 +747,88 @@ definitions:
               label: "Notes"
       sub_sections:
         geometry:
-          section:
-            m_annotations:
-              eln:
-            sub_sections:
-              parallelepiped:
-                section:
-                  quantities:
-                    height:
-                      type: np.float64
-                      unit: nanometer
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    width:
-                      type: np.float64
-                      unit: millimeter
-                      description: substrate dimension X
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                        tabular:
-                          name: Substrate/Size X
-                    length:
-                      type: np.float64
-                      unit: millimeter
-                      description: substrate dimension Y
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                        tabular:
-                          name: Substrate/Size Y
-                    surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    volume:
-                      type: np.float64
-                      unit: millimeter ** 3
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 3
-              cylinder:
-                section:
-                  quantities:
-                    height:
-                      type: np.float64
-                      unit: nanometer
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: nanometer
-                    radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    lower_cap_radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    upper_cap_radius:
-                      type: np.float64
-                      unit: millimeter
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter
-                    cap_surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    lateral_surface_area:
-                      type: np.float64
-                      unit: millimeter ** 2
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 2
-                    volume:
-                      type: np.float64
-                      unit: millimeter ** 3
-                      description: docs
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: millimeter ** 3
+          section: '#/Geometry'
         elemental_composition:
           repeats: true
           section:
             base_sections:
-              - nomad.datamodel.metainfo.basesections.ElementalComposition
-            quantities:
-              element:
-                type: str
-                m_annotations:
-                  tabular:
-                    name: Substrate/Elements
-                  eln:
-                    component: StringEditQuantity
-    Precursor:
+              - '#/ElementalComposition'
+    Substrates:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Substance
+      - nomad.datamodel.metainfo.basesections.CompositeSystemReference
+      quantities:
+        lab_id:
+          type: str
+          description: the Substrate used for the growth
+          m_annotations:
+            tabular:
+              name: GrowthRun/Substrate Name
+            eln:
+              component: StringEditQuantity
+              label: "Substrate ID"
+        reference:
+          type: '#/Substrate'
+          description: 'A reference to a NOMAD `Substrate` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Substrate Reference'
+    ParentSamples:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.CompositeSystemReference
+      quantities:
+        lab_id:
+          type: str
+          description: the sample used for this step of growth
+          m_annotations:
+            tabular:
+              name: GrowthRun/Previous Layer Name
+            eln:
+              component: StringEditQuantity
+              label: "Previous Layer ID"
+        reference:
+          type: nomad.datamodel.metainfo.basesections.CompositeSystem
+          description: 'A reference to a NOMAD `ParentSample` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Parent Sample Reference'
+    GrownSample:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.CompositeSystem
       - nomad.datamodel.data.EntryData
       quantities:
-        name:
+        lab_id:
           type: str
-          description: FILL
+          description: the sample used for this step of growth
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: Substance Name
-        cas_number:
+            tabular:
+              name: GrowthRun/Sample Name
+        test_quantity:
           type: str
-          description: FILL
+          description: test
           m_annotations:
             eln:
               component: StringEditQuantity
-              label: CAS number
+    GrownSamples:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.CompositeSystemReference
+      quantities:
+        reference:
+          type: '#/GrownSample'
+          description: 'A reference to a NOMAD `GrownSamples` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Grown Sample Reference'
     Etching:
       m_annotations:
         eln:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
+      - '#/SubstratePreparationSteps'
       - nomad.datamodel.data.EntryData
       quantities:
         method:
@@ -1096,6 +877,7 @@ definitions:
         eln:
       base_sections:
       - nomad.datamodel.metainfo.eln.Process
+      - '#/SubstratePreparationSteps'
       - nomad.datamodel.data.EntryData
       quantities:
         method:
@@ -1139,3 +921,287 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
+    Notes:
+      m_annotations:
+        eln:
+      quantities:
+        notes:
+          type: str
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+    Users:
+      m_annotations:
+        eln:
+      quantities:
+        user:
+          type: Author
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: AuthorEditQuantity
+    ElementalComposition:
+      section:
+        base_sections:
+          - nomad.datamodel.metainfo.basesections.ElementalComposition
+        quantities:
+          element:
+          type: str
+          m_annotations:
+            tabular:
+              name: Substrate/Elements
+            eln:
+              component: StringEditQuantity
+    Bubbler:
+      more:
+        label_quantity: material
+      quantities:
+        material:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Bubbler Material
+            eln:
+              component: StringEditQuantity
+        mass_flow_controller:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Bubbler MFC
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        pressure:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Bubbler Pressure
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        dilution:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Bubbler Dilution
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        source:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Source
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        inject:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Inject
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        temperature:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Bubbler Temp
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        partial_pressure:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Partial Pressure
+            # plot:
+            #   x: duration
+            #   y: TMG_partial_pressure
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        molar_flux:
+          type: np.float64
+          unit: mol / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Bubbler Molar Flux
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mol / minute
+    GasSource:
+      more:
+        label_quantity: material
+      quantities:
+        material:
+          type: str
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Gas Material
+            eln:
+              component: StringEditQuantity
+        mass_flow_controller:
+          type: np.float64
+          unit: cm ** 3 / minute
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Gas MFC
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: cm ** 3 / minute
+        molar_flux:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            tabular:
+              name: GrowthRun/Gas Molar Flux
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+    Geometry:
+      m_annotations:
+        eln:
+      sub_sections:
+        parallelepiped:
+          section:
+            quantities:
+              height:
+                type: np.float64
+                unit: nanometer
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nanometer
+              width:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              length:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              volume:
+                type: np.float64
+                unit: millimeter ** 3
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 3
+        cylinder:
+          section:
+            quantities:
+              height:
+                type: np.float64
+                unit: nanometer
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nanometer
+              radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              lower_cap_radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              upper_cap_radius:
+                type: np.float64
+                unit: millimeter
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter
+              cap_surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              lateral_surface_area:
+                type: np.float64
+                unit: millimeter ** 2
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 2
+              volume:
+                type: np.float64
+                unit: millimeter ** 3
+                description: docs
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: millimeter ** 3
+    SubstratePreparationSteps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Activity
+      m_annotations:
+        eln:
+      sub_sections:
+        substrates:
+          repeats: true
+          section: '#/Substrates'
+    Steps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/SubstratePreparationSteps'
+          description: 'A reference to a `SubstratePreparationSteps` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'SubstratePreparationSteps Reference'
