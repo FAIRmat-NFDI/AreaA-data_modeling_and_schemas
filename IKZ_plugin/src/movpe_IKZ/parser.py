@@ -32,7 +32,7 @@ from nomad.datamodel.data import (
 from nomad_material_processing.utils import create_archive
 from movpe_IKZ import MovpeExperimentIKZ
 
-class GrowthFile(EntryData):
+class RawFile(EntryData):
     measurement = Quantity(
         type=MovpeExperimentIKZ,
         a_eln=ELNAnnotation(
@@ -57,5 +57,5 @@ class MovpeParserIKZ(MatchingParser):
         entry.growth_data_file = data_file
         file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = GrowthFile(measurement=create_archive(entry,archive,file_name))
+        archive.data = RawFile(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' growth file'

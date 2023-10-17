@@ -1333,6 +1333,17 @@ class LightMicroscope(SubstratePreparationSteps, Measurement, EntryData):
             "component": "FileEditQuantity"
         },
     )
+    crop_image = Quantity(
+        type=str,
+        description='crop image ready to be used for AI-based analysis',
+        shape=['*'],
+        a_browser={
+            "adaptor": "RawFileAdaptor"
+        },
+        a_eln={
+            "component": "FileEditQuantity"
+        },
+    )
     sample_id = Quantity(
         type=str,
         a_eln={

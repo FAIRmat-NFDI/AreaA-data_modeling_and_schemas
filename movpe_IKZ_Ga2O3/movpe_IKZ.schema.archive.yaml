@@ -486,6 +486,14 @@ definitions:
               adaptor: RawFileAdaptor
             eln:
               component: FileEditQuantity
+        crop_image:
+          type: str
+          description: crop image ready to be used for AI-based analysis
+          m_annotations:
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         sample_id:
           type: str
           m_annotations:
