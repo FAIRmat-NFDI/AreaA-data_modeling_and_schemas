@@ -56,7 +56,7 @@ class EpiTTParser(MatchingParser):
         data_file = mainfile.split('/')[-1]
         entry = LayTec_EpiTT_Measurement.m_from_dict(LayTec_EpiTT_Measurement.m_def.a_template)#()#.m_from_dict(LayTec_EpiTT_Measurement.m_def.a_template)
         entry.data_file = data_file
-        file_name = f'{data_file[:-9]}.archive.json'
+        file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
         archive.data = LAYTECEPITTFile(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' measurement file'
