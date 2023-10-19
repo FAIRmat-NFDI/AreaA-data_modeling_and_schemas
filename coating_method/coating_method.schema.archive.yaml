@@ -1,0 +1,149 @@
+definitions:
+  name: Coating method
+  description: |
+    A set of base sections for any coating method as defined by "coating method" in CHMO:
+    http://purl.obolibrary.org/obo/CHMO_0001470
+  sections:
+    Substrate:
+      description: |
+        A thin free standing sheet of material. Not to be confused with the substrate role
+        during a deposition, which can be a `Substrate` with `ThinFilm`(s) on it.
+      base_sections: [nomad.datamodel.metainfo.eln.Ensemble]
+      quantities:
+        thickness:
+          type: float
+          unit: meter
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: millimeter
+    ThinFilm:
+      description: |
+        A thin film of material which exists as part of a stack.
+      base_sections: [nomad.datamodel.metainfo.eln.Ensemble]
+    ThinFilmStack:
+      description: |
+        A stack of `ThinFilm`(s). Typically deposited on a `Substrate`.
+      base_sections: [nomad.datamodel.metainfo.eln.Ensemble]
+      quantities:
+        substrate:
+          type: Substrate
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        layers:
+          type: ThinFilm
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Solute:
+      description: |
+        A section describing a solute in a `Solution`.
+      base_sections: [nomad.datamodel.data.ArchiveSection]
+      quantities:
+        substance:
+          type: nomad.datamodel.metainfo.eln.Substance
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        mass:
+          type: float
+          unit: kilogram
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: milligram
+    Solvent:
+      description: |
+        A section describing a solvent in a `Solution`.
+      base_sections: [nomad.datamodel.data.ArchiveSection]
+      quantities:
+        substance:
+          type: nomad.datamodel.metainfo.eln.Substance
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        volume:
+          type: float
+          unit: meter ** 3
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: milliliter
+    Solution:
+      description: |
+        A material system in liquid form.
+      base_sections: [nomad.datamodel.metainfo.eln.Ensemble]
+      sub_sections:
+        solutes:
+          section: Solute
+          repeats: True
+        solvents:
+          section: Solvent
+          repeats: True
+    CoatingMethod:
+      links: [http://purl.obolibrary.org/obo/CHMO_0001470]
+      description: |
+        The application of a thin cover to a sample. 
+        [ https://orcid.org/0000-0002-0640-0422 ]
+      base_sections: [nomad.datamodel.metainfo.eln.Process]
+      quantities:
+        substrate:
+          type: ThinFilmStack
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        solution:
+          type: Solution
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        film:
+          type: ThinFilm
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    SpinCoatingStep:
+      base_sections: [nomad.datamodel.data.ArchiveSection]
+      quantities:
+        duration: 
+          type: float
+          unit: second
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: second
+        start_speed:
+          type: float
+          unit: rpm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm
+        acceleration:
+          type: float
+          unit: rpm / second
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm / second
+    SpinCoating:
+      links: [http://purl.obolibrary.org/obo/CHMO_0001472]
+      description: |
+        A coating method for applying a thin (<1 μm thickness) cover to flat substrates 
+        where an excess amount of coating solution (in a volatile solvent) is placed on 
+        the substrate, which is then rotated at high speed (8000 rpm) for approximately 
+        30 s in order to spread the solution by centripetal force. The solvent then 
+        evaporates, leaving a thin film. [ https://orcid.org/0000-0002-0640-0422 ]
+      base_sections: [CoatingMethod]
+      quantities:
+        antisolvent:
+          type: Solvent
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+      sub_sections:
+        steps:
+          section: SpinCoatingStep
+          repeats: True
