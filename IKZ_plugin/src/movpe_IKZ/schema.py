@@ -1516,23 +1516,6 @@ class MovpeExperimentIKZ(Experiment, EntryData, TableData):
         super(MovpeExperimentIKZ, self).normalize(archive, logger)
 
         if self.growth_run.reference:
-            print('yo1')
-            print(self.growth_run.reference)
-            print('yo2')
-            print(self.growth_run.reference.m_proxy_type)
-            print('yo3')
-            print(self.growth_run.reference.m_proxy_type.resolve(self.growth_run.reference))
-            print('yo4')
-            print(type(self.growth_run.reference.m_proxy_type.resolve(self.growth_run.reference)))
-            print('yo5')
-            print(self.growth_run.reference.m_proxy_type.resolve(self.growth_run.reference)['grown_samples'])
-            print('yo6')
-            print(self.growth_run.reference.m_proxy_type.resolve(self.growth_run.reference)['grown_samples'].name)
-            print('yo6')
-            print(self.growth_run.reference.m_proxy_type.resolve(self.growth_run.reference)['grown_samples'].lab_id)
-            print('yo6')
-            print(self.m_context.upload_id)
-
             grown_sample_ref = self.growth_run.reference.m_proxy_type.resolve(self.growth_run.reference)['grown_samples']
             if grown_sample_ref.reference is None:
                 filetype = 'yaml'
