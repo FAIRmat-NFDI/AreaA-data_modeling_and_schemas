@@ -50,12 +50,48 @@ m_package = Package(name='hall_lakeshore')
 
 
 class HallMeasurement(Measurement, EntryData):
-    """A parser for hall measurement data"""
-
+    """
+    A parser for hall measurement data
+    """
+    m_def = Section(
+        a_eln={
+            "hide": [
+                "steps"
+            ]
+        },
+    )
     data_file = Quantity(
         type=str,
         a_eln=dict(component='FileEditQuantity'),
-        a_browser=dict(adaptor='RawFileAdaptor'))
+        a_browser=dict(adaptor='RawFileAdaptor')
+    )
+    resistivity = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "ohm / cm"
+        },
+        unit="ohm / cm",
+    )
+    mobility = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm**2 / volt / second"
+        },
+        unit="cm**2 / volt / second",
+    )
+    carrier_concentration = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "1 / cm**3"
+        },
+        unit="1 / cm**3",
+    )
 
     measurements = SubSection(section_def=GenericMeasurement, repeats=True)
 

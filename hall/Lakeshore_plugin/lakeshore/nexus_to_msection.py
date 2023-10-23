@@ -404,6 +404,6 @@ def get_instrument(data_template: dict, logger):
                             field_key, value)
     for t_domain in temperature_domains.values():
         instrument.m_add_sub_section(hall_instrument.Instrument.temperature_domain, t_domain)
-    print(f"{keithley_components}")
-    print(f"{list(keithley_components.keys())}")
+    #print(f"{keithley_components}")
+    #print(f"{list(keithley_components.keys())}")
     return instrument
