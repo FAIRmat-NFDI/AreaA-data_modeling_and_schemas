@@ -1,0 +1,9 @@
+plugin_type: parser
+name: NOMAD Lakeshore Hall instrument parser
+description: |
+  This is a schema and parser for Lakeshore Hall instrument
+mainfile_name_re: ^.+\.txt$
+mainfile_mime_re: 'application/x-wine-extension-ini' #'text/plain'
+mainfile_contents_re: (?s)\[SystemParameters\].*?\[Measurement State Machine\]
+parser_class_name: lakeshore.instrument_parser.HallInstrumentParser
+code_name: Lakeshore instrument Parser

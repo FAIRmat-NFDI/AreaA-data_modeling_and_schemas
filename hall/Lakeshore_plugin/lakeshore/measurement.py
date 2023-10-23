@@ -17,9 +17,25 @@
 #
 import numpy as np
 from nomad.metainfo import MSection, Quantity, SubSection, Datetime, Section
+from nomad.datamodel.data import EntryData, ArchiveSection
 
+from nomad.datamodel.metainfo.basesections import (
+    ElementalComposition,
+    Activity,
+    PureSubstance,
+    CompositeSystem,
+    Measurement,
+    Process,
+    ProcessStep,
+    Collection,
+    EntityReference,
+    Instrument,
+    CompositeSystemReference,
+    SectionReference,
+    Experiment
+)
 
-class IVData(MSection):
+class IVData(ArchiveSection):
     '''Container for IV-Curve measurement data'''
     m_def = Section(
         a_eln=dict(lane_width='600px'),
@@ -84,7 +100,7 @@ class IVData(MSection):
         description='The temperatures values of the experiment.')
 
 
-class VariableFieldData(MSection):
+class VariableFieldData(ArchiveSection):
     '''Container for variable magnetic field data'''
     m_def = Section(
         a_eln=dict(lane_width='600px'),
@@ -158,7 +174,7 @@ class VariableFieldData(MSection):
     )
 
 
-class VariableTemperatureData(MSection):
+class VariableTemperatureData(ArchiveSection):
     '''Container for variable hall temperature data'''
     m_def = Section(
         a_eln=dict(lane_width='600px'),
@@ -232,12 +248,12 @@ class VariableTemperatureData(MSection):
         description='The measured zero field resistivities.')
 
 
-class Measurement(MSection):
+class GenericMeasurement(Measurement):
     '''A general hall measaurement representation'''
     data: SubSection
 
 
-class IVCurveMeasurement(Measurement):
+class IVCurveMeasurement(GenericMeasurement):
     '''Representation of an IV curve measurement'''
     current_step = Quantity(
         type=np.dtype(np.float64),
@@ -271,7 +287,7 @@ class IVCurveMeasurement(Measurement):
     contact_sets = SubSection(section_def=IVData, repeats=True)
 
 
-class VariableFieldMeasurement(Measurement):
+class VariableFieldMeasurement(GenericMeasurement):
     '''Representation of an variable magnetic field hall measurement'''
     start_time = Quantity(
         type=Datetime,
@@ -358,7 +374,7 @@ class VariableFieldMeasurement(Measurement):
     data = SubSection(section_def=VariableFieldData, repeats=True)
 
 
-class VariableTemperatureMeasurement(Measurement):
+class VariableTemperatureMeasurement(GenericMeasurement):
     '''Representation of a variable temperature hall measurement'''
     current_reversal = Quantity(
         type=bool,

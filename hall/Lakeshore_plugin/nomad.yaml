@@ -7,4 +7,4 @@ plugins:
     - 'schemas/hall_IKZ'
   options:
     schemas/hall_IKZ:
-      python_package: Lakeshore
+      python_package: lakeshore

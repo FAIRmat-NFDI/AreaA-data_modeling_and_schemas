@@ -196,12 +196,14 @@ def split_add_key(fobj: Optional[TextIO], dic: dict, prefix: str, expr: str) -> 
         parse_field()
 
 
-def parse_txt(fname: str, encoding: str = "iso-8859-1") -> dict:
+def parse_txt(fname: str, encoding: str = "utf-8") -> dict:
     """Reads a template dictonary from a hall measurement file
 
     Args:
         fname (str): The file name of the masurement file
         encoding (str, optional): The encoding of the ASCII file. Defaults to "iso-8859-1".
+                                  "utf-8" was used due to square and cubic cm units
+                                  appearing in the file
 
     Returns:
         dict: Dict containing the data and metadata of the measurement
