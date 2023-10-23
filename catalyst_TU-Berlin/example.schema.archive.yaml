@@ -1,0 +1,27 @@
+definitions:
+  name: Peter Krauss Schemas
+  sections:
+    PetersSample:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.CompositeSystem
+        - nomad.datamodel.data.EntryData
+      quantities:
+        tags:
+          type: str
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        sample_identifiers:
+          section: nomad.datamodel.metainfo.basesections.ReadableIdentifiers
+        catalyst_info:
+          section: PetersCatalystInfo
+          repeats: True
+    PetersCatalystInfo:
+      quantities:
+        activity:
+          type: float
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
