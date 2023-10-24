@@ -34,6 +34,7 @@ from nomad.datamodel.metainfo.basesections import (
     Measurement,
     Process,
     ProcessStep,
+    MeasurementResult,
     Collection,
     EntityReference,
     Instrument,
@@ -49,22 +50,10 @@ from nomad.datamodel.metainfo.annotations import (
 m_package = Package(name='hall_lakeshore')
 
 
-class HallMeasurement(Measurement, EntryData):
+class HallMeasurementResult(MeasurementResult):
     """
-    A parser for hall measurement data
+    Contains result quantities from Hall measurement
     """
-    m_def = Section(
-        a_eln={
-            "hide": [
-                "steps"
-            ]
-        },
-    )
-    data_file = Quantity(
-        type=str,
-        a_eln=dict(component='FileEditQuantity'),
-        a_browser=dict(adaptor='RawFileAdaptor')
-    )
     resistivity = Quantity(
         type=np.float64,
         description='FILL',
@@ -93,7 +82,35 @@ class HallMeasurement(Measurement, EntryData):
         unit="1 / cm**3",
     )
 
-    measurements = SubSection(section_def=GenericMeasurement, repeats=True)
+class HallMeasurement(Measurement, EntryData):
+    """
+    A parser for hall measurement data
+    """
+    m_def = Section(
+        a_eln={
+            "hide": [
+                "steps"
+            ]
+        },
+    )
+    data_file = Quantity(
+        type=str,
+        a_eln=dict(component='FileEditQuantity'),
+        a_browser=dict(adaptor='RawFileAdaptor')
+    )
+
+    measurements = SubSection(
+        section_def=GenericMeasurement,
+        repeats=True
+    )
+
+    results = SubSection(
+        section_def=HallMeasurementResult,
+        description='''
+        The result of the measurement.
+        ''',
+        repeats=True,
+    )
 
     def normalize(self, archive, logger):
         super(HallMeasurement, self).normalize(archive, logger)
