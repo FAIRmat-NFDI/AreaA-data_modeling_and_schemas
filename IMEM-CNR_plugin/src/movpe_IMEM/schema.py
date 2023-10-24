@@ -925,6 +925,7 @@ class PregrowthStep(ProcessStep):
         a_tabular={
             "name": "Pregrowth/Carrier Gas Flow"},
         unit="cm ** 3 / minute")
+    # bug also present in yaml
     # carrier_gas = Quantity(
     #     type=str,
     #     description='FILL',

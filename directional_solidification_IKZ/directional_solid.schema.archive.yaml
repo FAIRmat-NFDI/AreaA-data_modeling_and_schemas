@@ -3,9 +3,9 @@ definitions:
   sections:  # Schemas consist of section definitions
     DirectionalSolidificationExperiment:
       base_sections:
-       - nomad.datamodel.metainfo.eln.Activity
-       - nomad.datamodel.data.EntryData
-       - nomad.parsing.tabular.TableData
+      - nomad.datamodel.metainfo.basesections.Experiment
+      - nomad.datamodel.data.EntryData
+      - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
         # template:
@@ -35,7 +35,11 @@ definitions:
               - mapping_mode: column
                 file_mode: single_new_entry
                 sections:
-                - process/recipe
+                - recipe
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         digital_protocol_filename:
           type: str
           description: |
@@ -48,7 +52,7 @@ definitions:
               - mapping_mode: column
                 file_mode: single_new_entry
                 sections:
-                - process/digital_protocol
+                - digital_protocol
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -65,7 +69,7 @@ definitions:
               - mapping_mode: column
                 file_mode: single_new_entry
                 sections:
-                - process/manual_protocol
+                - manual_protocol
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -117,134 +121,129 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-        process:
+        magnetic_field_settings:
+          repeats: true
           section:
-            m_annotations:
-              eln:
+            quantities:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              dc_current:
+                type: np.float64
+                unit: ampere
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: ampere
+              frequency:
+                type: np.float64
+                unit: Hz
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: Hz
+              ac_current:
+                type: np.float64
+                unit: ampere
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: ampere
+              phase_shift:
+                type: np.float64
+                unit: deg
+                description: FILL THE DESCRIPTION
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: deg
+        gas_settings:
+          repeats: true
+          section:
+            quantities:
+              gas:
+                type: nomad.datamodel.metainfo.eln.Entity # to be specified!
+                m_annotations:
+                  eln:
+                    component: ReferenceEditQuantity
+              flow:
+                type: np.float64
+                unit: L/minute
+                description: Velocity of gas flow
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: L/minute
+              pressure:
+                type: np.float64
+                unit: mbar
+                description: Pressure of gas
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+        recipe:
+          section: '#/Recipes'
+        preparation_setup_parts:
+          section:
+            base_sections:
+              - nomad.datamodel.metainfo.eln.Process
+              - nomad.datamodel.data.EntryData
+            quantities:
+              method:
+                type: str
+                default: "Preparation Setup Parts (DS IKZ)"
+              description:
+                type: str
+                description: description
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              test:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        weighing:
+          section: '#/Weighing'
+        feedstock_filling:
+          section:
+            base_sections:
+              - nomad.datamodel.metainfo.eln.Process
+              - nomad.datamodel.data.EntryData
+            quantities:
+              method:
+                type: str
+                default: "Feedstock Filling (DS IKZ)"
+              description:
+                type: str
+                description: description
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              notes:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
             sub_sections:
-              magnetic_field_settings:
+              stacking_order:
                 repeats: true
-                section:
-                  quantities:
-                    name:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    dc_current:
-                      type: np.float64
-                      unit: ampere
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: ampere
-                    frequency:
-                      type: np.float64
-                      unit: Hz
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: Hz
-                    ac_current:
-                      type: np.float64
-                      unit: ampere
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: ampere
-                    phase_shift:
-                      type: np.float64
-                      unit: deg
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: deg
-              gas_settings:
-                repeats: true
-                section:
-                  quantities:
-                    gas:
-                      type: nomad.datamodel.metainfo.eln.Entity # to be specified!
-                      m_annotations:
-                        eln:
-                          component: ReferenceEditQuantity
-                    flow:
-                      type: np.float64
-                      unit: L/minute
-                      description: Velocity of gas flow
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: L/minute
-                    pressure:
-                      type: np.float64
-                      unit: mbar
-                      description: Pressure of gas
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mbar
-              recipe:
-                section: '#/Recipe'
-              preparation_setup_parts:
-                section:
-                  base_sections:
-                    - nomad.datamodel.metainfo.eln.Process
-                    - nomad.datamodel.data.EntryData
-                  quantities:
-                    method:
-                      type: str
-                      default: "Preparation Setup Parts (DS IKZ)"
-                    description:
-                      type: str
-                      description: description
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    test:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-              weighing:
-                section: '#/Weighing'
-              feedstock_filling:
-                section:
-                  base_sections:
-                    - nomad.datamodel.metainfo.eln.Process
-                    - nomad.datamodel.data.EntryData
-                  quantities:
-                    method:
-                      type: str
-                      default: "Feedstock Filling (DS IKZ)"
-                    description:
-                      type: str
-                      description: description
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    notes:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                  sub_sections:
-                    stacking_order:
-                      repeats: true
-                      section: nomad.datamodel.metainfo.eln.Component
-              temperature_ramp:
-                section: '#/TemperatureRamp'
-              manual_protocol:
-                section: '#/ManualProtocol'
-              # crystal_cutting:
-              #   section: basesections_IKZ.SampleCut
-              basic_characterization:
-                section: '#/BasicCharacterization'
-              digital_protocol:
+                section: nomad.datamodel.metainfo.eln.Component
+        temperature_ramp:
+          section: '#/TemperatureRamp'
+        # manual_protocol:
+        #   section: '#/ManualProtocol'
+        # crystal_cutting:
+        #   section: basesections_IKZ.SampleCut
+        basic_characterization:
+          section: '#/BasicCharacterization'
+        digital_protocol:
                 section:
                   quantities:
                     measurement:
@@ -252,15 +251,6 @@ definitions:
                       m_annotations:
                         eln:
                           component: ReferenceEditQuantity
-        activities:
-          repeats: True
-          section:
-            quantities:
-              measurement:
-                type: 'nomad.datamodel.metainfo.eln.Activity'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
     CruciblePretreatment:
       base_sections:
        - nomad.datamodel.metainfo.eln.Process
@@ -416,19 +406,30 @@ definitions:
           section: '#/TemperatureRamp'
     Recipe:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Process
-      - nomad.parsing.tabular.TableData
-      - nomad.datamodel.data.EntryData
+        - nomad.datamodel.metainfo.plot.PlotSection
+        - nomad.datamodel.metainfo.basesections.Process
+        - nomad.datamodel.data.EntryData
       m_annotations:
-        plot:
-        - label: My_custom_plot_label
-          x: step_number
-          y:
-            - ./mysub/h1_soll_p
-          lines:
-          - mode: lines
-            line:
-              color: rgb(50, 138, 46)
+        eln:
+        plotly_express:
+          method: line
+          x: '#step_number'
+          y: '#h1_soll_p'
+          label: 'Example Express Plot'
+          index: 0
+          layout:
+            title:
+              text: 'Example Express Plot'
+            xaxis:
+              title:
+                text: 'x axis'
+            yaxis:
+              title:
+                text: 'y axis'
+          # traces:
+          #   - method: scatter
+          #     x: '#timestamp'
+          #     y: '#zArr'
       quantities:
         method:
           type: str
@@ -439,62 +440,52 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
+        timestamp:
+          type: Datetime
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
           m_annotations:
-            tabular_parser:
-              # sep: ';'
-              comment: '#'
-              mode: row
-              target_sub_section:
-               - mysub
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            tabular:
+              name: "Datetime"
+        duration:
+          type: str
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
+          m_annotations:
+            tabular:
+              name: "Duration"
+        step_number:
+          type: int
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
+          m_annotations:
+            tabular:
+              name: Step
+        h1_soll_p:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
+          m_annotations:
+            tabular:
+              name: "H1"
+            plot:
+              label: My label
+              x: step_number
+              y: ./h1_soll_p
+    Recipes:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/Recipe'
+          description: 'A reference to a NOMAD `Recipe` entry.'
+          m_annotations:
             eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-      sub_sections:
-        mysub:
-          repeats: true
-          section:
-            quantities:
-              timestamp:
-                type: Datetime
-                # shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                # m_annotations:
-                #   tabular:
-                #     name: "T Ist H1 Time"
-              duration:
-                type: Datetime
-                # shape: []
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Duration"
-              step_number:
-                type: int
-                #shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Schritt"
-              h1_soll_p:
-                type: np.float64
-                #shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "H1"
-                  plot:
-                    label: My label
-                    x: step_number
-                    y: ./h1_soll_p
+              component: ReferenceEditQuantity
+              label: 'Recipe Reference'
     Feedstock:
       base_sections:
       - nomad.datamodel.metainfo.eln.Entity
@@ -664,6 +655,7 @@ definitions:
               component: StringEditQuantity
     ManualProtocol:
       base_sections:
+      - nomad.datamodel.metainfo.plot.PlotSection
       - nomad.datamodel.metainfo.eln.Process
       - nomad.datamodel.data.EntryData
       quantities:
@@ -676,14 +668,14 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        timestamp:
-          type: Datetime
-          shape: ['*']
-          description: "FILL THE DESCRIPTION"
-          # unit:
-          m_annotations:
-            tabular:
-              name: "Sheet1/Ending time"
+        # timestamp:
+        #   type: Datetime
+        #   shape: ['*']
+        #   description: "FILL THE DESCRIPTION"
+        #   # unit:
+        #   m_annotations:
+        #     tabular:
+        #       name: "Sheet1/Ending time"
         f1:
           type: np.float64
           shape: ['*']
@@ -1236,8 +1228,8 @@ definitions:
               y: ./temp_pyr
     DigitalProtocol:
       base_sections:
+      - nomad.datamodel.metainfo.plot.PlotSection
       - nomad.datamodel.metainfo.eln.Process
-      #- nomad.parsing.tabular.TableData
       - nomad.datamodel.data.EntryData
       m_annotations:
         plot:
