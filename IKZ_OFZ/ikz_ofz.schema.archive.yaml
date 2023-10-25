@@ -1,0 +1,7 @@
+definitions:
+  name: 'OFZ process'
+  sections:
+    OFZ_Process:
+      base_sections:
+       - nomad.datamodel.metainfo.basesections.Process
+       - nomad.datamodel.data.EntryData
