@@ -1,8 +1,4 @@
-plugin_type: parser #schema
-name: NOMAD movpe IKZ schema and parser plugin
+plugin_type: schema
+name: NOMAD MOPE IKZ plugin
 description: |
-  This is a schema and parser for movpe IKZ
-mainfile_name_re: ^.+\.growth.movpe.ikz.xlsx$
-mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-parser_class_name: movpe_IKZ.MovpeParserIKZ
-code_name: movpe IKZ Parser
+  This is a schema for MOVPE IKZ experiment
