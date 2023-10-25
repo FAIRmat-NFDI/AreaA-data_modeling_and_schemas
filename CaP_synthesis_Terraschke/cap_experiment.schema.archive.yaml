@@ -5,16 +5,10 @@ definitions:
       base_sections:
        - nomad.datamodel.metainfo.basesections.Experiment
        - nomad.datamodel.data.EntryData
-      # quantities:
-      #   LayTec_EpiTT_dat_files:
-      #     type: str
-      #     description: LayTec EpiTT *.dat files exported from epinet software, single *.dat files or zipped folders.
-      #     m_annotations:
-      #       browser:
-      #         adaptor: RawFileAdaptor
-      #       eln:
-      #         component: FileEditQuantity
       sub_sections:
+        steps:
+          repeats: true
+          section: '#/Steps'
         solutions:
           repeats: true
           section:
@@ -24,28 +18,38 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-        reactor_program:
-          repeats: true
-          section:
-            quantities:
-              synthesis:
-                type: '#/ReactorProgram'
-                m_annotations:
-                  eln:
-                    component: ReferenceEditQuantity
-    Solution:
+    Steps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/CaPSteps'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    CaPSteps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Activity
+    SolutionPreparation: #check if Huayna wans this
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/CaPSteps'
+      - nomad.datamodel.data.EntryData
+
+    Solution: # we will have a "solution" soon in base sections!
       base_sections:
       - nomad.datamodel.metainfo.basesections.CompositeSystem
       - nomad.datamodel.data.EntryData
     ReactorProgram:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
+      - '#/CaPSteps'
       - nomad.datamodel.data.EntryData
       sub_sections:
         steps:
           repeats: true
           section: '#/ProgramSteps'
-    ProgramSteps:
+    ProgramSteps: # check availbale steps
       base_sections:
       - nomad.datamodel.metainfo.basesections.ProcessStep
     WaitingStep:
@@ -79,7 +83,7 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: milliliter/minute
-    SpinCoatingStep:
+    StirringStep:
       base_sections:
       - '#/ProgramSteps'
       quantities:
@@ -117,3 +121,157 @@ definitions:
     EndProgramStep:
       base_sections:
       - '#/ProgramSteps'
+    LuminescenceMeasurements:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Measurement
+      - '#/CaPSteps'
+      - nomad.datamodel.data.EntryData
+      sub_sections:
+        measurement_settings: #define standard values or fixedoptions
+          section:
+            sub_sections:
+              excitation:
+                section:
+                  quantities:
+                    Wavelenght:
+                      type: np.float64
+                      shape: [1]
+                      unit: nanometer
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    Slit:
+                      type: np.float64
+                      shape: [1]
+                      unit: nanometer
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+              emission:
+                section:
+                  quantities:
+                    Detector:
+                      type: str
+                      description:
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Integration_time:
+                      type: np.float64
+                      shape: [1]
+                      unit: second
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: second
+                    DetectorSlit: #?
+                      type: np.float64
+                      shape: [1]
+                      unit: nanometer
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    GratingLines: #?
+                      type: np.float64
+                      shape: [1]
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    GratingCenter: #?
+                      type: np.float64
+                      shape: [1]
+                      unit: nanometer
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nanometer
+                    UnknownSetting: #? S1c/S1
+                      type: str
+                      description:
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    Cycles: #?
+                      type: np.float64
+                      shape: [1]
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                    Delay:
+                      type: np.float64
+                      shape: [1]
+                      unit: second
+                      description:
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: second
+                    Dark offset:
+                      type: str
+                      description:
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+    Sensors:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/CaPSteps'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        List_of_sensors: #maybe use different type!?
+          type: str
+          description:
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Sensor_setup_drawing: #maybe use different type!?
+          type: str
+          description:
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+              #label: "Sensor_setup_drawing"
+    SampleRemoval:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/CaPSteps'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        Sample_removal: #maybe use different type!?
+          type: bool
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+    SampleTreatment:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/CaPSteps'
+      - nomad.datamodel.data.EntryData
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/SampleTreatmentSteps'
+    SampleTreatmentSteps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ProcessStep
+    Rest:  # define better what wash and dry is within Rest
+      base_sections:
+       - '#/SampleTreatmentSteps'
+    PrepareForXRD: # any more details on this step?
+      base_sections:
+       - '#/SampleTreatmentSteps'
+    Results: # define better with Huayna
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Analysis
+      - '#/CaPSteps'
+      - nomad.datamodel.data.EntryData
