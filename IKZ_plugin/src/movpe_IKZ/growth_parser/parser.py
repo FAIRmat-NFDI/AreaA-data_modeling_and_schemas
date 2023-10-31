@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+import pandas as pd
+
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
@@ -28,20 +30,29 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.data import (
     EntryData,
 )
-
-from nomad_material_processing.utils import create_archive
-from movpe_IKZ import MovpeExperimentIKZ
+from nomad_material_processing.utils import create_archive as create_archive_ref
+from movpe_IKZ import (
+    MovpeExperimentIKZ,
+    GrowthRun,
+    GrownSample
+)
+from nomad.datamodel.datamodel import (
+    EntryArchive,
+    EntryMetadata
+)
+from nomad.parsing.tabular import (create_archive)
+from nomad.utils import hash
 
 class RawFile(EntryData):
     measurement = Quantity(
-        type=MovpeExperimentIKZ,
+        type=GrowthRun,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
     )
 
 
-class MovpeParserIKZ(MatchingParser):
+class MovpeBinaryOxideIKZParser(MatchingParser):
 
     def __init__(self):
         super().__init__(
@@ -52,10 +63,22 @@ class MovpeParserIKZ(MatchingParser):
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
+
+        growth_run_file = pd.read_excel(mainfile, comment="#")
+        for sample_index, grown_sample in enumerate(growth_run_file['Sample Name']):
+            filetype = 'yaml'
+            filename = f"{grown_sample}_{sample_index}.archive.{filetype}"
+            grown_sample_archive = EntryArchive(
+                data=GrownSample(lab_id=grown_sample),
+                m_context=archive.m_context,
+                metadata=EntryMetadata(upload_id=archive.m_context.upload_id))
+            create_archive(grown_sample_archive.m_to_dict(), archive.m_context, filename, filetype, logger)
+
         data_file = mainfile.split('/')[-1]
-        entry = MovpeExperimentIKZ()
-        entry.growth_data_file = data_file
+        entry = GrowthRun()
+        entry.data_file = data_file
         file_name = f'{data_file[:-5]}.archive.json'
-        #entry.normalize(archive, logger)
-        archive.data = RawFile(measurement=create_archive(entry,archive,file_name))
+        archive.data = RawFile(measurement=create_archive_ref(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' growth file'
+
+
