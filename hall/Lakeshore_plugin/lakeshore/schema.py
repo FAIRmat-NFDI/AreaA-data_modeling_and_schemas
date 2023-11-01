@@ -22,7 +22,10 @@ import numpy as np
 from nomad.metainfo import Package, Quantity, MEnum, SubSection, Section, MSection
 from nomad.datamodel.data import EntryData, ArchiveSection
 from . import reader as hall_reader
-from .measurement import GenericMeasurement
+from .measurement import (
+    GenericMeasurement,
+    VariableFieldMeasurement
+)
 from .hall_instrument import Instrument
 from .nexus_to_msection import get_measurements, get_instrument
 
@@ -59,9 +62,9 @@ class HallMeasurementResult(MeasurementResult):
         description='FILL',
         a_eln={
             "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "ohm / cm"
+            "defaultDisplayUnit": "ohm * cm"
         },
-        unit="ohm / cm",
+        unit="ohm * cm",
     )
     mobility = Quantity(
         type=np.float64,
@@ -123,6 +126,22 @@ class HallMeasurement(Measurement, EntryData):
 
             data_template = hall_reader.parse_txt(f.name)
             self.measurements = list(get_measurements(data_template))
+
+        for measurement in self.measurements:
+            if isinstance(measurement, VariableFieldMeasurement):
+                if (measurement.measurement_type == "Hall and Resistivity Measurement" and
+                    measurement.maximum_field == measurement.minimum_field):
+                    logger.info("This measurement was detected as a single Field Room Temperature one.")
+                    self.results.append(HallMeasurementResult(
+                        name="Room Temperature measurement",
+                        resistivity=measurement.data[0].resistivity,
+                        mobility=measurement.data[0].hall_mobility,
+                        carrier_concentration=measurement.data[0].carrier_density
+                        )
+                    )
+
+
+
 
 class HallMeasurements(SectionReference):
     '''
