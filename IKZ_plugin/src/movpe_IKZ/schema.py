@@ -23,7 +23,10 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
 from nomad.files import StagingUploadFiles
-from nomad.metainfo.metainfo import MProxy
+from nomad.metainfo.metainfo import (
+    MProxy,
+    QuantityReference
+)
 from nomad.parsing.tabular import (
     TableData,
     create_archive
@@ -955,9 +958,9 @@ class GrowthRun(Process, EntryData, TableData):
                 "samples"
             ]
         },
-        # more={
-        #     "label_quantity": "sample_id"
-        # }
+        more={
+            "label_quantity": "growth_id"
+        }
     )
     data_file = Quantity(
         type=str,
@@ -999,8 +1002,16 @@ class GrowthRun(Process, EntryData, TableData):
         },
         a_eln={
             "component": "StringEditQuantity",
-            "label": "Growth ID"
+            "label": "Recipe ID"
         },
+    )
+    recipe_id = Quantity(
+        type=GrownSample.lab_id,
+        # a_eln={
+        #     #"component": "StringEditQuantity",
+        #     "label": "Growth ID"
+        # },
+        default="#/data/grown_sample/lab_id"
     )
     grown_sample = SubSection(
         section_def=GrownSamples,
@@ -1018,15 +1029,6 @@ class GrowthRun(Process, EntryData, TableData):
         section_def=GrowthRunStep,
         repeats=True,
     )
-    def normalize(self, archive, logger: BoundLogger) -> None:
-        '''
-        The normalizer for the `GrowthRun` class.
-        '''
-        super(GrowthRun, self).normalize(archive, logger)
-
-        self.grown_sample.normalize(archive, logger)
-
-
 
 class GrowthRuns(SectionReference):
     '''
@@ -1445,18 +1447,14 @@ class MovpeExperimentIKZ(Experiment, EntryData): #, TableData):
             "component": "StringEditQuantity"
         },
     )
-    # lab_id = Quantity(
-    #     type=str,
-    #     description='the ID from RTG',
-    #     shape=[1],
-    #     a_tabular={
-    #         "name": "GrowthRun/Recipe Name"
-    #     },
-    #     a_eln={
-    #         "component": "StringEditQuantity",
-    #         "label": "Recipe ID"
-    #     },
-    # )
+    lab_id = Quantity(
+        type=str,
+        description='the ID from RTG',
+        a_eln={
+            "component": "StringEditQuantity",
+            "label": "Recipe ID"
+        },
+    )
     date = Quantity(
         type=Datetime,
         description='FILL',
@@ -1494,24 +1492,24 @@ class MovpeExperimentIKZ(Experiment, EntryData): #, TableData):
         section_def=LiMimeasurements,
         repeats=True,
     )
-    def normalize(self, archive, logger: BoundLogger) -> None:
-        '''
-        The normalizer for the `MovpeExperimentIKZ` class.
-        '''
-        super(MovpeExperimentIKZ, self).normalize(archive, logger)
+    # def normalize(self, archive, logger: BoundLogger) -> None:
+    #     '''
+    #     The normalizer for the `MovpeExperimentIKZ` class.
+    #     '''
+    #     super(MovpeExperimentIKZ, self).normalize(archive, logger)
 
-        if self.growth_run:
-            for current_growth in self.growth_run:
-                if current_growth.reference:
-                    grown_sample_ref = current_growth.reference.m_proxy_type.resolve(current_growth.reference)['grown_samples']
-                    if grown_sample_ref.reference is None:
-                        filetype = 'yaml'
-                        filename = f"{grown_sample_ref.lab_id}.archive.{filetype}"
-                        grown_sample_archive = EntryArchive(
-                            data=GrownSample(lab_id=grown_sample_ref.lab_id),
-                            m_context=archive.m_context,
-                            metadata=EntryMetadata(upload_id=archive.m_context.upload_id))
-                        create_archive(grown_sample_archive.m_to_dict(), archive.m_context, filename, filetype, logger)
+    #     if self.growth_run:
+    #         for current_growth in self.growth_run:
+    #             if current_growth.reference:
+    #                 grown_sample_ref = current_growth.reference.m_proxy_type.resolve(current_growth.reference)['grown_samples']
+    #                 if grown_sample_ref.reference is None:
+    #                     filetype = 'yaml'
+    #                     filename = f"{grown_sample_ref.lab_id}.archive.{filetype}"
+    #                     grown_sample_archive = EntryArchive(
+    #                         data=GrownSample(lab_id=grown_sample_ref.lab_id),
+    #                         m_context=archive.m_context,
+    #                         metadata=EntryMetadata(upload_id=archive.m_context.upload_id))
+    #                     create_archive(grown_sample_archive.m_to_dict(), archive.m_context, filename, filetype, logger)
 
                         ## Potential weak code in next lines:
                         ## I want to get back to GrowthRun entry (already created by tabular parser)

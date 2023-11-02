@@ -40,11 +40,12 @@ from nomad.utils import hash
 
 
 class RawFile(EntryData):
-    measurement = Quantity(
+    grwoth_runs = Quantity(
         type=GrowthRun,
-        a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-        ),
+        # a_eln=ELNAnnotation(
+        #     component="ReferenceEditQuantity",
+        # ),
+        shape=['*']
     )
 
 
@@ -81,20 +82,73 @@ class MovpeBinaryOxideIKZParser(MatchingParser):
         while True:
             search_result = search(
                 owner="all",
-                query={"results.eln.lab_ids": lab_ids},
+                query={"results.eln.lab_ids:any": lab_ids},
                 user_id=archive.metadata.main_author.user_id,
             )
-            # checking if all entries are propery indexed
+            # checking if all entries are properly indexed
             if search_result.pagination.total == len(lab_ids):
+                break
+            if search_result.pagination.total > len(lab_ids):
+                matches = []
+                for match in search_result.data:
+                    matches.append(match['results']['eln']['lab_ids'])
+                logger.warning(f'Some entries with lab_id {matches} are duplicated')
                 break
             # otherwise wait until all are indexed
             sleep(0.1)
 
         data_file = mainfile.split("/")[-1]
-        entry = GrowthRun()
-        entry.data_file = data_file
-        file_name = f"{data_file[:-5]}.archive.json"
-        archive.data = RawFile(
-            measurement=create_archive_ref(entry, archive, file_name)
+        growth_run_archive = EntryArchive(
+            data=GrowthRun(data_file=data_file),
+            m_context=archive.m_context,
+            metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
-        archive.metadata.entry_name = data_file + " growth file"
+        file_name = f"{data_file[:-5]}.archive.{filetype}"
+        create_archive(
+            growth_run_archive.m_to_dict(),
+            archive.m_context,
+            file_name,
+            filetype,
+            logger
+        )
+        while True:
+            search_result = search(
+                owner="user",
+                query={
+                    "results.eln.sections:any": ["GrowthRun"],
+                    "upload_id:any": [archive.m_context.upload_id]
+                },
+                user_id=archive.metadata.main_author.user_id,
+                )
+            if search_result.data: # or search_result.data['processing_errors']:  TODO !!!! check for errors !!!
+                break
+            sleep(0.1)
+        if search_result.data:
+            growth_files = []
+            for growth_run_file in search_result.data:
+                growth_files.append(
+                    f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_run_file['entry_name'])}#data"
+                    )
+        archive.data = RawFile(
+            grwoth_runs=growth_files
+        )
+
+        archive.metadata.entry_name = data_file + "raw file"
+
+        # for sample_index, recipe_experiment in enumerate(growth_run_file["Recipe Name"]):
+        #     filetype = "yaml"
+        #     lab_ids.append(recipe_experiment)  # collect all ids
+        #     lab_ids = list(set(lab_ids))  # remove duplicates
+        #     filename = f"{recipe_experiment}_{sample_index}.archive.{filetype}"
+        #     experiment_archive = EntryArchive(
+        #         data=MovpeExperimentIKZ(lab_id=recipe_experiment),
+        #         m_context=archive.m_context,
+        #         metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+        #     )
+        #     create_archive(
+        #         grown_sample_archive.m_to_dict(),
+        #         archive.m_context,
+        #         filename,
+        #         filetype,
+        #         logger,
+        #     )
