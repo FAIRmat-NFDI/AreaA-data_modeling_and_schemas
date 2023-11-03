@@ -15,28 +15,44 @@ normalize:
       - MetainfoNormalizer
 plugins:
   include:
+    - 'parsers/hall_lakeshore_measurement'
+    - 'parsers/hall_lakeshore_instrument'
+    - 'parsers/laytec_epitt'
     - 'schemas/basesections_IKZ'
-    - 'schemas/hall_IKZ'
-    - 'schemas/mbe_IKZ'
-    - 'schemas/ds_ikz'
+    - 'parsers/cz_IKZ'
+    - 'parsers/movpe_growth_IKZ'
+    - 'parsers/movpe_substrates_IKZ'
+    - 'parsers/ds_IKZ'
   options:
+    parsers/hall_lakeshore_measurement:
+      python_package: lakeshore.measurement_parser
+    parsers/hall_lakeshore_instrument:
+      python_package: lakeshore.instrument_parser
+    parsers/laytec_epitt:
+      python_package: laytec_epitt
     schemas/basesections_IKZ:
       python_package: basesections_IKZ
-    schemas/hall_IKZ:
-      python_package: hall_IKZ
-    schemas/mbe_IKZ:
-      python_package: mbe_IKZ
-    schemas/ds_IKZ:
+    parsers/cz_IKZ:
+      python_package: cz_IKZ
+    parsers/movpe_growth_IKZ:
+      python_package: movpe_IKZ.binaryoxides_growth_parser
+    parsers/movpe_substrates_IKZ:
+     python_package: movpe_IKZ.substrate_parser
+    parsers/ds_IKZ:
       python_package: ds_IKZ
 ```
 
 do not forget to export the package in the same terminal where you run NOMAD (`nomad admin run appworker`):
 
 ```python
-export PYTHONPATH="$PYTHONPATH:/your/path/nomad-to/nomad-schema-plugin-x-ray-diffraction"
+export PYTHONPATH="$PYTHONPATH:/your/path/IKZ_plugin/src"
 ```
 
 or to make this path persistent, write into the .pyenv/bin/activate file of your virtual env. Use the path of your local OS where you cloned this repo.
+
+There are two external plugins that must be loaded to use IKZ_plugin:
+* [Laytec Epi TT](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/LayTec_EpiTT)
+* [Lakeshore](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/hall/Lakeshore_plugin)
 
 ### Fork the project
 

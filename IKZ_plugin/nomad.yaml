@@ -4,20 +4,28 @@ normalize:
       - MetainfoNormalizer
 plugins:
   include:
+    - 'parsers/hall_lakeshore_measurement'
+    - 'parsers/hall_lakeshore_instrument'
+    - 'parsers/laytec_epitt'
     - 'schemas/basesections_IKZ'
-    - 'schemas/cz_IKZ'
     - 'parsers/cz_IKZ'
-    - 'schemas/ds_IKZ'
-    - 'schemas/mbe_IKZ'
-    - 'schemas/movpe_IKZ'
+    - 'parsers/movpe_growth_IKZ'
+    - 'parsers/movpe_substrates_IKZ'
+    - 'parsers/ds_IKZ'
   options:
+    parsers/hall_lakeshore_measurement:
+      python_package: lakeshore.measurement_parser
+    parsers/hall_lakeshore_instrument:
+      python_package: lakeshore.instrument_parser
+    parsers/laytec_epitt:
+      python_package: laytec_epitt
     schemas/basesections_IKZ:
       python_package: basesections_IKZ
-    schemas/cz_IKZ:
-      python_package: cz_IKZ
     parsers/cz_IKZ:
+      python_package: cz_IKZ
+    parsers/movpe_growth_IKZ:
+      python_package: movpe_IKZ.binaryoxides_growth_parser
+    parsers/movpe_substrates_IKZ:
+     python_package: movpe_IKZ.substrate_parser
+    parsers/ds_IKZ:
       python_package: ds_IKZ
-    schemas/mbe_IKZ:
-      python_package: mbe_IKZ
-    schemas/movpe_IKZ:
-      python_package: movpe_IKZ
