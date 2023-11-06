@@ -16,7 +16,10 @@
 # limitations under the License.
 #
 
-from time import sleep
+from time import (
+    sleep,
+    perf_counter
+)
 import pandas as pd
 
 from nomad.datamodel import EntryArchive
@@ -45,7 +48,7 @@ from nomad.utils import hash
 
 
 class RawFile(EntryData):
-    grwoth_runs = Quantity(
+    growth_runs = Quantity(
         type=GrowthRun,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
@@ -85,6 +88,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
 
         grown_sample_ids = list(set(grown_sample_ids))  # remove duplicates
         while True:
+            tic = perf_counter()
             search_result = search(
                 owner="all",
                 query={"results.eln.lab_ids:any": grown_sample_ids},
@@ -101,6 +105,10 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                 break
             # otherwise wait until all are indexed
             sleep(0.1)
+            toc = perf_counter()
+            if toc - tic > 15:
+                logger.warning(f"The entry/ies with lab_id {grown_sample_ids} was not found and couldn't be referenced.")
+                break
 
         data_file = mainfile.split("/")[-1]
         growth_run_archive = EntryArchive(
@@ -118,6 +126,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
         )
         #archive.m_context.process_updated_raw_file(file_name)
         while True:
+            tic = perf_counter()
             search_result = search(
                 owner="user",
                 query={
@@ -129,6 +138,10 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             if search_result.pagination.total == len(growth_run_file["Sample Name"]): # or search_result.data['processing_errors']:  TODO !!!! check for errors !!!
                 break
             sleep(0.1)
+            toc = perf_counter()
+            if toc - tic > 15:
+                logger.warning(f"The GrowthRun entry/ies in the current upload were not found and couldn't be referenced.")
+                break
         if search_result.data:
             growth_run_files = []
             for growth_run_entry in search_result.data:
@@ -136,7 +149,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                     f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_entry['entry_id']}#data"
                     )
         archive.data = RawFile(
-            grwoth_runs=growth_run_files
+            growth_runs=growth_run_files
         )
         archive.metadata.entry_name = data_file + "raw file"
 

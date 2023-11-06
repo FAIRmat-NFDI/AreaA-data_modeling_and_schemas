@@ -10,5 +10,5 @@ mainfile_contents_dict:
     "Substrate": { "__has_all_keys": ["Substrates", "Orientation"] },
     "GrowthRun": { "__has_all_keys": ["Name", "Flow Metal Carrier", "Flow Oxydant Carrier"] },
   }
-parser_class_name: movpe_IMEM.MovpeParserIMEM
+parser_class_name: movpe_IMEM.MovpeIMEMParser
 code_name: movpe IMEM-CNR Parser
