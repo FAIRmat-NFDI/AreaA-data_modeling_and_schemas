@@ -302,7 +302,7 @@ class PPMSMeasurement(Measurement, EntryData):
             for line in header_lines:
                 if line.startswith("FILEOPENTIME"):
                     if hasattr(self, 'datetime'):
-                        iso_date = datetime.strptime(line.split(',')[3], "%d/%m/%Y %H:%M:%S")
+                        iso_date = datetime.strptime(line.split(',')[3], "%m/%d/%Y %H:%M:%S")
                         setattr(self, 'datetime', iso_date)
                 if line.startswith("BYAPP"):
                     if hasattr(self, 'software'):
@@ -310,7 +310,7 @@ class PPMSMeasurement(Measurement, EntryData):
 
             data_section = header_match.string[header_match.end():]
             data_buffer = StringIO(data_section)
-            data_df = pd.read_csv(data_buffer, header=None, skipinitialspace=True, sep=',')
+            data_df = pd.read_csv(data_buffer, header=None, skipinitialspace=True, sep=',',engine='python')
             # Rename columns using the first row of data
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
