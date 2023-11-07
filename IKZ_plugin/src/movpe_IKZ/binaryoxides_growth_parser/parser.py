@@ -38,8 +38,8 @@ from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
     MovpeBinaryOxidesIKZExperiment,
-    GrowthRuns,
-    GrowthRun,
+    BinaryOxideGrowths,
+    BinaryOxideGrowth,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -49,7 +49,7 @@ from nomad.utils import hash
 
 class RawFile(EntryData):
     growth_runs = Quantity(
-        type=GrowthRun,
+        type=BinaryOxideGrowth,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -112,7 +112,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
 
         data_file = mainfile.split("/")[-1]
         growth_run_archive = EntryArchive(
-            data=GrowthRun(data_file=data_file),
+            data=BinaryOxideGrowth(data_file=data_file),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
@@ -130,7 +130,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             search_result = search(
                 owner="user",
                 query={
-                    "results.eln.sections:any": ["GrowthRun"],
+                    "results.eln.sections:any": ["BinaryOxideGrowth"],
                     "upload_id:any": [archive.m_context.upload_id]
                 },
                 user_id=archive.metadata.main_author.user_id,
@@ -140,7 +140,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             sleep(0.1)
             toc = perf_counter()
             if toc - tic > 15:
-                logger.warning(f"The GrowthRun entry/ies in the current upload were not found and couldn't be referenced.")
+                logger.warning(f"The BinaryOxideGrowth entry/ies in the current upload were not found and couldn't be referenced.")
                 break
         if search_result.data:
             growth_run_files = []
@@ -167,7 +167,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                     search_result = search(
                         owner="user",
                         query={
-                            "results.eln.sections:any": ["GrowthRun"],
+                            "results.eln.sections:any": ["BinaryOxideGrowth"],
                             "entry_id:any": [growth_run_entry['entry_id']]
                         },
                         user_id=archive.metadata.main_author.user_id,
@@ -176,7 +176,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                     for search_quantities in search_result.data[0]['search_quantities']:
                         if search_quantities['path_archive'] == "data.grown_sample.lab_id":
                             growth_run_object_name = f"{search_quantities['str_value']} growth run"
-                    growth_run_object = GrowthRuns(
+                    growth_run_object = BinaryOxideGrowths(
                         name=growth_run_object_name,
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_file['entry_id']}#data"
                         )
