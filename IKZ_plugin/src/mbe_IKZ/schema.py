@@ -9,7 +9,6 @@ from nomad.metainfo import (
     Package, Quantity, SubSection, MEnum, Reference, Datetime, Section)
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.eln import PublicationReference
-from nomad.datamodel.metainfo.workflow import Link
 from nomad.datamodel.metainfo.eln import Entity, Activity, SampleID
 from nomad.datamodel.util import parse_path
 from basesections_IKZ import SampleCut

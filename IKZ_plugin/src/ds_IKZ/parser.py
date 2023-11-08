@@ -30,32 +30,32 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from movpe_IKZ import MovpeExperimentIKZ
+from ds_IKZ import DirectionalSolidificationExperiment
 
-class RawFile(EntryData):
+class RawFileDigitalProtocol(EntryData):
     measurement = Quantity(
-        type=MovpeExperimentIKZ,
+        type=DirectionalSolidificationExperiment,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
     )
 
 
-class MovpeParserIKZ(MatchingParser):
+class DSParserIKZ(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='NOMAD movpe IKZ schema and parser plugin',
-            code_name= 'movpe IKZ Parser',
+            name='NOMAD DS IKZ schema and parser plugin',
+            code_name= 'movpe DS IKZ Parser',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = MovpeExperimentIKZ()
-        entry.growth_data_file = data_file
-        file_name = f'{data_file[:-5]}.archive.json'
+        entry = DirectionalSolidificationExperiment()
+        entry.digital_protocol_file = data_file
+        file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = RawFile(measurement=create_archive(entry,archive,file_name))
+        archive.data = RawFileDigitalProtocol(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' growth file'

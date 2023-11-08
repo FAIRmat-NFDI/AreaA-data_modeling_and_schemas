@@ -1,11 +1,11 @@
 definitions:
   name: 'Directional Solidification Experiment'
-  sections:  # Schemas consist of section definitions
+  sections:  # Schemas consist of section definition
     DirectionalSolidificationExperiment:
       base_sections:
-       - nomad.datamodel.metainfo.eln.Activity
-       - nomad.datamodel.data.EntryData
-       - nomad.parsing.tabular.TableData
+      - nomad.datamodel.metainfo.basesections.Experiment
+      - nomad.datamodel.data.EntryData
+      - nomad.parsing.tabular.TableData
       m_annotations:
         eln:
         # template:
@@ -35,7 +35,11 @@ definitions:
               - mapping_mode: column
                 file_mode: single_new_entry
                 sections:
-                - process/recipe
+                - recipe
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
         digital_protocol_filename:
           type: str
           description: |
@@ -48,7 +52,7 @@ definitions:
               - mapping_mode: column
                 file_mode: single_new_entry
                 sections:
-                - process/digital_protocol
+                - digital_protocol
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -65,7 +69,7 @@ definitions:
               - mapping_mode: column
                 file_mode: single_new_entry
                 sections:
-                - process/manual_protocol
+                - manual_protocol
             browser:
               adaptor: RawFileAdaptor
             eln:
@@ -90,194 +94,165 @@ definitions:
               component: StringEditQuantity
       sub_sections:
         instrument:
+          section: '#/DiSoInstruments'
+        magnetic_field_settings:
+          repeats: true
           section:
-            m_annotations:
-              eln:
             quantities:
-              vacuum_before_gas_inlet:
+              name:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              dc_current:
                 type: np.float64
-                unit: mbar
+                unit: ampere
                 description: FILL THE DESCRIPTION
                 m_annotations:
                   eln:
                     component: NumberEditQuantity
-                    defaultDisplayUnit: mbar
-              crucible:
-                type: '#/Crucible'
+                    defaultDisplayUnit: ampere
+              frequency:
+                type: np.float64
+                unit: Hz
+                description: FILL THE DESCRIPTION
                 m_annotations:
                   eln:
-                    component: ReferenceEditQuantity
-              furnace:
-                type: '#/Furnace'
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: Hz
+              ac_current:
+                type: np.float64
+                unit: ampere
+                description: FILL THE DESCRIPTION
                 m_annotations:
                   eln:
-                    component: ReferenceEditQuantity
-              susceptor:
-                type: '#/Susceptor'
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: ampere
+              phase_shift:
+                type: np.float64
+                unit: deg
+                description: FILL THE DESCRIPTION
                 m_annotations:
                   eln:
-                    component: ReferenceEditQuantity
-        process:
-          section:
-            m_annotations:
-              eln:
-            sub_sections:
-              magnetic_field_settings:
-                repeats: true
-                section:
-                  quantities:
-                    name:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    dc_current:
-                      type: np.float64
-                      unit: ampere
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: ampere
-                    frequency:
-                      type: np.float64
-                      unit: Hz
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: Hz
-                    ac_current:
-                      type: np.float64
-                      unit: ampere
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: ampere
-                    phase_shift:
-                      type: np.float64
-                      unit: deg
-                      description: FILL THE DESCRIPTION
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: deg
-              gas_settings:
-                repeats: true
-                section:
-                  quantities:
-                    gas:
-                      type: nomad.datamodel.metainfo.eln.Entity # to be specified!
-                      m_annotations:
-                        eln:
-                          component: ReferenceEditQuantity
-                    flow:
-                      type: np.float64
-                      unit: L/minute
-                      description: Velocity of gas flow
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: L/minute
-                    pressure:
-                      type: np.float64
-                      unit: mbar
-                      description: Pressure of gas
-                      m_annotations:
-                        eln:
-                          component: NumberEditQuantity
-                          defaultDisplayUnit: mbar
-              recipe:
-                section: '#/Recipe'
-              preparation_setup_parts:
-                section:
-                  base_sections:
-                    - nomad.datamodel.metainfo.eln.Process
-                    - nomad.datamodel.data.EntryData
-                  quantities:
-                    method:
-                      type: str
-                      default: "Preparation Setup Parts (DS IKZ)"
-                    description:
-                      type: str
-                      description: description
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    test:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-              weighing:
-                section: '#/Weighing'
-              feedstock_filling:
-                section:
-                  base_sections:
-                    - nomad.datamodel.metainfo.eln.Process
-                    - nomad.datamodel.data.EntryData
-                  quantities:
-                    method:
-                      type: str
-                      default: "Feedstock Filling (DS IKZ)"
-                    description:
-                      type: str
-                      description: description
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                    notes:
-                      type: str
-                      m_annotations:
-                        eln:
-                          component: StringEditQuantity
-                  sub_sections:
-                    stacking_order:
-                      repeats: true
-                      section: nomad.datamodel.metainfo.eln.Component
-              temperature_ramp:
-                section: '#/TemperatureRamp'
-              manual_protocol:
-                section: '#/ManualProtocol'
-              # crystal_cutting:
-              #   section: basesections_IKZ.SampleCut
-              basic_characterization:
-                section: '#/BasicCharacterization'
-              digital_protocol:
-                section:
-                  quantities:
-                    measurement:
-                      type: '#/DigitalProtocol'
-                      m_annotations:
-                        eln:
-                          component: ReferenceEditQuantity
-        activities:
-          repeats: True
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: deg
+        gas_settings:
+          repeats: true
           section:
             quantities:
-              measurement:
-                type: 'nomad.datamodel.metainfo.eln.Activity'
+              gas:
+                type: nomad.datamodel.metainfo.eln.Entity # to be specified!
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
+              flow:
+                type: np.float64
+                unit: L/minute
+                description: Velocity of gas flow
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: L/minute
+              pressure:
+                type: np.float64
+                unit: mbar
+                description: Pressure of gas
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: mbar
+        recipe:
+          section: '#/Recipes'
+        preparation_setup_parts:
+          section:
+            base_sections:
+              - nomad.datamodel.metainfo.eln.Process
+              - nomad.datamodel.data.EntryData
+            quantities:
+              method:
+                type: str
+                default: "Preparation Setup Parts (DS IKZ)"
+              description:
+                type: str
+                description: description
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              test:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        weighing:
+          section: '#/Weighings'
+        feedstock_filling:
+          section: '#/FeedstockFillings'
+        temperature_ramp:
+          section: '#/TemperatureRamps'
+        manual_protocol:
+          section: '#/ManualProtocols'
+        # crystal_cutting:
+        #   section: basesections_IKZ.SampleCut
+        basic_characterization:
+          section: '#/BasicCharacterization'
+        digital_protocol:
+                section: '#/DigitalProtocols'
+    DiSoInstrument:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Instrument
+      m_annotations:
+        eln:
+      quantities:
+        vacuum_before_gas_inlet:
+          type: np.float64
+          unit: mbar
+          description: FILL THE DESCRIPTION
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+        crucible:
+          type: '#/Crucible'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        furnace:
+          type: '#/Furnace'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        susceptor:
+          type: '#/Susceptor'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    DiSoInstruments:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.EntityReference
+      quantities:
+        reference:
+          type: '#/DiSoInstrument'
+          description: 'A reference to a NOMAD `DiSoInstrument` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Instrument Reference'
     CruciblePretreatment:
       base_sections:
        - nomad.datamodel.metainfo.eln.Process
        - nomad.datamodel.data.EntryData
-      section:
-        quantities:
-          crucible:
-            type: '#/Crucible'
-            m_annotations:
-              eln:
-                component: ReferenceEditQuantity
-          test:
-            type: str
-            description: FILL
-            m_annotations:
-              eln:
-                component: StringEditQuantity
+      quantities:
+        crucible:
+          type: '#/Crucible'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        test:
+          type: str
+          description: FILL
+          m_annotations:
+            eln:
+              component: StringEditQuantity
     TemperatureRamp:
       base_sections:
        - nomad.datamodel.metainfo.eln.Process
@@ -319,6 +294,17 @@ definitions:
             eln:
               component: NumberEditQuantity
               defaultDisplayUnit: hour
+    TemperatureRamps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/TemperatureRamp'
+          description: 'A reference to a NOMAD `TemperatureRamp` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'TemperatureRamp Reference'
     Weighing:
       base_sections:
        - nomad.datamodel.metainfo.eln.Process
@@ -414,21 +400,77 @@ definitions:
         steps:
           repeats: true
           section: '#/TemperatureRamp'
+    Weighings:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/Weighing'
+          description: 'A reference to a NOMAD `Weighing` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Weighing Reference'
+    FeedstockFilling:
+      base_sections:
+        - nomad.datamodel.metainfo.eln.Process
+        - nomad.datamodel.data.EntryData
+      quantities:
+        method:
+          type: str
+          default: "Feedstock Filling (DS IKZ)"
+        description:
+          type: str
+          description: description
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        notes:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        stacking_order:
+          repeats: true
+          section: nomad.datamodel.metainfo.eln.Component
+    FeedstockFillings:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/FeedstockFilling'
+          description: 'A reference to a NOMAD `FeedstockFilling` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'FeedstockFilling Reference'
     Recipe:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Process
-      - nomad.parsing.tabular.TableData
-      - nomad.datamodel.data.EntryData
+        - nomad.datamodel.metainfo.plot.PlotSection
+        - nomad.datamodel.metainfo.basesections.Process
+        - nomad.datamodel.data.EntryData
       m_annotations:
-        plot:
-        - label: My_custom_plot_label
-          x: step_number
-          y:
-            - ./mysub/h1_soll_p
-          lines:
-          - mode: lines
-            line:
-              color: rgb(50, 138, 46)
+        eln:
+        plotly_express:
+          method: line
+          x: '#step_number'
+          y: '#h1_soll_p'
+          label: 'Example Express Plot'
+          index: 0
+          layout:
+            title:
+              text: 'Example Express Plot'
+            xaxis:
+              title:
+                text: 'x axis'
+            yaxis:
+              title:
+                text: 'y axis'
+          # traces:
+          #   - method: scatter
+          #     x: '#timestamp'
+          #     y: '#zArr'
       quantities:
         method:
           type: str
@@ -439,62 +481,52 @@ definitions:
           m_annotations:
             eln:
               component: StringEditQuantity
-        data_file:
-          type: str
-          description: |
-            A reference to an uploaded .xlsx
+        timestamp:
+          type: Datetime
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
           m_annotations:
-            tabular_parser:
-              # sep: ';'
-              comment: '#'
-              mode: row
-              target_sub_section:
-               - mysub
-            browser:
-              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            tabular:
+              name: "Datetime"
+        duration:
+          type: str
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
+          m_annotations:
+            tabular:
+              name: "Duration"
+        step_number:
+          type: int
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
+          m_annotations:
+            tabular:
+              name: Step
+        h1_soll_p:
+          type: np.float64
+          shape: ['*']
+          description: "FILL THE DESCRIPTION"
+          # unit:
+          m_annotations:
+            tabular:
+              name: "H1"
+            plot:
+              label: My label
+              x: step_number
+              y: h1_soll_p
+    Recipes:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/Recipe'
+          description: 'A reference to a NOMAD `Recipe` entry.'
+          m_annotations:
             eln:
-              component: FileEditQuantity  # A form field that allows to drop and select files.
-      sub_sections:
-        mysub:
-          repeats: true
-          section:
-            quantities:
-              timestamp:
-                type: Datetime
-                # shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                # m_annotations:
-                #   tabular:
-                #     name: "T Ist H1 Time"
-              duration:
-                type: Datetime
-                # shape: []
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Duration"
-              step_number:
-                type: int
-                #shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "Schritt"
-              h1_soll_p:
-                type: np.float64
-                #shape: ['*']
-                description: "FILL THE DESCRIPTION"
-                # unit:
-                m_annotations:
-                  tabular:
-                    name: "H1"
-                  plot:
-                    label: My label
-                    x: step_number
-                    y: ./h1_soll_p
+              component: ReferenceEditQuantity
+              label: 'Recipe Reference'
     Feedstock:
       base_sections:
       - nomad.datamodel.metainfo.eln.Entity
@@ -664,6 +696,7 @@ definitions:
               component: StringEditQuantity
     ManualProtocol:
       base_sections:
+      - nomad.datamodel.metainfo.plot.PlotSection
       - nomad.datamodel.metainfo.eln.Process
       - nomad.datamodel.data.EntryData
       quantities:
@@ -694,7 +727,7 @@ definitions:
               name: "Sheet1/f1"
             plot:
               x: timestamp
-              y: ./f1
+              y: f1
         f2:
           type: np.float64
           shape: ['*']
@@ -705,7 +738,7 @@ definitions:
               name: "Sheet1/f2"
             plot:
               x: timestamp
-              y: ./f2
+              y: f2
         f3:
           type: np.float64
           shape: ['*']
@@ -716,7 +749,7 @@ definitions:
               name: "Sheet1/f3"
             plot:
               x: timestamp
-              y: ./f3
+              y: f3
         f4:
           type: np.float64
           shape: ['*']
@@ -727,7 +760,7 @@ definitions:
               name: "Sheet1/f4"
             plot:
               x: timestamp
-              y: ./f4
+              y: f4
         f5:
           type: np.float64
           shape: ['*']
@@ -738,7 +771,7 @@ definitions:
               name: "Sheet1/f5"
             plot:
               x: timestamp
-              y: ./f5
+              y: f5
         f6:
           type: np.float64
           shape: ['*']
@@ -749,7 +782,7 @@ definitions:
               name: "Sheet1/f6"
             plot:
               x: timestamp
-              y: ./f6
+              y: f6
         f7:
           type: np.float64
           shape: ['*']
@@ -760,7 +793,7 @@ definitions:
               name: "Sheet1/f7"
             plot:
               x: timestamp
-              y: ./f7
+              y: f7
         f8:
           type: np.float64
           shape: ['*']
@@ -771,7 +804,7 @@ definitions:
               name: "Sheet1/f8"
             plot:
               x: timestamp
-              y: ./f8
+              y: f8
         f9:
           type: np.float64
           shape: ['*']
@@ -782,7 +815,7 @@ definitions:
               name: "Sheet1/f9"
             plot:
               x: timestamp
-              y: ./f9
+              y: f9
         phi1:
           type: np.float64
           shape: ['*']
@@ -793,7 +826,7 @@ definitions:
               name: "Sheet1/phi1"
             plot:
               x: timestamp
-              y: ./phi1
+              y: phi1
         phi2:
           type: np.float64
           shape: ['*']
@@ -804,7 +837,7 @@ definitions:
               name: "Sheet1/phi2"
             plot:
               x: timestamp
-              y: ./phi2
+              y: phi2
         phi3:
           type: np.float64
           shape: ['*']
@@ -815,7 +848,7 @@ definitions:
               name: "Sheet1/phi3"
             plot:
               x: timestamp
-              y: ./phi3
+              y: phi3
         phi4:
           type: np.float64
           shape: ['*']
@@ -826,7 +859,7 @@ definitions:
               name: "Sheet1/phi4"
             plot:
               x: timestamp
-              y: ./phi4
+              y: phi4
         phi5:
           type: np.float64
           shape: ['*']
@@ -837,7 +870,7 @@ definitions:
               name: "Sheet1/phi5"
             plot:
               x: timestamp
-              y: ./phi5
+              y: phi5
         phi6:
           type: np.float64
           shape: ['*']
@@ -848,7 +881,7 @@ definitions:
               name: "Sheet1/phi6"
             plot:
               x: timestamp
-              y: ./phi6
+              y: phi6
         phi7:
           type: np.float64
           shape: ['*']
@@ -859,7 +892,7 @@ definitions:
               name: "Sheet1/phi7"
             plot:
               x: timestamp
-              y: ./phi7
+              y: phi7
         phi8:
           type: np.float64
           shape: ['*']
@@ -870,7 +903,7 @@ definitions:
               name: "Sheet1/phi8"
             plot:
               x: timestamp
-              y: ./phi8
+              y: phi8
         phi9:
           type: np.float64
           shape: ['*']
@@ -881,7 +914,7 @@ definitions:
               name: "Sheet1/phi9"
             plot:
               x: timestamp
-              y: ./phi9
+              y: phi9
         i_ac1:
           type: np.float64
           shape: ['*']
@@ -892,7 +925,7 @@ definitions:
               name: "Sheet1/Iac1"
             plot:
               x: timestamp
-              y: ./i_ac1
+              y: i_ac1
         i_ac2:
           type: np.float64
           shape: ['*']
@@ -903,7 +936,7 @@ definitions:
               name: "Sheet1/Iac2"
             plot:
               x: timestamp
-              y: ./i_ac2
+              y: i_ac2
         i_ac3:
           type: np.float64
           shape: ['*']
@@ -914,7 +947,7 @@ definitions:
               name: "Sheet1/Iac3"
             plot:
               x: timestamp
-              y: ./i_ac3
+              y: i_ac3
         i_ac4:
           type: np.float64
           shape: ['*']
@@ -925,7 +958,7 @@ definitions:
               name: "Sheet1/Iac4"
             plot:
               x: timestamp
-              y: ./i_ac4
+              y: i_ac4
         i_ac5:
           type: np.float64
           shape: ['*']
@@ -936,7 +969,7 @@ definitions:
               name: "Sheet1/Iac5"
             plot:
               x: timestamp
-              y: ./i_ac5
+              y: i_ac5
         i_ac6:
           type: np.float64
           shape: ['*']
@@ -947,7 +980,7 @@ definitions:
               name: "Sheet1/Iac6"
             plot:
               x: timestamp
-              y: ./i_ac6
+              y: i_ac6
         i_ac7:
           type: np.float64
           shape: ['*']
@@ -958,7 +991,7 @@ definitions:
               name: "Sheet1/Iac7"
             plot:
               x: timestamp
-              y: ./i_ac7
+              y: i_ac7
         i_ac8:
           type: np.float64
           shape: ['*']
@@ -969,7 +1002,7 @@ definitions:
               name: "Sheet1/Iac8"
             plot:
               x: timestamp
-              y: ./i_ac8
+              y: i_ac8
         i_ac9:
           type: np.float64
           shape: ['*']
@@ -980,7 +1013,7 @@ definitions:
               name: "Sheet1/Iac9"
             plot:
               x: timestamp
-              y: ./i_ac9
+              y: i_ac9
         i_ges1:
           type: np.float64
           shape: ['*']
@@ -991,7 +1024,7 @@ definitions:
               name: "Sheet1/Iges1"
             plot:
               x: timestamp
-              y: ./i_ges1
+              y: i_ges1
         i_ges2:
           type: np.float64
           shape: ['*']
@@ -1002,7 +1035,7 @@ definitions:
               name: "Sheet1/Iges2"
             plot:
               x: timestamp
-              y: ./i_ges2
+              y: i_ges2
         i_ges3:
           type: np.float64
           shape: ['*']
@@ -1013,7 +1046,7 @@ definitions:
               name: "Sheet1/Iges3"
             plot:
               x: timestamp
-              y: ./i_ges3
+              y: i_ges3
         i_ges4:
           type: np.float64
           shape: ['*']
@@ -1024,7 +1057,7 @@ definitions:
               name: "Sheet1/Iges4"
             plot:
               x: timestamp
-              y: ./i_ges4
+              y: i_ges4
         i_ges5:
           type: np.float64
           shape: ['*']
@@ -1035,7 +1068,7 @@ definitions:
               name: "Sheet1/Iges5"
             plot:
               x: timestamp
-              y: ./i_ges5
+              y: i_ges5
         i_ges6:
           type: np.float64
           shape: ['*']
@@ -1046,7 +1079,7 @@ definitions:
               name: "Sheet1/Iges6"
             plot:
               x: timestamp
-              y: ./i_ges6
+              y: i_ges6
         i_ges7:
           type: np.float64
           shape: ['*']
@@ -1057,7 +1090,7 @@ definitions:
               name: "Sheet1/Iges7"
             plot:
               x: timestamp
-              y: ./i_ges7
+              y: i_ges7
         i_ges8:
           type: np.float64
           shape: ['*']
@@ -1068,7 +1101,7 @@ definitions:
               name: "Sheet1/Iges8"
             plot:
               x: timestamp
-              y: ./i_ges8
+              y: i_ges8
         i_ges9:
           type: np.float64
           shape: ['*']
@@ -1079,7 +1112,7 @@ definitions:
               name: "Sheet1/Iges9"
             plot:
               x: timestamp
-              y: ./i_ges9
+              y: i_ges9
         temp1:
           type: np.float64
           shape: ['*']
@@ -1090,7 +1123,7 @@ definitions:
               name: "Sheet1/T1"
             plot:
               x: timestamp
-              y: ./temp1
+              y: temp1
         temp2:
           type: np.float64
           shape: ['*']
@@ -1101,7 +1134,7 @@ definitions:
               name: "Sheet1/T2"
             plot:
               x: timestamp
-              y: ./temp2
+              y: temp2
         temp3:
           type: np.float64
           shape: ['*']
@@ -1112,7 +1145,7 @@ definitions:
               name: "Sheet1/T3"
             plot:
               x: timestamp
-              y: ./temp3
+              y: temp3
         temp4:
           type: np.float64
           shape: ['*']
@@ -1123,7 +1156,7 @@ definitions:
               name: "Sheet1/T4"
             plot:
               x: timestamp
-              y: ./temp4
+              y: temp4
         temp5:
           type: np.float64
           shape: ['*']
@@ -1134,7 +1167,7 @@ definitions:
               name: "Sheet1/T5"
             plot:
               x: timestamp
-              y: ./temp5
+              y: temp5
         temp6:
           type: np.float64
           shape: ['*']
@@ -1145,7 +1178,7 @@ definitions:
               name: "Sheet1/T6"
             plot:
               x: timestamp
-              y: ./temp6
+              y: temp6
         temp7:
           type: np.float64
           shape: ['*']
@@ -1156,7 +1189,7 @@ definitions:
               name: "Sheet1/T7"
             plot:
               x: timestamp
-              y: ./temp7
+              y: temp7
         temp8:
           type: np.float64
           shape: ['*']
@@ -1167,7 +1200,7 @@ definitions:
               name: "Sheet1/T8"
             plot:
               x: timestamp
-              y: ./temp8
+              y: temp8
         temp9:
           type: np.float64
           shape: ['*']
@@ -1178,7 +1211,7 @@ definitions:
               name: "Sheet1/T9"
             plot:
               x: timestamp
-              y: ./temp9
+              y: temp9
         temp1_2:
           type: np.float64
           shape: ['*']
@@ -1189,7 +1222,7 @@ definitions:
               name: "Sheet1/T12"
             plot:
               x: timestamp
-              y: ./temp1_2
+              y: temp1_2
         temp1_3:
           type: np.float64
           shape: ['*']
@@ -1200,7 +1233,7 @@ definitions:
               name: "Sheet1/T13"
             plot:
               x: timestamp
-              y: ./temp1_3
+              y: temp1_3
         temp1_4:
           type: np.float64
           shape: ['*']
@@ -1211,7 +1244,7 @@ definitions:
               name: "Sheet1/T14"
             plot:
               x: timestamp
-              y: ./temp1_4
+              y: temp1_4
         temp_tp:
           type: np.float64
           shape: ['*']
@@ -1222,7 +1255,7 @@ definitions:
               name: "Sheet1/Ttp"
             plot:
               x: timestamp
-              y: ./temp_tp
+              y: temp_tp
         temp_pyr:
           type: np.float64
           shape: ['*']
@@ -1233,94 +1266,23 @@ definitions:
               name: "Sheet1/Tpyr"
             plot:
               x: timestamp
-              y: ./temp_pyr
+              y: temp_pyr
+    ManualProtocols:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/ManualProtocol'
+          description: 'A reference to a NOMAD `ManualProtocol` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Manual Protocol Reference'
     DigitalProtocol:
       base_sections:
+      - nomad.datamodel.metainfo.plot.PlotSection
       - nomad.datamodel.metainfo.eln.Process
-      #- nomad.parsing.tabular.TableData
       - nomad.datamodel.data.EntryData
-      m_annotations:
-        plot:
-        - label: Temperature, T(˚C)
-          x: timestamp
-          y:
-            - ./t_ist_h1
-            - ./t_ist_h2
-            - ./t_ist_h3
-            - ./t_ist_h4
-            - ./t_ist_h5
-            - ./t_ist_h6
-            - ./t_ist_h7
-            - ./t_ist_h8
-            - ./t_ist_h9
-          lines:
-          - mode: lines
-            line:
-              color: rgb(50, 138, 46)
-          - mode: lines
-            line:
-              color: rgb(43, 128, 62)
-          - mode: lines
-            line:
-              color: rgb(41, 122, 74)
-          - mode: lines
-            line:
-              color: rgb(39, 117, 82)
-          - mode: lines
-            line:
-              color: rgb(38, 113, 88)
-          - mode: lines
-            line:
-              color: rgb(36, 109, 94)
-          - mode: lines
-            line:
-              color: rgb(34, 103, 101)
-          - mode: lines
-            line:
-              color: rgb(37, 94, 105)
-          - mode: lines
-            line:
-              color: rgb(39, 87, 107)
-        - label: Direct Current Intensity, I_DC(A)
-          x: timestamp
-          y:
-            - ./i_dc_ist_h1
-            - ./i_dc_ist_h2
-            - ./i_dc_ist_h3
-            - ./i_dc_ist_h4
-            - ./i_dc_ist_h5
-            - ./i_dc_ist_h6
-            - ./i_dc_ist_h7
-            - ./i_dc_ist_h8
-            - ./i_dc_ist_h9
-          lines:
-          - mode: lines
-            line:
-              color: rgb(168, 56, 59)
-          - mode: lines
-            line:
-              color: rgb(170, 67, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 78, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 87, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 95, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 101, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 107, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 112, 57)
-          - mode: lines
-            line:
-              color: rgb(170, 117, 57)
       quantities:
         method:
           type: str
@@ -1367,7 +1329,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h1
+              y: t_ist_h1
         t_ist_h2:
           type: np.float64
           shape: ['*']
@@ -1379,7 +1341,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h2
+              y: t_ist_h2
         t_ist_h3:
           type: np.float64
           shape: ['*']
@@ -1391,7 +1353,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h3
+              y: t_ist_h3
         t_ist_h4:
           type: np.float64
           shape: ['*']
@@ -1403,7 +1365,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h4
+              y: t_ist_h4
         t_ist_h5:
           type: np.float64
           shape: ['*']
@@ -1415,7 +1377,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h5
+              y: t_ist_h5
         t_ist_h6:
           type: np.float64
           shape: ['*']
@@ -1427,7 +1389,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h6
+              y: t_ist_h6
         t_ist_h7:
           type: np.float64
           shape: ['*']
@@ -1439,7 +1401,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h7
+              y: t_ist_h7
         t_ist_h8:
           type: np.float64
           shape: ['*']
@@ -1451,7 +1413,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h8
+              y: t_ist_h8
         t_ist_h9:
           type: np.float64
           shape: ['*']
@@ -1463,7 +1425,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_ist_h9
+              y: t_ist_h9
         p_ist_h1:
           type: np.float64
           shape: ['*']
@@ -1475,7 +1437,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h1
+              y: p_ist_h1
         p_ist_h2:
           type: np.float64
           shape: ['*']
@@ -1487,7 +1449,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h2
+              y: p_ist_h2
         p_ist_h3:
           type: np.float64
           shape: ['*']
@@ -1499,7 +1461,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h3
+              y: p_ist_h3
         p_ist_h4:
           type: np.float64
           shape: ['*']
@@ -1511,7 +1473,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h4
+              y: p_ist_h4
         p_ist_h5:
           type: np.float64
           shape: ['*']
@@ -1523,7 +1485,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h5
+              y: p_ist_h5
         p_ist_h6:
           type: np.float64
           shape: ['*']
@@ -1535,7 +1497,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h6
+              y: p_ist_h6
         p_ist_h7:
           type: np.float64
           shape: ['*']
@@ -1547,7 +1509,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h7
+              y: p_ist_h7
         p_ist_h8:
           type: np.float64
           shape: ['*']
@@ -1559,7 +1521,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h8
+              y: p_ist_h8
         p_ist_h9:
           type: np.float64
           shape: ['*']
@@ -1571,7 +1533,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./p_ist_h9
+              y: p_ist_h9
         i_dc_ist_h1:
           type: np.float64
           shape: ['*']
@@ -1583,7 +1545,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h1
+              y: i_dc_ist_h1
         i_dc_ist_h2:
           type: np.float64
           shape: ['*']
@@ -1595,7 +1557,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h2
+              y: i_dc_ist_h2
         i_dc_ist_h3:
           type: np.float64
           shape: ['*']
@@ -1607,7 +1569,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h3
+              y: i_dc_ist_h3
         i_dc_ist_h4:
           type: np.float64
           shape: ['*']
@@ -1619,7 +1581,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h4
+              y: i_dc_ist_h4
         i_dc_ist_h5:
           type: np.float64
           shape: ['*']
@@ -1631,7 +1593,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h5
+              y: i_dc_ist_h5
         i_dc_ist_h6:
           type: np.float64
           shape: ['*']
@@ -1643,7 +1605,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h6
+              y: i_dc_ist_h6
         i_dc_ist_h7:
           type: np.float64
           shape: ['*']
@@ -1655,7 +1617,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h7
+              y: i_dc_ist_h7
         i_dc_ist_h8:
           type: np.float64
           shape: ['*']
@@ -1667,7 +1629,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h8
+              y: i_dc_ist_h8
         i_dc_ist_h9:
           type: np.float64
           shape: ['*']
@@ -1679,7 +1641,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_dc_ist_h9
+              y: i_dc_ist_h9
         ac_f1_h1:
           type: np.float64
           shape: ['*']
@@ -1691,7 +1653,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h1
+              y: ac_f1_h1
         ac_f2_h1:
           type: np.float64
           shape: ['*']
@@ -1703,7 +1665,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h1
+              y: ac_f2_h1
         ac_f1_h2:
           type: np.float64
           shape: ['*']
@@ -1715,7 +1677,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h2
+              y: ac_f1_h2
         ac_f2_h2:
           type: np.float64
           shape: ['*']
@@ -1727,7 +1689,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h2
+              y: ac_f2_h2
         ac_f1_h3:
           type: np.float64
           shape: ['*']
@@ -1739,7 +1701,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h3
+              y: ac_f1_h3
         ac_f2_h3:
           type: np.float64
           shape: ['*']
@@ -1751,7 +1713,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h3
+              y: ac_f2_h3
         ac_f1_h4:
           type: np.float64
           shape: ['*']
@@ -1763,7 +1725,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h4
+              y: ac_f1_h4
         ac_f2_h4:
           type: np.float64
           shape: ['*']
@@ -1775,7 +1737,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h4
+              y: ac_f2_h4
         ac_f1_h5:
           type: np.float64
           shape: ['*']
@@ -1787,7 +1749,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h5
+              y: ac_f1_h5
         ac_f2_h5:
           type: np.float64
           shape: ['*']
@@ -1799,7 +1761,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h5
+              y: ac_f2_h5
         ac_f1_h6:
           type: np.float64
           shape: ['*']
@@ -1811,7 +1773,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h6
+              y: ac_f1_h6
         ac_f2_h6:
           type: np.float64
           shape: ['*']
@@ -1823,7 +1785,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h6
+              y: ac_f2_h6
         ac_f1_h7:
           type: np.float64
           shape: ['*']
@@ -1835,7 +1797,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h7
+              y: ac_f1_h7
         ac_f2_h7:
           type: np.float64
           shape: ['*']
@@ -1847,7 +1809,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h7
+              y: ac_f2_h7
         ac_f1_h8:
           type: np.float64
           shape: ['*']
@@ -1859,7 +1821,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h8
+              y: ac_f1_h8
         ac_f2_h8:
           type: np.float64
           shape: ['*']
@@ -1871,7 +1833,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h8
+              y: ac_f2_h8
         ac_f1_h9:
           type: np.float64
           shape: ['*']
@@ -1883,7 +1845,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f1_h9
+              y: ac_f1_h9
         ac_f2_h9:
           type: np.float64
           shape: ['*']
@@ -1895,7 +1857,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./ac_f2_h9
+              y: ac_f2_h9
         i_summe_h1:
           type: np.float64
           shape: ['*']
@@ -1907,7 +1869,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h1
+              y: i_summe_h1
         i_summe_h2:
           type: np.float64
           shape: ['*']
@@ -1919,7 +1881,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h2
+              y: i_summe_h2
         i_summe_h3:
           type: np.float64
           shape: ['*']
@@ -1931,7 +1893,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h3
+              y: i_summe_h3
         i_summe_h4:
           type: np.float64
           shape: ['*']
@@ -1943,7 +1905,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h4
+              y: i_summe_h4
         i_summe_h5:
           type: np.float64
           shape: ['*']
@@ -1955,7 +1917,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h5
+              y: i_summe_h5
         i_summe_h6:
           type: np.float64
           shape: ['*']
@@ -1967,7 +1929,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h6
+              y: i_summe_h6
         i_summe_h7:
           type: np.float64
           shape: ['*']
@@ -1979,7 +1941,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h7
+              y: i_summe_h7
         i_summe_h8:
           type: np.float64
           shape: ['*']
@@ -1991,7 +1953,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h8
+              y: i_summe_h8
         i_summe_h9:
           type: np.float64
           shape: ['*']
@@ -2003,7 +1965,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./i_summe_h9
+              y: i_summe_h9
         trafo_1_m:
           type: np.float64
           shape: ['*']
@@ -2015,7 +1977,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./trafo_1_m
+              y: trafo_1_m
         trafo_1_p:
           type: np.float64
           shape: ['*']
@@ -2027,7 +1989,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./trafo_1_p
+              y: trafo_1_p
         trafo_2_m:
           type: np.float64
           shape: ['*']
@@ -2039,7 +2001,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./trafo_2_m
+              y: trafo_2_m
         trafo_2_p:
           type: np.float64
           shape: ['*']
@@ -2051,7 +2013,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./trafo_2_p
+              y: trafo_2_p
         druck_rezipient:
           type: np.float64
           shape: ['*']
@@ -2063,7 +2025,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./druck_rezipient
+              y: druck_rezipient
         pp1:
           type: np.float64
           shape: ['*']
@@ -2075,7 +2037,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./pp1
+              y: pp1
         gasfluss_df2:
           type: np.float64
           shape: ['*']
@@ -2087,7 +2049,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./gasfluss_df2
+              y: gasfluss_df2
         gasfluss_df3:
           type: np.float64
           shape: ['*']
@@ -2099,7 +2061,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./gasfluss_df3
+              y: gasfluss_df3
         gasfluss_df4:
           type: np.float64
           shape: ['*']
@@ -2111,7 +2073,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./gasfluss_df4
+              y: gasfluss_df4
         f1:
           type: np.float64
           shape: ['*']
@@ -2123,7 +2085,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./f1
+              y: f1
         f2:
           type: np.float64
           shape: ['*']
@@ -2135,7 +2097,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./f2
+              y: f2
         phase_f1h1:
           type: np.float64
           shape: ['*']
@@ -2147,7 +2109,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f1h1
+              y: phase_f1h1
         phase_f2h1:
           type: np.float64
           shape: ['*']
@@ -2159,7 +2121,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f2h1
+              y: phase_f2h1
         phase_f1h2:
           type: np.float64
           shape: ['*']
@@ -2171,7 +2133,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f1h2
+              y: phase_f1h2
         phase_f2h2:
           type: np.float64
           shape: ['*']
@@ -2183,7 +2145,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f2h2
+              y: phase_f2h2
         phase_f1h3:
           type: np.float64
           shape: ['*']
@@ -2195,7 +2157,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f1h3
+              y: phase_f1h3
         phase_f2h3:
           type: np.float64
           shape: ['*']
@@ -2207,7 +2169,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f2h3
+              y: phase_f2h3
         phase_f1h4:
           type: np.float64
           shape: ['*']
@@ -2219,7 +2181,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f1h4
+              y: phase_f1h4
         phase_f2h4:
           type: np.float64
           shape: ['*']
@@ -2231,7 +2193,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f2h4
+              y: phase_f2h4
         phase_f1h5:
           type: np.float64
           shape: ['*']
@@ -2243,7 +2205,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f1h5
+              y: phase_f1h5
         phase_f2h5:
           type: np.float64
           shape: ['*']
@@ -2255,7 +2217,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f2h5
+              y: phase_f2h5
         phase_f1h6:
           type: np.float64
           shape: ['*']
@@ -2267,7 +2229,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f1h6
+              y: phase_f1h6
         phase_f2h6:
           type: np.float64
           shape: ['*']
@@ -2279,7 +2241,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./phase_f2h6
+              y: phase_f2h6
         co_messwert_ppm:
           type: np.float64
           shape: ['*']
@@ -2291,7 +2253,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./co_messwert_ppm
+              y: co_messwert_ppm
         co_messwert_vol:
           type: np.float64
           shape: ['*']
@@ -2303,7 +2265,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./co_messwert_vol
+              y: co_messwert_vol
         tiegelboden:
           type: np.float64
           shape: ['*']
@@ -2315,7 +2277,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./tiegelboden
+              y: tiegelboden
         t12:
           type: np.float64
           shape: ['*']
@@ -2327,7 +2289,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t12
+              y: t12
         t13:
           type: np.float64
           shape: ['*']
@@ -2339,7 +2301,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t13
+              y: t13
         t14:
           type: np.float64
           shape: ['*']
@@ -2351,7 +2313,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t14
+              y: t14
         widerstand_hz_4:
           type: np.float64
           shape: ['*']
@@ -2363,7 +2325,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./widerstand_hz_4
+              y: widerstand_hz_4
         widerstand_hz_5:
           type: np.float64
           shape: ['*']
@@ -2375,7 +2337,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./widerstand_hz_5
+              y: widerstand_hz_5
         widerstand_hz_6:
           type: np.float64
           shape: ['*']
@@ -2387,7 +2349,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./widerstand_hz_6
+              y: widerstand_hz_6
         t_pyrometer:
           type: np.float64
           shape: ['*']
@@ -2399,7 +2361,7 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./t_pyrometer
+              y: t_pyrometer
         no_messwert_ppm:
           type: np.float64
           shape: ['*']
@@ -2411,4 +2373,15 @@ definitions:
             plot:
               label: My label
               x: timestamp
-              y: ./no_messwert_ppm
+              y: no_messwert_ppm
+    DigitalProtocols:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/DigitalProtocol'
+          description: 'A reference to a NOMAD `DigitalProtocol` entry.'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: 'Digital Protocol Reference'

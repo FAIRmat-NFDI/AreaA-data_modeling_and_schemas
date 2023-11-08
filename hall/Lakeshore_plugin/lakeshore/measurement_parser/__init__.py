@@ -15,4 +15,7 @@
 # limitations under the License.
 #
 
-from .schema import *
+#from ..schema import *
+from lakeshore.schema import *
+from .parser import *
+#from basesections_IKZ import *

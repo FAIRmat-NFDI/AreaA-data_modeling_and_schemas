@@ -15,12 +15,9 @@ normalize:
       - MetainfoNormalizer
 plugins:
   include:
-    - 'schemas/NomadMaterialProcessing'
     - 'schemas/MovpeIMEM'
     - 'parsers/MovpeIMEM'
   options:
-    schemas/NomadMaterialProcessing:
-      python_package: nomad_material_processing
     schemas/MovpeIMEM:
       python_package: movpe_IMEM
     parsers/MovpeIMEM:

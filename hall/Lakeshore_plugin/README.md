@@ -33,7 +33,7 @@ pip install -r requirements.txt
 Make sure the current directory is in your path, you need to export it every time you open a new terminal:
 
 ```sh
-export PYTHONPATH="$PYTHONPATH:/your/path/to/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin/Lakeshore"
+export PYTHONPATH="$PYTHONPATH:/your/path/to/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin/lakeshore"
 ```
 
 or, even better, to make this path persistent write within the .pyenv/bin/activate file of your virtual environment the full path where you cloned this repo.
@@ -107,5 +107,5 @@ plugins:
 as before, do not forget to export the package path in the same terminal where you run NOMAD (`nomad admin run appworker`):
 
 ```python
-export PYTHONPATH="$PYTHONPATH:/your/path/to/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin/Lakeshore"
+export PYTHONPATH="$PYTHONPATH:/your/path/to/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin/lakeshore"
 ```

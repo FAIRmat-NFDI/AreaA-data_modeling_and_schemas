@@ -22,24 +22,98 @@ import numpy as np
 from nomad.metainfo import Package, Quantity, MEnum, SubSection, Section, MSection
 from nomad.datamodel.data import EntryData, ArchiveSection
 from . import reader as hall_reader
-from .measurement import Measurement
+from .measurement import (
+    GenericMeasurement,
+    VariableFieldMeasurement
+)
 from .hall_instrument import Instrument
 from .nexus_to_msection import get_measurements, get_instrument
-from nomad.datamodel.metainfo.eln import Activity, Substance
-from nomad.datamodel.metainfo.basesections import CompositeSystem
 
-m_package = Package(name='hall_Lakeshore')
+from nomad.datamodel.metainfo.basesections import (
+    ElementalComposition,
+    Activity,
+    PureSubstance,
+    CompositeSystem,
+    Measurement,
+    Process,
+    ProcessStep,
+    MeasurementResult,
+    Collection,
+    EntityReference,
+    Instrument,
+    CompositeSystemReference,
+    SectionReference,
+    Experiment
+)
+
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+
+m_package = Package(name='hall_lakeshore')
 
 
-class HallMeasurement(ArchiveSection):
-    """A parser for hall measurement data"""
+class HallMeasurementResult(MeasurementResult):
+    """
+    Contains result quantities from Hall measurement
+    """
+    resistivity = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "ohm * cm"
+        },
+        unit="ohm * cm",
+    )
+    mobility = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm**2 / volt / second"
+        },
+        unit="cm**2 / volt / second",
+    )
+    carrier_concentration = Quantity(
+        type=np.float64,
+        description='FILL',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "1 / cm**3"
+        },
+        unit="1 / cm**3",
+    )
 
+class HallMeasurement(Measurement, EntryData):
+    """
+    A parser for hall measurement data
+    """
+    m_def = Section(
+        a_eln={
+            "hide": [
+                "steps"
+            ]
+        },
+    )
     data_file = Quantity(
         type=str,
         a_eln=dict(component='FileEditQuantity'),
-        a_browser=dict(adaptor='RawFileAdaptor'))
+        a_browser=dict(adaptor='RawFileAdaptor')
+    )
 
-    measurements = SubSection(section_def=Measurement, repeats=True)
+    measurements = SubSection(
+        section_def=GenericMeasurement,
+        repeats=True
+    )
+
+    results = SubSection(
+        section_def=HallMeasurementResult,
+        description='''
+        The result of the measurement.
+        ''',
+        repeats=True,
+    )
 
     def normalize(self, archive, logger):
         super(HallMeasurement, self).normalize(archive, logger)
@@ -53,8 +127,36 @@ class HallMeasurement(ArchiveSection):
             data_template = hall_reader.parse_txt(f.name)
             self.measurements = list(get_measurements(data_template))
 
+        for measurement in self.measurements:
+            if isinstance(measurement, VariableFieldMeasurement):
+                if (measurement.measurement_type == "Hall and Resistivity Measurement" and
+                    measurement.maximum_field == measurement.minimum_field):
+                    logger.info("This measurement was detected as a single Field Room Temperature one.")
+                    self.results.append(HallMeasurementResult(
+                        name="Room Temperature measurement",
+                        resistivity=measurement.data[0].resistivity,
+                        mobility=measurement.data[0].hall_mobility,
+                        carrier_concentration=measurement.data[0].carrier_density
+                        )
+                    )
 
-class HallInstrument(ArchiveSection):
+
+
+
+class HallMeasurements(SectionReference):
+    '''
+    A section used for referencing a HallMeasurement.
+    '''
+    reference = Quantity(
+        type=HallMeasurement,
+        description='A reference to a NOMAD `HallMeasurement` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Hall Measurement Reference',
+        ),
+    )
+
+class HallInstrument(Instrument, EntryData):
     """Representation of an instrument"""
 
     data_file = Quantity(
@@ -77,7 +179,20 @@ class HallInstrument(ArchiveSection):
             self.instrument = get_instrument(data_template, logger)
 
 
-class ActivityStep:
+class HallInstruments(SectionReference):
+    '''
+    A section used for referencing a HallInstrument.
+    '''
+    reference = Quantity(
+        type=HallInstrument,
+        description='A reference to a NOMAD `HallInstrument` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Hall Instrument Reference',
+        ),
+    )
+
+class ContactsGraftingStep(ProcessStep):
     '''Class autogenerated from yaml schema.'''
     m_def = Section(a_eln=None)
     step_type = Quantity(type=MEnum(['Pre-process',
@@ -102,11 +217,13 @@ class ActivityStep:
             "defaultDisplayUnit": "minute"})
 
 
-class ContactsGrafting(Activity, ArchiveSection):
+class ContactsGrafting(Process, EntryData):
     '''Class autogenerated from yaml schema.'''
     m_def = Section()
-    method = Quantity(type=str)
-
+    method = Quantity(
+        type=str,
+        default="Contacts Grafting (IKZ)",
+    )
     dose = Quantity(
         type=np.float64,
         description='dose',
@@ -155,11 +272,25 @@ class ContactsGrafting(Activity, ArchiveSection):
         a_eln={
             "component": "StringEditQuantity"})
 
-    steps = SubSection(section_def=ActivityStep, repeats=True)
+    steps = SubSection(section_def=ContactsGraftingStep, repeats=True)
+
+
+class ContactsGraftings(SectionReference):
+    '''
+    A section used for referencing a ContactsGrafting.
+    '''
+    reference = Quantity(
+        type=ContactsGrafting,
+        description='A reference to a NOMAD `ContactsGrafting` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Contacts Grafting Reference',
+        ),
+    )
 
 
 # this is not used yet
-class MeasurementGeometry:
+class MeasurementGeometry(ArchiveSection):
     '''Class autogenerated from yaml schema.'''
     m_def = Section()
     geometry = Quantity(
@@ -175,7 +306,7 @@ class MeasurementGeometry:
 
 
 # this is not used yet
-class MetalStack(Substance):
+class MetalStack(PureSubstance):
     '''Class autogenerated from yaml schema.'''
     m_def = Section()
     thickness = Quantity(
@@ -188,18 +319,27 @@ class MetalStack(Substance):
 
 
 # this is not used yet
-class SampleWithContacts(CompositeSystem):
+class SampleWithContacts(CompositeSystem, EntryData):
     '''Class autogenerated from yaml schema.'''
     m_def = Section()
     metal_stack = SubSection(section_def=MetalStack)
 
 
-class HallExperiment(EntryData):
+class HallExperiment(Experiment, EntryData):
     '''Class autogenerated from yaml schema.'''
 
     m_def=Section(a_eln=None)
-    instrument=SubSection(section_def=HallInstrument)
-    contacts_grafting=SubSection(section_def=ContactsGrafting)
-    hall_measurement=SubSection(section_def=HallMeasurement)
+    instrument=SubSection(
+        section_def=HallInstruments,
+        repeats=True,
+    )
+    contacts_grafting=SubSection(
+        section_def=ContactsGraftings,
+        repeats=True
+    )
+    measurement=SubSection(
+        section_def=HallMeasurements,
+        repeats=True
+    )
 
 m_package.__init_metainfo__()

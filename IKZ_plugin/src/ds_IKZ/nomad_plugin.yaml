@@ -1,5 +1,14 @@
-plugin_type: schema
-name: NOMAD's example schema plugin
+plugin_type: parser
+name: NOMAD DS IKZ schema and parser plugin
 description: |
-  This is a simple hello world schema. This is meant as a template.
-  Fork the github project to create your own schemas.
+  This is a schema and parser for DS IKZ
+mainfile_name_re: ^.+\.csv$
+mainfile_mime_re: "text/plain"
+# mainfile_contents_dict:
+#   {
+#     "Overview": { "__has_all_keys": ["Sample", "Substrate T", "VI III Ratio"] },
+#     "Substrate": { "__has_all_keys": ["Substrates", "Orientation"] },
+#     "GrowthRun": { "__has_all_keys": ["Name", "Flow Metal Carrier", "Flow Oxydant Carrier"] },
+#   }
+parser_class_name: ds_IKZ.DSParserIKZ
+code_name: movpe DS IKZ Parser
