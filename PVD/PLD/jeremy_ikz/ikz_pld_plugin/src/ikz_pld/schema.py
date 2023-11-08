@@ -544,7 +544,6 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         '''
-        super(IKZPulsedLaserDeposition, self).normalize(archive, logger)
         if self.data_log and self.recipe_log:
             import pandas as pd
             import numpy as np
@@ -680,6 +679,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                 self.samples = [CompositeSystemReference(
                     reference=self.steps[-1].substrate[0].substrate,
                 )]
+        super(IKZPulsedLaserDeposition, self).normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
