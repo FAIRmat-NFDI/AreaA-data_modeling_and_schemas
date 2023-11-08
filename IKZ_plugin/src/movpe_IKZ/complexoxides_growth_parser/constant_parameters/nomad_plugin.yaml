@@ -1,0 +1,13 @@
+plugin_type: parser #schema
+name: NOMAD complex oxides growth movpe IKZ schema and parser plugin
+description: |
+  This is a schema and parser for complex oxides growth movpe IKZ
+mainfile_name_re: ^.+\.xlsx$
+mainfile_mime_re: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+mainfile_contents_dict:
+  {
+    "Overview": { "__has_all_keys": ["Activity ID"] },
+   # "Constant Parameters": { "__has_all_keys": ["Step", "Reason", "Step Description", "Duration"] },
+  }
+parser_class_name: movpe_IKZ.complexoxides_growth_parser.constant_parameters.MovpeComplexOxidesIKZParser
+code_name: complex oxides growth movpe IKZ parser

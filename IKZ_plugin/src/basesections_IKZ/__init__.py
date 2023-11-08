@@ -1,14 +1,25 @@
 import json
 
 from nomad.metainfo import (
-    Package, Quantity, SubSection, Section)
-from nomad.datamodel.data import EntryData
+    Package, Quantity, SubSection, Section, Category)
+from nomad.datamodel.data import EntryData, EntryDataCategory
 #from nomad.datamodel.metainfo.workflow import Link
 from nomad.datamodel.metainfo.eln import Entity, Activity, SampleID
 from nomad.datamodel.util import parse_path
 
 
 m_package = Package(name='basesections_IKZ')
+
+class IKZMOVPECategory(EntryDataCategory):
+    m_def = Category(label='IKZ MOVPE', categories=[EntryDataCategory])
+
+
+class IKZDSCategory(EntryDataCategory):
+    m_def = Category(label='IKZ Directional Solidification', categories=[EntryDataCategory])
+
+
+class IKZHallCategory(EntryDataCategory):
+    m_def = Category(label='IKZ Hall', categories=[EntryDataCategory])
 
 
 # class CollectionOfSystems(Entity, EntryData):
@@ -21,11 +32,11 @@ m_package = Package(name='basesections_IKZ')
 #         'All the links to sections that represent the members of this batch.'))
 
 
-def create_archive(entry_dict, context, file_name):
-    if not context.raw_path_exists(file_name):
-        with context.raw_file(file_name, 'w') as outfile:
-            json.dump(entry_dict, outfile)
-        context.process_updated_raw_file(file_name)
+# def create_archive(entry_dict, context, file_name):
+#     if not context.raw_path_exists(file_name):
+#         with context.raw_file(file_name, 'w') as outfile:
+#             json.dump(entry_dict, outfile)
+#         context.process_updated_raw_file(file_name)
 
 
 # class SampleCut(EntryData, Activity):

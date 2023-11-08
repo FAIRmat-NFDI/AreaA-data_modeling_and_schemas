@@ -57,7 +57,7 @@ class RawFile(EntryData):
     )
 
 
-class MovpeComplexOxidesIKZParser(MatchingParser):
+class MovpeDepositionControlIKZParser(MatchingParser):
     def __init__(self):
         super().__init__(
             name="NOMAD complex oxides growth movpe IKZ schema and parser plugin",
@@ -90,3 +90,4 @@ class MovpeComplexOxidesIKZParser(MatchingParser):
             constant_parameters_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
         )
         archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"
+
