@@ -36,15 +36,14 @@ from nomad_material_processing.physical_vapor_deposition import (
     PVDSubstrateTemperature,
     PulsedLaserDeposition,
     PLDStep,
+    PLDTarget,
+    PLDTargetSource,
 )
 from nomad_material_processing.utils import (
     create_archive,
 )
 from structlog.stdlib import (
     BoundLogger,
-)
-from nomad.units import (
-    ureg,
 )
 from nomad.metainfo import (
     Package,
@@ -61,10 +60,10 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     BrowserAnnotation,
     SectionProperties,
+    ELNComponentEnum,
 )
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
-    PureSubstance,
     PureSubstanceComponent,
     PubChemPureSubstanceSection,
     ReadableIdentifiers,
@@ -82,6 +81,16 @@ m_package = Package(name='IKZ PLD')
 
 class IKZPLDCategory(EntryDataCategory):
     m_def = Category(label='IKZ Pulsed Laser Deposition', categories=[EntryDataCategory])
+
+
+class IKZPLDTarget(PLDTarget, EntryData):
+    '''
+    A section for describing a target used for pulsed laser deposition at IKZ Berlin.
+    '''
+    m_def=Section(
+        categories=[IKZPLDCategory],
+        label='Target',
+    )
 
 
 class IKZPLDPossibleSubstrate(CompositeSystem):
@@ -458,6 +467,12 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             component='ReferenceEditQuantity',
         ),
     )
+    target = Quantity(
+        type=IKZPLDTarget,
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.ReferenceEditQuantity,
+        )
+    )
     attenuated_laser_energy = Quantity(
         type=float,
         unit='joule',
@@ -629,8 +644,12 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     spot_size=self.laser_spot_size.magnitude,
                     pulses=row['pulses'],
                 )
+                target_source = PLDTargetSource(
+                    material=self.target
+                )
                 source = PLDSource(
                     evaporation_source=evaporation_source,
+                    material_source=target_source,
                 )
                 substrate = PVDSubstrate(
                     temperature=PVDSubstrateTemperature(
