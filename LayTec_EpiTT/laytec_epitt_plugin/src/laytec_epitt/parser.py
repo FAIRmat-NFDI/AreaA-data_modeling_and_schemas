@@ -20,6 +20,7 @@ from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
     Quantity,
+    Section
 )
 from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
@@ -31,9 +32,18 @@ from nomad.datamodel.data import (
 
 #from nomad_material_processing.utils import create_archive
 from nomad_measurements.utils import create_archive
-from laytec_epitt.schema import LayTec_EpiTT_Measurement #HZBUnoldLabThermalEvaporation
+from laytec_epitt.schema import (
+    LayTec_EpiTT_Measurement,
+    IKZLayTecEpiTTCategory
+)
 
-class LAYTECEPITTFile(EntryData):
+class LayTecEpiTTFile(EntryData):
+    """
+    Contains the raw file from LayTecEpiTT in situ monitoring
+    """
+    m_def = Section(
+        categories=[IKZLayTecEpiTTCategory]
+    )
     measurement = Quantity(
         type=LayTec_EpiTT_Measurement,
         a_eln=ELNAnnotation(
@@ -58,5 +68,5 @@ class EpiTTParser(MatchingParser):
         entry.data_file = data_file
         file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = LAYTECEPITTFile(measurement=create_archive(entry,archive,file_name))
+        archive.data = LayTecEpiTTFile(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' measurement file'

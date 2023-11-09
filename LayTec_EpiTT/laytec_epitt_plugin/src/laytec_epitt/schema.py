@@ -145,7 +145,7 @@ class MeasurementSettings(ArchiveSection):
         description='RUNTYPE_NAME',
         )
 
-class LayTecEpiTT(InSituMeasurement ):
+class LayTecEpiTT(InSituMeasurement):
     '''
     LayTec's EpiTT is an emissivity-corrected pyrometer and
     reflectance measurement for in-situ measurement during
