@@ -91,8 +91,8 @@ class MovpeIMEMParser(MatchingParser):
             logger,
         )
 
+        tic = perf_counter()
         while True:
-            tic = perf_counter()
             search_result = search(
                 owner="all",
                 query={"results.eln.lab_ids:any": [grown_sample_id]},

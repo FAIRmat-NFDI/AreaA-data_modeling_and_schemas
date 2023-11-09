@@ -87,8 +87,8 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             )
 
         grown_sample_ids = list(set(grown_sample_ids))  # remove duplicates
+        tic = perf_counter()
         while True:
-            tic = perf_counter()
             search_result = search(
                 owner="all",
                 query={"results.eln.lab_ids:any": grown_sample_ids},
@@ -125,8 +125,8 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             logger
         )
         #archive.m_context.process_updated_raw_file(file_name)
+        tic = perf_counter()
         while True:
-            tic = perf_counter()
             search_result = search(
                 owner="user",
                 query={
