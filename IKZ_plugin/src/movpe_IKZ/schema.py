@@ -1295,7 +1295,8 @@ class ComplexOxideGrowth(Process, EntryData, TableData):
         },
         more={
             "label_quantity": "growth_id"
-        }
+        },
+        categories=[IKZMOVPECategory]
     )
     data_file = Quantity(
         type=str,

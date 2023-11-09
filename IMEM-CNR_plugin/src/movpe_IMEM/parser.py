@@ -73,8 +73,9 @@ class MovpeIMEMParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         xlsx = pd.ExcelFile(mainfile)
-        growth_run_file = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Sample':str})
-        grown_sample_id = growth_run_file["Sample"][0]
+        sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Sample':str})
+        growth_run_sheet = sheet.rename(columns=lambda x: x.strip())
+        grown_sample_id = growth_run_sheet["Sample"][0]
         filetype = "yaml"
         grown_sample_filename = f"{grown_sample_id}_grownsample.archive.{filetype}"
         grown_sample_archive = EntryArchive(
@@ -113,9 +114,10 @@ class MovpeIMEMParser(MatchingParser):
                 logger.warning(f"The entry with lab_id {grown_sample_id} was not found and couldn't be referenced.")
                 break
 
-        hall_meas_file = pd.read_excel(xlsx, 'ElectroOptical', comment="#", converters={'Sample':str})
+        sheet = pd.read_excel(xlsx, 'ElectroOptical', comment="#", converters={'Sample':str})
+        hall_measurement_sheet = sheet.rename(columns=lambda x: x.strip())
         hall_meas_refs = []
-        for meas_index, hall_measurement in hall_meas_file.iterrows():
+        for meas_index, hall_measurement in hall_measurement_sheet.iterrows():
             filetype = "yaml"
             hall_meas_filename = f"{hall_measurement['Sample']}_{meas_index}_hall.archive.{filetype}"
             hall_meas_archive = EntryArchive(
@@ -150,7 +152,7 @@ class MovpeIMEMParser(MatchingParser):
         growth_run_entry = GrowthRun(
             data_file=data_file
         )
-        growth_run_filename = f'{growth_run_file["Sample"][0]}_growthrun.archive.json'
+        growth_run_filename = f'{growth_run_sheet["Sample"][0]}_growthrun.archive.json'
 
         entry = MovpeIMEMExperiment(
             data_file=data_file,
@@ -162,11 +164,11 @@ class MovpeIMEMParser(MatchingParser):
                     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, grown_sample_filename)}#data")
             ],
             hall_measurement=hall_meas_refs,
-            date=growth_run_file["Date"][0],
-            film=growth_run_file["Film"][0],
-            carrier_gas=growth_run_file["Carrier Gas"][0],
-            VI_III_ratio=growth_run_file["VI III Ratio"][0],
-            growth_time=growth_run_file["Growth Time"][0]
+            date=growth_run_sheet["Date"][0],
+            film=growth_run_sheet["Film"][0],
+            carrier_gas=growth_run_sheet["Carrier Gas"][0],
+            VI_III_ratio=growth_run_sheet["VI III Ratio"][0],
+            growth_time=growth_run_sheet["Growth Time"][0]
             )
         experiment_file_name = f'{data_file[:-5]}.archive.json'
         archive.data = GrowthFile(experiment=create_archive_ref(entry,archive,experiment_file_name))
