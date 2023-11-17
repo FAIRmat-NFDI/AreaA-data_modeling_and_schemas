@@ -21,6 +21,9 @@ from time import (
     perf_counter
 )
 import pandas as pd
+import yaml
+import json
+
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
@@ -43,8 +46,21 @@ from movpe_IKZ import (
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
+
+
+def create_archive(entry_dict, context, file_name, file_type, logger,*,bypass_check:bool=False):
+    if not context.raw_path_exists(file_name) or bypass_check:
+        with context.raw_file(file_name, 'w') as outfile:
+            if file_type == 'json':
+                json.dump(entry_dict, outfile)
+            elif file_type == 'yaml':
+                yaml.dump(entry_dict, outfile)
+        context.upload.process_updated_raw_file(file_name, allow_modify=True)
+    else:
+        logger.error(
+            f'{file_name} archive file already exists.'
+            f'If you intend to reprocess the older archive file, remove the existing one and run reprocessing again.')
 
 
 class RawFile(EntryData):
@@ -67,6 +83,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
+        data_file = mainfile.split("/")[-1]
         grown_sample_ids = []
         growth_run_file = pd.read_excel(mainfile, comment="#")
         for sample_index, grown_sample in enumerate(growth_run_file["Sample Name"]):
@@ -110,7 +127,6 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                 logger.warning(f"The entry/ies with lab_id {grown_sample_ids} was not found and couldn't be referenced.")
                 break
 
-        data_file = mainfile.split("/")[-1]
         growth_run_archive = EntryArchive(
             data=BinaryOxideGrowth(data_file=data_file),
             m_context=archive.m_context,
@@ -135,21 +151,33 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                 },
                 user_id=archive.metadata.main_author.user_id,
                 )
-            if search_result.pagination.total == len(growth_run_file["Sample Name"]): # or search_result.data['processing_errors']:  TODO !!!! check for errors !!!
+            lab_ids_current_mainfile = []
+            growth_run_current_mainfile = []
+            growth_run_current_recipe = []
+            for growth_run_query_file in search_result.data:
+                for search_quantities in growth_run_query_file['search_quantities']:
+                    if (search_quantities['path_archive'] == "data.grown_sample.lab_id" and
+                    search_quantities['str_value'] in list(growth_run_file["Sample Name"])
+                    ):
+                        lab_ids_current_mainfile.append(search_quantities['str_value'])
+                        growth_run_current_mainfile.append(
+                            f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_query_file['entry_id']}#data"
+                        )
+                        growth_run_object = BinaryOxideGrowths(
+                            name=f"{search_quantities['str_value']} growth run",
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_query_file['entry_id']}#data"
+                        )
+                        growth_run_current_recipe.append(growth_run_object)
+
+            if sorted(lab_ids_current_mainfile) == sorted(growth_run_file["Sample Name"]):
                 break
             sleep(0.1)
             toc = perf_counter()
             if toc - tic > 15:
-                logger.warning(f"The BinaryOxideGrowth entry/ies in the current upload were not found and couldn't be referenced.")
+                logger.warning("The BinaryOxideGrowth entry/ies in the current upload were not found and couldn't be referenced.")
                 break
-        if search_result.data:
-            growth_run_files = []
-            for growth_run_entry in search_result.data:
-                growth_run_files.append(
-                    f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_entry['entry_id']}#data"
-                    )
         archive.data = RawFile(
-            growth_runs=growth_run_files
+            growth_runs=growth_run_current_mainfile
         )
         archive.metadata.entry_name = data_file + "raw file"
 
@@ -159,41 +187,35 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             recipe_ids.append(recipe_experiment)  # collect all ids
         recipe_ids = list(set(recipe_ids))  # remove duplicates
 
-        for recipe_index, recipe_id in enumerate(recipe_ids):
-            filename = f"{recipe_id}_{recipe_index}.archive.{filetype}"
-            growth_run_samerecipe_files = []
-            for growth_run_file in search_result.data:
-                if growth_run_file['results']['eln']['lab_ids'][0] == recipe_id:
-                    search_result = search(
-                        owner="user",
-                        query={
-                            "results.eln.sections:any": ["BinaryOxideGrowth"],
-                            "entry_id:any": [growth_run_entry['entry_id']]
-                        },
-                        user_id=archive.metadata.main_author.user_id,
-                        )
-
-                    for search_quantities in search_result.data[0]['search_quantities']:
-                        if search_quantities['path_archive'] == "data.grown_sample.lab_id":
-                            growth_run_object_name = f"{search_quantities['str_value']} growth run"
-                    growth_run_object = BinaryOxideGrowths(
-                        name=growth_run_object_name,
-                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_file['entry_id']}#data"
-                        )
-                    growth_run_samerecipe_files.append(growth_run_object)
-            experiment_data = MovpeBinaryOxidesIKZExperiment(
-                lab_id=recipe_id,
-                growth_run=growth_run_samerecipe_files
-            )
-            experiment_archive = EntryArchive(
-                data=experiment_data,
-                m_context=archive.m_context,
-                metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
-            )
-            create_archive(
-                experiment_archive.m_to_dict(),
-                archive.m_context,
-                filename,
-                filetype,
-                logger,
-            )
+        for recipe_id in recipe_ids:
+            filename = f"{recipe_id}.archive.{filetype}"
+            if not archive.m_context.raw_path_exists(filename):
+                experiment_data = MovpeBinaryOxidesIKZExperiment(
+                    lab_id=recipe_id,
+                    growth_run=growth_run_current_recipe
+                )
+                experiment_archive = EntryArchive(
+                    data=experiment_data,
+                    #m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+                )
+                create_archive(
+                    experiment_archive.m_to_dict(),
+                    archive.m_context,
+                    filename,
+                    filetype,
+                    logger,
+                )
+            else: # the experiment file is being retrieved, extended, and overwritten
+                with archive.m_context.raw_file(filename, 'r') as experiment_file:
+                    updated_experiment = yaml.safe_load(experiment_file)
+                    for new_growth_ref in growth_run_current_recipe:
+                        updated_experiment['data']['growth_run'].append(new_growth_ref.m_to_dict())
+                create_archive(
+                    updated_experiment,
+                    archive.m_context,
+                    filename,
+                    filetype,
+                    logger,
+                    bypass_check=True
+                    )
