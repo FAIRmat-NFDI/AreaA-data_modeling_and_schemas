@@ -18,6 +18,7 @@
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
+    Section,
     MSection,
     Quantity,
 )
@@ -31,8 +32,16 @@ from nomad.datamodel.data import (
 
 from nomad_material_processing.utils import create_archive
 from movpe_IKZ import SubstrateInventory
+from basesections_IKZ import (
+    IKZMOVPECategory
+)
 
-class RawFile(EntryData):
+class RawFileSubstrateInventory(EntryData):
+    m_def = Section(
+        a_eln=None,
+        categories=[IKZMOVPECategory],
+        label = 'Raw File Substrate Inventory'
+    )
     measurement = Quantity(
         type=SubstrateInventory,
         a_eln=ELNAnnotation(
@@ -58,5 +67,5 @@ class MovpeSubstrateParser(MatchingParser):
         entry.substrate_data_file = data_file_with_path
         file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = RawFile(measurement=create_archive(entry,archive,file_name))
+        archive.data = RawFileSubstrateInventory(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' substrates file'

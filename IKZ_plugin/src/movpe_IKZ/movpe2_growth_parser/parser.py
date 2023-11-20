@@ -38,6 +38,11 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.data import (
     EntryData,
 )
+
+from nomad.datamodel.metainfo.basesections import (
+    SystemComponent
+)
+
 from basesections_IKZ import IKZMOVPE2Category
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
@@ -98,8 +103,35 @@ class Movpe2IKZParser(MatchingParser):
             filetype = "yaml"
             grown_sample_ids.append(grown_sample)  # collect all ids
             filename = f"{grown_sample}_{sample_index}.archive.{filetype}"
+            substrate_id = growth_run_file["Substrate Name"][sample_index]
+            search_result = search(
+                owner="all",
+                query={"results.eln.sections:any": [
+                        "Substrate"
+                        ],
+                        "results.eln.lab_ids:any": [
+                        substrate_id
+                        ]
+                },
+                user_id=archive.metadata.main_author.user_id,
+            )
+            if not search_result.data:
+                grown_sample_object = GrownSample(
+                    lab_id=grown_sample
+                    )
+                logger.warning(f'No Substrate entry with lab_id {substrate_id} was found, upload it and reprocess to have it referenced into the GrownSample entry with lab_id {grown_sample}')
+            if len(search_result.data) > 1:
+                logger.warning(f'Multiple Substrate entries with lab_id {substrate_id} were found, the first one was referenced into the GrownSample entry with lab_id {grown_sample}')
+            if len(search_result.data) >= 1:
+                grown_sample_object = GrownSample(
+                    lab_id=grown_sample,
+                    components=[SystemComponent(
+                        system=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
+                        )
+                    ]
+                )
             grown_sample_archive = EntryArchive(
-                data=GrownSample(lab_id=grown_sample),
+                data=grown_sample_object,
                 m_context=archive.m_context,
                 metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
             )
