@@ -1,7 +1,7 @@
 plugin_type: parser #schema
-name: complex oxides deposition control movpe IKZ
+name: deposition control movpe 1 IKZ
 description: |
-  This is a schema and parser for complex oxides growth movpe IKZ
+  This is a schema and parser for growth movpe 1 IKZ
 mainfile_name_re: ^.+\.xlsx$
 mainfile_mime_re: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 mainfile_contents_dict:
@@ -9,5 +9,5 @@ mainfile_contents_dict:
     "Sheet1": { "__has_all_keys": ["Sample ID", "Datum", "Wochentag"] },
    # "Constant Parameters": { "__has_all_keys": ["Step", "Reason", "Step Description", "Duration"] },
   }
-parser_class_name: movpe_IKZ.complexoxides_growth_parser.deposition_control.MovpeDepositionControlIKZParser
-code_name: complex oxides deposition control movpe IKZ parser
+parser_class_name: movpe_IKZ.movpe1_growth_parser.deposition_control.Movpe1DepositionControlIKZParser
+code_name: deposition control movpe 1 IKZ parser

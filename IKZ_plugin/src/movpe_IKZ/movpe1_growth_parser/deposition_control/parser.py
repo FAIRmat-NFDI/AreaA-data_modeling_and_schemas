@@ -24,6 +24,7 @@ import pandas as pd
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
+    Section,
     MSection,
     Quantity,
 )
@@ -37,19 +38,25 @@ from nomad.datamodel.data import (
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
-    MovpeComplexOxidesIKZExperiment,
-    ComplexOxideGrowths,
-    ComplexOxideGrowth,
+    Movpe1IKZExperiment,
+    Movpe1Growths,
+    Movpe1Growth,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
+from basesections_IKZ import IKZMOVPE1Category
 
-class RawFile(EntryData):
+class RawFileDepositionControl(EntryData):
+    m_def = Section(
+        a_eln=None,
+        categories=[IKZMOVPE1Category],
+        label = 'Raw File Deposition Control'
+    )
     constant_parameters_file = Quantity(
-        type=ComplexOxideGrowth,
+        type=Movpe1Growth,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -57,11 +64,11 @@ class RawFile(EntryData):
     )
 
 
-class MovpeDepositionControlIKZParser(MatchingParser):
+class Movpe1DepositionControlIKZParser(MatchingParser):
     def __init__(self):
         super().__init__(
-            name="NOMAD complex oxides growth movpe IKZ schema and parser plugin",
-            code_name="complex oxides growth movpe IKZ parser",
+            name="NOMAD growth movpe 1 IKZ schema and parser plugin",
+            code_name="growth movpe 1 IKZ parser",
             code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
             supported_compressions=["gz", "bz2", "xz"],
         )
@@ -69,13 +76,14 @@ class MovpeDepositionControlIKZParser(MatchingParser):
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         overview = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
         if len(overview["Activity ID"]) > 1:
-            logger.warning(f"Only one line expected in the Overview sheet of {data_file}")
+            logger.warning(f"Only one line expected in the Overview sheet of {data_file_with_path}")
         filetype = "yaml"
         filename = f"{overview['Activity ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
-            data=ComplexOxideGrowth(lab_id=overview["Activity ID"][0]),
+            data=Movpe1Growth(lab_id=overview["Activity ID"][0]),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
@@ -86,7 +94,7 @@ class MovpeDepositionControlIKZParser(MatchingParser):
             filetype,
             logger,
         )
-        archive.data = RawFile(
+        archive.data = RawFileDepositionControl(
             constant_parameters_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
         )
         archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"

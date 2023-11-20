@@ -29,6 +29,7 @@ from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
     Quantity,
+    Section
 )
 from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
@@ -37,12 +38,13 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.data import (
     EntryData,
 )
+from basesections_IKZ import IKZMOVPE2Category
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
-    MovpeBinaryOxidesIKZExperiment,
-    BinaryOxideGrowths,
-    BinaryOxideGrowth,
+    Movpe2IKZExperiment,
+    Movpe2Growths,
+    Movpe2Growth,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -63,9 +65,14 @@ def create_archive(entry_dict, context, file_name, file_type, logger,*,bypass_ch
             f'If you intend to reprocess the older archive file, remove the existing one and run reprocessing again.')
 
 
-class RawFile(EntryData):
+class RawFileGrowthRun(EntryData):
+    m_def = Section(
+        a_eln=None,
+        categories=[IKZMOVPE2Category],
+        label = 'Raw File Growth Run'
+    )
     growth_runs = Quantity(
-        type=BinaryOxideGrowth,
+        type=Movpe2Growth,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -73,17 +80,18 @@ class RawFile(EntryData):
     )
 
 
-class MovpeBinaryOxidesIKZParser(MatchingParser):
+class Movpe2IKZParser(MatchingParser):
     def __init__(self):
         super().__init__(
-            name="NOMAD binary oxides growth movpe IKZ schema and parser plugin",
-            code_name="binary oxides growth movpe IKZ parser",
+            name="NOMAD growth movpe 2 IKZ schema and parser plugin",
+            code_name="growth movpe 2 IKZ parser",
             code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
             supported_compressions=["gz", "bz2", "xz"],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split("/")[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         grown_sample_ids = []
         growth_run_file = pd.read_excel(mainfile, comment="#")
         for sample_index, grown_sample in enumerate(growth_run_file["Sample Name"]):
@@ -128,7 +136,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                 break
 
         growth_run_archive = EntryArchive(
-            data=BinaryOxideGrowth(data_file=data_file),
+            data=Movpe2Growth(data_file=data_file_with_path),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
@@ -146,7 +154,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             search_result = search(
                 owner="user",
                 query={
-                    "results.eln.sections:any": ["BinaryOxideGrowth"],
+                    "results.eln.sections:any": ["Movpe2Growth"],
                     "upload_id:any": [archive.m_context.upload_id]
                 },
                 user_id=archive.metadata.main_author.user_id,
@@ -163,7 +171,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
                         growth_run_current_mainfile.append(
                             f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_query_file['entry_id']}#data"
                         )
-                        growth_run_object = BinaryOxideGrowths(
+                        growth_run_object = Movpe2Growths(
                             name=f"{search_quantities['str_value']} growth run",
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_query_file['entry_id']}#data"
                         )
@@ -174,9 +182,9 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
             sleep(0.1)
             toc = perf_counter()
             if toc - tic > 15:
-                logger.warning("The BinaryOxideGrowth entry/ies in the current upload were not found and couldn't be referenced.")
+                logger.warning("The Movpe2Growth entry/ies in the current upload were not found and couldn't be referenced.")
                 break
-        archive.data = RawFile(
+        archive.data = RawFileGrowthRun(
             growth_runs=growth_run_current_mainfile
         )
         archive.metadata.entry_name = data_file + "raw file"
@@ -190,7 +198,7 @@ class MovpeBinaryOxidesIKZParser(MatchingParser):
         for recipe_id in recipe_ids:
             filename = f"{recipe_id}.archive.{filetype}"
             if not archive.m_context.raw_path_exists(filename):
-                experiment_data = MovpeBinaryOxidesIKZExperiment(
+                experiment_data = Movpe2IKZExperiment(
                     lab_id=recipe_id,
                     growth_run=growth_run_current_recipe
                 )

@@ -53,9 +53,10 @@ class MovpeSubstrateParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         entry = SubstrateInventory()
-        entry.substrate_data_file = data_file
+        entry.substrate_data_file = data_file_with_path
         file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)
         archive.data = RawFile(measurement=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' growth file'
+        archive.metadata.entry_name = data_file + ' substrates file'

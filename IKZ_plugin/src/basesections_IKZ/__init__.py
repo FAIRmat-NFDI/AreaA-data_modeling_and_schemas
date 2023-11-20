@@ -14,6 +14,14 @@ class IKZMOVPECategory(EntryDataCategory):
     m_def = Category(label='IKZ MOVPE', categories=[EntryDataCategory])
 
 
+class IKZMOVPE1Category(EntryDataCategory):
+    m_def = Category(label='IKZ MOVPE 1', categories=[EntryDataCategory])
+
+
+class IKZMOVPE2Category(EntryDataCategory):
+    m_def = Category(label='IKZ MOVPE 2', categories=[EntryDataCategory])
+
+
 class IKZDSCategory(EntryDataCategory):
     m_def = Category(label='IKZ Directional Solidification', categories=[EntryDataCategory])
 
