@@ -73,6 +73,8 @@ class MovpeIMEMParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         xlsx = pd.ExcelFile(mainfile)
+        data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Sample':str})
         growth_run_sheet = sheet.rename(columns=lambda x: x.strip())
         grown_sample_id = growth_run_sheet["Sample"][0]
@@ -147,15 +149,13 @@ class MovpeIMEMParser(MatchingParser):
                     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, hall_meas_filename)}#data")
                     )
 
-        data_file = mainfile.split('/')[-1]
-
         growth_run_entry = GrowthRun(
-            data_file=data_file
+            data_file=data_file_with_path
         )
         growth_run_filename = f'{growth_run_sheet["Sample"][0]}_growthrun.archive.json'
 
         entry = MovpeIMEMExperiment(
-            data_file=data_file,
+            data_file=data_file_with_path,
             growth_run=GrowthRuns(
                 reference=create_archive_ref(growth_run_entry,archive,growth_run_filename)
             ),
@@ -172,4 +172,4 @@ class MovpeIMEMParser(MatchingParser):
             )
         experiment_file_name = f'{data_file[:-5]}.archive.json'
         archive.data = GrowthFile(experiment=create_archive_ref(entry,archive,experiment_file_name))
-        archive.metadata.entry_name = data_file + ' growth file'
+        archive.metadata.entry_name = data_file + ' experiment file'

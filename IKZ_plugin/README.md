@@ -80,6 +80,10 @@ source .pyenv/bin/activate
 pip install -r requirements.txt --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
 ```
 
+to ensure installation of all the packages required, make sure in to install:
+
+pip install nomad-lab[parsing, infrastructure]
+
 **Note!**
 Until we have an official pypi NOMAD release with the plugins functionality. Make
 sure to include NOMAD's internal package registry (e.g. via `--index-url`). Follow the instructions

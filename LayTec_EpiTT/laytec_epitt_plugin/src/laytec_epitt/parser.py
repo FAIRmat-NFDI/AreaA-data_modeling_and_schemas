@@ -64,9 +64,10 @@ class EpiTTParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         entry = LayTec_EpiTT_Measurement.m_from_dict(LayTec_EpiTT_Measurement.m_def.a_template)#()#.m_from_dict(LayTec_EpiTT_Measurement.m_def.a_template)
-        entry.data_file = data_file
+        entry.data_file = data_file_with_path
         file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
         archive.data = LayTecEpiTTFile(measurement=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' measurement file'
+        archive.metadata.entry_name = data_file + ' in situ measurement file'
