@@ -45,8 +45,8 @@ class CzParser(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='NOMAD Cz IKZ schema and parser plugin',
-            code_name= 'Cz IKZ Parser',
+            name='Czochralski IKZ',
+            code_name= 'Czochralski IKZ',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )

@@ -45,8 +45,8 @@ class DSParserIKZ(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='NOMAD DS IKZ schema and parser plugin',
-            code_name= 'movpe DS IKZ Parser',
+            name='Directional Solidification IKZ',
+            code_name= 'Directional Solidification IKZ',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )

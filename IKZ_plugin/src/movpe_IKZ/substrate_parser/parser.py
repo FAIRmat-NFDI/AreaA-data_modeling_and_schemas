@@ -45,8 +45,8 @@ class MovpeSubstrateParser(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='NOMAD movpe substrate IKZ schema and parser plugin',
-            code_name= 'movpe substrate IKZ Parser',
+            name='MOVPE Substrate IKZ',
+            code_name= 'MOVPE Substrate IKZ',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )

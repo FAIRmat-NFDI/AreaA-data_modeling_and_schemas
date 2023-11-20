@@ -54,8 +54,9 @@ class SIMSParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         entry = RTGSIMSMeasurement.m_from_dict(RTGSIMSMeasurement.m_def.a_template)
-        entry.data_file = data_file
+        entry.data_file = data_file_with_path
         file_name = f'{data_file[:-9]}.archive.json'
         #entry.normalize(archive, logger)
         archive.data = RTGSIMSDPFile(measurement=create_archive(entry,archive,file_name))

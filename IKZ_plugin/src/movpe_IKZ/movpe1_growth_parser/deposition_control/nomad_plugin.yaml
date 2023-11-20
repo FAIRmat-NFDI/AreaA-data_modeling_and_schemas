@@ -1,5 +1,5 @@
 plugin_type: parser #schema
-name: deposition control movpe 1 IKZ
+name: MOVPE 1 Deposition Control IKZ
 description: |
   This is a schema and parser for growth movpe 1 IKZ
 mainfile_name_re: ^.+\.xlsx$
@@ -10,4 +10,4 @@ mainfile_contents_dict:
    # "Constant Parameters": { "__has_all_keys": ["Step", "Reason", "Step Description", "Duration"] },
   }
 parser_class_name: movpe_IKZ.movpe1_growth_parser.deposition_control.Movpe1DepositionControlIKZParser
-code_name: deposition control movpe 1 IKZ parser
+code_name: MOVPE 1 Deposition Control IKZ

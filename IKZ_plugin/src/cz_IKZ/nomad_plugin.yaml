@@ -1,8 +1,8 @@
 plugin_type: parser #schema
-name: NOMAD Cz IKZ schema and parser plugin
+name: Czochralski IKZ
 description: |
   This is a schema and parser for Cz IKZ
 mainfile_name_re: ^.+\.multilog.csv$ # added
 mainfile_mime_re: 'text/csv'
 parser_class_name: cz_IKZ.CzParser # added
-code_name: Cz IKZ Parser
+code_name: Czochralski IKZ

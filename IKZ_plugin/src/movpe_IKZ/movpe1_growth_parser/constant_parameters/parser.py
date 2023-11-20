@@ -67,8 +67,8 @@ class RawFileConstantParameters(EntryData):
 class Movpe1IKZParser(MatchingParser):
     def __init__(self):
         super().__init__(
-            name="NOMAD growth movpe 1 IKZ schema and parser plugin",
-            code_name="growth movpe 1 IKZ parser",
+            name="MOVPE 1 IKZ",
+            code_name="MOVPE 1 IKZ",
             code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
             supported_compressions=["gz", "bz2", "xz"],
         )
