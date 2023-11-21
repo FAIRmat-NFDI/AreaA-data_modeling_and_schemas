@@ -79,13 +79,13 @@ class ParserMovpe1IKZ(MatchingParser):
         data_file_with_path = mainfile.split("raw/")[-1]
         sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
         overview = sheet.rename(columns=lambda x: x.strip())
-        if len(overview["Activity ID"]) > 1:
+        if len(overview["Constant Parameters ID"]) > 1:
             logger.warning(f"Only one line expected in the Overview sheet of {data_file_with_path}")
         filetype = "yaml"
-        filename = f"{overview['Activity ID'][0]}_constant_parameters_growth.archive.{filetype}"
+        filename = f"{overview['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
             data=GrowthMovpe1IKZ(
-                lab_id=overview["Activity ID"][0],
+                lab_id=overview["Constant Parameters ID"][0],
                 data_file=data_file_with_path
                 ),
             m_context=archive.m_context,
@@ -101,5 +101,5 @@ class ParserMovpe1IKZ(MatchingParser):
         archive.data = RawFileConstantParameters(
             constant_parameters_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
         )
-        archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"
+        archive.metadata.entry_name = overview["Constant Parameters ID"][0] + "constant parameters file"
 

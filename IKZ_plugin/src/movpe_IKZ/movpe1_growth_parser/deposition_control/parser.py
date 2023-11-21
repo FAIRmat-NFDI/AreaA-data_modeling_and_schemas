@@ -39,6 +39,7 @@ from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
     ExperimentMovpe1IKZ,
+    DepositionControlMovpe1IKZ,
     GrowthsMovpe1IKZ,
     GrowthMovpe1IKZ,
     GrownSample
@@ -55,7 +56,7 @@ class RawFileDepositionControl(EntryData):
         categories=[IKZMOVPE1Category],
         label = 'Raw File Deposition Control'
     )
-    constant_parameters_file = Quantity(
+    deposition_control_file = Quantity(
         type=GrowthMovpe1IKZ,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
@@ -77,26 +78,24 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
-        overview = sheet.rename(columns=lambda x: x.strip())
-        if len(overview["Activity ID"]) > 1:
-            logger.warning(f"Only one line expected in the Overview sheet of {data_file_with_path}")
+        sheet = pd.read_excel(xlsx, 'Deposition Control', comment="#")
+        dep_control = sheet.rename(columns=lambda x: x.strip())
         filetype = "yaml"
-        filename = f"{overview['Activity ID'][0]}_constant_parameters_growth.archive.{filetype}"
-        growth_archive = EntryArchive(
-            data=GrowthMovpe1IKZ(lab_id=overview["Activity ID"][0]),
+        filename = f"{dep_control['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
+        dep_control_archive = EntryArchive(
+            data=DepositionControlMovpe1IKZ(data_file=data_file_with_path),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
         create_archive(
-            growth_archive.m_to_dict(),
+            dep_control_archive.m_to_dict(),
             archive.m_context,
             filename,
             filetype,
             logger,
         )
         archive.data = RawFileDepositionControl(
-            constant_parameters_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
+            deposition_control_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
         )
-        archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"
+        #archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"
 
