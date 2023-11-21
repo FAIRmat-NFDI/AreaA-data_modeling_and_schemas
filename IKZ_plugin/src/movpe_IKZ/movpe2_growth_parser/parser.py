@@ -47,9 +47,9 @@ from basesections_IKZ import IKZMOVPE2Category
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
-    Movpe2IKZExperiment,
-    Movpe2Growths,
-    Movpe2Growth,
+    ExperimentMovpe2IKZ,
+    GrowthsMovpe2IKZ,
+    GrowthMovpe2IKZ,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -77,7 +77,7 @@ class RawFileGrowthRun(EntryData):
         label = 'Raw File Growth Run'
     )
     growth_runs = Quantity(
-        type=Movpe2Growth,
+        type=GrowthMovpe2IKZ,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -85,7 +85,7 @@ class RawFileGrowthRun(EntryData):
     )
 
 
-class Movpe2IKZParser(MatchingParser):
+class ParserMovpe2IKZ(MatchingParser):
     def __init__(self):
         super().__init__(
             name="MOVPE 2 IKZ",
@@ -168,7 +168,7 @@ class Movpe2IKZParser(MatchingParser):
                 break
 
         growth_run_archive = EntryArchive(
-            data=Movpe2Growth(data_file=data_file_with_path),
+            data=GrowthMovpe2IKZ(data_file=data_file_with_path),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
@@ -203,7 +203,7 @@ class Movpe2IKZParser(MatchingParser):
                         growth_run_current_mainfile.append(
                             f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_query_file['entry_id']}#data"
                         )
-                        growth_run_object = Movpe2Growths(
+                        growth_run_object = GrowthsMovpe2IKZ(
                             name=f"{search_quantities['str_value']} growth run",
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{growth_run_query_file['entry_id']}#data"
                         )
@@ -214,7 +214,7 @@ class Movpe2IKZParser(MatchingParser):
             sleep(0.1)
             toc = perf_counter()
             if toc - tic > 15:
-                logger.warning("The Movpe2Growth entry/ies in the current upload were not found and couldn't be referenced.")
+                logger.warning("The GrowthMovpe2IKZ entry/ies in the current upload were not found and couldn't be referenced.")
                 break
         archive.data = RawFileGrowthRun(
             growth_runs=growth_run_current_mainfile
@@ -230,7 +230,7 @@ class Movpe2IKZParser(MatchingParser):
         for recipe_id in recipe_ids:
             filename = f"{recipe_id}.archive.{filetype}"
             if not archive.m_context.raw_path_exists(filename):
-                experiment_data = Movpe2IKZExperiment(
+                experiment_data = ExperimentMovpe2IKZ(
                     lab_id=recipe_id,
                     growth_run=growth_run_current_recipe
                 )

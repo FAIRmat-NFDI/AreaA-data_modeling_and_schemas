@@ -9,5 +9,5 @@ mainfile_contents_dict:
     "Sheet1": { "__has_all_keys": ["Sample ID", "Datum", "Wochentag"] },
    # "Constant Parameters": { "__has_all_keys": ["Step", "Reason", "Step Description", "Duration"] },
   }
-parser_class_name: movpe_IKZ.movpe1_growth_parser.deposition_control.Movpe1DepositionControlIKZParser
+parser_class_name: movpe_IKZ.movpe1_growth_parser.deposition_control.ParserMovpe1DepositionControlIKZ
 code_name: MOVPE 1 Deposition Control IKZ

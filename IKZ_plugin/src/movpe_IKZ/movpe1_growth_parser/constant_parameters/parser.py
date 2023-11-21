@@ -38,9 +38,9 @@ from nomad.datamodel.data import (
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
-    Movpe1IKZExperiment,
-    Movpe1Growths,
-    Movpe1Growth,
+    ExperimentMovpe1IKZ,
+    GrowthsMovpe1IKZ,
+    GrowthMovpe1IKZ,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -56,7 +56,7 @@ class RawFileConstantParameters(EntryData):
         label = 'Raw File Constant Parameters'
     )
     constant_parameters_file = Quantity(
-        type=Movpe1Growth,
+        type=GrowthMovpe1IKZ,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -64,7 +64,7 @@ class RawFileConstantParameters(EntryData):
     )
 
 
-class Movpe1IKZParser(MatchingParser):
+class ParserMovpe1IKZ(MatchingParser):
     def __init__(self):
         super().__init__(
             name="MOVPE 1 IKZ",
@@ -75,15 +75,19 @@ class Movpe1IKZParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         xlsx = pd.ExcelFile(mainfile)
-        data_file = mainfile.split("/")[-1]
+        data_file = mainfile.split('/')[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        overview = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
+        sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
+        overview = sheet.rename(columns=lambda x: x.strip())
         if len(overview["Activity ID"]) > 1:
             logger.warning(f"Only one line expected in the Overview sheet of {data_file_with_path}")
         filetype = "yaml"
         filename = f"{overview['Activity ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
-            data=Movpe1Growth(lab_id=overview["Activity ID"][0]),
+            data=GrowthMovpe1IKZ(
+                lab_id=overview["Activity ID"][0],
+                data_file=data_file_with_path
+                ),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )

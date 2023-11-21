@@ -38,9 +38,9 @@ from nomad.datamodel.data import (
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
-    Movpe1IKZExperiment,
-    Movpe1Growths,
-    Movpe1Growth,
+    ExperimentMovpe1IKZ,
+    GrowthsMovpe1IKZ,
+    GrowthMovpe1IKZ,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -56,7 +56,7 @@ class RawFileDepositionControl(EntryData):
         label = 'Raw File Deposition Control'
     )
     constant_parameters_file = Quantity(
-        type=Movpe1Growth,
+        type=GrowthMovpe1IKZ,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -64,7 +64,7 @@ class RawFileDepositionControl(EntryData):
     )
 
 
-class Movpe1DepositionControlIKZParser(MatchingParser):
+class ParserMovpe1DepositionControlIKZ(MatchingParser):
     def __init__(self):
         super().__init__(
             name="MOVPE 1 Deposition Control IKZ",
@@ -77,13 +77,14 @@ class Movpe1DepositionControlIKZParser(MatchingParser):
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        overview = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
+        sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
+        overview = sheet.rename(columns=lambda x: x.strip())
         if len(overview["Activity ID"]) > 1:
             logger.warning(f"Only one line expected in the Overview sheet of {data_file_with_path}")
         filetype = "yaml"
         filename = f"{overview['Activity ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
-            data=Movpe1Growth(lab_id=overview["Activity ID"][0]),
+            data=GrowthMovpe1IKZ(lab_id=overview["Activity ID"][0]),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
