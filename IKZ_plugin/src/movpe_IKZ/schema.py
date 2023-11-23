@@ -3,6 +3,9 @@ import re
 from datetime import datetime as dt
 import pandas as pd
 import json
+import plotly.express as px
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 
 from nomad.datamodel.metainfo.basesections import (
     ElementalComposition,
@@ -57,6 +60,8 @@ from nomad.datamodel.datamodel import (
 )
 
 from nomad.utils import hash
+
+from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
 from laytec_epitt import LayTec_EpiTT_Measurement
 from lakeshore import HallMeasurement
@@ -1400,8 +1405,9 @@ class FilamentTemperature(ArchiveSection):
         },
         unit="minute",
     )
-    filament_temperature = Quantity(
+    value = Quantity(
         type=np.float64,
+        label="Filament Temperature",
         description='FILL THE DESCRIPTION',
         a_tabular={
             "name": "Deposition Control/Fil T"
@@ -1414,11 +1420,270 @@ class FilamentTemperature(ArchiveSection):
     )
 
 
-class DepositionControlMovpe1IKZ(Process, EntryData, TableData):
+class ShaftTemperature(ArchiveSection):
+    '''
+    Shaft Tempearture vs. Time
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/Shaft time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Shaft Temperature",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/Shaft T"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"
+        },
+        unit="celsius",
+    )
+
+
+class OxygenTemperature(ArchiveSection):
+    '''
+    Oxygen Tempearture vs. Time
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/Oxygen time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Oxygen Temperature",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/Oxygen T"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"
+        },
+        unit="celsius",
+    )
+
+
+class FlashEvaporator1Pressure(ArchiveSection):
+    '''
+    Flash Evaporator 1 vs. Time
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/BP FE1 time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Flash Evaporator 1 Back Pressure",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/BP FE1"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"
+        },
+        unit="celsius",
+    )
+
+
+class FlashEvaporator2Pressure(ArchiveSection):
+    '''
+    Flash Evaporator 2 vs. Time
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/BP FE2 time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Flash Evaporator 2 Back Pressure",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/BP FE2"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"
+        },
+        unit="celsius",
+    )
+
+
+class ThrottleValve(ArchiveSection):
+    '''
+    Throttle Valve that controls chamber pressure
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/TV time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Throttle Valve",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/throttle valve"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "mbar"
+        },
+        unit="mbar",
+    )
+
+
+class ChamberPressure(ArchiveSection):
+    '''
+    Throttle Valve that controls chamber pressure
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/reactor time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Chamber Pressure",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/Pressure"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "mbar"
+        },
+        unit="mbar",
+    )
+
+
+class Rotation(ArchiveSection):
+    '''
+    Throttle Valve that controls chamber pressure
+    '''
+    m_def = Section(
+        more={
+            "label_quantity": "time"
+        },
+    )
+    time = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/rot time"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "minute"
+        },
+        unit="minute",
+    )
+    value = Quantity(
+        type=np.float64,
+        label="Rotation",
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Deposition Control/rotation"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "rpm"
+        },
+        unit="rpm",
+    )
+
+
+class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
     '''
     Class autogenerated from yaml schema.
     '''
     m_def = Section(
+        a_eln={
+            "hide": [
+                "instruments",
+                "steps",
+                "samples"
+            ]
+        },
         more={
             "label_quantity": "lab_id"
         },
@@ -1473,14 +1738,89 @@ class DepositionControlMovpe1IKZ(Process, EntryData, TableData):
             "label": "Grown Sample ID"
         },
     )
+    chamber_pressure = SubSection(
+        section_def=ChamberPressure,
+        repeats=True,
+    )
     filament_temperature = SubSection(
         section_def=FilamentTemperature,
         repeats=True,
     )
-    # grown_sample = SubSection(
-    #     section_def=GrownSamples,
-    #     # repeats=True
-    # )
+    flash_evaporator1_pressure = SubSection(
+        section_def=FlashEvaporator1Pressure,
+        repeats=True,
+    )
+    flash_evaporator2_pressure = SubSection(
+        section_def=FlashEvaporator2Pressure,
+        repeats=True,
+    )
+    oxygen_temperature = SubSection(
+        section_def=OxygenTemperature,
+        repeats=True,
+    )
+    rotation = SubSection(
+        section_def=Rotation,
+        repeats=True,
+    )
+    shaft_temperature = SubSection(
+        section_def=ShaftTemperature,
+        repeats=True,
+    )
+    throttle_valve = SubSection(
+        section_def=ThrottleValve,
+        repeats=True,
+    )
+
+    def normalize(self, archive, logger):
+
+        super(DepositionControlMovpe1IKZ, self).normalize(archive, logger)
+
+        max_rows = 4
+        max_cols = 2
+        figure1 = make_subplots(rows=max_rows, cols=max_cols, subplot_titles=['Chamber Pressure',
+                                                                              'Filament T',
+                                                                              'FE1 Back Pressure',
+                                                                              'FE2 Back Pressure',
+                                                                              'Oxygen T',
+                                                                              'Rotation',
+                                                                              'Shaft T',
+                                                                              'Throttle Valve'
+                                                                              ]
+                                ) #, shared_yaxes=True)
+        arrays = {"chamber_pressure":
+                    {"obj": self.chamber_pressure, "x": [], "y": []},
+                  "filament_temp":
+                    {"obj": self.filament_temperature, "x": [], "y": []},
+                  "flash_evap1":
+                    {"obj": self.flash_evaporator1_pressure, "x": [], "y": []},
+                  "flash_evap2":
+                    {"obj": self.flash_evaporator2_pressure, "x": [], "y": []},
+                  "oxy_temp":
+                    {"obj": self.oxygen_temperature, "x": [], "y": []},
+                  "rotation":
+                    {"obj": self.rotation, "x": [], "y": []},
+                  "shaft_temp":
+                    {"obj": self.shaft_temperature, "x": [], "y": []},
+                  "throttle_valve":
+                    {"obj": self.throttle_valve, "x": [], "y": []},
+                  }
+        row = 1
+        col = 0
+        for logged_par in sorted(arrays):
+            for logged_par_instance in arrays[logged_par]["obj"]:
+                if logged_par_instance.value is not None: # bool(hasattr(logged_par_instance, "time")) and bool(hasattr(logged_par_instance, "value")):
+                    arrays[logged_par]["x"].append(logged_par_instance.time.m)
+                    arrays[logged_par]["y"].append(logged_par_instance.value.m)
+            scatter = px.scatter(x=arrays[logged_par]["x"], y=arrays[logged_par]["y"])
+            if col == max_cols:
+                row += 1
+                col = 0
+            if col < max_cols:
+                col += 1
+            figure1.add_trace(scatter.data[0], row=row, col=col)
+
+        figure1.update_layout(height=2400, width=2400, title_text="Creating Subplots in Plotly")
+        self.figures.append(PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json()))
 
 
 class GrowthsMovpe1IKZ(SectionReference):

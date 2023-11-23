@@ -21,6 +21,7 @@ from time import (
     perf_counter
 )
 import pandas as pd
+import re
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
@@ -78,8 +79,8 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        sheet = pd.read_excel(xlsx, 'Deposition Control', comment="#")
-        dep_control = sheet.rename(columns=lambda x: x.strip())
+        dep_control = pd.read_excel(xlsx, 'Deposition Control', comment="#")
+        dep_control.columns = [re.sub(r'\s+', ' ', col.strip()) for col in dep_control.columns]
         filetype = "yaml"
         filename = f"{dep_control['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
         dep_control_archive = EntryArchive(
