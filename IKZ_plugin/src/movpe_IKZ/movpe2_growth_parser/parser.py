@@ -186,7 +186,7 @@ class ParserMovpe2IKZ(MatchingParser):
             search_result = search(
                 owner="user",
                 query={
-                    "results.eln.sections:any": ["Movpe2Growth"],
+                    "results.eln.sections:any": ["GrowthMovpe2IKZ"],
                     "upload_id:any": [archive.m_context.upload_id]
                 },
                 user_id=archive.metadata.main_author.user_id,
