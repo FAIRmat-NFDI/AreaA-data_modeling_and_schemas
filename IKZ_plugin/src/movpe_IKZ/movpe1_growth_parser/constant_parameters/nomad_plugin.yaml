@@ -6,7 +6,7 @@ mainfile_name_re: ^.+\.xlsx$
 mainfile_mime_re: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 mainfile_contents_dict:
   {
-   "Overview": { "__has_all_keys": ["Activity ID"] },
+   "Overview": { "__has_all_keys": ["Constant Parameters ID"] },
    "Constant Parameters": { "__has_all_keys": ["Step", "Reason", "Step Description", "Duration"] },
   }
 parser_class_name: movpe_IKZ.movpe1_growth_parser.constant_parameters.ParserMovpe1IKZ

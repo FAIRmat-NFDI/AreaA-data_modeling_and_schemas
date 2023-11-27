@@ -1145,7 +1145,7 @@ class GrowthStepMovpe1IKZ(ProcessStep):
         type=str,
         description='the step index',
         a_tabular={
-            "name": "Constant Parameters/Step Index"
+            "name": "Constant Parameters/Step"
         },
         a_eln={
             "component": "StringEditQuantity",
@@ -1167,7 +1167,8 @@ class GrowthStepMovpe1IKZ(ProcessStep):
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "Constant Parameters/Shaft temperature"
+            "name": "Constant Parameters/Set Shaft T",
+            #"unit": "celsius"
         },
         a_eln={
             "component": "NumberEditQuantity",
@@ -1191,7 +1192,8 @@ class GrowthStepMovpe1IKZ(ProcessStep):
         type=np.float64,
         description='chamber pressure',
         a_tabular={
-            "name": "Constant Parameters/Chamber pressure"
+            "name": "Constant Parameters/Chamber pressure",
+            #"unit": "mbar",
         },
         a_eln={
             "component": "NumberEditQuantity",
@@ -1790,7 +1792,7 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
         description='FILL',
         a_eln={
             "component": "StringEditQuantity",
-            "label": "Grown Sample ID"
+            "label": "Sample ID"
         },
     )
     chamber_pressure = SubSection(
