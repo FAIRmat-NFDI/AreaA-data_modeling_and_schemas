@@ -55,7 +55,7 @@ from nomad.datamodel.data import (
     ArchiveSection,
     Author
 )
-
+from nomad.search import search, MetadataPagination
 from nomad.datamodel.datamodel import (
     EntryArchive,
     EntryMetadata
@@ -690,6 +690,7 @@ class GrownSamples(CompositeSystemReference):
         The normalizer for the `GrownSamples` class.
         '''
         super(GrownSamples, self).normalize(archive, logger)
+
 
 class Bubbler(ArchiveSection):
     '''
@@ -1398,8 +1399,12 @@ class GrowthMovpe1IKZ(Process, EntryData, TableData):
     description = Quantity(
         type=str,
         description='description',
+        a_tabular={
+            "name": "Overview/Notes"
+        },
         a_eln={
-            "component": "StringEditQuantity"
+            "component": "StringEditQuantity",
+            "label": "Notes"
         },
     )
     lab_id = Quantity(
@@ -1410,22 +1415,38 @@ class GrowthMovpe1IKZ(Process, EntryData, TableData):
             "label": "Constant Parameters ID"
         },
     )
-    # precursors = SubSection(
-    #     section_def=Precursors,
-    #     repeats=True,
-    # )
-    # grown_sample = SubSection(
-    #     section_def=GrownSamples,
-    #     # repeats=True
-    # )
-    # parent_sample = SubSection(
-    #     section_def=ParentSamples,
-    #     repeats=True
-    # )
-    # substrate = SubSection(
-    #     section_def=Substrates,
-    #     repeats=True
-    # )
+    composition = Quantity(
+        type=str,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Overview/Composition"
+        },
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+    )
+    substrate_temperature = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Overview/Substrate T"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"
+        },
+        unit="celsius",
+    )
+    oxygen_argon_ratio = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_tabular={
+            "name": "Overview/Oxygen Argon ratio"
+        },
+        a_eln={
+            "component": "NumberEditQuantity",
+        },
+    )
     steps = SubSection(
         section_def=GrowthStepMovpe1IKZ,
         repeats=True,
@@ -1775,21 +1796,25 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
         type=str,
         description='description',
         a_eln={
-            "component": "StringEditQuantity"
+            "component": "StringEditQuantity",
+            "label": "Notes",
         },
     )
-    # datetime = Quantity(
-    #     type=Datetime,
-    #     a_tabular={
-    #         "name": "Deposition Control/Datum"
-    #     },
-    #     a_eln={
-    #         "component": "DateTimeEditQuantity"
-    #     },
-    # )
+    datetime = Quantity(
+        type=Datetime,
+        a_tabular={
+            "name": "Deposition Control/Datum"
+        },
+        a_eln={
+            "component": "DateTimeEditQuantity"
+        },
+    )
     lab_id = Quantity(
         type=str,
         description='FILL',
+        a_tabular={
+            "name": "Deposition Control/Sample ID"
+        },
         a_eln={
             "component": "StringEditQuantity",
             "label": "Sample ID"
@@ -1865,19 +1890,38 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
         col = 0
         for logged_par in sorted(arrays):
             for logged_par_instance in arrays[logged_par]["obj"]:
-                if logged_par_instance.value is not None: # bool(hasattr(logged_par_instance, "time")) and bool(hasattr(logged_par_instance, "value")):
+                if (logged_par_instance.value is not None
+                    and logged_par_instance.time is not None
+                    ):
                     arrays[logged_par]["x"].append(logged_par_instance.time.m)
                     arrays[logged_par]["y"].append(logged_par_instance.value.m)
-            scatter = px.scatter(x=arrays[logged_par]["x"], y=arrays[logged_par]["y"])
-            if col == max_cols:
-                row += 1
-                col = 0
-            if col < max_cols:
-                col += 1
-            figure1.add_trace(scatter.data[0], row=row, col=col)
+                # else:
+                #     logger.warning(f"{str(logged_par_instance)} was empty, check the cells or the column headers in your excel file.")
+            if arrays[logged_par]["x"] and arrays[logged_par]["y"]:
+                scatter = px.scatter(x=arrays[logged_par]["x"], y=arrays[logged_par]["y"])
+                if col == max_cols:
+                    row += 1
+                    col = 0
+                if col < max_cols:
+                    col += 1
+                figure1.add_trace(scatter.data[0], row=row, col=col)
 
         figure1.update_layout(title_text="Creating Subplots in Plotly")
         self.figures.append(PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json()))
+
+
+class DepositionControls(SectionReference):
+    '''
+    A section used for referencing a DepositionControlMovpe1IKZ.
+    '''
+    reference = Quantity(
+        type=DepositionControlMovpe1IKZ,
+        description='A reference to a NOMAD `DepositionControlMovpe1IKZ` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='DepositionControlMovpe1IKZ Reference',
+        ),
+    )
 
 
 class GrowthsMovpe1IKZ(SectionReference):
@@ -2284,25 +2328,12 @@ class ExperimentMovpe2IKZ(Experiment, EntryData):
         type=str,
         default="Experiment (MOVPE 2 IKZ)",
     )
-    location = Quantity(
-        type=str,
-        a_eln={
-            "component": "StringEditQuantity"
-        },
-    )
     lab_id = Quantity(
         type=str,
         description='the ID from RTG',
         a_eln={
             "component": "StringEditQuantity",
             "label": "Recipe ID"
-        },
-    )
-    date = Quantity(
-        type=Datetime,
-        description='FILL',
-        a_eln={
-            "component": "DateTimeEditQuantity"
         },
     )
     notes = SubSection(
@@ -2346,29 +2377,55 @@ class ExperimentMovpe1IKZ(Experiment, EntryData):
         categories=[IKZMOVPE1Category],
         label='Experiment',
     )
+    description = Quantity(
+        type=str,
+        description='description',
+        a_eln=ELNAnnotation(
+            component= "StringEditQuantity",
+            label="Notes",
+        ),
+    )
     method = Quantity(
         type=str,
         default="Experiment (MOVPE 1 IKZ)",
-    )
-    location = Quantity(
-        type=str,
-        a_eln={
-            "component": "StringEditQuantity"
-        },
     )
     lab_id = Quantity(
         type=str,
         description='the ID from RTG',
         a_eln={
             "component": "StringEditQuantity",
-            "label": "Recipe ID"
+            "label": "Sample ID"
         },
     )
-    date = Quantity(
-        type=Datetime,
-        description='FILL',
+    constant_parameters_id = Quantity(
+        type=str,
+        description='the ID from RTG',
         a_eln={
-            "component": "DateTimeEditQuantity"
+            "component": "StringEditQuantity",
+            "label": "Constant Parameters ID"
+        },
+    )
+    composition = Quantity(
+        type=str,
+        description='FILL THE DESCRIPTION',
+        a_eln={
+            "component": "StringEditQuantity",
+        },
+    )
+    substrate_temperature = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "celsius"
+        },
+        unit="celsius",
+    )
+    oxygen_argon_ratio = Quantity(
+        type=np.float64,
+        description='FILL THE DESCRIPTION',
+        a_eln={
+            "component": "NumberEditQuantity",
         },
     )
     notes = SubSection(
@@ -2377,13 +2434,14 @@ class ExperimentMovpe1IKZ(Experiment, EntryData):
     users = SubSection(
         section_def=Users,
     )
-    growth_run = SubSection(
-        section_def=GrowthsMovpe1IKZ,
-        repeats=True,
+    grown_sample = SubSection(
+        section_def=GrownSamples
     )
-    in_situ_monitoring = SubSection(
-        section_def=InSituMonitorings,
-        repeats=True,
+    growth_run = SubSection(
+        section_def=GrowthsMovpe1IKZ
+    )
+    deposition_control = SubSection(
+        section_def=DepositionControls
     )
     hall_measurement = SubSection(
         section_def=HallMeasurements,
@@ -2422,6 +2480,40 @@ class ExperimentMovpe1IKZ(Experiment, EntryData):
     # grown_sample_upload_id:str = grown_sample_archive.metadata.upload_id
     # grown_sample_entry_id:str = grown_sample_archive.metadata.entry_id
     # StagingUploadFiles(grown_sample_upload_id).write_archive(grown_sample_entry_id, grown_sample_archive.m_to_dict())
+
+    def normalize(self, archive, logger):
+
+        super(ExperimentMovpe1IKZ, self).normalize(archive, logger)
+
+        search_result = search(
+            owner="user",
+            query={
+                "results.eln.sections:any": ["GrowthMovpe1IKZ"],
+                "upload_id:any": [archive.m_context.upload_id]
+            },
+            pagination=MetadataPagination(page_size=10000),
+            user_id=archive.metadata.main_author.user_id,
+            )
+        # checking if all entries are properly indexed
+        if self.constant_parameters_id and not self.growth_run:
+            found_id = False
+            for growth_entry in search_result.data:
+                if self.constant_parameters_id == growth_entry['results']['eln']['lab_ids'][0]:
+                    found_id = True
+                    self.growth_run=GrowthsMovpe1IKZ(
+                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{growth_entry['entry_id']}#data"
+                    )
+                for search_quantities in growth_entry['search_quantities']:
+                    if search_quantities['path_archive'] == "data.substrate_temperature":
+                        self.substrate_temperature = search_quantities['float_value']
+                    if search_quantities['path_archive'] == "data.oxygen_argon_ratio":
+                        self.oxygen_argon_ratio = search_quantities['float_value']
+                    if search_quantities['path_archive'] == "data.composition":
+                        self.composition = search_quantities['str_value'][0]
+            if not found_id:
+                logger.warning(f"The ID '{self.constant_parameters_id}' was not found in any 'GrowthsMovpe1IKZ' entry in Nomad. Check if it exist and try to reference it manually.")
+        else:
+            logger.warning("No 'Constant Parameters ID' was found in Experiment. The corresponding 'GrowthsMovpe1IKZ' dataset couldn't be referenced.")
 
 
 # class HRXRDmeasurement(Measurement, EntryData):

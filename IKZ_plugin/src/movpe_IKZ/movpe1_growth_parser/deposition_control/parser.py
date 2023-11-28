@@ -36,10 +36,11 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.data import (
     EntryData,
 )
-from nomad.search import search
+from nomad.search import search, MetadataPagination
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
     ExperimentMovpe1IKZ,
+    DepositionControls,
     DepositionControlMovpe1IKZ,
     GrowthsMovpe1IKZ,
     GrowthMovpe1IKZ,
@@ -76,13 +77,13 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
+        filetype = "yaml"
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
         dep_control = pd.read_excel(xlsx, 'Deposition Control', comment="#")
         dep_control.columns = [re.sub(r'\s+', ' ', col.strip()) for col in dep_control.columns]
-        filetype = "yaml"
-        filename = f"{dep_control['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
+        dep_control_filename = f"{dep_control['Sample ID'][0]}_deposition_control.archive.{filetype}"
         dep_control_archive = EntryArchive(
             data=DepositionControlMovpe1IKZ(data_file=data_file_with_path),
             m_context=archive.m_context,
@@ -91,12 +92,64 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         create_archive(
             dep_control_archive.m_to_dict(),
             archive.m_context,
-            filename,
+            dep_control_filename,
             filetype,
             logger,
         )
+
+        tic = perf_counter()
+        while True:
+            search_result = search(
+                owner="user",
+                query={
+                    "results.eln.sections:any": ["DepositionControlMovpe1IKZ"],
+                    "upload_id:any": [archive.m_context.upload_id]
+                },
+                pagination=MetadataPagination(page_size=10000),
+                user_id=archive.metadata.main_author.user_id,
+                )
+            # checking if all entries are properly indexed
+            if search_result.pagination.total == len(dep_control['Sample ID']):
+                break
+            if search_result.pagination.total > len(dep_control['Sample ID']):
+                matches = []
+                for match in search_result.data:
+                    matches.append(match['results']['eln']['lab_ids'])
+                logger.warning(f'Some entries with lab_id {matches} are duplicated')
+                break
+            # otherwise wait until all are indexed
+            sleep(0.1)
+            toc = perf_counter()
+            if toc - tic > 200:
+                logger.warning(f"Some rows of 'deposition control' Excel file were not parsed. Please check the file and try again.")
+                break
+        if search_result.pagination.total == len(dep_control['Sample ID']):
+            for deposition_control_entry in search_result.data:
+                experiment_filename = f"{deposition_control_entry['results']['eln']['lab_ids'][0]}_experiment.archive.{filetype}"
+                for row_index, row_id in enumerate(dep_control['Sample ID']):
+                    if deposition_control_entry['results']['eln']['lab_ids'][0] == row_id:
+                        constant_parameters_id=dep_control['Constant Parameters ID'][row_index]
+                experiment_archive = EntryArchive(
+                    data=ExperimentMovpe1IKZ(
+                        lab_id=deposition_control_entry['results']['eln']['lab_ids'][0],
+                        constant_parameters_id=constant_parameters_id,
+                        deposition_control=DepositionControls(
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{deposition_control_entry['entry_id']}#data"
+                        )
+                    ),
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+                )
+                create_archive(
+                    experiment_archive.m_to_dict(),
+                    archive.m_context,
+                    experiment_filename,
+                    filetype,
+                    logger,
+                )
+
         archive.data = RawFileDepositionControl(
-            deposition_control_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
+            deposition_control_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, dep_control_filename)}#data"
         )
         #archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"
 
