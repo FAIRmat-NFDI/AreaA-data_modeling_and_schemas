@@ -42,6 +42,7 @@ from movpe_IKZ import (
     ExperimentMovpe1IKZ,
     DepositionControls,
     DepositionControlMovpe1IKZ,
+    PrecursorsPreparationMovpe1IKZ,
     GrowthsMovpe1IKZ,
     GrowthMovpe1IKZ,
     GrownSample
@@ -82,7 +83,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
         dep_control = pd.read_excel(xlsx, 'Deposition Control', comment="#")
-        dep_control.columns = [re.sub(r'\s+', ' ', col.strip()) for col in dep_control.columns]
+        dep_control.columns = [re.sub(r'\s+', ' ', col.strip()) for col in dep_control.columns] # this line is not used now, tabular data reads the raw file columns
         dep_control_filename = f"{dep_control['Sample ID'][0]}_deposition_control.archive.{filetype}"
         dep_control_archive = EntryArchive(
             data=DepositionControlMovpe1IKZ(data_file=data_file_with_path),
@@ -93,6 +94,22 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
             dep_control_archive.m_to_dict(),
             archive.m_context,
             dep_control_filename,
+            filetype,
+            logger,
+        )
+
+        precursors = pd.read_excel(xlsx, 'Precursors', comment="#")
+        precursors.columns = [re.sub(r'\s+', ' ', col.strip()) for col in precursors.columns] # this line is not used now, tabular data reads the raw file columns
+        precursors_filename = f"{precursors['Sample ID'][0]}_precursors_preparation.archive.{filetype}"
+        precursors_archive = EntryArchive(
+            data=PrecursorsPreparationMovpe1IKZ(data_file=data_file_with_path),
+            m_context=archive.m_context,
+            metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+        )
+        create_archive(
+            precursors_archive.m_to_dict(),
+            archive.m_context,
+            precursors_filename,
             filetype,
             logger,
         )
@@ -126,9 +143,11 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         if search_result.pagination.total == len(dep_control['Sample ID']):
             for deposition_control_entry in search_result.data:
                 experiment_filename = f"{deposition_control_entry['results']['eln']['lab_ids'][0]}_experiment.archive.{filetype}"
+                sample_filename = f"{deposition_control_entry['results']['eln']['lab_ids'][0]}_sample.archive.{filetype}"
+                constant_parameters_id = None
                 for row_index, row_id in enumerate(dep_control['Sample ID']):
                     if deposition_control_entry['results']['eln']['lab_ids'][0] == row_id:
-                        constant_parameters_id=dep_control['Constant Parameters ID'][row_index]
+                        constant_parameters_id = dep_control['Constant Parameters ID'][row_index]
                 experiment_archive = EntryArchive(
                     data=ExperimentMovpe1IKZ(
                         lab_id=deposition_control_entry['results']['eln']['lab_ids'][0],
@@ -140,10 +159,24 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     m_context=archive.m_context,
                     metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
                 )
+                sample_archive = EntryArchive(
+                    data=GrownSample(
+                        lab_id=deposition_control_entry['results']['eln']['lab_ids'][0]
+                    ),
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+                )
                 create_archive(
                     experiment_archive.m_to_dict(),
                     archive.m_context,
                     experiment_filename,
+                    filetype,
+                    logger,
+                )
+                create_archive(
+                    sample_archive.m_to_dict(),
+                    archive.m_context,
+                    sample_filename,
                     filetype,
                     logger,
                 )
