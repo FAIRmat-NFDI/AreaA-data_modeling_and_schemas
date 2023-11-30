@@ -143,11 +143,9 @@ class CPFSFluxGrowthProcess(FluxGrowthProcess, EntryData):
                 if inp.loc[2][1].split()[1]=="CPFSFluxGrowth":
                     self.name=str(inp.loc[10][2])
                     self.furnace = CPFSFurnace(name=str(inp.loc[13][2]))
-                    self.furnace.normalize(archive,logger)
                     self.crucible = CPFSCrucible(name=str(inp.loc[14][2]))
-                    self.crucible.normalize(archive,logger)
                     self.tube = CPFSCrystalGrowthTube(name=str(inp.loc[15][2]))
-                    self.tube.normalize(archive,logger)
+                    self.furnace.normalize(archive,logger)
                     time_tmp=[]
                     temp_tmp=[]
                     for i in range(20):
