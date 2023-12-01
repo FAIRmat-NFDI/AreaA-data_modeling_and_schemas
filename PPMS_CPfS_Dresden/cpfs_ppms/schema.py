@@ -1,4 +1,5 @@
 #
+
 # Copyright The NOMAD Authors.
 #
 # This file is part of NOMAD. See https://nomad-lab.eu for further info.
@@ -25,9 +26,11 @@ from datetime import datetime
 from structlog.stdlib import (
     BoundLogger,
 )
-from PPMS.schema import PPMSMeasurement, PPMSData, Sample, ChannelData, clean_channel_keys, ETOData
+#from PPMS.schema import PPMSMeasurement, PPMSData, Sample, ChannelData, ETOData
 
 from nomad.metainfo import Package, Section, MEnum, SubSection
+
+from nomad.datamodel.metainfo.basesections import Measurement
 
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
@@ -45,10 +48,53 @@ from nomad.metainfo import (
     Quantity,
 )
 
+from nomad.datamodel.metainfo.eln import (
+    CompositeSystem,
+)
+
 
 from nomad.datamodel.metainfo.basesections import ActivityStep
 
 m_package = Package(name='cpfs_ppms')
+
+def clean_channel_keys(input_key: str) -> str:
+    output_key = (
+        input_key
+        .split('(')[0]
+        .replace('Std. Dev.', 'std dev')
+        .replace('Std.Dev.', 'std dev')
+        .replace('Res.', 'resistivity')
+        .replace('Crit.Cur.', 'crit cur')
+        .replace('C.Cur.', 'crit cur')
+        .replace('Quad.Error', 'quad error')
+        .replace('Harm.', 'harmonic')
+        .replace('-', ' ')
+        .replace('Ch1','')
+        .replace('Ch2','')
+        .strip()
+        .lower()
+        .replace(' ','_')
+        .replace('3rd','third')
+        .replace('2nd','second')
+    )
+    return output_key
+
+class CPFSSample(CompositeSystem):
+    name = Quantity(
+        type=str,
+        description='FILL')
+    type = Quantity(
+        type=str,
+        description='FILL')
+    material = Quantity(
+        type=str,
+        description='FILL')
+    voltage_lead_preparation = Quantity(
+        type=str,
+        description='FILL')
+    cross_sectional_area = Quantity(
+        type=str,
+        description='FILL')
 
 class CPFSPPMSMeasurementStep(ActivityStep):
     '''
@@ -508,7 +554,381 @@ class CPFSPPMSMeasurementRemarkStep(CPFSPPMSMeasurementStep):
         ),
     )
 
-class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
+class CPFSPPMSData(ArchiveSection):
+    '''General data section from PPMS'''
+    pass
+
+class CPFSETOData(ArchiveSection):
+    '''Data section from Channels in PPMS'''
+    m_def = Section(
+        label_quantity='name',
+    )
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"})
+    eto_channel = Quantity(
+        type=np.dtype(np.float64),
+        shape=['*'],
+        description='FILL')
+
+class CPFSETOChannelData(ArchiveSection):
+    '''Data section from Channels in PPMS'''
+    m_def = Section(
+        label_quantity='name',
+    )
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"})
+    resistance = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    resistance_std_dev = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    phase_angle = Quantity(
+        type=np.dtype(np.float64),
+        unit='deg',
+        shape=['*'],
+        description='FILL')
+    i_v_current = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    i_v_voltage = Quantity(
+        type=np.dtype(np.float64),
+        unit='V',
+        shape=['*'],
+        description='FILL')
+    frequency = Quantity(
+        type=np.dtype(np.float64),
+        unit='Hz',
+        shape=['*'],
+        description='FILL')
+    averaging_time = Quantity(
+        type=np.dtype(np.float64),
+        unit='second',
+        shape=['*'],
+        description='FILL')
+    ac_current = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    dc_current = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    current_ampl = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    in_phase_current = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    quadrature_current = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    gain = Quantity(
+        type=np.dtype(np.float64),
+        shape=['*'],
+        description='FILL')
+    second_harmonic = Quantity(
+        type=np.dtype(np.float64),
+        unit='dB',
+        shape=['*'],
+        description='FILL')
+    third_harmonic = Quantity(
+        type=np.dtype(np.float64),
+        unit='dB',
+        shape=['*'],
+        description='FILL')
+
+class CPFSETOPPMSData(CPFSPPMSData):
+    '''Data section from PPMS'''
+    m_def = Section(
+        a_eln=dict(lane_width='600px'),
+    )
+    time_stamp = Quantity(
+        type=np.dtype(np.float64),
+        unit='second',
+        shape=['*'],
+        description='FILL')
+    temperature = Quantity(
+        type=np.dtype(np.float64),
+        unit='kelvin',
+        shape=['*'],
+        description='FILL')
+    field = Quantity(
+        type=np.dtype(np.float64),
+        unit='gauss',
+        shape=['*'],
+        description='FILL')
+    sample_position = Quantity(
+        type=np.dtype(np.float64),
+        unit='deg',
+        shape=['*'],
+        description='FILL')
+    chamber_pressure = Quantity(
+        type=np.dtype(np.float64),
+        unit='torr',
+        shape=['*'],
+        description='FILL')
+    eto_measurement_mode = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    temperature_status = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    field_status = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    chamber_status = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    eto_status_code = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    channels = SubSection(section_def=CPFSETOChannelData, repeats=True)
+    eto_channels = SubSection(section_def=CPFSETOData, repeats=True)
+
+class CPFSACTData(ArchiveSection):
+    '''Data section from Channels in PPMS'''
+    m_def = Section(
+        label_quantity='name',
+    )
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"})
+    map = Quantity(
+        type=np.dtype(np.float64),
+        shape=['*'],
+        description='FILL')
+
+class CPFSACTChannelData(ArchiveSection):
+    '''Data section from Channels in PPMS'''
+    m_def = Section(
+        label_quantity='name',
+    )
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"})
+    volts = Quantity(
+        type=np.dtype(np.float64),
+        unit='V',
+        shape=['*'],
+        description='FILL')
+    v_std_dev = Quantity(
+        type=np.dtype(np.float64),
+        unit='V',
+        shape=['*'],
+        description='FILL')
+    resistivity = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm/centimeter',
+        shape=['*'],
+        description='FILL')
+    resistivity_std_dev = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm/centimeter',
+        shape=['*'],
+        description='FILL')
+    hall = Quantity(
+        type=np.dtype(np.float64),
+        unit='centimeter**3/coulomb',
+        shape=['*'],
+        description='FILL')
+    hall_std_dev = Quantity(
+        type=np.dtype(np.float64),
+        unit='centimeter**3/coulomb',
+        shape=['*'],
+        description='FILL')
+    crit_cur = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    crit_cur_std_dev = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    second_harmonic = Quantity(
+        type=np.dtype(np.float64),
+        unit='dB',
+        shape=['*'],
+        description='FILL')
+    third_harmonic = Quantity(
+        type=np.dtype(np.float64),
+        unit='dB',
+        shape=['*'],
+        description='FILL')
+    quad_error = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm/cm/rad',
+        shape=['*'],
+        description='FILL')
+    drive_signal = Quantity(
+        type=np.dtype(np.float64),
+        unit='V',
+        shape=['*'],
+        description='FILL')
+
+class CPFSACTPPMSData(CPFSPPMSData):
+    '''Data section from PPMS'''
+    m_def = Section(
+        a_eln=dict(lane_width='600px'),
+    )
+    time_stamp = Quantity(
+        type=np.dtype(np.float64),
+        unit='second',
+        shape=['*'],
+        description='FILL')
+    status = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    temperature = Quantity(
+        type=np.dtype(np.float64),
+        unit='kelvin',
+        shape=['*'],
+        description='FILL')
+    magnetic_field = Quantity(
+        type=np.dtype(np.float64),
+        unit='gauss',
+        shape=['*'],
+        description='FILL')
+    sample_position = Quantity(
+        type=np.dtype(np.float64),
+        unit='deg',
+        shape=['*'],
+        description='FILL')
+    excitation = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    frequency = Quantity(
+        type=np.dtype(np.float64),
+        unit='Hz',
+        shape=['*'],
+        description='FILL')
+    act_status = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    act_gain = Quantity(
+        type=np.dtype(np.float64),
+        shape=['*'],
+        description='FILL')
+    bridge_1_resistance = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    bridge_2_resistance = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    bridge_3_resistance = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    bridge_4_resistance = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    bridge_1_excitation = Quantity(
+        type=np.dtype(np.float64),
+        unit='microampere',
+        shape=['*'],
+        description='FILL')
+    bridge_2_excitation = Quantity(
+        type=np.dtype(np.float64),
+        unit='microampere',
+        shape=['*'],
+        description='FILL')
+    bridge_3_excitation = Quantity(
+        type=np.dtype(np.float64),
+        unit='microampere',
+        shape=['*'],
+        description='FILL')
+    bridge_4_excitation = Quantity(
+        type=np.dtype(np.float64),
+        unit='microampere',
+        shape=['*'],
+        description='FILL')
+    signal_1_vin = Quantity(
+        type=np.dtype(np.float64),
+        unit='V',
+        shape=['*'],
+        description='FILL')
+    signal_2_vin = Quantity(
+        type=np.dtype(np.float64),
+        unit='V',
+        shape=['*'],
+        description='FILL')
+    digital_inputs = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+    drive_1_iout = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    drive_2_iout = Quantity(
+        type=np.dtype(np.float64),
+        unit='mA',
+        shape=['*'],
+        description='FILL')
+    drive_1_ipower = Quantity(
+        type=np.dtype(np.float64),
+        unit='watts',
+        shape=['*'],
+        description='FILL')
+    drive_2_ipower = Quantity(
+        type=np.dtype(np.float64),
+        unit='watts',
+        shape=['*'],
+        description='FILL')
+    pressure = Quantity(
+        type=np.dtype(np.float64),
+        unit='torr',
+        shape=['*'],
+        description='FILL')
+    channels = SubSection(section_def=CPFSACTChannelData, repeats=True)
+    maps = SubSection(section_def=CPFSACTData, repeats=True)
+
+
+
+class CPFSPPMSMeasurement(Measurement,EntryData):
 
     # m_def = Section(
     #     a_eln=dict(lane_width='600px'),
@@ -549,12 +969,28 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                 ]
     )
 
+    data_file = Quantity(
+        type=str,
+        a_eln=dict(component='FileEditQuantity'),
+        a_browser=dict(adaptor='RawFileAdaptor'))
+    file_open_time = Quantity(
+        type=str,
+        description='FILL')
+    software = Quantity(
+        type=str,
+        description='FILL')
+    startupaxis = Quantity(
+        type=str,
+        shape=['*'],
+        description='FILL')
+
     steps = SubSection(
         section_def=CPFSPPMSMeasurementStep,
         repeats=True,
     )
 
-    data = SubSection(section_def=PPMSData, repeats=True)
+    #data = SubSection(section_def=CPFSPPMSData, repeats=True)
+    data = SubSection(section_def=CPFSPPMSData)
 
     sequence_file = Quantity(
         type=str,
@@ -737,12 +1173,14 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                     )
                 elif line.startswith("SHT"):
                     continue
+                elif line.startswith("CHN"):
+                    continue
                 else:
                     logger.error('Found unknown keyword '+line[:4])
             self.steps=all_steps
 
-        if archive.data.data_file:
-            logger.info('Parsing PPMS measurement file.')
+        if archive.data.data_file and archive.data.sequence_file:
+            logger.info('Parsing PPMS measurement file using the sequence file.')
             with archive.m_context.raw_file(self.data_file, 'r') as file:
                 data = file.read()
 
@@ -752,7 +1190,7 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
 
             sample1_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE1_' in line]
             if sample1_headers:
-                sample_1 = Sample()
+                sample_1 = CPFSSample()
                 for line in sample1_headers:
                     parts = re.split(r',\s*', line)
                     key = parts[2].lower().replace('SAMPLE1_','')
@@ -761,7 +1199,7 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
 
             sample2_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE2_' in line]
             if sample2_headers:
-                sample_2 = Sample()
+                sample_2 = CPFSSample()
                 for line in sample2_headers:
                     parts = re.split(r',\s*', line)
                     key = parts[2].lower().replace('SAMPLE2_','')
@@ -769,9 +1207,9 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                         setattr(sample_2, key, parts[1])
 
                 while self.samples:
-                    self.m_remove_sub_section(PPMSMeasurement.samples, 0)
-                self.m_add_sub_section(PPMSMeasurement.samples, sample_1)
-                self.m_add_sub_section(PPMSMeasurement.samples, sample_2)
+                    self.m_remove_sub_section(CPFSPPMSMeasurement.samples, 0)
+                self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_1)
+                self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_2)
 
             startupaxis_headers = [line for line in header_lines if line.startswith("STARTUPAXIS")]
             if startupaxis_headers:
@@ -785,11 +1223,14 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             for line in header_lines:
                 if line.startswith("FILEOPENTIME"):
                     if hasattr(self, 'datetime'):
-                        iso_date = datetime.strptime(line.split(',')[3], "%m/%d/%Y %H:%M:%S")
+                        try:
+                            iso_date = datetime.strptime(line.split(',')[3], "%m/%d/%Y %H:%M:%S")
+                        except ValueError:
+                            iso_date = datetime.strptime(" ".join(line.split(',')[2:4]), "%m-%d-%Y %I:%M %p")
                         setattr(self, 'datetime', iso_date)
                 if line.startswith("BYAPP"):
                     if hasattr(self, 'software'):
-                        setattr(self, 'software', line.replace('BYAPP,', ''))
+                        setattr(self, 'software', line.replace('BYAPP,', '').strip())
 
             data_section = header_match.string[header_match.end():]
             data_buffer = StringIO(data_section)
@@ -798,21 +1239,27 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
 
-
-            print(data_df.keys())
-
             other_data = [key for key in data_df.keys() if 'Ch1' not in key and 'Ch2' not in key and 'ETO Channel' not in key]
-            self.data = PPMSData()
+
+            if self.software.startswith("Electrical Transport Option"):
+                self.data = CPFSETOPPMSData()
+            elif self.software.startswith("ACTRANSPORT"):
+                self.data = CPFSACTPPMSData()
+            else:
+                logger.error("Software not recognized: "+self.software)
             for key in other_data:
-                clean_key = key.split('(')[0].strip().replace(' ','_').lower().replace('time stamp','timestamp')
+                clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
                 if hasattr(self.data, clean_key):
                     setattr(self.data,
                             clean_key,
                             data_df[key] # * ureg(data_template[f'{key}/@units'])
                             )
-            channel_1_data = [key for key in data_df.keys() if 'Ch1' in key]
+            channel_1_data = [key for key in data_df.keys() if 'ch1' in key.lower()]
             if channel_1_data:
-                channel_1 = ChannelData()
+                if self.software.startswith("Electrical Transport Option"):
+                    channel_1 = CPFSETOChannelData()
+                elif self.software.startswith("ACTRANSPORT"):
+                    channel_1 = CPFSACTChannelData()
                 setattr(channel_1, 'name', 'Channel 1')
                 for key in channel_1_data:
                     clean_key = clean_channel_keys(key)
@@ -821,10 +1268,16 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                                 clean_key,
                                 data_df[key] # * ureg(data_template[f'{key}/@units'])
                                 )
-                self.data.m_add_sub_section(PPMSData.channels, channel_1)
-            channel_2_data = [key for key in data_df.keys() if 'Ch2' in key]
+                if self.software.startswith("Electrical Transport Option"):
+                    self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_1)
+                elif self.software.startswith("ACTRANSPORT"):
+                    self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_1)
+            channel_2_data = [key for key in data_df.keys() if 'ch2' in key.lower()]
             if channel_2_data:
-                channel_2 = ChannelData()
+                if self.software.startswith("Electrical Transport Option"):
+                    channel_2 = CPFSETOChannelData()
+                elif self.software.startswith("ACTRANSPORT"):
+                    channel_2 = CPFSACTChannelData()
                 setattr(channel_2, 'name', 'Channel 2')
                 for key in channel_2_data:
                     clean_key = clean_channel_keys(key)
@@ -833,16 +1286,32 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                                 clean_key,
                                 data_df[key] # * ureg(data_template[f'{key}/@units'])
                                 )
-                self.data.m_add_sub_section(PPMSData.channels, channel_2)
-            eto_channel_data = [key for key in data_df.keys() if 'ETO Channel' in key]
-            if eto_channel_data:
-                for key in eto_channel_data:
-                    eto_channel = ETOData()
-                    if hasattr(eto_channel, 'name'):
-                        setattr(eto_channel, 'name', key)
-                    if hasattr(eto_channel, 'ETO_channel'):
-                        setattr(eto_channel, 'ETO_channel', data_df[key])
-                    self.data.m_add_sub_section(PPMSData.eto_channels, eto_channel)
+                if self.software.startswith("Electrical Transport Option"):
+                    self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_2)
+                elif self.software.startswith("ACTRANSPORT"):
+                    self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_2)
+
+
+            if self.software.startswith("Electrical Transport Option"):
+                eto_channel_data = [key for key in data_df.keys() if 'ETO Channel' in key]
+                if eto_channel_data:
+                    for key in eto_channel_data:
+                        eto_channel = CPFSETOData()
+                        if hasattr(eto_channel, 'name'):
+                            setattr(eto_channel, 'name', key)
+                        if hasattr(eto_channel, 'eto_channel'):
+                            setattr(eto_channel, 'eto_channel', data_df[key])
+                        self.data.m_add_sub_section(CPFSETOPPMSData.eto_channels, eto_channel)
+            elif self.software.startswith("ACTRANSPORT"):
+                map_data = [key for key in data_df.keys() if 'Map' in key]
+                if map_data:
+                    for key in map_data:
+                        map = CPFSACTData()
+                        if hasattr(map, 'name'):
+                            setattr(map, 'name', key)
+                        if hasattr(map, 'map'):
+                            setattr(map, 'map', data_df[key])
+                        self.data.m_add_sub_section(CPFSACTPPMSData.map_data, map)
 
 
 m_package.__init_metainfo__()
