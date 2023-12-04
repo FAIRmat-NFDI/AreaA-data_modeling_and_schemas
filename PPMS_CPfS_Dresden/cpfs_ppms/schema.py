@@ -689,23 +689,23 @@ class CPFSETOPPMSData(CPFSPPMSData):
         shape=['*'],
         description='FILL')
     eto_measurement_mode = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     temperature_status = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     field_status = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     chamber_status = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     eto_status_code = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     channels = SubSection(section_def=CPFSETOChannelData, repeats=True)
@@ -808,7 +808,7 @@ class CPFSACTPPMSData(CPFSPPMSData):
         shape=['*'],
         description='FILL')
     status = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     temperature = Quantity(
@@ -837,7 +837,7 @@ class CPFSACTPPMSData(CPFSPPMSData):
         shape=['*'],
         description='FILL')
     act_status = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     act_gain = Quantity(
@@ -895,7 +895,7 @@ class CPFSACTPPMSData(CPFSPPMSData):
         shape=['*'],
         description='FILL')
     digital_inputs = Quantity(
-        type=str,
+        type=np.dtype(np.float64),
         shape=['*'],
         description='FILL')
     drive_1_iout = Quantity(
@@ -1089,8 +1089,8 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                     approach=['Fast','No Overshoot','Sweep']
                     all_steps.append(CPFSPPMSMeasurementScanTempStep(
                         name="Scan temperature from "+details[2]+" K to "+details[3]+" K.",
-                        initial_field=float(details[2]),
-                        final_field=float(details[3]),
+                        initial_temp=float(details[2]),
+                        final_temp=float(details[3]),
                         spacing_code=spacing_code[int(details[6])],
                         rate=float(details[4])/60.,
                         number_of_steps=int(details[5]),
