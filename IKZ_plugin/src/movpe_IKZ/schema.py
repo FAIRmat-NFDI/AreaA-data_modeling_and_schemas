@@ -278,7 +278,6 @@ class Cylinder(Geometry):
     )
 
 
-
 class MiscutMovpe(Miscut):
     '''
     The miscut in a crystalline substrate refers to
@@ -1760,7 +1759,7 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
             "hide": [
                 "instruments",
                 "steps",
-                "samples"
+                "samples",
             ]
         },
         more={
@@ -1834,6 +1833,11 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
         },
         unit='minute',
     )
+
+    grown_sample = SubSection(
+        section_def=GrownSamples
+    )
+
     chamber_pressure = SubSection(
         section_def=ChamberPressure,
         repeats=True,
@@ -1957,6 +1961,7 @@ class PubChemPureSubstanceSectionMovpe1(PubChemPureSubstanceSection):
 
         super(PubChemPureSubstanceSectionMovpe1, self).normalize(archive, logger)
 
+
 class PureSubstanceComponentMovpe1(PureSubstanceComponent):
     '''
     A section for describing a component and its role in a composite system.
@@ -1991,6 +1996,7 @@ class PureSubstanceComponentMovpe1(PureSubstanceComponent):
     def normalize(self, archive, logger):
 
         super(PureSubstanceComponentMovpe1, self).normalize(archive, logger)
+
 
 class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
     '''
@@ -2073,6 +2079,20 @@ class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
         The samples as that have undergone the process.
         ''',
         repeats=True,
+    )
+
+
+class PrecursorsPreparationsMovpe1IKZ(SectionReference):
+    '''
+    A section used for referencing a PrecursorsPreparationMovpe1IKZ.
+    '''
+    reference = Quantity(
+        type=PrecursorsPreparationMovpe1IKZ,
+        description='A reference to a NOMAD `PrecursorsPreparationMovpe1IKZ` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='PrecursorsPreparationMovpe1IKZ Reference',
+        ),
     )
 
 
@@ -2586,9 +2606,8 @@ class ExperimentMovpe1IKZ(Experiment, EntryData):
     users = SubSection(
         section_def=Users,
     )
-    precursores_preparation = SubSection(
-        section_def=PrecursorsPreparationMovpe1IKZ,
-        repeats=True,
+    precursors_preparation = SubSection(
+        section_def=PrecursorsPreparationsMovpe1IKZ,
     )
     grown_sample = SubSection(
         section_def=GrownSamples

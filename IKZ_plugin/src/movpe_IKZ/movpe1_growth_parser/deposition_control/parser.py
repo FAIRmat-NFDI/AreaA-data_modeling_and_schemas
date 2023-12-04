@@ -22,6 +22,8 @@ from time import (
 )
 import pandas as pd
 import re
+import yaml
+import json
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
@@ -43,15 +45,30 @@ from movpe_IKZ import (
     DepositionControls,
     DepositionControlMovpe1IKZ,
     PrecursorsPreparationMovpe1IKZ,
+    PrecursorsPreparationsMovpe1IKZ,
     GrowthsMovpe1IKZ,
     GrowthMovpe1IKZ,
+    GrownSamples,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.parsing.tabular import create_archive
+#from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
 from basesections_IKZ import IKZMOVPE1Category
+
+def create_archive(entry_dict, context, file_name, file_type, logger,*,bypass_check:bool=False):
+    if not context.raw_path_exists(file_name) or bypass_check:
+        with context.raw_file(file_name, 'w') as outfile:
+            if file_type == 'json':
+                json.dump(entry_dict, outfile)
+            elif file_type == 'yaml':
+                yaml.dump(entry_dict, outfile)
+        context.upload.process_updated_raw_file(file_name, allow_modify=True)
+    else:
+        logger.error(
+            f'{file_name} archive file already exists.'
+            f'If you intend to reprocess the older archive file, remove the existing one and run reprocessing again.')
 
 class RawFileDepositionControl(EntryData):
     m_def = Section(
@@ -116,7 +133,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
 
         tic = perf_counter()
         while True:
-            search_result = search(
+            search_dep_control = search(
                 owner="user",
                 query={
                     "results.eln.sections:any": ["DepositionControlMovpe1IKZ"],
@@ -126,11 +143,11 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 user_id=archive.metadata.main_author.user_id,
                 )
             # checking if all entries are properly indexed
-            if search_result.pagination.total == len(dep_control['Sample ID']):
+            if search_dep_control.pagination.total == len(dep_control['Sample ID']):
                 break
-            if search_result.pagination.total > len(dep_control['Sample ID']):
+            if search_dep_control.pagination.total > len(dep_control['Sample ID']):
                 matches = []
-                for match in search_result.data:
+                for match in search_dep_control.data:
                     matches.append(match['results']['eln']['lab_ids'])
                 logger.warning(f'Some entries with lab_id {matches} are duplicated')
                 break
@@ -140,28 +157,72 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
             if toc - tic > 200:
                 logger.warning(f"Some rows of 'deposition control' Excel file were not parsed. Please check the file and try again.")
                 break
-        if search_result.pagination.total == len(dep_control['Sample ID']):
-            for deposition_control_entry in search_result.data:
-                experiment_filename = f"{deposition_control_entry['results']['eln']['lab_ids'][0]}_experiment.archive.{filetype}"
+
+        tic = perf_counter()
+        while True:
+            search_precursor_preparation = search(
+                owner="user",
+                query={
+                    "results.eln.sections:any": ["PrecursorsPreparationMovpe1IKZ"],
+                    "upload_id:any": [archive.m_context.upload_id]
+                },
+                pagination=MetadataPagination(page_size=10000),
+                user_id=archive.metadata.main_author.user_id,
+                )
+            # checking if all entries are properly indexed
+            if search_precursor_preparation.pagination.total == len(dep_control['Sample ID']):
+                break
+            if search_precursor_preparation.pagination.total > len(dep_control['Sample ID']):
+                matches = []
+                for match in search_precursor_preparation.data:
+                    matches.append(match['results']['eln']['lab_ids'])
+                logger.warning(f'Some entries with lab_id {matches} are duplicated')
+                break
+            # otherwise wait until all are indexed
+            sleep(0.1)
+            toc = perf_counter()
+            if toc - tic > 200:
+                logger.warning(f"Some rows of 'deposition control' Excel file were not parsed. Please check the file and try again.")
+                break
+
+        if search_dep_control.pagination.total == len(dep_control['Sample ID']):
+            for deposition_control_entry in search_dep_control.data:
                 sample_filename = f"{deposition_control_entry['results']['eln']['lab_ids'][0]}_sample.archive.{filetype}"
+                sample_archive = EntryArchive(
+                    data=GrownSample(
+                        lab_id=deposition_control_entry['results']['eln']['lab_ids'][0]
+                    ),
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+                )
+                create_archive(
+                    sample_archive.m_to_dict(),
+                    archive.m_context,
+                    sample_filename,
+                    filetype,
+                    logger,
+                )
+                experiment_filename = f"{deposition_control_entry['results']['eln']['lab_ids'][0]}_experiment.archive.{filetype}"
                 constant_parameters_id = None
                 for row_index, row_id in enumerate(dep_control['Sample ID']):
                     if deposition_control_entry['results']['eln']['lab_ids'][0] == row_id:
                         constant_parameters_id = dep_control['Constant Parameters ID'][row_index]
+                for precursor_preparation_entry in search_precursor_preparation.data:
+                    if deposition_control_entry['results']['eln']['lab_ids'][0] == precursor_preparation_entry['results']['eln']['lab_ids'][0]:
+                        precursor_preparation_archive = precursor_preparation_entry['entry_id']
                 experiment_archive = EntryArchive(
                     data=ExperimentMovpe1IKZ(
                         lab_id=deposition_control_entry['results']['eln']['lab_ids'][0],
                         constant_parameters_id=constant_parameters_id,
                         deposition_control=DepositionControls(
-                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{deposition_control_entry['entry_id']}#data"
-                        )
-                    ),
-                    m_context=archive.m_context,
-                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
-                )
-                sample_archive = EntryArchive(
-                    data=GrownSample(
-                        lab_id=deposition_control_entry['results']['eln']['lab_ids'][0]
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{deposition_control_entry['entry_id']}#data",
+                        ),
+                        grown_sample=GrownSamples(
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, sample_filename)}#data",
+                        ),
+                        precursors_preparation=PrecursorsPreparationsMovpe1IKZ(
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{precursor_preparation_archive}#data",
+                        ),
                     ),
                     m_context=archive.m_context,
                     metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
@@ -173,16 +234,20 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     filetype,
                     logger,
                 )
+
+                with archive.m_context.raw_file(deposition_control_entry['mainfile'], 'r') as dep_control_file:
+                    updated_dep_control = yaml.safe_load(dep_control_file)
+                    updated_dep_control['data']['grown_sample'] = GrownSamples(
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, sample_filename)}#data",
+                        ).m_to_dict()
                 create_archive(
-                    sample_archive.m_to_dict(),
+                    updated_dep_control,
                     archive.m_context,
-                    sample_filename,
+                    deposition_control_entry['mainfile'],
                     filetype,
                     logger,
-                )
-
+                    bypass_check=True
+                    )
         archive.data = RawFileDepositionControl(
             deposition_control_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, dep_control_filename)}#data"
         )
-        #archive.metadata.entry_name = overview["Activity ID"][0] + "constant parameters file"
-
