@@ -69,10 +69,10 @@ def clean_channel_keys(input_key: str) -> str:
         .replace('Quad.Error', 'quad error')
         .replace('Harm.', 'harmonic')
         .replace('-', ' ')
-        .replace('Ch1','')
-        .replace('Ch2','')
         .strip()
         .lower()
+        .replace('ch1','')
+        .replace('ch2','')
         .replace(' ','_')
         .replace('3rd','third')
         .replace('2nd','second')
@@ -138,18 +138,18 @@ class CPFSPPMSMeasurementSetMagneticFieldStep(CPFSPPMSMeasurementStep):
     '''
     field_set = Quantity(
         type=float,
-        unit='tesla',
+        unit='gauss',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
-            defaultDisplayUnit='tesla'
+            defaultDisplayUnit='gauss'
         ),
     )
     field_rate = Quantity(
         type=float,
-        unit='tesla/second',
+        unit='gauss/second',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
-            defaultDisplayUnit='tesla/second'
+            defaultDisplayUnit='gauss/second'
         ),
     )
     approach =  Quantity(
@@ -225,18 +225,18 @@ class CPFSPPMSMeasurementScanFieldStep(CPFSPPMSMeasurementStep):
     '''
     initial_field = Quantity(
         type=float,
-        unit='tesla',
+        unit='gauss',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
-            defaultDisplayUnit='tesla'
+            defaultDisplayUnit='gauss'
         ),
     )
     final_field = Quantity(
         type=float,
-        unit='tesla',
+        unit='gauss',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
-            defaultDisplayUnit='tesla'
+            defaultDisplayUnit='gauss'
         ),
     )
     spacing_code = Quantity(
@@ -267,10 +267,10 @@ class CPFSPPMSMeasurementScanFieldStep(CPFSPPMSMeasurementStep):
     )
     rate = Quantity(
         type=float,
-        unit='tesla/second',
+        unit='gauss/second',
         a_eln=ELNAnnotation(
             component='NumberEditQuantity',
-            defaultDisplayUnit='tesla/second'
+            defaultDisplayUnit='gauss/second'
         ),
     )
     approach = Quantity(
@@ -802,6 +802,15 @@ class CPFSACTPPMSData(CPFSPPMSData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
     )
+    measurement_type = Quantity(
+        type=MEnum(
+            'temperature',
+            'field',
+            ),
+        a_eln=ELNAnnotation(
+            component='EnumEditQuantity',
+        ),
+    )
     time_stamp = Quantity(
         type=np.dtype(np.float64),
         unit='second',
@@ -989,13 +998,31 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
         repeats=True,
     )
 
-    #data = SubSection(section_def=CPFSPPMSData, repeats=True)
-    data = SubSection(section_def=CPFSPPMSData)
+    data = SubSection(section_def=CPFSPPMSData, repeats=True)
+    #data = SubSection(section_def=CPFSPPMSData)
 
     sequence_file = Quantity(
         type=str,
         a_eln=dict(component='FileEditQuantity'),
         a_browser=dict(adaptor='RawFileAdaptor'))
+
+    temperature_tolerance = Quantity(
+        type=float,
+        unit='kelvin',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='kelvin'
+        ),
+    )
+
+    field_tolerance = Quantity(
+        type=float,
+        unit='gauss',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='gauss'
+        ),
+    )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
         #super(CPFSPPMSMeasurement, self).normalize(archive, logger)
@@ -1056,8 +1083,8 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                     end_mode=['Persistent','Driven']
                     all_steps.append(CPFSPPMSMeasurementSetMagneticFieldStep(
                         name="Set field to "+details[2]+" Oe with "+details[3]+" Oe/min.",
-                        field_set=float(details[2])/10000,
-                        field_rate=float(details[3])/10000,
+                        field_set=float(details[2]),
+                        field_rate=float(details[3]),
                         approach=approach[int(details[4])],
                         end_mode=end_mode[int(details[5])],
                         )
@@ -1069,10 +1096,10 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                     end_mode=['Persistent','Driven']
                     all_steps.append(CPFSPPMSMeasurementScanFieldStep(
                         name="Scan field from "+details[2]+" Oe to "+details[3]+" Oe.",
-                        initial_field=float(details[2])/10000,
-                        final_field=float(details[3])/10000,
+                        initial_field=float(details[2]),
+                        final_field=float(details[3]),
                         spacing_code=spacing_code[int(details[6])],
-                        rate=float(details[4])/10000,
+                        rate=float(details[4]),
                         number_of_steps=int(details[5]),
                         approach=approach[int(details[7])],
                         end_mode=end_mode[int(details[8])],
@@ -1181,6 +1208,11 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
 
         if archive.data.data_file and archive.data.sequence_file:
             logger.info('Parsing PPMS measurement file using the sequence file.')
+            if not self.temperature_tolerance:
+                self.temperature_tolerance=0.01
+            if not self.field_tolerance:
+                self.field_tolerance=5.
+
             with archive.m_context.raw_file(self.data_file, 'r') as file:
                 data = file.read()
 
@@ -1239,79 +1271,263 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
 
-            other_data = [key for key in data_df.keys() if 'Ch1' not in key and 'Ch2' not in key and 'ETO Channel' not in key]
+            if self.software.startswith("ACTRANSPORT"):
+                other_data = [key for key in data_df.keys() if 'ch1' not in key and 'ch2' not in key and 'map' not in key.lower()]
+                all_data=[]
+                #identify separate measurements by following the steps structure
+                temp=float(data_df["Temperature (K)"].iloc[0])*self.temperature_tolerance.units
+                field=float(data_df["Magnetic Field (Oe)"].iloc[0])*self.field_tolerance.units
+                startval=0
+                index=0
+                measurement_type="undefined"
+                measurement_active=False
+                for step in self.steps:
+                    measurement_ends=False
+                    logger.info(step.name,temp,field)
+                    if isinstance(step,CPFSPPMSMeasurementSetTemperatureStep):
+                        if measurement_active:
+                            if measurement_type!="undefined" and measurement_type!="temperature":
+                                logger.error("Mixed measurement type found. Are sequence and data matching?")
+                            measurement_type="temperature"
+                            for i in range(index,len(data_df)):
+                                if (abs(float(data_df["Temperature (K)"].iloc[i])*step.temperature_set.units-step.temperature_set)<self.temperature_tolerance and
+                                    abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)<self.field_tolerance):
+                                    index=i
+                                    break
+                            else:
+                                logger.error("Set temperature not found. Are sequence and data matching?")
+                            for i in range(index,len(data_df)):
+                                if (abs(float(data_df["Temperature (K)"].iloc[i])*step.temperature_set.units-step.temperature_set)>self.temperature_tolerance or
+                                    abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)>self.field_tolerance):
+                                    index=i
+                                    break
+                            else:
+                                index=i
+                        temp=step.temperature_set
+                    if isinstance(step,CPFSPPMSMeasurementSetMagneticFieldStep):
+                        if measurement_active:
+                            if measurement_type!="undefined" and measurement_type!="field":
+                                logger.error("Mixed measurement type found. Are sequence and data matching?")
+                            measurement_type="field"
+                            for i in range(index,len(data_df)):
+                                if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.field_set.units-step.field_set)<self.field_tolerance and
+                                    abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)<self.temperature_tolerance):
+                                    index=i
+                                    break
+                            else:
+                                logger.error("Set field not found. Are sequence and data matching?")
+                            for i in range(index,len(data_df)):
+                                if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.field_set.units-step.field_set)>self.field_tolerance or
+                                    abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)>self.temperature_tolerance):
+                                    index=i
+                                    break
+                            else:
+                                index=i
+                        field=step.field_set
+                    if isinstance(step,CPFSPPMSMeasurementScanTempStep):
+                        if measurement_active:
+                            logger.error("Measurement already active when approaching scan step. Is this sequence valid?")
+                        measurement_active=True
+                        measurement_type="temperature"
+                        if abs(float(data_df["Temperature (K)"].iloc[index])*step.initial_temp.units-step.initial_temp)>self.temperature_tolerance:
+                            logger.error("Initial temperature not found in scan step. Are sequence and data matching?")
+                        for i in range(index,len(data_df)):
+                            if (abs(float(data_df["Temperature (K)"].iloc[i])*step.initial_temp.units-step.final_temp)<self.temperature_tolerance and
+                                abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)<self.field_tolerance):
+                                index=i
+                                break
+                        else:
+                            logger.error("Set temperature not found. Are sequence and data matching?")
+                        for i in range(index,len(data_df)):
+                            if (abs(float(data_df["Temperature (K)"].iloc[i])*step.initial_temp.units-step.final_temp)>self.temperature_tolerance or
+                                abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)>self.field_tolerance):
+                                index=i
+                                break
+                        else:
+                            index=i
+                        temp=step.final_temp
+                    if isinstance(step,CPFSPPMSMeasurementScanFieldStep):
+                        if measurement_active:
+                            logger.error("Measurement already active when approaching scan step. Is this sequence valid?")
+                        measurement_active=True
+                        measurement_type="field"
+                        if abs(float(data_df["Magnetic Field (Oe)"].iloc[index])*step.initial_field.units-step.initial_field)>self.field_tolerance:
+                            logger.error("Initial field not found in scan step. Are sequence and data matching?")
+                        for i in range(index,len(data_df)):
+                            if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.initial_field.units-step.final_field)<self.field_tolerance and
+                                abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)<self.temperature_tolerance):
+                                index=i
+                                break
+                        else:
+                            logger.error("Set field not found. Are sequence and data matching?")
+                        for i in range(index,len(data_df)):
+                            if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.initial_field.units-step.final_field)>self.field_tolerance or
+                                abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)>self.temperature_tolerance):
+                                index=i
+                                break
+                        else:
+                            index=i
+                        field=step.final_field
+                    if isinstance(step,CPFSPPMSMeasurementETOResistanceStep):
+                        if "Stop Measurement" in step.mode:
+                            measurement_ends=False
+                        if "Start Continuous Measure" in step.mode or "Perform N Measurements" in step.mode:
+                            measurement_active=True
+                    if isinstance(step,CPFSPPMSMeasurementScanTempEndStep):
+                        if not measurement_active:
+                            logger.error("Measurement not running when approaching scan end step. Is this sequence valid?")
+                        if measurement_active:
+                            if measurement_type!="undefined" and measurement_type!="temperature":
+                                logger.error("Mixed measurement type found. Are sequence and data matching?")
+                        measurement_ends=True
+                    if isinstance(step,CPFSPPMSMeasurementScanFieldEndStep):
+                        if not measurement_active:
+                            logger.error("Measurement not running when approaching scan end step. Is this sequence valid?")
+                        if measurement_active:
+                            if measurement_type!="undefined" and measurement_type!="field":
+                                logger.error("Mixed measurement type found. Are sequence and data matching?")
+                        measurement_ends=True
+                    if measurement_ends:
+                        measurement_active=False
+                        logger.info(startval,index)
+                        block=data_df.iloc[startval:index]
+                        startval=index
+                        data = CPFSACTPPMSData()
+                        data.measurement_type=measurement_type
+                        for key in other_data:
+                            clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
+                            if hasattr(data, clean_key):
+                                setattr(data,
+                                        clean_key,
+                                        block[key] # * ureg(data_template[f'{key}/@units'])
+                                        )
+                        channel_1_data = [key for key in block.keys() if 'ch1' in key.lower()]
+                        if channel_1_data:
+                            channel_1 = CPFSACTChannelData()
+                            setattr(channel_1, 'name', 'Channel 1')
+                            for key in channel_1_data:
+                                clean_key = clean_channel_keys(key)
+                                if hasattr(channel_1, clean_key):
+                                    setattr(channel_1,
+                                            clean_key,
+                                            block[key] # * ureg(data_template[f'{key}/@units'])
+                                            )
+                            data.m_add_sub_section(CPFSACTPPMSData.channels, channel_1)
+                        channel_2_data = [key for key in block.keys() if 'ch2' in key.lower()]
+                        if channel_2_data:
+                            channel_2 = CPFSACTChannelData()
+                            setattr(channel_2, 'name', 'Channel 2')
+                            for key in channel_2_data:
+                                clean_key = clean_channel_keys(key)
+                                logger.info(clean_key, channel_2_data)
+                                if hasattr(channel_2, clean_key):
+                                    setattr(channel_2,
+                                            clean_key,
+                                            block[key] # * ureg(data_template[f'{key}/@units'])
+                                            )
+                            data.m_add_sub_section(CPFSACTPPMSData.channels, channel_2)
 
-            if self.software.startswith("Electrical Transport Option"):
-                self.data = CPFSETOPPMSData()
-            elif self.software.startswith("ACTRANSPORT"):
-                self.data = CPFSACTPPMSData()
-            else:
-                logger.error("Software not recognized: "+self.software)
-            for key in other_data:
-                clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
-                if hasattr(self.data, clean_key):
-                    setattr(self.data,
-                            clean_key,
-                            data_df[key] # * ureg(data_template[f'{key}/@units'])
-                            )
-            channel_1_data = [key for key in data_df.keys() if 'ch1' in key.lower()]
-            if channel_1_data:
-                if self.software.startswith("Electrical Transport Option"):
-                    channel_1 = CPFSETOChannelData()
-                elif self.software.startswith("ACTRANSPORT"):
-                    channel_1 = CPFSACTChannelData()
-                setattr(channel_1, 'name', 'Channel 1')
-                for key in channel_1_data:
-                    clean_key = clean_channel_keys(key)
-                    if hasattr(channel_1, clean_key):
-                        setattr(channel_1,
-                                clean_key,
-                                data_df[key] # * ureg(data_template[f'{key}/@units'])
-                                )
-                if self.software.startswith("Electrical Transport Option"):
-                    self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_1)
-                elif self.software.startswith("ACTRANSPORT"):
-                    self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_1)
-            channel_2_data = [key for key in data_df.keys() if 'ch2' in key.lower()]
-            if channel_2_data:
-                if self.software.startswith("Electrical Transport Option"):
-                    channel_2 = CPFSETOChannelData()
-                elif self.software.startswith("ACTRANSPORT"):
-                    channel_2 = CPFSACTChannelData()
-                setattr(channel_2, 'name', 'Channel 2')
-                for key in channel_2_data:
-                    clean_key = clean_channel_keys(key)
-                    if hasattr(channel_2, clean_key):
-                        setattr(channel_2,
-                                clean_key,
-                                data_df[key] # * ureg(data_template[f'{key}/@units'])
-                                )
-                if self.software.startswith("Electrical Transport Option"):
-                    self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_2)
-                elif self.software.startswith("ACTRANSPORT"):
-                    self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_2)
+                        map_data = [key for key in block.keys() if 'Map' in key]
+                        if map_data:
+                            for key in map_data:
+                                map = CPFSACTData()
+                                if hasattr(map, 'name'):
+                                    setattr(map, 'name', key)
+                                if hasattr(map, 'map'):
+                                    setattr(map, 'map', block[key])
+                                data.m_add_sub_section(CPFSACTPPMSData.maps, map)
+
+                        all_data.append(data)
+
+                self.data=all_data
 
 
-            if self.software.startswith("Electrical Transport Option"):
-                eto_channel_data = [key for key in data_df.keys() if 'ETO Channel' in key]
-                if eto_channel_data:
-                    for key in eto_channel_data:
-                        eto_channel = CPFSETOData()
-                        if hasattr(eto_channel, 'name'):
-                            setattr(eto_channel, 'name', key)
-                        if hasattr(eto_channel, 'eto_channel'):
-                            setattr(eto_channel, 'eto_channel', data_df[key])
-                        self.data.m_add_sub_section(CPFSETOPPMSData.eto_channels, eto_channel)
-            elif self.software.startswith("ACTRANSPORT"):
-                map_data = [key for key in data_df.keys() if 'Map' in key]
-                if map_data:
-                    for key in map_data:
-                        map = CPFSACTData()
-                        if hasattr(map, 'name'):
-                            setattr(map, 'name', key)
-                        if hasattr(map, 'map'):
-                            setattr(map, 'map', data_df[key])
-                        self.data.m_add_sub_section(CPFSACTPPMSData.map_data, map)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            # if self.software.startswith("Electrical Transport Option"):
+            #     self.data = CPFSETOPPMSData()
+            # elif self.software.startswith("ACTRANSPORT"):
+            #     self.data = CPFSACTPPMSData()
+            # else:
+            #     logger.error("Software not recognized: "+self.software)
+            # for key in other_data:
+            #     clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
+            #     if hasattr(self.data, clean_key):
+            #         setattr(self.data,
+            #                 clean_key,
+            #                 data_df[key] # * ureg(data_template[f'{key}/@units'])
+            #                 )
+            # channel_1_data = [key for key in data_df.keys() if 'ch1' in key.lower()]
+            # if channel_1_data:
+            #     if self.software.startswith("Electrical Transport Option"):
+            #         channel_1 = CPFSETOChannelData()
+            #     elif self.software.startswith("ACTRANSPORT"):
+            #         channel_1 = CPFSACTChannelData()
+            #     setattr(channel_1, 'name', 'Channel 1')
+            #     for key in channel_1_data:
+            #         clean_key = clean_channel_keys(key)
+            #         if hasattr(channel_1, clean_key):
+            #             setattr(channel_1,
+            #                     clean_key,
+            #                     data_df[key] # * ureg(data_template[f'{key}/@units'])
+            #                     )
+            #     if self.software.startswith("Electrical Transport Option"):
+            #         self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_1)
+            #     elif self.software.startswith("ACTRANSPORT"):
+            #         self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_1)
+            # channel_2_data = [key for key in data_df.keys() if 'ch2' in key.lower()]
+            # if channel_2_data:
+            #     if self.software.startswith("Electrical Transport Option"):
+            #         channel_2 = CPFSETOChannelData()
+            #     elif self.software.startswith("ACTRANSPORT"):
+            #         channel_2 = CPFSACTChannelData()
+            #     setattr(channel_2, 'name', 'Channel 2')
+            #     for key in channel_2_data:
+            #         clean_key = clean_channel_keys(key)
+            #         if hasattr(channel_2, clean_key):
+            #             setattr(channel_2,
+            #                     clean_key,
+            #                     data_df[key] # * ureg(data_template[f'{key}/@units'])
+            #                     )
+            #     if self.software.startswith("Electrical Transport Option"):
+            #         self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_2)
+            #     elif self.software.startswith("ACTRANSPORT"):
+            #         self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_2)
+
+
+            # if self.software.startswith("Electrical Transport Option"):
+            #     eto_channel_data = [key for key in data_df.keys() if 'ETO Channel' in key]
+            #     if eto_channel_data:
+            #         for key in eto_channel_data:
+            #             eto_channel = CPFSETOData()
+            #             if hasattr(eto_channel, 'name'):
+            #                 setattr(eto_channel, 'name', key)
+            #             if hasattr(eto_channel, 'eto_channel'):
+            #                 setattr(eto_channel, 'eto_channel', data_df[key])
+            #             self.data.m_add_sub_section(CPFSETOPPMSData.eto_channels, eto_channel)
+            # elif self.software.startswith("ACTRANSPORT"):
+            #     map_data = [key for key in data_df.keys() if 'Map' in key]
+            #     if map_data:
+            #         for key in map_data:
+            #             map = CPFSACTData()
+            #             if hasattr(map, 'name'):
+            #                 setattr(map, 'name', key)
+            #             if hasattr(map, 'map'):
+            #                 setattr(map, 'map', data_df[key])
+            #             self.data.m_add_sub_section(CPFSACTPPMSData.map_data, map)
 
 
 m_package.__init_metainfo__()
