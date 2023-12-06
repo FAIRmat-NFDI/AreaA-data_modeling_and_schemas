@@ -52,6 +52,7 @@ from nomad.datamodel.metainfo.eln import (
     CompositeSystem,
 )
 
+from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
 from nomad.datamodel.metainfo.basesections import ActivityStep
 
@@ -69,10 +70,10 @@ def clean_channel_keys(input_key: str) -> str:
         .replace('Quad.Error', 'quad error')
         .replace('Harm.', 'harmonic')
         .replace('-', ' ')
-        .strip()
         .lower()
         .replace('ch1','')
         .replace('ch2','')
+        .strip()
         .replace(' ','_')
         .replace('3rd','third')
         .replace('2nd','second')
@@ -556,7 +557,12 @@ class CPFSPPMSMeasurementRemarkStep(CPFSPPMSMeasurementStep):
 
 class CPFSPPMSData(ArchiveSection):
     '''General data section from PPMS'''
-    pass
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_eln={
+            "component": "StringEditQuantity"}
+        )
 
 class CPFSETOData(ArchiveSection):
     '''Data section from Channels in PPMS'''
@@ -567,7 +573,8 @@ class CPFSETOData(ArchiveSection):
         type=str,
         description='FILL',
         a_eln={
-            "component": "StringEditQuantity"})
+            "component": "StringEditQuantity"}
+        )
     eto_channel = Quantity(
         type=np.dtype(np.float64),
         shape=['*'],
@@ -937,7 +944,7 @@ class CPFSACTPPMSData(CPFSPPMSData):
 
 
 
-class CPFSPPMSMeasurement(Measurement,EntryData):
+class CPFSPPMSMeasurement(Measurement,PlotSection,EntryData):
 
     # m_def = Section(
     #     a_eln=dict(lane_width='600px'),
@@ -955,27 +962,15 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                 order=[
                    'name',
                    'datetime',
-                   'end_time',
+                   'data_file',
+                   'sequence_file',
+                   'description',
                    'software',
                    'startupaxis',
                ],
             ),
             lane_width='600px',
             ),
-            a_plot=[
-                {
-                 'layout': { 'title': { 'text': 'Resistance vs. Temperature Channel 1'}},
-                'x': 'data/temperature',
-                'y': 'data/channels/0/resistance',
-                'config': {'editable': True, 'scrollZoom': True,}
-                },
-                {
-                 'layout': { 'title': { 'text': 'Resistance vs. Temperature Channel 2'}},
-                'x': 'data/temperature',
-                'y': 'data/channels/1/resistance',
-                'config': {'editable': True, 'scrollZoom': True,}
-                },
-                ]
     )
 
     data_file = Quantity(
@@ -1025,7 +1020,8 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
-        #super(CPFSPPMSMeasurement, self).normalize(archive, logger)
+
+        super(CPFSPPMSMeasurement, self).normalize(archive, logger)
 
         if archive.data.sequence_file:
             logger.info('Parsing PPMS sequence file.')
@@ -1283,7 +1279,6 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                 measurement_active=False
                 for step in self.steps:
                     measurement_ends=False
-                    logger.info(step.name,temp,field)
                     if isinstance(step,CPFSPPMSMeasurementSetTemperatureStep):
                         if measurement_active:
                             if measurement_type!="undefined" and measurement_type!="temperature":
@@ -1394,6 +1389,11 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                         startval=index
                         data = CPFSACTPPMSData()
                         data.measurement_type=measurement_type
+                        if measurement_type=="field":
+                            data.name="Field sweep at "+str(temp.magnitude)+" K."
+                        if measurement_type=="temperature":
+                            data.name="Temperature sweep at "+str(field.magnitude)+" Oe."
+                        data.title=data.name
                         for key in other_data:
                             clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
                             if hasattr(data, clean_key):
@@ -1419,7 +1419,6 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                             setattr(channel_2, 'name', 'Channel 2')
                             for key in channel_2_data:
                                 clean_key = clean_channel_keys(key)
-                                logger.info(clean_key, channel_2_data)
                                 if hasattr(channel_2, clean_key):
                                     setattr(channel_2,
                                             clean_key,
@@ -1440,6 +1439,24 @@ class CPFSPPMSMeasurement(Measurement,EntryData):
                         all_data.append(data)
 
                 self.data=all_data
+
+                #Now create the according plots
+                import plotly.express as px
+                from plotly.subplots import make_subplots
+                for data in self.data:
+                    if data.measurement_type=="field":
+                        resistivity_ch1=px.scatter(x=data.magnetic_field,y=data.channels[0].resistivity)
+                        resistivity_ch2=px.scatter(x=data.magnetic_field,y=data.channels[1].resistivity)
+                    if data.measurement_type=="temperature":
+                        resistivity_ch1=px.scatter(x=data.temperature,y=data.channels[0].resistivity)
+                        resistivity_ch2=px.scatter(x=data.temperature,y=data.channels[1].resistivity)
+                    figure1 = make_subplots(rows=2, cols=1, shared_xaxes=True)
+                    figure1.add_trace(resistivity_ch1.data[0], row=1, col=1)
+                    figure1.add_trace(resistivity_ch2.data[0], row=2, col=1)
+                    figure1.update_layout(height=400, width=716, title_text=data.name)
+                    self.figures.append(PlotlyFigure(label=data.name, figure=figure1.to_plotly_json()))
+
+
 
 
 
