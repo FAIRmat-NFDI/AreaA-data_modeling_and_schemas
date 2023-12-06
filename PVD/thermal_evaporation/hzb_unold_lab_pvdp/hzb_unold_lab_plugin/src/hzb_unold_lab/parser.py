@@ -38,8 +38,8 @@ from nomad.datamodel.metainfo.basesections import (
 
 from nomad_material_processing.utils import create_archive
 from baseclasses.helper.utilities import set_sample_reference
-from hzb_unold_lab.schema import (HZBUnoldLabThermalEvaporation, HZBUnoldXRFLibrary, HZBUnoldUVvisReflectionLibrary,
-                                  HZBUnoldUVvisTransmissionLibrary, HZBUnoldPLLibrary, HZBUnoldConductivityLibrary)
+from hzb_unold_lab.schema import (Unold_Thermal_Evaporation, Unold_XRF_Measurement_Library, Unold_UVvis_Reflection_Measurement_Library,
+                                  Unold_UVvis_Transmission_Measurement_Library, Unold_PL_Measurement_Library, Unold_Conductivity_Measurement_Library)
 
 
 class ParsedFile(EntryData):
@@ -66,19 +66,19 @@ class PVDPParser(MatchingParser):
         file = mainfile.split('/')[-1]
 
         if "pvdp" in file:
-            entry = HZBUnoldLabThermalEvaporation(log_file=file)
+            entry = Unold_Thermal_Evaporation(log_file=file)
 
         if file.endswith("reflection_spec.csv"):
-            entry = HZBUnoldUVvisReflectionLibrary(data_file=file)
+            entry = Unold_UVvis_Reflection_Measurement_Library(data_file=file)
 
         if file.endswith("transmission_spec.csv"):
-            entry = HZBUnoldUVvisTransmissionLibrary(data_file=file)
+            entry = Unold_UVvis_Transmission_Measurement_Library(data_file=file)
 
         if file.endswith("cond.csv"):
-            entry = HZBUnoldConductivityLibrary(data_file=file)
+            entry = Unold_Conductivity_Measurement_Library(data_file=file)
 
         if file.endswith("spx.xlsx") or file.endswith("spx.csv"):
-            entry = HZBUnoldXRFLibrary(composition_file=file)
+            entry = Unold_XRF_Measurement_Library(composition_file=file)
         if entry is None:
             return
 
