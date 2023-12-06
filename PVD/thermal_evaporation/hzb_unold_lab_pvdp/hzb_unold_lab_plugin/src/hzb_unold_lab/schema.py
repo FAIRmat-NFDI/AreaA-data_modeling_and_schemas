@@ -79,13 +79,13 @@ substance_translation = {
 }
 
 
-class HZBUnoldLabCategory(EntryDataCategory):
+class Unold_Lab_Category(EntryDataCategory):
     m_def = Category(label='HZB Unold Lab', categories=[EntryDataCategory])
 
 
-class HZBUnoldLibrary(LibrarySample, EntryData):
+class Unold_Library(LibrarySample, EntryData):
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         a_eln=dict(
             hide=["users", "elemental_composition", "components"]))
 
@@ -95,7 +95,7 @@ class HZBUnoldLibrary(LibrarySample, EntryData):
         a_browser=dict(adaptor='RawFileAdaptor'))
 
     def normalize(self, archive, logger):
-        super(HZBUnoldLibrary,
+        super(Unold_Library,
               self).normalize(archive, logger)
 
         with archive.m_context.raw_file(archive.metadata.mainfile) as f:
@@ -107,7 +107,7 @@ class HZBUnoldLibrary(LibrarySample, EntryData):
             msg = f'{self.lab_id}#'
             img = qrcode.make(msg)
             Im = ImageDraw.Draw(img)
-            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeSans.ttf", 13)
+            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeSans.ttf", 30)
 
             # Add Text to an image
             Im.text((15, 15), f"{self.lab_id}", font=fnt)
@@ -116,21 +116,14 @@ class HZBUnoldLibrary(LibrarySample, EntryData):
             self.qr_code = qr_file_name
 
 
-class HZBUnoldXRFLibrary(XRFLibrary, EntryData):
+class Unold_XRF_Measurement_Library(XRFLibrary, EntryData):
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
                    properties=dict(
             order=[
                 "name",
-            ])),
-        a_plot=[
-            {
-                'x': 'energy', 'y': 'measurements/:/data/intensity', 'layout': {
-                    'yaxis': {
-                        "fixedrange": False}, 'xaxis': {
-                        "fixedrange": False}}, "config": {
-                            "scrollZoom": True, 'staticPlot': False, }}]
+            ]))
     )
 
     def normalize(self, archive, logger):
@@ -139,16 +132,25 @@ class HZBUnoldXRFLibrary(XRFLibrary, EntryData):
             path = os.path.dirname(f.name)
 
         if self.samples and self.samples[0].lab_id:
-            search_folder = self.samples[0].lab_id
-
+            search_key = self.samples[0].lab_id
+            # find data
             for item in os.listdir(path):
                 if not os.path.isdir(os.path.join(path, item)):
                     continue
-                if item != search_folder:
+                if not item.startswith(f"{search_key}#"):
                     continue
                 self.data_folder = item
+            # find images
+            images = []
+            for item in os.listdir(path):
+                if not os.path.isfile(os.path.join(path, item)):
+                    continue
+                if not item.startswith(f"{search_key}#") and item.endswith(".bmp"):
+                    continue
+                images.append(item)
+            self.images = images
 
-        if self.data_folder is not None and self.composition_file is not None:
+        if self.composition_file:
             measurements = []
 
             data_folder = os.path.join(path, self.data_folder)
@@ -166,7 +168,7 @@ class HZBUnoldXRFLibrary(XRFLibrary, EntryData):
             composition_data = pd.read_excel(os.path.join(path, self.composition_file))
             for i, spectrum in enumerate(spectra):
 
-                data = XRFData(intensity=spectrum)
+                # data = XRFData(intensity=spectrum)
                 composition = [XRFComposition(name=col, amount=composition_data[col].iloc[i])
                                for col in composition_data.columns[1:]]
                 measurements.append(XRFSingleLibraryMeasurement(
@@ -177,18 +179,18 @@ class HZBUnoldXRFLibrary(XRFLibrary, EntryData):
                     # position_x_relative=position_axes[0][i % len_x],
                     # position_y_relative=position_axes[1][i // len_x],
                     thickness=composition_data[composition_data.columns[0]].iloc[i],
-                    data=data,
+                    # data=data,
                     composition=composition,
                     name=f"{position_axes[0][i % len_x]},{position_axes[1][i // len_x]}"),
                 )
             self.measurements = measurements
-        super(HZBUnoldXRFLibrary,
+        super(Unold_XRF_Measurement_Library,
               self).normalize(archive, logger)
 
 
-class HZBUnoldUVvisReflectionLibrary(UVvisMeasurementLibrary, EntryData):
+class Unold_UVvis_Reflection_Measurement_Library(UVvisMeasurementLibrary, EntryData):
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
                    properties=dict(
             order=[
@@ -242,13 +244,13 @@ class HZBUnoldUVvisReflectionLibrary(UVvisMeasurementLibrary, EntryData):
                         name=f"{x_pos[ix]},{y_pos[iy]}"),
                     )
             self.measurements = measurements
-        super(HZBUnoldUVvisReflectionLibrary,
+        super(Unold_UVvis_Reflection_Measurement_Library,
               self).normalize(archive, logger)
 
 
-class HZBUnoldUVvisTransmissionLibrary(UVvisMeasurementLibrary, EntryData):
+class Unold_UVvis_Transmission_Measurement_Library(UVvisMeasurementLibrary, EntryData):
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
                    properties=dict(
             order=[
@@ -306,13 +308,13 @@ class HZBUnoldUVvisTransmissionLibrary(UVvisMeasurementLibrary, EntryData):
                         name=f"{x_pos[ix]},{y_pos[iy]}"),
                     )
             self.measurements = measurements
-        super(HZBUnoldUVvisTransmissionLibrary,
+        super(Unold_UVvis_Transmission_Measurement_Library,
               self).normalize(archive, logger)
 
 
-class HZBUnoldPLLibrary(UVvisMeasurementLibrary, EntryData):
+class Unold_PL_Measurement_Library(UVvisMeasurementLibrary, EntryData):
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
                    properties=dict(
             order=[
@@ -367,13 +369,13 @@ class HZBUnoldPLLibrary(UVvisMeasurementLibrary, EntryData):
         #                 name=f"{x_pos[ix]},{y_pos[iy]}"),
         #             )
         #     self.measurements = measurements
-        super(HZBUnoldPLLibrary,
+        super(Unold_PL_Measurement_Library,
               self).normalize(archive, logger)
 
 
-class HZBUnoldConductivityLibrary(ConductivityMeasurementLibrary, EntryData):
+class Unold_Conductivity_Measurement_Library(ConductivityMeasurementLibrary, EntryData):
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
                    properties=dict(
             order=[
@@ -402,20 +404,20 @@ class HZBUnoldConductivityLibrary(ConductivityMeasurementLibrary, EntryData):
                         name=f"{x_pos[ix]},{y_pos[iy]}"),
                     )
             self.measurements = measurements
-        super(HZBUnoldConductivityLibrary,
+        super(Unold_Conductivity_Measurement_Library,
               self).normalize(archive, logger)
 
 
-class HZBUnoldLabSubstance(Substance, EntryData):
+class Unold_Lab_Substance(Substance, EntryData):
     pass
 
 
-class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
+class Unold_Thermal_Evaporation(ThermalEvaporation, EntryData):
     '''
     Class autogenerated from yaml schema.
     '''
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         label='Thermal Evaporation Process',
         links=["http://purl.obolibrary.org/obo/CHMO_0001360"],
         a_plot=[
@@ -504,7 +506,7 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
             start_times.append(df.iloc[-1, 1])
             substances = {
                 source_nr: create_archive(
-                    entity=HZBUnoldLabSubstance(
+                    entity=Unold_Lab_Substance(
                         name=substance_translation.get(
                             source_materials[source_nr],
                             source_materials[source_nr]
@@ -584,7 +586,7 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
                 steps.append(step)
             self.steps = steps
 
-        super(HZBUnoldLabThermalEvaporation, self).normalize(archive, logger)
+        super(Unold_Thermal_Evaporation, self).normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
