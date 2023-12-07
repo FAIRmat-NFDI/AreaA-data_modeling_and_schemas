@@ -53,8 +53,9 @@ class PPMSParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         entry = PPMSMeasurement()
-        entry.data_file = data_file
+        entry.data_file = data_file_with_path
         file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
         archive.data = PPMSFile(measurement=create_archive(entry,archive,file_name))
