@@ -1,0 +1,247 @@
+#The data schema provides a description of procedures and parameters for TEM-sample preparation using mechanical method.
+#As an example, the sample is SrTiO3.
+definitions:
+  name: TEM-Sample Preparation # is this just for one TEM sample or several?
+  sections:
+    TEM-Sample Preparation:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Experiment # Activity is part of our NOMAD data model. We will provide soon a documentation on how to use it
+        - nomad.datamodel.data.EntryData
+      #m_annotations:  # in the base sections above we inherited from "Activity", we can hide qunatities we do not need
+      #  eln:
+      #    hide: ['end_time', 'lab_id', 'location']
+      quantities:
+        operator: #Changming Liu
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        # date: #16.01.2023
+        #   type: Datetime
+        #   m_annotations:
+        #     eln:
+        #       component: DateTimeEditQuantity
+        TEM_sample_ID: #22-01-19-MA-252b-STO-cs_110vs100 # ID of the prepared TEM Sample
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        source_sample_ID: #22-01-19-MA-252b-STO # link to a sample entry, for example, this sample is prepared by Mohamed, more details can be found in MOVPE entry
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sample_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - 'cross-section'
+              - 'plan-view'
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        description:
+          type: str
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+              label: Notes
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/Steps'
+    Steps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/TEMPrepSteps'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    TEMPrepSteps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Activity
+    cutting: # does this result in more samples?
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/TEMPrepSteps'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        cutting_direction_1: #[1-10]
+          type: str
+          description: "e.g. [1-10]"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        cutting_direction_2: #[010] if two directions are prepared this entry is for the second orientation
+          type: str
+          description: "e.g. [010] if two directions are prepared this entry is for the second orientation"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        cutting_speed: #8 # speed setting of the wire
+          type: np.float64
+          description: "speed setting of the wire"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+    cross_section_description: # no - in name allowed? # do you glue the same sample on top of each other?
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/TEMPrepSteps'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        cs_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - 'face-to-face'
+              - 'face-to-dummy'
+              - 'one sided'
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        orientation_of_side_a: #[110]
+          type: str
+          description: "e.g. [110]"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        orientation_of_side_b: #[100]
+          type: str
+          description: "e.g. [100]"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        glueing_temperature: #This temperature indicates the process of putting two stripes together.
+          type: np.float64
+          unit: °C
+          description: "This temperature indicates the process of putting two stripes together."
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        glueing_time: #30
+          type: np.float64
+          unit: minutes
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+    mechanical_polishing:  # added _ in name
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/TEMPrepSteps'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        fluid: #water
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        sample_thickness_after_mechanical_polishing: #8
+          type: np.float64
+          unit: micrometer
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+    ion_milling:  # added _ in name
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/TEMPrepSteps'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        # date: #17.01.2023
+        #   type: Datetime
+        #   m_annotations:
+        #     eln:
+        #       component: DateTimeEditQuantity
+        sector_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - 'double'
+              - 'single'
+              - 'none'
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        cooling:
+          type:
+            type_kind: Enum
+            type_data:
+              - 'True'
+              - 'False'
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+        # notes:
+        #   type: str
+        #   m_annotations:
+        #     eln:
+        #       component: RichTextEditQuantity
+      sub_sections: #It would be better to combine the tables from step_1 to step_n together, but I do not know how to write it...😳
+        steps:
+          repeats: true
+          section: '#/ion_milling_step'
+    # Settings_step:
+    #   base_sections:
+    #   - nomad.datamodel.metainfo.basesections.SectionReference
+    #   quantities:
+    #     reference:
+    #       type: '#/ion_milling_step'
+    #       m_annotations:
+    #         eln:
+    #           component: ReferenceEditQuantity
+    #:
+    #  repeats: true
+      #dimensions:
+     # section: '#/ion_milling_step'
+    ion_milling_step:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ActivityStep
+      quantities:
+        name: # e.g. step 1
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        voltage: #4
+          type: np.float64
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        angle: #±4 do you need the +-?
+          type: str
+          #unit: ° type str cannot have a unit
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        temperature: #-150
+          type: np.float64
+          unit: °C
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        time: #3
+          type: np.float64
+          unit: hours
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
