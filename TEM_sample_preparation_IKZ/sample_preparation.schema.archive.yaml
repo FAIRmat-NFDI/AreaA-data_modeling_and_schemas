@@ -49,23 +49,23 @@ definitions:
       sub_sections:
         steps:
           repeats: true
-          section: '#/Steps'
-    Steps:
+          section: '#/TEMPrepStep'
+    TEMPrepStep:
       base_sections:
-      - nomad.datamodel.metainfo.basesections.SectionReference
+      - nomad.datamodel.metainfo.basesections.ExperimentStep # might change if I define it as Process
       quantities:
-        reference:
-          type: '#/TEMPrepSteps'
+        activity:
+          type: '#/TEMPrepActivity'
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-    TEMPrepSteps:
+    TEMPrepActivity:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Activity
     cutting: # does this result in more samples?
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/TEMPrepSteps'
+      - '#/TEMPrepActivity'
       - nomad.datamodel.data.EntryData
       quantities:
         cutting_direction_1: #[1-10]
@@ -89,7 +89,7 @@ definitions:
     cross_section_description: # no - in name allowed? # do you glue the same sample on top of each other?
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/TEMPrepSteps'
+      - '#/TEMPrepActivity'
       - nomad.datamodel.data.EntryData
       quantities:
         cs_type:
@@ -130,7 +130,7 @@ definitions:
     mechanical_polishing:  # added _ in name
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/TEMPrepSteps'
+      - '#/TEMPrepActivity'
       - nomad.datamodel.data.EntryData
       quantities:
         fluid: #water
@@ -147,7 +147,7 @@ definitions:
     ion_milling:  # added _ in name
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/TEMPrepSteps'
+      - '#/TEMPrepActivity'
       - nomad.datamodel.data.EntryData
       quantities:
         # date: #17.01.2023
