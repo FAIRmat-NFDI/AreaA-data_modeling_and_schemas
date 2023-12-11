@@ -1,0 +1,10 @@
+normalize:
+  normalizers:
+    include:
+      - MetainfoNormalizer
+plugins:
+  include:
+    - 'parsers/analysis'
+  options:
+    parsers/analysis:
+      python_package: analysis
