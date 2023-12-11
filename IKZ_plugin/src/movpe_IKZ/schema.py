@@ -1074,8 +1074,8 @@ class GrowthMovpe2IKZ(Process, EntryData, TableData):
             "label": "Recipe ID"
         },
     )
-    recipe_id = Quantity(
-        type=GrownSample.lab_id,
+    growth_id = Quantity(
+        type=GrownSamples.lab_id,
         # a_eln={
         #     #"component": "StringEditQuantity",
         #     "label": "Growth ID"
@@ -1358,7 +1358,7 @@ class GrowthMovpe1IKZ(Process, EntryData, TableData):
                 "samples"
             ]
         },
-        label_quantity= "growth_id",
+        label_quantity= "lab_id", #"growth_id",
         categories=[IKZMOVPE1Category],
         label='Growth',
     )
