@@ -1,0 +1,83 @@
+definitions:
+    name: ConCat Chemical Schema
+    sections:
+        Chemical:
+            base_sections:
+              - nomad.datamodel.data.EntryData
+            quantities:
+                name:
+                    type: string
+                    label: Chemical name
+                    description: e.g. line item from invoice
+                    m_annotations:
+                        eln:
+                            component: StringEditQuantity
+                delivery_date:
+                    type: Datetime
+                    m_annotations:
+                        eln:
+                            component: DateTimeEditQuantity
+            sub_sections:
+                details:
+                    section:
+                        base_sections:
+                          - ChemicalDetails
+                        m_annotations:
+                            eln:
+                                overview: True
+                substance:
+                    section:
+                        base_sections:
+                          - nomad.datamodel.metainfo.basesections.PubChemPureSubstanceSection
+                        m_annotations:
+                            eln:
+                                overview: True
+                                properties:
+                                    editable:
+                                        exclude:
+                                          - molecular_formula
+                                          - molecular_mass
+                                    visible:
+                                        include:
+                                          - name
+                                          - pub_chem_cid
+                                          - inchi_key
+                                          - molecular_formula
+                                          - molecular_mass
+            m_annotations:
+                template:
+                    details: {}
+                    substance: {}
+        ChemicalDetails:
+            quantities:
+                lot_number:
+                    type: string
+                    description: Lot or batch number of the Chemical.
+                    m_annotations:
+                        eln:
+                            component: StringEditQuantity
+                packaging_size:
+                    type: string
+                    description: Original packaging size.
+                    m_annotations:
+                        eln:
+                            component: StringEditQuantity
+                purity:
+                    type: string
+                    description: Chemical purity as specified by the Supplier.
+                    m_annotations:
+                        eln:
+                            component: StringEditQuantity
+                from_supplier:
+                    type: ../upload/raw/supplier.archive.yml#Supplier
+                    m_annotations:
+                        eln:
+                            component: ReferenceEditQuantity
+
+
+
+
+
+
+
+

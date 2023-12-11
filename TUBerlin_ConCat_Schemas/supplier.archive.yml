@@ -1,0 +1,42 @@
+definitions:
+    name: ConCat Supplier Schema
+    sections:
+        Supplier:
+            base_sections:
+              - nomad.datamodel.data.EntryData
+            quantities:
+                name:
+                    type: string
+                    m_annotations:
+                        eln:
+                            component: StringEditQuantity
+                url:
+                    type: string
+                    m_annotations:
+                        eln:
+                            component: URLEditQuantity
+            sub_sections:
+                ordering_details:
+                    section:
+                        base_sections:
+                          - OrderingData
+                        m_annotations:
+                            eln:
+                                overview: True
+            m_annotations:
+                template:
+                    ordering_details: {}
+        OrderingData:
+            quantities:
+                customer_number:
+                    type: string
+                    m_annotations:
+                        eln:
+                            component: StringEditQuantity
+                contact_person:
+                    type: Author
+                    m_annotations:
+                        eln:
+                            component: AuthorEditQuantity
+
+
