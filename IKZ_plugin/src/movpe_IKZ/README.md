@@ -1,15 +1,22 @@
-# IKZ Plugin
+# MOVPE IKZ Plugin
 
-This directory contains plugins specific to the IKZ institute.
+This directory contains the MOVPE IKZ plugin for the NOMAD project.
+
+## Overview
+
+The MOVPE IKZ plugin is used to parse and process data related to the MOVPE growth process at IKZ.
 
 ## Structure
 
 The directory structure is as follows:
 
-- `src/`: This directory contains the source code for the plugins.
-- `tests/`: This directory contains tests for the plugins.
+- `movpe1_growth_parser/`: This directory contains the source code for machine "1" at IKZ.
+- `movpe2_growth_parser/`: This directory contains the source code for machine "2" at IKZ.
+- `substrate_parser/`: This directory contains the source code for substrate parser.
 
-Please refer to the README.md file in each subdirectory for more information about each plugin.
+The `parser.py` file contains the logic for parsing the raw data from the MOVPE growth process. This includes reading the data from its original format, extracting the relevant information, and transforming it into a structured format.
+
+The `schema.py` file defines the structure of the data after it has been parsed. It specifies the fields that the structured data will contain and the types of those fields.
 
 ## Installation
 
@@ -106,65 +113,27 @@ plugins:
 
 You need to copy and fill the tabular files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
 
-Please refer to the README.md file in each subdirectory for more information about each plugin.
-
-
-
-
-## Develop
-
-### Fork the project
-
-This project was forked from the github project page https://github.com/nomad-coe/nomad-schema-plugin-example
-
-### Clone your fork
-
-Follow the github instructions. The URL and directory depends on your user name or organization and the
-project name you choose. But, it should look somewhat like this:
+The available files are:
 
 ```
-git clone git@github.com:markus1978/my-nomad-schema.git
-cd my-nomad-schema
+IKZ_plugin/tests/data/movpe_IKZ
+├── movpe1_growth_parser
+│   ├── constant_parameters
+|   |   └── constant_parameters.xlsx
+│   └── deposition_control
+|       └── deposition_control.xlsx
+├── movpe2_growth_parser
+│   └── GaO.growth.movpe.ikz.xlsx
+└── substrate_parser
+    └── GaO.substrates.movpe.ikz.xlsx
 ```
 
-### Install the dependencies
+`movpe1_growth_parser` contains two files with custom filename and `.xlsx` extension.
 
-You should create a virtual environment. You will need the `nomad-lab` package (and `pytest`).
-You need at least Python 3.9.
+`movpe1_growth_parser` contains one file with custom filename and `.growth.movpe.ikz.xlsx` extension.
 
-```sh
-python3 -m venv .pyenv
-source .pyenv/bin/activate
-pip install -r requirements.txt --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
-```
+`substrate_parser` contains one file with custom filename and `.substrates.movpe.ikz.xlsx` extension.
 
-to ensure installation of all the packages required, make sure in to install:
-
-```sh
-pip install nomad-lab[parsing, infrastructure]
-```
-
-### Run the tests
-
-Make sure the current directory is in your path:
-
-```sh
-export PYTHONPATH=.
-```
-
-You can run automated tests with `pytest`:
-
-```sh
-pytest -svx tests
-```
-
-You can parse an example archive that uses the schema with `nomad` command
-(installed via `nomad-lab` Python package):
-
-```sh
-nomad parse tests/data/test.archive.yaml --show-archive
-```
-
-### Developing your schema
-
-Refer to official NOMAD docs to learn how to develop schemas and parsers and plugins, how to add them to an Oasis, how to publish them: https://nomad-lab/prod/v1/staging/docs/plugins.html
+!!! attention
+    If the extension is not correct or the files miss some field,
+    they might not be recognized by the parsers.
