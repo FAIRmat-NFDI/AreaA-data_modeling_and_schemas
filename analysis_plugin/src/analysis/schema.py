@@ -32,3 +32,89 @@ files, the Jupyter notebook will contain the parsed data.
 Eventually, the schema will support multiple data files per ELN and support parsing of
 file types from other measurements and processes.
 '''
+from typing import (
+    TYPE_CHECKING
+)
+from nomad.datamodel.metainfo.basesections import (
+    Analysis,
+    AnalysisResult,
+)
+from nomad.metainfo import (
+    Package,
+    Section,
+    Quantity,
+)
+from nomad.datamodel.data import (
+    ArchiveSection,
+    EntryData,
+)
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+    ELNComponentEnum,
+)
+
+if TYPE_CHECKING:
+    from nomad.datamodel.datamodel import (
+        EntryArchive,
+    )
+    from structlog.stdlib import (
+        BoundLogger,
+    )
+
+m_package = Package(name = 'analysis_jupyter')
+
+def generate_jupyter_notebook(archive: 'EntryArchive', logger: 'BoundLogger'):
+    '''
+    Generates a Jupyter notebook from the ELN.
+    '''
+
+    # generating the notebook based on the file type
+    pass
+
+class JupyterAnalysisResult(AnalysisResult):
+    '''
+    Section for collecting Jupyter notebook analysis results.
+    It is a non-editable section that is populated once the processing is.
+    '''
+    m_def = Section()
+    analysis_status = Quantity(
+        type=bool,
+        description='Status of the Jupyter notebook generation and analysis',
+        a_eln = ELNAnnotation(
+            label = 'Analysis Status',
+            component = None,
+        ),
+    )
+
+class JupyterAnalysis(Analysis):
+    '''
+    Generic class for Jupyter notebook analysis.
+    '''
+    m_def = Section()
+
+class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
+    '''
+    Entry section for Jupyter notebook analysis.
+    '''
+    m_def = Section(
+        category = None,
+        label = 'Jupyter Notebook Analysis',
+    )
+    input_file = Quantity(
+        type=str,
+        description='Input file (raw data file or parsed archive)',
+        a_eln = ELNAnnotation(
+            component = ELNComponentEnum.FileEditQuantity,
+        ),
+    )
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        '''
+        Normalizes the ELN entry to generate a Jupyter notebook.
+        '''
+        super().normalize(archive, logger)
+
+        # perform a check to see if jupyter notebook is already generated
+        # as the normalize would be needed again to fill in the output results section
+        generate_jupyter_notebook(archive, logger)
+
+m_package.__init_metainfo__()
