@@ -397,7 +397,7 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
     '''
 
     m_def = Section(
-        label_quantity='#/data/lab_id',
+        label_quantity='lab_id',
         categories=[IKZMOVPECategory],
         label="Substrate"
     )
@@ -2363,6 +2363,15 @@ class LiMiresults(MeasurementResult):
         a_eln={
             "component": "FileEditQuantity"
         },
+    )
+    scale = Quantity(
+        type=np.float64,
+        description='scale of the image',
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "micrometer"
+        },
+        unit="micrometer",
     )
 
 

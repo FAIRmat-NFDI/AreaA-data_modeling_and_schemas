@@ -1,10 +1,12 @@
 # MOVPE IKZ Plugin
 
-This directory contains the MOVPE IKZ plugin for the NOMAD project.
-
 ## Overview
 
+This directory contains the MOVPE IKZ plugin for the NOMAD project.
+
 The MOVPE IKZ plugin is used to parse and process data related to the MOVPE growth process at IKZ.
+
+It is derived from the former yaml schema:[AreaA-data_modeling_and_schemas/movpe_IKZ_Ga2O3](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/movpe_IKZ_Ga2O3)
 
 ## Structure
 
