@@ -65,11 +65,43 @@ m_package = Package(name = 'analysis_jupyter')
 
 def generate_jupyter_notebook(archive: 'EntryArchive', logger: 'BoundLogger'):
     '''
-    Generates a Jupyter notebook from the ELN.
+    TODO: Generates a Jupyter notebook from the ELN.
+    generating the notebook based on the file type
+    perform a check to see if jupyter notebook with same content is already present
+    as the normalize would be needed again to fill in the output results section
+    getting the results from the analysis back into the ELN
     '''
 
-    # generating the notebook based on the file type
-    pass
+def get_input_files(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
+    '''
+    Finds the analysis input files from the current upload.
+
+    Args:
+        archive (EntryArchive): The archive containing the section.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: List containing matching input files.
+    '''
+    from nomad.search import search
+
+    # TODO: support more sections
+    section_lookup = [
+        'ELNXRayDiffraction',
+    ]
+
+    result = search(
+        owner = 'user',
+        query = {
+            'results.eln.sections:any' : section_lookup,
+            'upload_id:any' : [archive.m_context.upload_id],
+        },
+        user_id = archive.metadata.main_author.user_id,
+    )
+    if not result.data:
+        logger.warning('No matching input files found in the uploads')
+
+    return result.data
 
 class JupyterAnalysisResult(AnalysisResult):
     '''
@@ -113,8 +145,14 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         '''
         super().normalize(archive, logger)
 
-        # perform a check to see if jupyter notebook is already generated
-        # as the normalize would be needed again to fill in the output results section
+        input_files = get_input_files(archive, logger)
+        if len(input_files) > 1:
+            logger.warning((
+                'Multiple input files found.'
+                f'Using the first one "{input_files[0].get("entry_name")}".'
+            ))
+            input_files = input_files[:1]
+
         generate_jupyter_notebook(archive, logger)
 
 m_package.__init_metainfo__()
