@@ -63,27 +63,87 @@ if TYPE_CHECKING:
 
 m_package = Package(name = 'analysis_jupyter')
 
-def generate_jupyter_notebook(archive: 'EntryArchive', logger: 'BoundLogger'):
+def write_jupyter_notebook(
+        archive: 'EntryArchive',
+        input_file_ids: list,
+        logger: 'BoundLogger') -> None:
     '''
-    TODO: Generates a Jupyter notebook from the ELN.
-    generating the notebook based on the file type
-    perform a check to see if jupyter notebook with same content is already present
-    as the normalize would be needed again to fill in the output results section
-    getting the results from the analysis back into the ELN
+    Writes (or overwrites) a Jupyter notebook and saves it as a raw file.
+
+    Args:
+        archive (EntryArchive): The archive containing the section.
+        input_file_ids (list): List of input file ids.
+        logger (BoundLogger): A structlog logger.
     '''
 
-def get_input_files(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
+    # TODO:  add analysis code specific to the section type to which the entry belongs
+
+    import nbformat as nbf
+
+    file_name = 'ELNJupyterAnalysis.ipynb'
+
+    cells = []
+
+    code = (
+    'import requests\n'
+    'from nomad.client import Auth'
+    )
+    cells.append(nbf.v4.new_code_cell(source=code))
+
+    code = (
+    'base_url = "http://nomad-lab.eu/prod/v1/api/v1"\n'
+    'token_header = Auth().headers()'
+    )
+    cells.append(nbf.v4.new_code_cell(source=code))
+
+    code = (
+    'def get_entry_data(entry_id):\n'
+    '   query = {\n'
+    '       "required" : {\n'
+    '           "data": "*",\n'
+    '       }\n'
+    '   }\n'
+    '   response = requests.post(\n'
+    '       f"{base_url}/entries/{entry_id}/archive/query",\n'
+    '       headers = token_header,\n'
+    '       json = query\n'
+    '   )\n'
+    '   return response.json()\n'
+    'entry_data = []\n'
+    f'for entry_id in {input_files}:\n'
+    '   entry_data.append(get_entry_data(entry_id))'
+    )
+    cells.append(nbf.v4.new_code_cell(source=code))
+
+    code = (
+    'print(f"Data from {len(entry_data)} entries is available in `entry_data: list` variable.\\n")\n'
+    'print(entry_data)'
+    )
+    cells.append(nbf.v4.new_code_cell(source=code))
+
+
+    nb = nbf.v4.new_notebook()
+    for cell in cells:
+        nb.cells.append(cell)
+
+    with archive.m_context.raw_file(file_name, 'w') as nb_file:
+        nbf.write(nb, nb_file)
+    archive.m_context.upload.process_updated_raw_file(file_name, allow_modify=True)
+
+
+def get_input_entry_ids(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
     '''
-    Finds the analysis input files from the current upload.
+    Finds the analysis input files from the current upload and returns the entry_id.
 
     Args:
         archive (EntryArchive): The archive containing the section.
         logger (BoundLogger): A structlog logger.
 
     Returns:
-        list: List containing matching input files.
+        list: List containing matching entry_ids.
     '''
     from nomad.search import search
+    from nomad.app.v1.models import MetadataRequired
 
     # TODO: support more sections
     section_lookup = [
@@ -94,14 +154,16 @@ def get_input_files(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
         owner = 'user',
         query = {
             'results.eln.sections:any' : section_lookup,
-            'upload_id:any' : [archive.m_context.upload_id],
+            'upload_id' : [archive.m_context.upload_id],
         },
+        required = MetadataRequired(include=['entry_id']),
         user_id = archive.metadata.main_author.user_id,
     )
     if not result.data:
         logger.warning('No matching input files found in the uploads')
 
-    return result.data
+    entry_ids = [d['entry_id'] for d in result.data]
+    return entry_ids
 
 class JupyterAnalysisResult(AnalysisResult):
     '''
@@ -145,14 +207,10 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         '''
         super().normalize(archive, logger)
 
-        input_files = get_input_files(archive, logger)
-        if len(input_files) > 1:
-            logger.warning((
-                'Multiple input files found.'
-                f'Using the first one "{input_files[0].get("entry_name")}".'
-            ))
-            input_files = input_files[:1]
+        input_entry_ids = get_input_entry_ids(archive, logger)
+        if len(input_entry_ids) > 1:
+            logger.warning('Multiple input files found.')
 
-        generate_jupyter_notebook(archive, logger)
+        write_jupyter_notebook(archive, input_entry_ids, logger)
 
 m_package.__init_metainfo__()
