@@ -1027,7 +1027,7 @@ class GrowthMovpe2IKZ(Process, EntryData, TableData):
                 "samples"
             ]
         },
-        label_quantity= "growth_id",
+        #label_quantity= "growth_id",
         categories=[IKZMOVPE2Category],
         label='Growth',
     )
@@ -1734,9 +1734,10 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
                 "instruments",
                 "steps",
                 "samples",
+                "description",
             ]
         },
-        label_quantity= "#/data/lab_id",
+        label_quantity= "lab_id",
         categories=[IKZMOVPE1Category],
     )
     data_file = Quantity(
@@ -1765,14 +1766,14 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
         type=str,
         default="Deposition Control (MOVPE 1 IKZ)",
     )
-    description = Quantity(
-        type=str,
-        description='description',
-        a_eln={
-            "component": "StringEditQuantity",
-            "label": "Notes",
-        },
-    )
+    # description = Quantity(
+    #     type=str,
+    #     description='description',
+    #     a_eln={
+    #         "component": "StringEditQuantity",
+    #         "label": "Notes",
+    #     },
+    # )
     datetime = Quantity(
         type=Datetime,
         a_tabular={
@@ -1804,6 +1805,10 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
             "defaultDisplayUnit": "minute"
         },
         unit='minute',
+    )
+
+    notes = SubSection(
+        section_def=Notes,
     )
 
     grown_sample = SubSection(
@@ -1896,8 +1901,8 @@ class DepositionControlMovpe1IKZ(Process, PlotSection, EntryData, TableData):
                     col += 1
                 figure1.add_trace(scatter.data[0], row=row, col=col)
 
-        figure1.update_layout(title_text="Creating Subplots in Plotly")
-        self.figures.append(PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json()))
+        figure1.update_layout(height=800, width=300, title_text="Creating Subplots in Plotly")
+        self.figures = [PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json())] #.append(PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json()))
 
 
 class DepositionControls(SectionReference):
@@ -1921,9 +1926,10 @@ class PubChemPureSubstanceSectionMovpe1(PubChemPureSubstanceSection):
     m_def = Section(
         label='PubChemPureSubstanceSection',
     )
+
     cas_number = Quantity(
         type=str,
-        description='A short name for the substance.',
+        description='CAS number.',
         a_eln=dict(component='StringEditQuantity'),
         a_tabular={
             "name": "Precursors/CAS"
@@ -1946,7 +1952,7 @@ class PureSubstanceComponentMovpe1(PureSubstanceComponent):
         description='A short name for the component.',
         a_eln=dict(component='StringEditQuantity', label='Component label'),
         a_tabular={
-            "name": "Precursors/Elem"
+            "name": "Precursors/MO Precursor"
         },
     )
     mass = Quantity(
@@ -1956,6 +1962,34 @@ class PureSubstanceComponentMovpe1(PureSubstanceComponent):
         a_eln=dict(component='NumberEditQuantity', defaultDisplayUnit='gram'),
         a_tabular={
             "name": "Precursors/Weight",
+            #"unit": "gram"
+        },
+    )
+    solvent = Quantity(
+        type=str,
+        description='The solvent for the current substance.',
+        a_eln=dict(component='StringEditQuantity'),
+        a_tabular={
+            "name": "Precursors/Solvent",
+        },
+    )
+    volume = Quantity(
+        type=np.float64,
+        description='The solvent for the current substance.',
+        unit='milliliter',
+        a_eln=dict(component='NumberEditQuantity', defaultDisplayUnit='milliliter'),
+        a_tabular={
+            "name": "Precursors/Volume",
+            #"unit": "gram"
+        },
+    )
+    molar_concentration = Quantity(
+        type=np.float64,
+        description='The solvent for the current substance.',
+        unit='mol/liter',
+        a_eln=dict(component='NumberEditQuantity', defaultDisplayUnit='mol/liter'),
+        a_tabular={
+            "name": "Precursors/Molar conc",
             #"unit": "gram"
         },
     )
@@ -1979,10 +2013,11 @@ class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
             "hide": [
                 "instruments",
                 "steps",
-                "samples"
+                "samples",
+                "description",
             ]
         },
-        #label_quantity= "#/data/lab_id",
+        label_quantity= "lab_id",
         categories=[IKZMOVPE1Category],
         label='PrecursorsPreparation',
     )
@@ -2023,7 +2058,7 @@ class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "Precursors/Set Flow Ti"
+            "name": "Precursors/Set flow Ti"
         },
         a_eln={
             "component": "NumberEditQuantity",
@@ -2035,13 +2070,16 @@ class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
         type=np.float64,
         description='FILL THE DESCRIPTION',
         a_tabular={
-            "name": "Precursors/Set Flow Ca"
+            "name": "Precursors/Set flow Ca"
         },
         a_eln={
             "component": "NumberEditQuantity",
             "defaultDisplayUnit": "ml / minute"
         },
         unit='ml / minute',
+    )
+    notes = SubSection(
+        section_def=Notes,
     )
     precursors = SubSection(
         section_def=PureSubstanceComponentMovpe1,
@@ -2473,7 +2511,11 @@ class ExperimentMovpe2IKZ(Experiment, EntryData):
     Class autogenerated from yaml schema.
     '''
     m_def = Section(
-        a_eln=None,
+        a_eln={
+            "hide": [
+                "steps"
+            ]
+        },
         categories=[IKZMOVPE2Category],
         label='Experiment',
     )
@@ -2526,7 +2568,12 @@ class ExperimentMovpe1IKZ(Experiment, EntryData):
     Class autogenerated from yaml schema.
     '''
     m_def = Section(
-        a_eln=None,
+        a_eln={
+            "hide": [
+                "steps",
+                "description",
+            ]
+        },
         categories=[IKZMOVPE1Category],
         label='Experiment',
     )
