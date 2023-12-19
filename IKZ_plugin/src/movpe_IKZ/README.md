@@ -20,6 +20,53 @@ The `parser.py` file contains the logic for parsing the raw data from the MOVPE 
 
 The `schema.py` file defines the structure of the data after it has been parsed. It specifies the fields that the structured data will contain and the types of those fields.
 
+## Usage
+
+You need to copy and fill the tabular files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
+
+The available files are:
+
+```
+IKZ_plugin/tests/data/movpe_IKZ
+├── movpe1_growth_parser
+│   ├── constant_parameters
+|   |   └── constant_parameters.xlsx <-----------
+│   └── deposition_control
+|       └── deposition_control.xlsx <-----------
+├── movpe2_growth_parser
+│   └── GaO.growth.movpe.ikz.xlsx <-----------
+└── substrate_parser
+    └── GaO.substrates.movpe.ikz.xlsx <-----------
+```
+
+!!! attention
+    If the extension is changed or the files are missing some field, they might not be recognized by the parsers.
+
+### `movpe1_growth_parser`
+
+This folder contains two files with custom filename and `.xlsx` extension. Download these file if you use the "MOVPE 1" machine at IKZ.
+
+!!! info
+    Upload the `constant_parameters.xlsx` file BEFORE the `deposition_control.xlsx` one, otherwise the automated referencing inside the generated entries is not accomplished.
+
+!!! info
+    `deposition_control.xlsx` contains two sheets: "Deposition Control" and "Precursors". Each row is used to record one experiment, so remember to:
+    * Fill the `Constant Parameters ID` with the same ID you write into the `constant_parameters.xlsx` file, in this way the parameters that remain constant across several experiments will be correctly referenced.
+    * Generate one row in "Deposition Control" sheet and in "Precursors" sheet for each growth experiment. They refer to the same sample and hence must contain the same unique `Sample ID`. An error will be thrown if the rows in the two sheets contain different `Sample ID` fields.
+
+!!! info
+    After uploading the `constant_parameters.xlsx` and `deposition_control.xlsx` files, please open `RawFileConstantParameters` and `RawFileDepositionControl` generated entries in NOMAD to check if there is some processing error. Carefully analize any warning or error and upload the file again if needed.
+
+### `movpe2_growth_parser`
+
+This folder contains one file with custom filename and `.growth.movpe.ikz.xlsx` extension. Download these file if you use the "MOVPE 2" machine at IKZ.
+
+### `substrate_parser`
+
+This folder contains one file with custom filename and `.substrates.movpe.ikz.xlsx` extension. Download these files to record info on Substrate used for both "MOVPE 1" and "MOVPE 2" machines at IKZ.
+
+
+
 ## Installation
 
 To use these plugins, you need to:
@@ -110,32 +157,3 @@ plugins:
     parsers/ds_IKZ:
       python_package: ds_IKZ
 ```
-
-## Usage
-
-You need to copy and fill the tabular files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
-
-The available files are:
-
-```
-IKZ_plugin/tests/data/movpe_IKZ
-├── movpe1_growth_parser
-│   ├── constant_parameters
-|   |   └── constant_parameters.xlsx
-│   └── deposition_control
-|       └── deposition_control.xlsx
-├── movpe2_growth_parser
-│   └── GaO.growth.movpe.ikz.xlsx
-└── substrate_parser
-    └── GaO.substrates.movpe.ikz.xlsx
-```
-
-`movpe1_growth_parser` contains two files with custom filename and `.xlsx` extension.
-
-`movpe1_growth_parser` contains one file with custom filename and `.growth.movpe.ikz.xlsx` extension.
-
-`substrate_parser` contains one file with custom filename and `.substrates.movpe.ikz.xlsx` extension.
-
-!!! attention
-    If the extension is not correct or the files miss some field,
-    they might not be recognized by the parsers.

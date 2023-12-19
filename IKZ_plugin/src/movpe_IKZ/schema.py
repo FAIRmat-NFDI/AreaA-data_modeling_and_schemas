@@ -2017,7 +2017,7 @@ class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
                 "description",
             ]
         },
-        label_quantity= "lab_id",
+        label_quantity= "name",
         categories=[IKZMOVPE1Category],
         label='PrecursorsPreparation',
     )
@@ -2052,6 +2052,16 @@ class PrecursorsPreparationMovpe1IKZ(Process, EntryData, TableData):
         a_eln={
             "component": "StringEditQuantity",
             "label": "Sample ID"
+        },
+    )
+    name = Quantity(
+        type=str,
+        description='FILL',
+        a_tabular={
+            "name": "Precursors/number"
+        },
+        a_eln={
+            "component": "StringEditQuantity",
         },
     )
     flow_titanium = Quantity(

@@ -101,7 +101,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         data_file_with_path = mainfile.split("raw/")[-1]
         dep_control = pd.read_excel(xlsx, 'Deposition Control', comment="#")
         dep_control.columns = [re.sub(r'\s+', ' ', col.strip()) for col in dep_control.columns] # this line is not used now, tabular data reads the raw file columns
-        dep_control_filename = f"{dep_control['Sample ID'][0]}_deposition_control.archive.{filetype}"
+        dep_control_filename = f"{dep_control['Sample ID'][0]}.DepositionControlMovpe1IKZ.archive.{filetype}"
         dep_control_archive = EntryArchive(
             data=DepositionControlMovpe1IKZ(data_file=data_file_with_path),
             m_context=archive.m_context,
@@ -117,6 +117,16 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
 
         precursors = pd.read_excel(xlsx, 'Precursors', comment="#")
         precursors.columns = [re.sub(r'\s+', ' ', col.strip()) for col in precursors.columns] # this line is not used now, tabular data reads the raw file columns
+
+        if not len(dep_control['Sample ID']) == len(precursors['Sample ID']):
+            logger.error("Number of rows in 'deposition control' and 'precursors' Excel sheets are not equal. Please check the files and try again.")
+        for movpe_sample_index, _ in enumerate(dep_control['Sample ID']):
+            if dep_control['Sample ID'][movpe_sample_index] == precursors['Sample ID'][movpe_sample_index]:
+                continue
+            else:
+                logger.error(f"Sample ID no.{movpe_sample_index} in 'deposition control' and 'precursors' Excel sheets are not equal. "
+                             f"[{dep_control['Sample ID'][movpe_sample_index]} and {precursors['Sample ID'][movpe_sample_index]} respectively] "
+                             f"Please check the files and try again.")
         precursors_filename = f"{precursors['Sample ID'][0]}_precursors_preparation.archive.{filetype}"
         precursors_archive = EntryArchive(
             data=PrecursorsPreparationMovpe1IKZ(data_file=data_file_with_path),
