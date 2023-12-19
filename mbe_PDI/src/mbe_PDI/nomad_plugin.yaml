@@ -1,0 +1,4 @@
+plugin_type: schema
+name: NOMAD MBE PDI plugin
+description: |
+  This is a schema for MBE PDI experiment
