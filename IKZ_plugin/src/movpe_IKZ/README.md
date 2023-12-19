@@ -39,23 +39,23 @@ IKZ_plugin/tests/data/movpe_IKZ
     └── GaO.substrates.movpe.ikz.xlsx <-----------
 ```
 
-> [!ATTENTION]
+> [!CAUTION]
 > If the extension is changed or the files are missing some field, they might not be recognized by the parsers.
 
 ### `movpe1_growth_parser`
 
 This folder contains two files with custom filename and `.xlsx` extension. Download these file if you use the "MOVPE 1" machine at IKZ.
 
-> [!INFO]
+> [!NOTE]
 > Upload the `constant_parameters.xlsx` file BEFORE the `deposition_control.xlsx` one, otherwise the automated referencing inside the generated entries is not accomplished.
 
-> [!INFO]
+> [!NOTE]
 > `deposition_control.xlsx` contains two sheets: "Deposition Control" and "Precursors". Each row is used to record one experiment, so remember to:
 >
 > - Fill the `Constant Parameters ID` with the same ID you write into the `constant_parameters.xlsx` file, in this way the parameters that remain constant across several experiments will be correctly referenced.
 > - Generate one row in "Deposition Control" sheet and in "Precursors" sheet for each growth experiment. They refer to the same sample and hence must contain the same unique `Sample ID`. An error will be thrown if the rows in the two sheets contain different `Sample ID` fields.
 
-> [!INFO]
+> [!NOTE]
 > After uploading the `constant_parameters.xlsx` and `deposition_control.xlsx` files, please open `RawFileConstantParameters` and `RawFileDepositionControl` generated entries in NOMAD to check if there is some processing error. Carefully analize any warning or error and upload the file again if needed.
 
 ### `movpe2_growth_parser`
