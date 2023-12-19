@@ -1,0 +1,9 @@
+plugin_type: parser #schema
+name: NOMAD mbe substrate PDI schema and parser plugin
+description: |
+  This is a schema and parser for mbe substrate PDI
+mainfile_name_re: ^.+\.substrates.movpe.ikz.xlsx$
+mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+mainfile_contents_dict: {'Substrate': {'__has_all_keys': ['Substrates', 'Crystal']}}
+parser_class_name: mbe_PDI.substrate_parser.MbeSubstrateParser
+code_name: mbe substrate PDI Parser
