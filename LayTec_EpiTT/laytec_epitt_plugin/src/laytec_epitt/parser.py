@@ -20,6 +20,7 @@ from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
     Quantity,
+    Section
 )
 from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
@@ -31,11 +32,20 @@ from nomad.datamodel.data import (
 
 #from nomad_material_processing.utils import create_archive
 from nomad_measurements.utils import create_archive
-from laytec_epitt.schema import LayTec_EpiTT_Measurement #HZBUnoldLabThermalEvaporation
+from laytec_epitt.schema import (
+    LayTecEpiTTMeasurement,
+    IKZLayTecEpiTTCategory
+)
 
-class LAYTECEPITTFile(EntryData):
+class LayTecEpiTTFile(EntryData):
+    """
+    Contains the raw file from LayTecEpiTT in situ monitoring
+    """
+    m_def = Section(
+        categories=[IKZLayTecEpiTTCategory]
+    )
     measurement = Quantity(
-        type=LayTec_EpiTT_Measurement,
+        type=LayTecEpiTTMeasurement,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
@@ -54,9 +64,10 @@ class EpiTTParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = LayTec_EpiTT_Measurement.m_from_dict(LayTec_EpiTT_Measurement.m_def.a_template)#()#.m_from_dict(LayTec_EpiTT_Measurement.m_def.a_template)
-        entry.data_file = data_file
+        data_file_with_path = mainfile.split("raw/")[-1]
+        entry = LayTecEpiTTMeasurement.m_from_dict(LayTecEpiTTMeasurement.m_def.a_template)#()#.m_from_dict(LayTecEpiTTMeasurement.m_def.a_template)
+        entry.data_file = data_file_with_path
         file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = LAYTECEPITTFile(measurement=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' measurement file'
+        archive.data = LayTecEpiTTFile(measurement=create_archive(entry,archive,file_name))
+        archive.metadata.entry_name = data_file + ' in situ measurement file'

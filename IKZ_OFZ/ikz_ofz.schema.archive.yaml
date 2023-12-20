@@ -5,3 +5,87 @@ definitions:
       base_sections:
        - nomad.datamodel.metainfo.basesections.Process
        - nomad.datamodel.data.EntryData
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/OFZStep'
+
+        # steps:
+        #   repeats: true
+        #   section:
+        #     quantities:
+        #       reference:
+        #         type: '#/OFZSteps'
+        #         m_annotations:
+        #           eln:
+        #             component: ReferenceEditQuantity
+    OFZ_Instrument:
+      base_sections:
+       - nomad.datamodel.metainfo.basesections.Instrument
+       - nomad.datamodel.data.EntryData
+    # Steps:
+    #   base_sections:
+    #   - nomad.datamodel.metainfo.basesections.SectionReference
+    #   quantities:
+    #     reference:
+    #       type: '#/OFZSteps'
+    #       m_annotations:
+    #         eln:
+    #           component: ReferenceEditQuantity
+
+    OFZStep:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ActivityStep
+    furnace_setup: # should we pic from a list of inventory items?
+      base_sections:
+      - OFZStep
+      quantities:
+        lamps:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity # should we provide fixed options to select
+        quartz_tube:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity # should we provide fixed options to select
+        after_heater:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity # should we provide fixed options to select
+    main_growth_parameters:
+      base_sections:
+      - OFZStep
+      sub_sections:
+        Gas_atmosphere:
+          section:
+            quantities:
+              gas:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              pre_vacuum:
+                type: np.float64
+                unit: millibar
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              pressure:
+                type: np.float64
+                unit: millibar
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              flow:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity

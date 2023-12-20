@@ -1,0 +1,305 @@
+# Description: This is a cheat sheet for the NOMAD custom schema.
+#   It is a minimal example of how to define a custom schema.
+#   It is not intended to be used for real data.
+#   It is intended to be used as a starting point for defining a custom schema.
+#   It is intended to be used as a reference for the syntax of the custom schema.
+
+# defining the schema:
+definitions:
+  name: "Cheatsheet"
+  sections:
+    Cheat_Sheet:
+      base_sections:
+      - nomad.datamodel.data.EntryData
+
+      # adding quantities:
+      quantities:
+
+        # myquantity: test
+        string:
+          type: string
+          description:
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+        # reference: www.example.com
+        url_link:
+          type: string
+          description:
+          m_annotations:
+            eln:
+              component: URLEditQuantity
+
+        # myfloatquantity: 1.0
+        float:
+          type: np.float64
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+
+        # myfloatquantitywithunit: 1.0 fs
+        float_unit:
+          type: np.float64
+          unit: second
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: "fs"
+
+        # myfloatquantitywithderivedunit: 1.0 eV
+        float_derived_unit:
+          type: np.float64
+          unit: joule
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: "eV"
+
+        # myfloatquantitycomplexunit: 1.0 mA/ms^2*cm
+        float_complex_unit:
+          type: np.float64
+          unit: ampere / second^2 * meter
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: "milliampere / ms^2 * cm"
+
+        # myfloatquantitywithbounds: 0.0 - 10.0 m
+        float_with_bounds:
+          type: np.float64
+          unit: meter
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 10
+
+        # myintquantity: 1
+        int:
+          type: int
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+
+        # myintquantitywithbounds: 0 - 10
+        int_with_bounds:
+          type: int
+          description:
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              minValue: 0
+              maxValue: 10
+
+        # myboolquantity: true
+        bool:
+          type: bool
+          description:
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+
+        # myradionenumquantity: [ ]one, [ ]two, [ ]three
+        radio_enum:
+          type:
+            type_kind: Enum
+            type_data:
+              - one
+              - two
+              - three
+          description:
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+
+        # myselectenumquantity: [one, two, three]
+        select_enum:
+          type:
+            type_kind: Enum
+            type_data:
+              - one
+              - two
+              - three
+          description:
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+
+        # myselectenumquantitywithsuggestions: [one, two, three] suggestions: [one, two, three]
+        string_with_suggestions:
+          type: str
+          description:
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+              suggestions: ['one', 'two', 'three']
+
+        # myautocompleteenumquantity: [one, two, three] autocomplete: [one, two, three]
+        autocomplete_enum:
+          type:
+            type_kind: Enum
+            type_data: ['one', 'two', 'three']
+          description:
+          m_annotations:
+            eln:
+              component: AutocompleteEditQuantity
+
+        # # mysliderquantity: 0 - 10 slider
+        slider:
+          type: int
+          description:
+          m_annotations:
+            eln:
+              component: SliderEditQuantity
+              minValue: 0
+              maxValue: 10
+
+
+        # mydatetimequantity: 2020-01-01 00:00:00
+        # date_time:
+        #   type: nomad.metainfo.Datetime
+        #   m_annotations:
+        #     eln:
+        #       component: DateTimeEditQuantity
+
+        # mydatequantity: 2020-01-01
+        # date:
+        #   type: nomad.metainfo.Datetime
+        #   m_annotations:
+        #     eln:
+        #       component: DateEditQuantity
+
+        # # # mytimequantity: 00:00:00
+        # time:
+        #   type: nomad.metainfo.Datetime
+        #   m_annotations:
+        #     eln:
+        #       component: TimeEditQuantity
+
+
+        # myrichtextquantity: <p>test</p>
+        rich_text:
+          type: str
+          description:
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+
+        # mystringlistquantity: [one, two, three, ...]
+        list:
+          type: str
+          shape: ['*']
+          description:
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+        # mystringlistquantitywithfixeditems: [one, two, three]
+        list_fixed:
+          type: str
+          shape: [3]
+          description:
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+        # myauthorquantity: Max Mustermann
+        user:
+          type: User
+          description:
+          m_annotations:
+            eln:
+              component: AuthorEditQuantity
+
+        # myautthorquantity: Max Mustermann - Author
+        author:
+          type: User
+          description:
+          m_annotations:
+            eln:
+              component: AuthorEditQuantity
+
+        # myreferencequantity: Reference.archive.json
+        my_reference:
+          type: nomad.datamodel.data.EntryData  # can be specified to more specific types like Measurement
+          description:
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+
+        # myfilequantity: Filename.ending
+        png_file:
+          type: str
+          description: |
+            The png file name.
+          m_annotations:
+            # The eln annotation allows add the quantity to a ELN
+            eln:
+              component: FileEditQuantity
+            browser:
+              adaptor: RawFileAdaptor
+      sub_sections:
+        My_Sub_Section:
+          section:
+            quantities:
+              name:
+                type: str
+                description:
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Stringquantity:
+                type: str
+                description:
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Stringquantity_tobeshownonoverview:
+                type: str
+                description:
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Floatquantitywithunit:
+                type: np.float64
+                unit: millibar
+                description:
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+        My_repeatable_sub_section:
+          repeats: true
+          section:
+            quantities:
+              # if a name quantity is defined, it will be used as the name of the section
+              name:
+                type: str
+                description:
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Anotherstringquantity:
+                type: str
+                description:
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+        My_Sub_Section_on_the_overview: # not working yet! see https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/issues/1817
+          m_annotations:
+            eln:
+              overview: True
+          section:
+            quantities:
+              Stringquantity_tobeshownonoverview:
+                type: str
+                description:
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity

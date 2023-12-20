@@ -1,4 +1,4 @@
 plugin_type: schema
-name: NOMAD MOVPE IKZ plugin
+name: MOVPE IKZ
 description: |
   This is a schema for MOVPE IKZ experiment

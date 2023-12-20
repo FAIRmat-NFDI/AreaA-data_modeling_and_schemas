@@ -1,29 +1,85 @@
-# NOMAD's schema example plugin
+# IKZ Plugin
 
-## Getting started
+This directory contains plugins specific to the IKZ institute.
 
-your nomad.yaml in your local installation should have this:
+## Structure
 
+The directory structure is as follows:
+
+- `src/`: This directory contains the source code for the plugins.
+- `tests/`: This directory contains tests for the plugins.
+
+Please refer to the README.md file in each subdirectory for more information about each plugin.
+
+## Installation
+
+To use these plugins, you need to:
+
+* add the `src/` directory to your `PYTHONPATH`. You can do this by running the following command in the terminal where you run NOMAD:
+```sh
+export PYTHONPATH="$PYTHONPATH:/your/path/IKZ_plugin/src"
+```
+Export this system variable in the same terminal where you run NOMAD (`nomad admin run appworker`).
+
+To make this path persistent, write into the .pyenv/bin/activate file of your virtual environment. Use the path of your local OS where you cloned this repository.
+
+* include it in your `nomad.yaml` configuration file and specify the Python package for the plugin in the options section.
 ```yaml
-keycloak:
-  realm_name: fairdi_nomad_test
-north:
-  hub_connect_ip: '172.17.0.1'
-normalize:
-  normalizers:
-    include:
-      - MetainfoNormalizer
 plugins:
   include:
+    - 'parsers/movpe_growth_IKZ'
+```
+The name after the `/` is user defined.
+Then, specify the Python package for the plugin in the options section:
+```yaml
+options:
+  parsers/movpe_growth_IKZ:
+    python_package: movpe_IKZ.binaryoxides_growth_parser
+```
+
+This plugin requires to clone in your local machines other plugin repositories:
+
+```sh
+git clone https://github.com/FAIRmat-NFDI/nomad-measurements
+git clone https://github.com/FAIRmat-NFDI/nomad-material-processing
+git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/hall
+git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/LayTec_EpiTT
+```
+
+Consequentlty, other paths must be appended to `PYTHONPATH` system variable:
+
+```sh
+export MYPATH=/your/path
+export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src
+export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src/nomad_measurements
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT/laytec_epitt_plugin/src
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/IKZ_plugin/src
+```
+
+To load the full functionality, use the following `plugins` section:
+
+```yaml
+plugins:
+  include:
+    - 'schemas/nomad_measurements'
+    - 'schemas/nomad_material_processing'
     - 'parsers/hall_lakeshore_measurement'
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
     - 'schemas/basesections_IKZ'
     - 'parsers/cz_IKZ'
-    - 'parsers/movpe_growth_IKZ'
+    - 'parsers/movpe_2_IKZ'
+    - 'parsers/movpe_1_deposition_control_IKZ'
+    - 'parsers/movpe_1_IKZ'
     - 'parsers/movpe_substrates_IKZ'
     - 'parsers/ds_IKZ'
+
   options:
+    schemas/nomad_measurements:
+      python_package: nomad_measurements
+    schemas/nomad_material_processing:
+      python_package: nomad_material_processing
     parsers/hall_lakeshore_measurement:
       python_package: lakeshore.measurement_parser
     parsers/hall_lakeshore_instrument:
@@ -34,30 +90,32 @@ plugins:
       python_package: basesections_IKZ
     parsers/cz_IKZ:
       python_package: cz_IKZ
-    parsers/movpe_growth_IKZ:
-      python_package: movpe_IKZ.binaryoxides_growth_parser
+    parsers/movpe_2_IKZ:
+      python_package: movpe_IKZ.movpe2_growth_parser
+    parsers/movpe_1_deposition_control_IKZ:
+      python_package: movpe_IKZ.movpe1_growth_parser.deposition_control
+    parsers/movpe_1_IKZ:
+      python_package: movpe_IKZ.movpe1_growth_parser.constant_parameters
     parsers/movpe_substrates_IKZ:
      python_package: movpe_IKZ.substrate_parser
     parsers/ds_IKZ:
       python_package: ds_IKZ
 ```
 
-do not forget to export the package in the same terminal where you run NOMAD (`nomad admin run appworker`):
+## Usage
 
-```python
-export PYTHONPATH="$PYTHONPATH:/your/path/IKZ_plugin/src"
-```
+You need to copy and fill the tabular files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
 
-or to make this path persistent, write into the .pyenv/bin/activate file of your virtual env. Use the path of your local OS where you cloned this repo.
+Please refer to the README.md file in each subdirectory for more information about each plugin.
 
-There are two external plugins that must be loaded to use IKZ_plugin:
-* [Laytec Epi TT](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/LayTec_EpiTT)
-* [Lakeshore](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/hall/Lakeshore_plugin)
+
+
+
+## Develop
 
 ### Fork the project
 
-Go to the github project page https://github.com/nomad-coe/nomad-schema-plugin-example, hit
-fork (and leave a star, thanks!). Maybe you want to rename the project while forking!
+This project was forked from the github project page https://github.com/nomad-coe/nomad-schema-plugin-example
 
 ### Clone your fork
 
@@ -80,10 +138,11 @@ source .pyenv/bin/activate
 pip install -r requirements.txt --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
 ```
 
-**Note!**
-Until we have an official pypi NOMAD release with the plugins functionality. Make
-sure to include NOMAD's internal package registry (e.g. via `--index-url`). Follow the instructions
-in `requirements.txt`.
+to ensure installation of all the packages required, make sure in to install:
+
+```sh
+pip install nomad-lab[parsing, infrastructure]
+```
 
 ### Run the tests
 
@@ -99,21 +158,13 @@ You can run automated tests with `pytest`:
 pytest -svx tests
 ```
 
-You can parse an example archive that uses the schema with `nomad`
+You can parse an example archive that uses the schema with `nomad` command
 (installed via `nomad-lab` Python package):
 
 ```sh
 nomad parse tests/data/test.archive.yaml --show-archive
 ```
 
-## Developing your schema
+### Developing your schema
 
-You can now start to develop you schema. Here are a few things that you might want to change:
-
-- The metadata in `nomad_plugin.yaml`.
-- The name of the Python package `nomadschemaexample`. If you want to define multiple plugins, you can nest packages.
-- The name of the example section `ExampleSection`. You will also want to define more than one section.
-- When you change module and class names, make sure to update the `nomad_plugin.yaml` accordingly.
-
-To learn more about plugins, how to add them to an Oasis, how to publish them, read our
-documentation on plugins: https://nomad-lab/prod/v1/staging/docs/plugins.html
+Refer to official NOMAD docs to learn how to develop schemas and parsers and plugins, how to add them to an Oasis, how to publish them: https://nomad-lab/prod/v1/staging/docs/plugins.html

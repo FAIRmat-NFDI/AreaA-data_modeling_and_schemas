@@ -66,10 +66,11 @@ class HallMeasurementsParser(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split("raw/")[-1]
         filetype = 'yaml'
         meas_file_name = f'{data_file[:-4]}_meas.archive.{filetype}'
         measurement_archive = EntryArchive(
-            data=HallMeasurement(data_file=data_file),
+            data=HallMeasurement(data_file=data_file_with_path),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id))
         archive.data = RawMeasurementFile(measurement=create_archive(measurement_archive.m_to_dict(), archive.m_context, meas_file_name, filetype, logger))
