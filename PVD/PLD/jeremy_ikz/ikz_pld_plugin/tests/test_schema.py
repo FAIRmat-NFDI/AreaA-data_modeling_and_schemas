@@ -8,3 +8,6 @@ def test_schema():
     for test_file in test_files:
         entry_archive = parse(test_file)[0]
         normalize_all(entry_archive)
+        print(f'{test_file = }')
+        print(entry_archive.m_pretty_print())
+        print()

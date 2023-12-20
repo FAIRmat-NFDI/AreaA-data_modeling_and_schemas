@@ -1,1 +1,1 @@
-from .schema import *
+from ikz_pld.schema import *
