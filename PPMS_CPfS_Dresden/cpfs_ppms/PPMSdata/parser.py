@@ -18,6 +18,14 @@
 
 from PPMS.parser import PPMSParser, PPMSFile
 
+from time import (
+    sleep,
+    perf_counter
+)
+
+
+from nomad.search import search
+
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import Quantity
 from nomad.parsing import MatchingParser
@@ -30,7 +38,7 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from cpfs_ppms import CPFSPPMSMeasurement
+from cpfs_ppms.schema import CPFSPPMSMeasurement
 
 class CPFSPPMSFile(PPMSFile,EntryData):
     measurement = Quantity(
@@ -46,7 +54,7 @@ class CPFSPPMSParser(MatchingParser):
     def __init__(self):
         super().__init__(
             name='NOMAD PPMS schema and parser plugin for the CPFS',
-            code_name= 'CPFS PPMS Parser',
+            code_name= 'cpfs_ppms_data',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )
@@ -58,5 +66,23 @@ class CPFSPPMSParser(MatchingParser):
         entry.data_file = data_file_with_path
         file_name = f'{data_file[:-4]}.archive.json'
         #entry.normalize(archive, logger)
+        tic = perf_counter()
+        while True:
+            search_result = search(
+                owner="user",
+                query={
+                    "results.eln.sections:any": ["CPFSPPMSSequenceFile"],
+                    "upload_id:any": [archive.m_context.upload_id]
+                },
+                user_id=archive.metadata.main_author.user_id,
+                )
+            for sequence in search_result.data:
+                entry.sequence_file=sequence['search_quantities'][0]['str_value']
+                logger.info(sequence['search_quantities'][0]['str_value'])
+            sleep(0.1)
+            toc = perf_counter()
+            if toc - tic > 15:
+                logger.warning("The Sequence File entry/ies in the current upload were not found and couldn't be referenced.")
+                break
         archive.data = CPFSPPMSFile(measurement=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' measurement file'

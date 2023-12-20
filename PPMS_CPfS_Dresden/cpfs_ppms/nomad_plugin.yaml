@@ -1,9 +1,4 @@
-plugin_type: parser #schema
+plugin_type: schema
 name: NOMAD PPMS schema and parser plugin for CPfS
 description: |
   This is a schema and parser for PPMS measurements
-mainfile_name_re: ^.+\.dat$ # added
-#mainfile_mime_re: 'text/plain'
-mainfile_mime_re: 'application/x-wine-extension-ini'
-parser_class_name: cpfs_ppms.CPFSPPMSParser # added
-code_name: cpfs_ppms Parser
