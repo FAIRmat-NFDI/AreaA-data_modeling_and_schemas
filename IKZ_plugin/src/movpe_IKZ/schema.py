@@ -67,7 +67,7 @@ from nomad.utils import hash
 
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
-from laytec_epitt import LayTec_EpiTT_Measurement
+from laytec_epitt import LayTecEpiTTMeasurement
 from lakeshore import HallMeasurement
 from basesections_IKZ import (
     IKZMOVPECategory,
@@ -2133,7 +2133,7 @@ class InSituMonitorings(SectionReference):
     A section used for referencing a InSituMonitoring.
     '''
     reference = Quantity(
-        type=LayTec_EpiTT_Measurement,
+        type=LayTecEpiTTMeasurement,
         description='A reference to a NOMAD `InSituMonitoring` entry.',
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
