@@ -1,0 +1,4 @@
+plugin_type: schema #schema
+name: NOMAD LabFolder schema for synthesis for CPfS
+description: |
+  This is a schema  for LabFolder imports
