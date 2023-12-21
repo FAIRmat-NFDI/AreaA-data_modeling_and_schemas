@@ -1,0 +1,54 @@
+{
+    "data": {
+        "m_def": "ikz_pld.schema.IKZPLDTarget",
+        "name": "SAO 1",
+        "datetime": "2023-12-20T14:15:08.957830+00:00",
+        "lab_id": "HZB_HaNa_20231220_SAO-1",
+        "recipe_name": "SAO",
+        "elemental_composition": [
+            {
+            "element": "Al",
+            "atomic_fraction": 0.2222222222222222,
+            "mass_fraction": 0.17452591401465928
+            },
+            {
+            "element": "O",
+            "atomic_fraction": 0.5555555555555556,
+            "mass_fraction": 0.25871765043351164
+            },
+            {
+            "element": "Sr",
+            "atomic_fraction": 0.22222222222222218,
+            "mass_fraction": 0.5667564355518291
+            }
+        ],
+        "components": [
+            {
+            "m_def": "nomad.datamodel.metainfo.basesections.PureSubstanceComponent",
+            "name": "Main phase",
+            "mass_fraction": 1.0,
+            "pure_substance": {
+                "m_def": "nomad.datamodel.metainfo.basesections.PubChemPureSubstanceSection",
+                "name": "Dialuminum;distrontium;oxygen(2-)",
+                "iupac_name": "dialuminum;distrontium;oxygen(2-)",
+                "molecular_formula": "Al2O5Sr2",
+                "molecular_mass": 309.748874,
+                "inchi": "InChI=1S/2Al.5O.2Sr/q2*+3;5*-2;2*+2",
+                "inchi_key": "FNWBQFMGIFLWII-UHFFFAOYSA-N",
+                "smile": "[O-2].[O-2].[O-2].[O-2].[O-2].[Al+3].[Al+3].[Sr+2].[Sr+2]",
+                "canonical_smile": "[O-2].[O-2].[O-2].[O-2].[O-2].[Al+3].[Al+3].[Sr+2].[Sr+2]",
+                "cas_number": "12004-37-4",
+                "pub_chem_cid": 165931,
+                "pub_chem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/165931"
+            }
+            }
+        ],
+        "target_id": {
+            "institute": "HZB",
+            "owner": "HaNa",
+            "datetime": "2023-12-20T14:15:08.957830+00:00",
+            "short_name": "SAO-1",
+            "lab_id": "HZB_HaNa_20231220_SAO-1"
+        }
+    }
+}
