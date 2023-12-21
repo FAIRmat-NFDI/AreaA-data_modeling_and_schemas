@@ -240,27 +240,35 @@ class LayTecEpiTTMeasurement(InSituMeasurement, PlotSection, EntryData):
             y=self.results[0].pyrometer_temperature,
             color=self.results[0].pyrometer_temperature,
             title="Temperature")
-        self.figures.append(PlotlyFigure(label='Temperature', index=0, figure=temperature_figure.to_plotly_json()))
+        temperature_figure.update_traces(mode='markers', marker={"size":3})
+        temperature_figure.update_xaxes(title_text='Time [s]')
+        temperature_figure.update_yaxes(title_text='Temperature [°C]')
+        self.figures.append(PlotlyFigure(label='Temperature', index=1, figure=temperature_figure.to_plotly_json()))
         reflectance_figure = go.Figure()
         for i, _ in enumerate(self.results[0].reflectance_wavelengths):
             single_reflectance_figure =px.scatter(
                 x=self.results[0].process_time.magnitude,
                 y=self.results[0].reflectance_wavelengths[i].intensity,
                 )
-            single_reflectance_figure.update_traces(line={'width': 0.25})
+            single_reflectance_figure.update_traces(mode='lines+markers', line={'width': 1}, marker={"size":3})
+            single_reflectance_figure.update_xaxes(title_text='Time [s]')
+            single_reflectance_figure.update_yaxes(title_text='Reflectance')
             self.figures.append(PlotlyFigure(
                 label=f"{self.results[0].reflectance_wavelengths[i].wavelength} nm",
-                index=i + 1,
+                index=i + 2,
                 figure=single_reflectance_figure.to_plotly_json()))
             reflectance_figure.add_trace(go.Scatter(
             x=self.results[0].process_time.magnitude,
             y=self.results[0].reflectance_wavelengths[i].intensity,
-            name=f'{self.results[0].reflectance_wavelengths[i].wavelength} nm'
+            name=f'{self.results[0].reflectance_wavelengths[i].wavelength} nm',
+            mode='lines'
             ))
-            reflectance_figure.update_traces(line={'width': 0.25})
+            reflectance_figure.update_traces(mode='lines+markers', line={'width': 1}, marker={"size":3})
+            reflectance_figure.update_xaxes(title_text='Time [s]')
+            reflectance_figure.update_yaxes(title_text='Reflectance')
         self.figures.append(PlotlyFigure(
             label='Reflectance',
-            index=len(self.results[0].reflectance_wavelengths) + 2,
+            index=0,
             figure=reflectance_figure.to_plotly_json()))
 
 m_package.__init_metainfo__()
