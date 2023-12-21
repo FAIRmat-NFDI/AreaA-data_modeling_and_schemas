@@ -66,36 +66,6 @@ if TYPE_CHECKING:
 
 m_package = Package(name = 'analysis_jupyter')
 
-def get_input_entry_ids(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
-    '''
-    Finds the analysis input files from the current upload and returns the entry_id.
-
-    Args:
-        archive (EntryArchive): The archive containing the section.
-        logger (BoundLogger): A structlog logger.
-
-    Returns:
-        list: List containing matching entry_ids.
-    '''
-    from nomad.search import search
-    from nomad.app.v1.models import MetadataRequired
-
-    result = search(
-        owner = 'user',
-        query = {
-            'results.eln.sections:any' : ['EntryData'],
-            'upload_id' : [archive.m_context.upload_id],
-        },
-        required = MetadataRequired(include=['entry_id']),
-        user_id = archive.metadata.main_author.user_id,
-    )
-    if not result.data:
-        logger.warning('No EntryData section found in the upload.')
-
-    entry_ids = [data['entry_id'] for data in result.data]
-    return entry_ids
-
-
 class JupyterAnalysisResult(AnalysisResult):
     '''
     Section for collecting Jupyter notebook analysis results.
