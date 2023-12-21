@@ -1,0 +1,5 @@
+[project]
+dependencies = [
+    "nomad-lab>=1.2.1",
+    "nbformat>=5.9.2",
+]
