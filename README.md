@@ -1,6 +1,7 @@
 # Area A: materials synthesis and processing
 
 ## Keywords:
+
 - Electronic Lab Notebook (ELN)
 - Data Structures
 - Custom YAML Schemas
