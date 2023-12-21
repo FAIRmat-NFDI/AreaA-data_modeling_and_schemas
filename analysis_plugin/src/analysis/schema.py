@@ -38,11 +38,13 @@ from typing import (
 from nomad.datamodel.metainfo.basesections import (
     Analysis,
     AnalysisResult,
+    SectionReference,
 )
 from nomad.metainfo import (
     Package,
     Section,
     Quantity,
+    SubSection,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -51,6 +53,7 @@ from nomad.datamodel.data import (
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
+    BrowserAnnotation,
 )
 
 if TYPE_CHECKING:
@@ -62,74 +65,6 @@ if TYPE_CHECKING:
     )
 
 m_package = Package(name = 'analysis_jupyter')
-
-def write_jupyter_notebook(
-        archive: 'EntryArchive',
-        input_file_ids: list,
-        logger: 'BoundLogger') -> None:
-    '''
-    Writes (or overwrites) a Jupyter notebook and saves it as a raw file.
-
-    Args:
-        archive (EntryArchive): The archive containing the section.
-        input_file_ids (list): List of input file ids.
-        logger (BoundLogger): A structlog logger.
-    '''
-
-    # TODO:  add analysis code specific to the section type to which the entry belongs
-
-    import nbformat as nbf
-
-    file_name = 'ELNJupyterAnalysis.ipynb'
-
-    cells = []
-
-    code = (
-    'import requests\n'
-    'from nomad.client import Auth'
-    )
-    cells.append(nbf.v4.new_code_cell(source=code))
-
-    code = (
-    'base_url = "http://nomad-lab.eu/prod/v1/api/v1"\n'
-    'token_header = Auth().headers()'
-    )
-    cells.append(nbf.v4.new_code_cell(source=code))
-
-    code = (
-    'def get_entry_data(entry_id):\n'
-    '   query = {\n'
-    '       "required" : {\n'
-    '           "data": "*",\n'
-    '       }\n'
-    '   }\n'
-    '   response = requests.post(\n'
-    '       f"{base_url}/entries/{entry_id}/archive/query",\n'
-    '       headers = token_header,\n'
-    '       json = query\n'
-    '   )\n'
-    '   return response.json()\n'
-    'entry_data = []\n'
-    f'for entry_id in {input_files}:\n'
-    '   entry_data.append(get_entry_data(entry_id))'
-    )
-    cells.append(nbf.v4.new_code_cell(source=code))
-
-    code = (
-    'print(f"Data from {len(entry_data)} entries is available in `entry_data: list` variable.\\n")\n'
-    'print(entry_data)'
-    )
-    cells.append(nbf.v4.new_code_cell(source=code))
-
-
-    nb = nbf.v4.new_notebook()
-    for cell in cells:
-        nb.cells.append(cell)
-
-    with archive.m_context.raw_file(file_name, 'w') as nb_file:
-        nbf.write(nb, nb_file)
-    archive.m_context.upload.process_updated_raw_file(file_name, allow_modify=True)
-
 
 def get_input_entry_ids(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
     '''
@@ -145,72 +80,177 @@ def get_input_entry_ids(archive: 'EntryArchive', logger: 'BoundLogger') -> list:
     from nomad.search import search
     from nomad.app.v1.models import MetadataRequired
 
-    # TODO: support more sections
-    section_lookup = [
-        'ELNXRayDiffraction',
-    ]
-
     result = search(
         owner = 'user',
         query = {
-            'results.eln.sections:any' : section_lookup,
+            'results.eln.sections:any' : ['EntryData'],
             'upload_id' : [archive.m_context.upload_id],
         },
         required = MetadataRequired(include=['entry_id']),
         user_id = archive.metadata.main_author.user_id,
     )
     if not result.data:
-        logger.warning('No matching input files found in the uploads')
+        logger.warning('No EntryData section found in the upload.')
 
-    entry_ids = [d['entry_id'] for d in result.data]
+    entry_ids = [data['entry_id'] for data in result.data]
     return entry_ids
+
 
 class JupyterAnalysisResult(AnalysisResult):
     '''
     Section for collecting Jupyter notebook analysis results.
     It is a non-editable section that is populated once the processing is.
     '''
-    m_def = Section()
-    analysis_status = Quantity(
-        type=bool,
-        description='Status of the Jupyter notebook generation and analysis',
-        a_eln = ELNAnnotation(
-            label = 'Analysis Status',
-            component = None,
-        ),
+    connection_status = Quantity(
+        type = str,
+        default = 'Not connected',
+        description = 'Status of connection with Jupyter notebook',
     )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        '''
+        The normalize function for `JupyterAnalysisResult` section.
+
+        Args:
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super().normalize(archive, logger)
 
 class JupyterAnalysis(Analysis):
     '''
     Generic class for Jupyter notebook analysis.
     '''
     m_def = Section()
+    inputs = SubSection(
+        section_def = SectionReference,
+        description = 'The input sections for the analysis',
+        repeats = True,
+    )
+    outputs = SubSection(
+        section_def = JupyterAnalysisResult,
+        description = 'The output sections for the analysis',
+    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        '''
+        The normalize function for `JupyterAnalysis` section.
+
+        Args:
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super().normalize(archive, logger)
 
 class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
     '''
     Entry section for Jupyter notebook analysis.
     '''
     m_def = Section(
+        # TODO: add category when shifted to a specific plugin
         category = None,
         label = 'Jupyter Notebook Analysis',
     )
-    input_file = Quantity(
+    notebook = Quantity(
         type=str,
-        description='Input file (raw data file or parsed archive)',
+        description='Generated Jupyter notebook file',
         a_eln = ELNAnnotation(
+            label = 'Jupyter Notebook',
             component = ELNComponentEnum.FileEditQuantity,
         ),
+        a_browser = BrowserAnnotation(
+            adaptor = 'RawFileAdaptor'
+        )
     )
+
+
+    def link_jupyter_notebook(self,path) -> None:
+        self.notebook = path
+
+    def write_jupyter_notebook(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        '''
+        Writes (or overwrites) a Jupyter notebook and saves it as a raw file.
+
+        Args:
+            archive (EntryArchive): The archive containing the section.
+            input_file_ids (list): List of input file ids.
+            logger (BoundLogger): A structlog logger.
+        '''
+
+        # TODO:  add analysis code specific to the section type to which the entry belongs
+
+        entry_ids = []
+        if self.inputs is not None:
+            for entry in self.inputs:
+                entry_ids.append(entry.reference.m_parent.entry_id)
+
+        if len(entry_ids) == 0:
+            logger.warning('No EntryArchive linked.')
+
+        try:
+            import nbformat as nbf
+
+            file_name = 'ELNJupyterAnalysis.ipynb'
+
+            cells = []
+
+            code = (
+            'import requests\n'
+            'from nomad.client import Auth'
+            )
+            cells.append(nbf.v4.new_code_cell(source=code))
+
+            code = (
+            'base_url = "http://nomad-lab.eu/prod/v1/api/v1"\n'
+            'token_header = Auth().headers()'
+            )
+            cells.append(nbf.v4.new_code_cell(source=code))
+
+            code = (
+            'def get_entry_data(entry_id):\n'
+            '   query = {\n'
+            '       "required" : {\n'
+            '           "data": "*",\n'
+            '       }\n'
+            '   }\n'
+            '   response = requests.post(\n'
+            '       f"{base_url}/entries/{entry_id}/archive/query",\n'
+            '       headers = token_header,\n'
+            '       json = query\n'
+            '   )\n'
+            '   return response.json()\n'
+            'entry_data = []\n'
+            f'for entry_id in {entry_ids}:\n'
+            '   entry_data.append(get_entry_data(entry_id))'
+            )
+            cells.append(nbf.v4.new_code_cell(source=code))
+
+            code = (
+            'print(f"Data from {len(entry_data)} entries is available in `entry_data: list` variable.\\n")\n'
+            'print(entry_data)'
+            )
+            cells.append(nbf.v4.new_code_cell(source=code))
+
+            nb = nbf.v4.new_notebook()
+            for cell in cells:
+                nb.cells.append(cell)
+
+            with archive.m_context.raw_file(file_name, 'w') as nb_file:
+                nbf.write(nb, nb_file)
+            archive.m_context.process_updated_raw_file(file_name, allow_modify=True)
+
+        except Exception as e:
+            logger.error(f'Error generating Jupyter notebook: {e}')
+
+        self.link_jupyter_notebook(file_name)
+
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         '''
         Normalizes the ELN entry to generate a Jupyter notebook.
         '''
+
+        self.write_jupyter_notebook(archive, logger)
+
         super().normalize(archive, logger)
-
-        input_entry_ids = get_input_entry_ids(archive, logger)
-        if len(input_entry_ids) > 1:
-            logger.warning('Multiple input files found.')
-
-        write_jupyter_notebook(archive, input_entry_ids, logger)
 
 m_package.__init_metainfo__()
