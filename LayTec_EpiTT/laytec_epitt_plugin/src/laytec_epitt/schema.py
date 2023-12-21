@@ -15,34 +15,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from nomad.metainfo import Quantity, Package, SubSection, MEnum, Section
-from nomad.datamodel.data import EntryData, ArchiveSection
-from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-from nomad.units import ureg
 import numpy as np
 from datetime import datetime
 import re
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 
-from nomad.datamodel.metainfo.basesections import Measurement
-from nomad.datamodel.data import EntryData
+from nomad.units import ureg
 from nomad.metainfo import (
+    Quantity,
     Package,
-    Section,
-)
+    SubSection,
+    MEnum,
+    Section,)
+from nomad.metainfo.metainfo import Category
 from nomad.datamodel.data import (
     EntryData,
     ArchiveSection,
-)
-from nomad.datamodel.data import (
-    EntryDataCategory,
-)
-from nomad.metainfo.metainfo import (Category)
+    EntryDataCategory,)
+from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+    ELNComponentEnum,)
+from nomad.datamodel.metainfo.basesections import (
+    Measurement,
+    MeasurementResult,)
 
 from nomad_measurements import (
     InSituMeasurement,
-    ProcessReference
-    )
+    ProcessReference)
 
 m_package = Package(name='LayTec EpiTT Schema')
 
@@ -56,7 +59,7 @@ class ReflectanceWavelengthTransient(ArchiveSection):
         label_quantity="wavelength",
         )
     wavelength = Quantity(
-        type=np.dtype(np.int64),#str,
+        type=np.dtype(np.int64),
         unit="nanometer",
         description='Reflectance Wavelength',
         )
@@ -70,7 +73,10 @@ class ReflectanceWavelengthTransient(ArchiveSection):
         )
 
 
-class MeasurementResults(ArchiveSection):
+class LayTecEpiTTMeasurementResult(ArchiveSection):
+    '''
+    Add description
+    '''
     process_time = Quantity(
         type=np.dtype(np.float64),
         unit = "seconds",
@@ -86,6 +92,9 @@ class MeasurementResults(ArchiveSection):
 
 
 class MeasurementSettings(ArchiveSection):
+    '''
+    Add description
+    '''
     module_name = Quantity(
         type=str, #'Ring TT1 1',
         description='MODULE_NAME',
@@ -112,20 +121,17 @@ class MeasurementSettings(ArchiveSection):
         )
 
 
-class LayTecEpiTTMeasurement(InSituMeasurement, EntryData, ArchiveSection):
+class LayTecEpiTTMeasurement(InSituMeasurement, PlotSection, EntryData):
     '''
     LayTec's EpiTT is an emissivity-corrected pyrometer and
     reflectance measurement for in-situ measurement during
     growth processes (https://www.laytec.de/epitt)
     '''
     m_def = Section(
-        a_eln=dict(lane_width='600px', hide=["steps"]),
-        a_plot=[
-            {#'label': 'EpiTT transients',
-             'x': 'results/:/process_time',
-             'y': ['results/:/pyrometer_temperature','results/:/reflectance_wavelengths/:/intensity'],
-             #'layout': {'yaxis': {'type': 'log'}},
-            },],
+        a_eln={
+            "lane_width": '600px',
+            "hide": ['steps']
+        },
         categories=[IKZLayTecEpiTTCategory],
         label='EpiTT Measurement',
         a_template=dict(
@@ -151,11 +157,13 @@ class LayTecEpiTTMeasurement(InSituMeasurement, EntryData, ArchiveSection):
             component='FileEditQuantity',
         )
     )
-
-    measurement_settings = SubSection(section_def=MeasurementSettings)
-
-    results = Measurement.results.m_copy()
-    results.section_def = MeasurementResults
+    measurement_settings = SubSection(
+        section_def=MeasurementSettings
+    )
+    results = SubSection(
+        section_def=LayTecEpiTTMeasurementResult,
+        #repeats=True,
+    )
 
     def normalize(self, archive, logger):
         super(LayTecEpiTTMeasurement, self).normalize(archive, logger)
@@ -212,18 +220,47 @@ class LayTecEpiTTMeasurement(InSituMeasurement, EntryData, ArchiveSection):
                 process = ProcessReference()
                 process.lab_id=epitt_data[0]["RUN_ID"]
                 process.normalize(archive, logger)
-                self.process=process
-                results = MeasurementResults()
+                self.process = process
+                results = LayTecEpiTTMeasurementResult()
                 results.process_time = epitt_data[1]["BEGIN"]
                 results.pyrometer_temperature = epitt_data[1]["PyroTemp"]
                 results.reflectance_wavelengths = []
                 for wl, datacolname in zip(['REFLEC_WAVELENGTH', 'PYRO_WAVELENGTH', 'WHITE_WAVELENGTH'],["DetReflec", "RLo", "DetWhite"]):
                     if wl in epitt_data[0].keys():
                         transient_object = ReflectanceWavelengthTransient()
-                        transient_object.wavelength = int(round(float(epitt_data[0][wl])))
-                        transient_object.wavelength_name = wl#epitt_data[0]["REFLEC_WAVELENGTH"]
+                        transient_object.wavelength = int(round(float(epitt_data[0][wl]))) #* ureg("nanometer") #float(epitt_data[0][wl])* ureg('nanometer')
+                        transient_object.wavelength_name = wl #epitt_data[0]["REFLEC_WAVELENGTH"]
                         transient_object.intensity = epitt_data[1][datacolname]
                         results.reflectance_wavelengths.append(transient_object)
                 self.results = [results]
+
+        # plots
+        temperature_figure = px.scatter(
+            x=self.results[0].process_time,
+            y=self.results[0].pyrometer_temperature,
+            color=self.results[0].pyrometer_temperature,
+            title="Temperature")
+        self.figures.append(PlotlyFigure(label='Temperature', index=0, figure=temperature_figure.to_plotly_json()))
+        reflectance_figure = go.Figure()
+        for i, _ in enumerate(self.results[0].reflectance_wavelengths):
+            single_reflectance_figure =px.scatter(
+                x=self.results[0].process_time.magnitude,
+                y=self.results[0].reflectance_wavelengths[i].intensity,
+                )
+            single_reflectance_figure.update_traces(line={'width': 0.25})
+            self.figures.append(PlotlyFigure(
+                label=f"{self.results[0].reflectance_wavelengths[i].wavelength} nm",
+                index=i + 1,
+                figure=single_reflectance_figure.to_plotly_json()))
+            reflectance_figure.add_trace(go.Scatter(
+            x=self.results[0].process_time.magnitude,
+            y=self.results[0].reflectance_wavelengths[i].intensity,
+            name=f'{self.results[0].reflectance_wavelengths[i].wavelength} nm'
+            ))
+            reflectance_figure.update_traces(line={'width': 0.25})
+        self.figures.append(PlotlyFigure(
+            label='Reflectance',
+            index=len(self.results[0].reflectance_wavelengths) + 2,
+            figure=reflectance_figure.to_plotly_json()))
 
 m_package.__init_metainfo__()
