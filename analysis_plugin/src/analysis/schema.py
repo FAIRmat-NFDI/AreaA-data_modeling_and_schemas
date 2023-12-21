@@ -70,7 +70,13 @@ class JupyterAnalysisResult(AnalysisResult):
     '''
     Section for collecting Jupyter notebook analysis results.
     It is a non-editable section that is populated once the processing is.
+
+    TODO: One can also create a custom schema for results and
+    define it as a sub-section here.
     '''
+    m_def = Section(
+        label = 'Jupyter Notebook Analysis Results',
+    )
     connection_status = Quantity(
         type = str,
         default = 'Not connected',
@@ -95,11 +101,10 @@ class JupyterAnalysis(Analysis):
     inputs = SubSection(
         section_def = SectionReference,
         description = 'The input sections for the analysis',
-        repeats = True,
     )
     outputs = SubSection(
-        section_def = JupyterAnalysisResult,
-        description = 'The output sections for the analysis',
+        section_def = SectionReference,
+        description = 'The result section for the analysis',
     )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
@@ -214,12 +219,27 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
 
         self.link_jupyter_notebook(file_name)
 
+    def write_results(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        '''
+        Writes the results of the analysis to the JupyterAnalysisResult section.
+
+        Args:
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+        '''
+        results = JupyterAnalysisResult(
+            connection_status = 'Connected',
+        )
+        results.normalize(archive, logger)
+        self.outputs.append(results)
+
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         '''
         Normalizes the ELN entry to generate a Jupyter notebook.
         '''
 
         self.write_jupyter_notebook(archive, logger)
+        self.write_results(archive, logger)
 
         super().normalize(archive, logger)
 
