@@ -303,3 +303,16 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
+        My_inherited_Subsection:
+          section:  '#/My_Section_to_inherit'
+    My_Section_to_inherit:
+      base_sections:
+      - nomad.datamodel.data.ArchiveSection
+      quantities:
+        My_Quantity:
+          type: str
+          description:
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
