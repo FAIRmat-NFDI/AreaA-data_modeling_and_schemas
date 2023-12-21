@@ -1,0 +1,9 @@
+definitions:
+  name: Combinatorial Synthesis Test
+  sections:
+    CombinatorialSampleTest:
+      base_sections:
+        # - nomad_material_processing.combinatorial.CombinatorialSample
+        - nomad_material_processing.combinatorial.Test
+        # - nomad_material_processing.physical_vapor_deposition.Test
+        - nomad.datamodel.data.EntryData

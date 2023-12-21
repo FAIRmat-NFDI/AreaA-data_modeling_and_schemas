@@ -1,0 +1,54 @@
+{
+  "data": {
+    "m_def": "ikz_pld.schema.IKZPLDTarget",
+    "name": "STO 1",
+    "datetime": "2023-12-20T14:11:45.679558+00:00",
+    "lab_id": "HZB_HaNa_20231220_STO-1",
+    "recipe_name": "STO",
+    "elemental_composition": [
+      {
+        "element": "O",
+        "atomic_fraction": 0.6,
+        "mass_fraction": 0.2615868413594646
+      },
+      {
+        "element": "Sr",
+        "atomic_fraction": 0.2,
+        "mass_fraction": 0.47753482592487634
+      },
+      {
+        "element": "Ti",
+        "atomic_fraction": 0.2,
+        "mass_fraction": 0.26087833271565913
+      }
+    ],
+    "components": [
+      {
+        "m_def": "nomad.datamodel.metainfo.basesections.PureSubstanceComponent",
+        "name": "Main phase",
+        "mass_fraction": 1.0,
+        "pure_substance": {
+          "m_def": "nomad.datamodel.metainfo.basesections.PubChemPureSubstanceSection",
+          "name": "SrTiO3",
+          "iupac_name": "strontium;dioxido(oxo)titanium",
+          "molecular_formula": "O3SrTi",
+          "molecular_mass": 183.8382968,
+          "inchi": "InChI=1S/3O.Sr.Ti/q;2*-1;+2;",
+          "inchi_key": "VEALVRVVWBQVSL-UHFFFAOYSA-N",
+          "smile": "[O-][Ti](=O)[O-].[Sr+2]",
+          "canonical_smile": "[O-][Ti](=O)[O-].[Sr+2]",
+          "cas_number": "12060-59-2",
+          "pub_chem_cid": 82899,
+          "pub_chem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/82899"
+        }
+      }
+    ],
+    "target_id": {
+      "institute": "HZB",
+      "owner": "HaNa",
+      "datetime": "2023-12-20T14:11:45.679558+00:00",
+      "short_name": "STO-1",
+      "lab_id": "HZB_HaNa_20231220_STO-1"
+    }
+  }
+}
