@@ -1,0 +1,320 @@
+definitions:
+  name: Data_Entries
+  sections:
+    SEM_Image:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Measurement
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime', 'lab_id', 'location', 'steps', 'samples', 'instruments', 'results']
+      quantities:
+        Sample:
+          type: nomad.datamodel.metainfo.basesections.CompositeSystem
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        Microscope:
+          type: nomad.datamodel.metainfo.basesections.Instrument
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        Detector:
+          type: nomad.datamodel.metainfo.basesections.Instrument
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        Time_of_Creation:
+          type: Datetime
+          m_annotations:
+            eln:
+              component: DateTimeEditQuantity
+        Path_to_Image:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Pixel_Width:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              defaultDisplayUnit: nm
+              component: NumberEditQuantity
+        Pixel_Height:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              defaultDisplayUnit: nm
+              component: NumberEditQuantity
+        Acceleration_Voltage:
+          type: np.float64
+          unit: V
+          m_annotations:
+            eln:
+              defaultDisplayUnit: kV
+              component: NumberEditQuantity
+        Beam Current:
+          type: np.float64
+          unit: A
+          m_annotations:
+            eln:
+              defaultDisplayUnit: nA
+              component: NumberEditQuantity
+        Working_Distance:
+          type: np.float64
+          unit: m
+          m_annotations:
+            eln:
+              defaultDisplayUnit: mm
+              component: NumberEditQuantity
+        Dwell_Time:
+          type: np.float64
+          unit: s
+          m_annotations:
+            eln:
+              defaultDisplayUnit: microsecond
+              component: NumberEditQuantity
+        SEM_Mode:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Stage_Tilt_alpha:
+          type: np.float64
+          unit: rad
+          m_annotations:
+            eln:
+              defaultDisplayUnit: deg
+              component: NumberEditQuantity
+        Tilt_Correction:
+          type: bool
+          m_annotations:
+            eln:
+              component: BoolEditQuantity
+        Detector_Mode:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        Meta_Data:
+          section:
+            base_sections:
+              - nomad.datamodel.data.EntryData
+            m_annotations:
+              eln:
+            quantities:
+              Spot_Diameter_(estimated):
+                type: np.float64
+                unit: nm
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: nm
+                    component: NumberEditQuantity
+              Stigmator_X:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Stigmator_Y:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Beam_Shift_X:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Beam_Shift_Y:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Source_Tilt_X:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Source_Tilt_Y:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Emission_Current:
+                type: np.float64
+                unit: A
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: A
+                    component: NumberEditQuantity
+              Specimen_Current:
+                type: np.float64
+                unit: A
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: A
+                    component: NumberEditQuantity
+              Scan_Rotation:
+                type: np.float64
+                unit: rad
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: rad
+                    component: NumberEditQuantity
+              Compound_Lens:
+                type: bool
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+              Compound_Lens_Threshold_Energy:
+                type: np.float64
+                unit: eV
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: eV
+                    component: NumberEditQuantity
+              Stage_X:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: m
+                    component: NumberEditQuantity
+              Stage_Y:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: m
+                    component: NumberEditQuantity
+              Stage_Z:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: m
+                    component: NumberEditQuantity
+              Stage_Rotation:
+                type: np.float64
+                unit: rad
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: rad
+                    component: NumberEditQuantity
+              Stage_Tilt_alpha:
+                type: np.float64
+                unit: rad
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: rad
+                    component: NumberEditQuantity
+              Stage_Tilt_beta:
+                type: np.float64
+                unit: rad
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: rad
+                    component: NumberEditQuantity
+              Stage_Bias:
+                type: np.float64
+                unit: V
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: V
+                    component: NumberEditQuantity
+              Chamber_Pressure:
+                type: np.float64
+                unit: Pa
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: Pa
+                    component: NumberEditQuantity
+              Contrast:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Brightness:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Signal_Type:
+                type: str
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+              Contrast_DB:
+                type: np.float64
+                unit: dB
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: dB
+                    component: NumberEditQuantity
+              Brightness_DB:
+                type: np.float64
+                unit: dB
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: dB
+                    component: NumberEditQuantity
+              Average:
+                type: int
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Integrate:
+                type: int
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Resolution_X:
+                type: int
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Resolution_Y:
+                type: int
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Horizontal_Fieldsize:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: m
+                    component: NumberEditQuantity
+              Vertical_Fieldsize:
+                type: np.float64
+                unit: m
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: m
+                    component: NumberEditQuantity
+              Frame_Time:
+                type: np.float64
+                unit: s
+                m_annotations:
+                  eln:
+                    defaultDisplayUnit: s
+                    component: NumberEditQuantity
+              Digital_Contrast:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Digital_Brightness:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              Digital_Gamma:
+                type: np.float64
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity

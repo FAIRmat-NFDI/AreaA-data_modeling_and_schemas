@@ -1,0 +1,10 @@
+definitions:
+  name: Measurements
+  sections:
+    SEM_Measurement:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Measurement
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']

@@ -1,0 +1,37 @@
+definitions:
+  name: Sample_Processing
+  sections:
+    Annealing:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Process
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Temperature:
+          type: np.float64
+          unit: degC
+          m_annotations:
+            eln:
+              defaultDisplayUnit: degC
+              component: NumberEditQuantity
+        Duration:
+          type: np.float64
+          unit: min
+          m_annotations:
+            eln:
+              defaultDisplayUnit: min
+              component: NumberEditQuantity
+        Path_to_Temperature_Curve:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Cutting:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Process
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']

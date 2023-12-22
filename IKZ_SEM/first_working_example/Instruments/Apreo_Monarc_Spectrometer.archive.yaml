@@ -1,0 +1,4 @@
+data:
+  m_def: ../upload/raw/Schemas/Instruments.archive.yaml#Detector
+  Manufacturer: Gatan
+  installed_at: ../upload/raw/Instruments/Apreo_SEM.archive.yaml#data

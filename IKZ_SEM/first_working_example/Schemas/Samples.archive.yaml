@@ -1,0 +1,77 @@
+definitions:
+  name: Samples
+  sections:
+    Single_Crystal:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.CompositeSystem
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Growth_Method:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Growth_Temperature:
+          type: np.float64
+          unit: degC
+          m_annotations:
+            eln:
+              defaultDisplayUnit: degC
+              component: NumberEditQuantity
+        grown_at:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+    Hetero_Epitaxy:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.CompositeSystem
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Epitaxial_Orientation:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Miscut:
+          type: np.float64
+          unit: deg
+          m_annotations:
+            eln:
+              defaultDisplayUnit: deg
+              component: NumberEditQuantity
+        Miscut_Orientation:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Substrate:
+          type: nomad.datamodel.metainfo.basesections.CompositeSystem
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        Film:
+          type: nomad.datamodel.metainfo.basesections.CompositeSystem
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        Film_Thickness:
+          type: np.float64
+          unit: micrometer
+          m_annotations:
+            eln:
+              defaultDisplayUnit: micrometer
+              component: NumberEditQuantity
+    Other_Material:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.CompositeSystem
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']

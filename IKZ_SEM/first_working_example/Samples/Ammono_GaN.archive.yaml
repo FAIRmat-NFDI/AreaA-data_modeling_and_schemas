@@ -1,0 +1,5 @@
+data:
+  m_def: ../upload/raw/Schemas/Samples.archive.yaml#Single_Crystal
+  Growth_Method: Ammonothermal Growth
+  grown_at: Unipress (Poland)
+  elemental_composition: [{"element":"Ga","atomic_fraction":1},{"element":"N","atomic_fraction":1}]

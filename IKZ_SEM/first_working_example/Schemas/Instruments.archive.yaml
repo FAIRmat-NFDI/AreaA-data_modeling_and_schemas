@@ -1,0 +1,94 @@
+definitions:
+  name: Instruments
+  sections:
+    Oven:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Instrument
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Manufacturer:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Maximal_Temperature:
+          type: np.float64
+          unit: degC
+          m_annotations:
+            eln:
+              defaultDisplayUnit: degC
+              component: NumberEditQuantity
+        Furnace_Diameter:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              defaultDisplayUnit: mm
+              component: NumberEditQuantity
+    Wire_Saw:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Instrument
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Manufacturer:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Wire_Diameter:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              defaultDisplayUnit: mm
+              component: NumberEditQuantity
+    SEM:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Instrument
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Manufacturer:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        Maximal_Acceleration_Voltage:
+          type: np.float64
+          unit: kV
+          m_annotations:
+            eln:
+              defaultDisplayUnit: kV
+              component: NumberEditQuantity
+        Detectors:
+          type: nomad.datamodel.metainfo.basesections.Instrument
+          shape: ['*']
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    Detector:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Instrument
+        - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['datetime']
+      quantities:
+        Manufacturer:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        installed_at:
+          type: nomad.datamodel.metainfo.basesections.Instrument
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity

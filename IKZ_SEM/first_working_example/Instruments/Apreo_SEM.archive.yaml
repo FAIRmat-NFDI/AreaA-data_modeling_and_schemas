@@ -1,0 +1,4 @@
+data:
+  m_def: ../upload/raw/Schemas/Instruments.archive.yaml#SEM
+  Manufacturer: Thermo Fisher Scientific
+  Detectors: ['../upload/raw/Instruments/Apreo_ETD.archive.yaml#data', '../upload/raw/Instruments/Apreo_T1.archive.yaml#data', '../upload/raw/Instruments/Apreo_T2.archive.yaml#data', '../upload/raw/Instruments/Apreo_T3.archive.yaml#data', '../upload/raw/Instruments/Apreo_Monarc_Spectrometer.archive.yaml#data']
