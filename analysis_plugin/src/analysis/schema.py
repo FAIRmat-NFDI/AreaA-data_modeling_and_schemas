@@ -138,17 +138,28 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
                 'XRD',
             ]
         ),
-        description = 'Type of analysis',
+        default = 'Generic',
+        description = (
+            'Based on the analysis type, code cells will be added to the Jupyter '
+            'notebook. Code cells from **Generic** are always included.'
+            '''
+            | Analysis Type       | Description                                     |
+            |---------------------|-------------------------------------------------|
+            | **Generic**         | (Default) Basic setup including connection \
+                                    with entry data.                                |
+            | **XRD**             | Adds XRD related analysis functions.            |
+            '''
+        )
+        ,
         a_eln = ELNAnnotation(
             label = 'Analysis Type',
             component = ELNComponentEnum.EnumEditQuantity,
-            default = 'Generic',
         ),
     )
     reset_notebook = Quantity(
         type = bool,
         description = (
-            'Caution: This will reset the entire notebook and all customizations '
+            '**Caution** This will reset the entire notebook and all customizations '
             'will be lost.'
         ),
         default = True,
@@ -171,6 +182,12 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
 
 
     def link_jupyter_notebook(self,path) -> None:
+        '''
+        Links the Jupyter notebook from raw folder to the ELN entry.
+
+        Args:
+            path (str): Path of the Jupyter notebook.
+        '''
         self.notebook = path
 
     def write_jupyter_notebook(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
