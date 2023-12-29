@@ -193,11 +193,14 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         '''
         self.notebook = path
 
-    def write_predefined_cells(self, logger: 'BoundLogger') -> list:
+    def write_predefined_cells(
+            self, archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> list:
         '''
         Writes the pre-defined Jupyter notebook cells based on the analysis type.
 
         Args:
+            archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         '''
         entry_ids = []
@@ -228,7 +231,7 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         'import requests\n'
         'from nomad.client import Auth\n'
         '\n'
-        'base_url = "http://nomad-lab.eu/prod/v1/api/v1"\n'
+        f'base_url = "{archive.m_context.installation_url}"\n'
         'token_header = Auth().headers()\n'
         '\n'
         f'{generic_analysis_functions}'
@@ -258,11 +261,13 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
             )
             analysis_functions = get_function_source(category_name=self.analysis_type)
             code = list_to_string(analysis_functions)
-            cells.append(nbf.v4.new_code_cell(source=comment+code))
+            cells.append(nbf.v4.new_code_cell(source = comment + code))
 
         return cells
 
-    def generate_jupyter_notebook(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+    def generate_jupyter_notebook(
+        self, archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> None:
         '''
         Generates the notebook `ELNJupyterAnalysis.ipynb` and saves it in `raw` folder.
 
@@ -272,7 +277,7 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         '''
         nb = nbf.v4.new_notebook()
 
-        cells = self.write_predefined_cells(logger)
+        cells = self.write_predefined_cells(archive, logger)
 
         cells.append(nbf.v4.new_code_cell())
         cells.append(nbf.v4.new_code_cell())
@@ -288,16 +293,18 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
 
         self.link_jupyter_notebook(file_name)
 
-    def overwrite_jupyter_notebook(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+    def overwrite_jupyter_notebook(
+        self, archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> None:
         '''
-        Overwrites the pre-defined cells of a Jupyter notebook while preserving the
+        Overwrites the Jupyter notebook to reset predefined cells while preserving the
         other user-defined cells.
 
         Args:
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         '''
-        cells = self.write_predefined_cells(logger)
+        cells = self.write_predefined_cells(archive, logger)
 
         with archive.m_context.raw_file(self.notebook, 'r') as nb_file:
             nb = nbf.read(nb_file, as_version=nbf.NO_CONVERT)
@@ -313,7 +320,9 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
             nbf.write(nb, nb_file)
         archive.m_context.process_updated_raw_file(self.notebook, allow_modify=True)
 
-    def write_jupyter_notebook(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+    def write_jupyter_notebook(
+        self, archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> None:
         '''
         Writes the Jupyter notebook based on the analysis type.
 
