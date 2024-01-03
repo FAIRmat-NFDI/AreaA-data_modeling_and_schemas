@@ -17,20 +17,20 @@
 #
 
 '''
-Defines the schema for the ELN where the data from data files is parsed into.
-It also defines functions to generate a Jupyter notebook based on the data.
-ELN is generated when a data file is dropped to create an entry and matched by the
-parser. Alternately, one can create an empty ELN and add a data file on the go.
-ELN can also search for a data file from the previous uploads. It populates the fields
-based on the associated schemas for the data file type.
+Schema for analysis using Jupyter notebooks.
+Allows the user to connect input sections through references. The entry archives from the
+input sections are linked and imported into the generated Jupyter notebook.
+The notebook can be used to interactively analyse the data from these entry archives.
 
-The schema support one data file per ELN. This data file could can have any data format.
-Normalizing this ELN will generate a Jupyter notebook with containing a filepath to the
-data file. In case the file type is supported by the parser, for example supported XRD
-files, the Jupyter notebook will contain the parsed data.
+Schema also allows the user to define the analysis type. Based on the analysis type,
+pre-defined code cells are added to the notebook. For example, if the analysis type is
+XRD, then the notebook will have pre-defined code cells for XRD analysis. By default,
+the analysis type is set to Generic, which includes functions and statements to connect
+with the entry archives.
 
-Eventually, the schema will support multiple data files per ELN and support parsing of
-file types from other measurements and processes.
+Upcoming features:
+- Link the output section of the analysis schema to a sub-section of the input.
+- Write the analysis results back to the output section.
 '''
 from typing import (
     TYPE_CHECKING
@@ -337,17 +337,16 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
 
     def write_results(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         '''
-        Writes the results of the analysis to the JupyterAnalysisResult section.
+        Writes the results of the analysis to the output section.
 
         Args:
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         '''
-        results = JupyterAnalysisResult(
-            connection_status = 'Connected',
-        )
-        results.normalize(archive, logger)
-        self.outputs.append(results)
+        if archive.m_context.raw_path_exists('tmp_analysis_results.json'):
+            with archive.m_context.raw_file('tmp_analysis_results.json', 'r') as f:
+                data = json.load(f)
+            # TODO add results to output, delete tmp_analysis_results.json
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         '''
