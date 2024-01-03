@@ -36,6 +36,7 @@ from typing import (
     TYPE_CHECKING
 )
 import nbformat as nbf
+import json
 from nomad.datamodel.metainfo.basesections import (
     Analysis,
     AnalysisResult,
