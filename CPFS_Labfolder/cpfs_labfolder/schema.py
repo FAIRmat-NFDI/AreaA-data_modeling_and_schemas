@@ -43,7 +43,9 @@ from nomad_material_processing.utils import (
 
 from cpfs_bridgman.bridgman import (
     CPFSBridgmanTechnique,
-    CPFSBridgmanTechniqueStep
+    CPFSBridgmanTechniqueStep,
+    CPFSChemicalVapourTransport,
+    CPFSChemicalVapourTransportStep,
 )
 
 from cpfs_basesections.cpfs_schemes import (
@@ -52,6 +54,9 @@ from cpfs_basesections.cpfs_schemes import (
     CPFSCrucible,
     CPFSCrystalGrowthTube,
     CPFSInitialSynthesisComponent,
+)
+from nomad.datamodel.metainfo.eln import (
+    Ensemble,
 )
 
 m_package = Package(name='cpfs_labfolder')
@@ -71,10 +76,9 @@ class CPFSLabfolderProject(LabfolderProject,EntryData):
 
         if self.import_entry_id:
             for entry in self.entries:
-                logger.info(str(entry.id),str(self.import_entry_id))
                 if str(entry.id)==str(self.import_entry_id):
                     #More general way possible?
-                    #For now include Bridgman
+                    #For now include Bridgman and CVT
                     import json
                     if "Bridgman" in entry.tags:
                         logger.info("Bridgman template found.")
@@ -144,6 +148,74 @@ class CPFSLabfolderProject(LabfolderProject,EntryData):
                             ),
                             archive,
                             sample_id + "_" + achieved_composition + "_CPFSBridgmanTechnique.archive.json"
+                        )
+
+
+                    logger.info(entry.tags)
+                    if "CVT" in entry.tags:
+                        logger.info("CVT template found.")
+                        for element in entry.elements:
+                            if element.element_type=="DATA":
+                                content=element.labfolder_data
+                                if 'Monitored parameters' in content:
+                                    step=[CPFSChemicalVapourTransportStep(
+                                        temperature_one=float(content["Monitored parameters"]["Temperature 1"]["value"])+273.15,
+                                        temperature_two=float(content["Monitored parameters"]["Temperature 2"]["value"])+273.15,
+                                        transport_agent=Ensemble(name=content["Monitored parameters"]["Transport agent"])
+                                    )]
+                                    title="Basic features of the as-grown crystal"
+                                    achieved_composition=content[title]["Achieved Composition"]["description"]
+                                    final_length=float(content[title]["Final crystal length"]["value"])/1000.
+                                    crystal_shape=content[title]["Crystal shape"]["description"]
+                                    crystal_orientation=content[title]["Crystal orientation"]["description"]
+                                    safety=content[title]["Safety/ Reactivity"]["description"]
+                                if 'General info' in content:
+                                    sample_id=content["General info"]["Sample ID"]["description"]
+                                    furnace=CPFSFurnace(
+                                        model=content["Setup and instruments"]["Furnace"]["Furnace name"]["description"]
+                                    )
+                                    tube=CPFSCrystalGrowthTube(
+                                        material=content["Setup and instruments"]["Tube"]["Tube material"]["description"],
+                                        diameter=float(content["Setup and instruments"]["Tube"]["Tube diameter"]["value"])/1000.,
+                                        filling=content["Setup and instruments"]["Tube"]["Tube filling"]["description"]
+                                    )
+                            if element.element_type=="TABLE":
+                                if element.title=="Initial elements/materials":
+                                    materials=[]
+                                    table=element.content["sheets"]["Sheet1"]["data"]["dataTable"]
+                                    for i in range(1,len(table)):
+                                        mat=CPFSInitialSynthesisComponent(
+                                            name=table[str(i)]["0"]["value"],
+                                            state=table[str(i)]["1"]["value"],
+                                            weight=table[str(i)]["2"]["value"],
+                                            providing_company=table[str(i)]["3"]["value"],
+                                        )
+                                        materials.append(mat)
+                        crystal_ref=create_archive(
+                            CPFSCrystal(
+                                name = sample_id + "_" + achieved_composition,
+                                sample_id = sample_id,
+                                achieved_composition = achieved_composition,
+                                final_crystal_length = final_length,
+                                #single_poly = entry.elements[5].data_elements[1].children[2].description,
+                                crystal_shape = crystal_shape,
+                                crystal_orientation = crystal_orientation,
+                                safety_reactivity = safety,
+                                #description = str(inp.loc[38][2]),
+                            ),
+                            archive,
+                            sample_id + "_" + achieved_composition + "_CPFSCrystal.archive.json"
+                        )
+                        create_archive(
+                            CPFSChemicalVapourTransport(
+                                furnace=furnace,
+                                tube=tube,
+                                steps=step,
+                                initial_materials=materials,
+                                resulting_crystal=crystal_ref,
+                            ),
+                            archive,
+                            sample_id + "_" + achieved_composition + "_CPFSChemicalVapourTransport.archive.json"
                         )
 
 
