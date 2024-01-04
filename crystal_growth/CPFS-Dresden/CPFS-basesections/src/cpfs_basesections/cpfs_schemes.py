@@ -322,6 +322,7 @@ class CPFSInitialSynthesisComponent(InitialSynthesisComponent,EntryData):
             'Powder',
             'Polycrystal',
             'Plate',
+            'Pieces',
         ),
         a_eln=ELNAnnotation(
             component='EnumEditQuantity',

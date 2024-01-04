@@ -44,6 +44,9 @@ from nomad_material_processing.utils import (
 from cpfs_bridgman.bridgman import (
     CPFSBridgmanTechnique,
     CPFSBridgmanTechniqueStep,
+)
+
+from cpfs_cvt.cvt import (
     CPFSChemicalVapourTransport,
     CPFSChemicalVapourTransportStep,
 )
@@ -150,8 +153,6 @@ class CPFSLabfolderProject(LabfolderProject,EntryData):
                             sample_id + "_" + achieved_composition + "_CPFSBridgmanTechnique.archive.json"
                         )
 
-
-                    logger.info(entry.tags)
                     if "CVT" in entry.tags:
                         logger.info("CVT template found.")
                         for element in entry.elements:
@@ -161,7 +162,7 @@ class CPFSLabfolderProject(LabfolderProject,EntryData):
                                     step=[CPFSChemicalVapourTransportStep(
                                         temperature_one=float(content["Monitored parameters"]["Temperature 1"]["value"])+273.15,
                                         temperature_two=float(content["Monitored parameters"]["Temperature 2"]["value"])+273.15,
-                                        transport_agent=Ensemble(name=content["Monitored parameters"]["Transport agent"])
+                                        transport_agent=Ensemble(name=content["Monitored parameters"]["Transport agent"]["description"])
                                     )]
                                     title="Basic features of the as-grown crystal"
                                     achieved_composition=content[title]["Achieved Composition"]["description"]
