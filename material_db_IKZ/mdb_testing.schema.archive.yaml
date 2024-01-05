@@ -1,0 +1,19 @@
+definitions:
+  name: IKZ Materials DB
+  sections:
+    IKZ_Materials_DB_Entry:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.CompositeSystem
+        - nomad.datamodel.data.EntryData
+
+    IKZ_Materials_DB_Entry_Solid:
+      base_sections:
+        - '#/IKZ_Materials_DB_Entry'
+        - nomad.datamodel.data.EntryData
+      quantities:
+        my_solid_quantity:
+          type: str
+          description: This is an additional quantity that is not part of the "Experiment" base section.
+          m_annotations:
+            eln:
+              component: StringEditQuantity
