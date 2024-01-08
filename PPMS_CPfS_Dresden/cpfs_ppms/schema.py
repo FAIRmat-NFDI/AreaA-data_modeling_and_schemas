@@ -56,6 +56,17 @@ from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
 from nomad.datamodel.metainfo.basesections import ActivityStep
 
+from cpfs_basesections.cpfs_schemes import (
+    CPFSCrystal,
+)
+
+from nomad.search import search
+
+from time import (
+    sleep,
+    perf_counter
+)
+
 m_package = Package(name='cpfs_ppms')
 
 def clean_channel_keys(input_key: str) -> str:
@@ -90,12 +101,21 @@ class CPFSSample(CompositeSystem):
     material = Quantity(
         type=str,
         description='FILL')
-    voltage_lead_preparation = Quantity(
+    comment = Quantity(
         type=str,
         description='FILL')
-    cross_sectional_area = Quantity(
+    lead_separation = Quantity(
         type=str,
         description='FILL')
+    cross_section = Quantity(
+        type=str,
+        description='FILL')
+    sample_id = Quantity(
+        type=CPFSCrystal,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        )
+    )
 
 class CPFSPPMSMeasurementStep(ActivityStep):
     '''
@@ -1221,23 +1241,51 @@ class CPFSPPMSMeasurement(Measurement,PlotSection,EntryData):
                 sample_1 = CPFSSample()
                 for line in sample1_headers:
                     parts = re.split(r',\s*', line)
-                    key = parts[2].lower().replace('SAMPLE1_','')
-                    if hasattr(sample_1, key):
-                        setattr(sample_1, key, parts[1])
+                    key = parts[-1].lower().replace('sample1_','')
+                    if key=="sample_id":
+                        search_result = search(
+                            owner="user",
+                            query={
+                                "results.eln.sections:any": ["CPFSCrystal"],
+                                "results.eln.names:any": [parts[1]+r'*']
+                            },
+                            user_id=archive.metadata.main_author.user_id,
+                            )
+                        if len(search_result.data)>0:
+                            sample_1.sample_id=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
+                            sample_1.name=search_result.data[0]['search_quantities'][0]['str_value']
+                        else:
+                            logger.warning("The sample given in the header could not be found and couldn't be referenced.")
+                    elif hasattr(sample_1, key):
+                        setattr(sample_1, key, ", ".join(parts[1:-1]))
 
             sample2_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE2_' in line]
             if sample2_headers:
                 sample_2 = CPFSSample()
                 for line in sample2_headers:
                     parts = re.split(r',\s*', line)
-                    key = parts[2].lower().replace('SAMPLE2_','')
-                    if hasattr(sample_2, key):
-                        setattr(sample_2, key, parts[1])
+                    key = parts[-1].lower().replace('sample2_','')
+                    if key=="sample_id":
+                        search_result = search(
+                            owner="user",
+                            query={
+                                "results.eln.sections:any": ["CPFSCrystal"],
+                                "results.eln.names:any": [parts[1]+r'*']
+                            },
+                            user_id=archive.metadata.main_author.user_id,
+                            )
+                        if len(search_result.data)>0:
+                            sample_2.sample_id=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
+                            sample_2.name=search_result.data[0]['search_quantities'][0]['str_value']
+                        else:
+                            logger.warning("The sample given in the header could not be found and couldn't be referenced.")
+                    elif hasattr(sample_2, key):
+                        setattr(sample_2, key, ", ".join(parts[1:-1]))
 
-                while self.samples:
-                    self.m_remove_sub_section(CPFSPPMSMeasurement.samples, 0)
-                self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_1)
-                self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_2)
+            while self.samples:
+                self.m_remove_sub_section(CPFSPPMSMeasurement.samples, 0)
+            self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_1)
+            self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_2)
 
             startupaxis_headers = [line for line in header_lines if line.startswith("STARTUPAXIS")]
             if startupaxis_headers:
@@ -1384,7 +1432,6 @@ class CPFSPPMSMeasurement(Measurement,PlotSection,EntryData):
                         measurement_ends=True
                     if measurement_ends:
                         measurement_active=False
-                        logger.info(startval,index)
                         block=data_df.iloc[startval:index]
                         startval=index
                         data = CPFSACTPPMSData()
@@ -1455,96 +1502,5 @@ class CPFSPPMSMeasurement(Measurement,PlotSection,EntryData):
                     figure1.add_trace(resistivity_ch2.data[0], row=2, col=1)
                     figure1.update_layout(height=400, width=716, title_text=data.name)
                     self.figures.append(PlotlyFigure(label=data.name, figure=figure1.to_plotly_json()))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            # if self.software.startswith("Electrical Transport Option"):
-            #     self.data = CPFSETOPPMSData()
-            # elif self.software.startswith("ACTRANSPORT"):
-            #     self.data = CPFSACTPPMSData()
-            # else:
-            #     logger.error("Software not recognized: "+self.software)
-            # for key in other_data:
-            #     clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
-            #     if hasattr(self.data, clean_key):
-            #         setattr(self.data,
-            #                 clean_key,
-            #                 data_df[key] # * ureg(data_template[f'{key}/@units'])
-            #                 )
-            # channel_1_data = [key for key in data_df.keys() if 'ch1' in key.lower()]
-            # if channel_1_data:
-            #     if self.software.startswith("Electrical Transport Option"):
-            #         channel_1 = CPFSETOChannelData()
-            #     elif self.software.startswith("ACTRANSPORT"):
-            #         channel_1 = CPFSACTChannelData()
-            #     setattr(channel_1, 'name', 'Channel 1')
-            #     for key in channel_1_data:
-            #         clean_key = clean_channel_keys(key)
-            #         if hasattr(channel_1, clean_key):
-            #             setattr(channel_1,
-            #                     clean_key,
-            #                     data_df[key] # * ureg(data_template[f'{key}/@units'])
-            #                     )
-            #     if self.software.startswith("Electrical Transport Option"):
-            #         self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_1)
-            #     elif self.software.startswith("ACTRANSPORT"):
-            #         self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_1)
-            # channel_2_data = [key for key in data_df.keys() if 'ch2' in key.lower()]
-            # if channel_2_data:
-            #     if self.software.startswith("Electrical Transport Option"):
-            #         channel_2 = CPFSETOChannelData()
-            #     elif self.software.startswith("ACTRANSPORT"):
-            #         channel_2 = CPFSACTChannelData()
-            #     setattr(channel_2, 'name', 'Channel 2')
-            #     for key in channel_2_data:
-            #         clean_key = clean_channel_keys(key)
-            #         if hasattr(channel_2, clean_key):
-            #             setattr(channel_2,
-            #                     clean_key,
-            #                     data_df[key] # * ureg(data_template[f'{key}/@units'])
-            #                     )
-            #     if self.software.startswith("Electrical Transport Option"):
-            #         self.data.m_add_sub_section(CPFSETOPPMSData.channels, channel_2)
-            #     elif self.software.startswith("ACTRANSPORT"):
-            #         self.data.m_add_sub_section(CPFSACTPPMSData.channels, channel_2)
-
-
-            # if self.software.startswith("Electrical Transport Option"):
-            #     eto_channel_data = [key for key in data_df.keys() if 'ETO Channel' in key]
-            #     if eto_channel_data:
-            #         for key in eto_channel_data:
-            #             eto_channel = CPFSETOData()
-            #             if hasattr(eto_channel, 'name'):
-            #                 setattr(eto_channel, 'name', key)
-            #             if hasattr(eto_channel, 'eto_channel'):
-            #                 setattr(eto_channel, 'eto_channel', data_df[key])
-            #             self.data.m_add_sub_section(CPFSETOPPMSData.eto_channels, eto_channel)
-            # elif self.software.startswith("ACTRANSPORT"):
-            #     map_data = [key for key in data_df.keys() if 'Map' in key]
-            #     if map_data:
-            #         for key in map_data:
-            #             map = CPFSACTData()
-            #             if hasattr(map, 'name'):
-            #                 setattr(map, 'name', key)
-            #             if hasattr(map, 'map'):
-            #                 setattr(map, 'map', data_df[key])
-            #             self.data.m_add_sub_section(CPFSACTPPMSData.map_data, map)
-
 
 m_package.__init_metainfo__()

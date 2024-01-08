@@ -76,9 +76,11 @@ class CPFSPPMSParser(MatchingParser):
                 },
                 user_id=archive.metadata.main_author.user_id,
                 )
-            for sequence in search_result.data:
-                entry.sequence_file=sequence['search_quantities'][0]['str_value']
-                logger.info(sequence['search_quantities'][0]['str_value'])
+            if len(search_result.data)>0:
+                for sequence in search_result.data:
+                    entry.sequence_file=sequence['search_quantities'][0]['str_value']
+                    logger.info(sequence['search_quantities'][0]['str_value'])
+                    break
             sleep(0.1)
             toc = perf_counter()
             if toc - tic > 15:
