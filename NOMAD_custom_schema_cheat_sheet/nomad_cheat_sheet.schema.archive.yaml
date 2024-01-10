@@ -8,12 +8,12 @@
 definitions:
   name: "Cheatsheet"
   sections:
-    Cheat_Sheet:
+    CheatSheet: # sections are in pascal case (not mandatory but best practice)
       base_sections:
       - nomad.datamodel.data.EntryData
 
       # adding quantities:
-      quantities:
+      quantities: # quantities are in snake case (not mandatory but best practice)
 
         # myquantity: test
         string:
@@ -245,8 +245,8 @@ definitions:
               component: FileEditQuantity
             browser:
               adaptor: RawFileAdaptor
-      sub_sections:
-        My_Sub_Section:
+      sub_sections: # sub sections are in snake case (not mandatory but best practice)
+        my_sub_section:
           section:
             quantities:
               name:
@@ -255,26 +255,26 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              Stringquantity:
+              stringquantity:
                 type: str
                 description:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              Stringquantity_tobeshownonoverview:
+              stringquantity_tobeshownonoverview:
                 type: str
                 description:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              Floatquantitywithunit:
+              floatquantitywithunit:
                 type: np.float64
                 unit: millibar
                 description:
                 m_annotations:
                   eln:
                     component: NumberEditQuantity
-        My_repeatable_sub_section:
+        my_repeatable_sub_section:
           repeats: true
           section:
             quantities:
@@ -285,31 +285,31 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-              Anotherstringquantity:
+              anotherstringquantity:
                 type: str
                 description:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        My_Sub_Section_on_the_overview: # not working yet! see https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/issues/1817
+        my_sub_section_on_the_overview: # not working yet! see https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/issues/1817
           m_annotations:
             eln:
               overview: True
           section:
             quantities:
-              Stringquantity_tobeshownonoverview:
+              stringquantity_tobeshownonoverview:
                 type: str
                 description:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        My_inherited_Subsection:
-          section:  '#/My_Section_to_inherit'
-    My_Section_to_inherit:
+        my_inherited_subsection:
+          section:  '#/MySectionToInherit'
+    MySectionToInherit:
       base_sections:
       - nomad.datamodel.data.ArchiveSection
       quantities:
-        My_Quantity:
+        my_quantity:
           type: str
           description:
           m_annotations:
