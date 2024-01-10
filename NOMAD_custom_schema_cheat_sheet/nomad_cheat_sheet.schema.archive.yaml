@@ -8,7 +8,7 @@
 definitions:
   name: "Cheatsheet"
   sections:
-    Cheat_Sheet:
+    CheatSheet:
       base_sections:
       - nomad.datamodel.data.EntryData
 
@@ -246,7 +246,7 @@ definitions:
             browser:
               adaptor: RawFileAdaptor
       sub_sections:
-        My_Sub_Section:
+        MySubSection:
           section:
             quantities:
               name:
@@ -274,7 +274,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: NumberEditQuantity
-        My_repeatable_sub_section:
+        MyRepeatableSubSection:
           repeats: true
           section:
             quantities:
@@ -291,7 +291,7 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
-        My_Sub_Section_on_the_overview: # not working yet! see https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/issues/1817
+        MySubSectionOnTheOverview: # not working yet! see https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/issues/1817
           m_annotations:
             eln:
               overview: True
@@ -303,3 +303,90 @@ definitions:
                 m_annotations:
                   eln:
                     component: StringEditQuantity
+
+    # Tabular parser cheatsheet
+    # follow https://nomad-lab.eu/prod/v1/staging/docs/howto/customization/tabular.html for more information
+
+    # this mode let you parse columns from excel sheets into NOMAD arrays in the same entry
+    CheatSheetTabularParserColumn:
+      base_sections: # this are the base section needed (in this order!) to parse the excel file
+       - nomad.datamodel.data.EntryData
+       - nomad.parsing.tabular.TableData
+      m_annotations:
+        eln:
+      # adding quantitiy where to drop the excel file in the eln:
+      quantities:
+        data_file:
+          type: str
+          default: test.xlsx
+          m_annotations:
+            tabular_parser:
+              parsing_options:
+                # sep: ','  # separator must be used only for csv files
+                comment: '#' # if you insert comment line before the headers (do not insert at the end of your data)
+              mapping_options:
+                - mapping_mode: column
+                  file_mode: current_entry # for other file modes see https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-lab-base/-/blob/master/nomad/parsing/tabular/mapping.py
+                  sections:
+                    - my_sub_section_2
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+      sub_sections:
+        my_sub_section_2:
+          section: '#/MySubSection2' # this syntax indicates a reference to a section defined in this schema (see the line below)
+    MySubSection2:
+      m_annotations:
+        eln:
+      quantities:
+        my_array_quantity_1:
+          type: str
+          shape: ['*']
+          m_annotations:
+            tabular: # this annotation is required to parse the column
+              name: "My header 1"
+        my_array_quantity_2:
+          type: str
+          shape: ['*']
+          m_annotations:
+            tabular: # this annotation is required to parse the column
+              name: "My header 2"
+
+    # this mode let you parse each row from excel sheets into a new NOMAD entry (useful for lists of chemical, etc.)
+    CheatSheetTabularParserRow:
+      base_sections:
+       - nomad.datamodel.data.EntryData
+       - nomad.parsing.tabular.TableData
+      m_annotations:
+        eln:
+      more:
+        label_quantity: 'my_quantity_1'
+      quantities:
+        data_file:
+          type: str
+          default: test.xlsx
+          m_annotations:
+            tabular_parser:
+              parsing_options:
+                comment: '#'
+              mapping_options:
+                - mapping_mode: row
+                  file_mode: multiple_new_entries
+                  sections:
+                    - '#root' # this syntax indicates that each entry will have the present class as schema definition
+            browser:
+              adaptor: RawFileAdaptor
+            eln:
+              component: FileEditQuantity
+        my_quantity_1:
+          type: str
+          m_annotations:
+            tabular:
+              name: "My header 1"
+        my_quantity_2:
+          type: str
+          m_annotations:
+            tabular:
+              name: "My header 2"
+# at the link https://nomad-lab.eu/prod/v1/staging/docs/howto/customization/tabular.html there are a total of eight modes you can use with the tabular parser
