@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import yaml
 import numpy as np
 from datetime import datetime
 import re
@@ -33,6 +34,10 @@ from nomad.datamodel.data import (
     EntryData,
     ArchiveSection,
     EntryDataCategory,
+)
+from nomad.datamodel.metainfo.basesections import (
+    MeasurementResult,
+    CompositeSystemReference,
 )
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
@@ -65,7 +70,7 @@ class ReflectanceWavelengthTransient(ArchiveSection):
     )
 
 
-class LayTecEpiTTMeasurementResult(ArchiveSection):
+class LayTecEpiTTMeasurementResult(MeasurementResult):
     """
     Add description
     """
@@ -132,6 +137,15 @@ class LayTecEpiTTMeasurement(InSituMeasurement, PlotSection, EntryData):
             instruments=[dict(name="LayTec_EpiTT", lab_id="LayTec_EpiTT_MOVPE_Ga2O3")],
         ),
     )
+    description = Quantity(
+        type=str,
+        description="""
+        Notes and description of the current entry.
+        """,
+        a_eln=dict(
+            component="StringEditQuantity",
+        ),
+    )
     method = Quantity(
         type=str, description="Method used to collect the data", default="LayTec_EpiTT"
     )
@@ -157,150 +171,86 @@ class LayTecEpiTTMeasurement(InSituMeasurement, PlotSection, EntryData):
 
     def normalize(self, archive, logger):
         super(LayTecEpiTTMeasurement, self).normalize(archive, logger)
-        logger.info("LayTecEpiTTMeasurement.normalize called")
+        logger.info("Executed LayTecEpiTTMeasurement normalizer.")
 
-        def parse_epitt_data(file):
-            line = file.readline().strip()
-            parameters = {}
-            header = []
-            while (
-                line.startswith(
-                    (
-                        "##",
-                        "!",
-                    )
-                )
-                or line.strip() == ""
-            ):
-                match = re.match(r"##(\w+)\s*=\s*(.*)", line.strip())
-                if match:
-                    parameter_name = match.group(1)
-                    parameter_value = match.group(2)
-                    if parameter_name == "YUNITS":
-                        yunits = parameter_value.split("\t")
-                        parameters[parameter_name] = yunits
-                    else:
-                        parameters[parameter_name] = parameter_value
-                line = file.readline().strip()
-            header = line.split("\t")
-            data_in_df = pd.read_csv(file, sep="\t", names=header, skipfooter=1)
-            return parameters, data_in_df
-
-        if archive.data.data_file:
-            with archive.m_context.raw_file(self.data_file) as file:
-                epitt_data = parse_epitt_data(file)
-                name_string = ""
-                paramters_for_name = [
-                    "RUN_ID",
-                    "RUNTYPE_ID",
-                    "RUNTYPE_NAME",
-                    "MODULE_NAME",
-                    "WAFER_LABEL",
-                    "WAFER",
-                ]
-                for p in paramters_for_name:
-                    if p in epitt_data[0].keys():
-                        name_string += "_" + epitt_data[0][p]
-                if name_string != "":
-                    self.name = name_string[1:]
-                    self.lab_id = name_string[1:]
-                if "TIME" in epitt_data[0].keys():
-                    self.datetime = datetime.strptime(
-                        epitt_data[0]["TIME"], "%Y-%m-%d-%H-%M-%S"
-                    )  #'2020-08-27-11-11-30',
-                self.measurement_settings = MeasurementSettings()  # ?
-                if "MODULE_NAME" in epitt_data[0].keys():
-                    self.measurement_settings.module_name = epitt_data[0]["MODULE_NAME"]
-                if "WAFER_LABEL" in epitt_data[0].keys():
-                    self.measurement_settings.wafer_label = epitt_data[0]["WAFER_LABEL"]
-                if "WAFER_ZONE" in epitt_data[0].keys():
-                    self.measurement_settings.wafer_zone = epitt_data[0]["WAFER_ZONE"]
-                if "WAFER" in epitt_data[0].keys():
-                    self.measurement_settings.wafer = epitt_data[0]["WAFER"]
-                # if "RUN_ID" in epitt_data[0].keys():
-                #    self.run_ID = epitt_data[0]["RUN_ID"]
-                if "RUNTYPE_ID" in epitt_data[0].keys():
-                    self.measurement_settings.runtype_ID = epitt_data[0]["RUNTYPE_ID"]
-                if "RUNTYPE_NAME" in epitt_data[0].keys():
-                    self.measurement_settings.runtype_name = epitt_data[0][
-                        "RUNTYPE_NAME"
-                    ]
-                # self.time_transient = epitt_data[1]["BEGIN"]
-                process = ProcessReference()
-                process.lab_id = epitt_data[0]["RUN_ID"]
-                process.normalize(archive, logger)
-                self.process = process
-                results = LayTecEpiTTMeasurementResult()
-                results.process_time = epitt_data[1]["BEGIN"]
-                results.pyrometer_temperature = epitt_data[1]["PyroTemp"]
-                results.reflectance_wavelengths = []
-                for wl, datacolname in zip(
-                    ["REFLEC_WAVELENGTH", "PYRO_WAVELENGTH", "WHITE_WAVELENGTH"],
-                    ["DetReflec", "RLo", "DetWhite"],
-                ):
-                    if wl in epitt_data[0].keys():
-                        transient_object = ReflectanceWavelengthTransient()
-                        transient_object.wavelength = int(
-                            round(float(epitt_data[0][wl]))
-                        )  # * ureg("nanometer") #float(epitt_data[0][wl])* ureg('nanometer')
-                        transient_object.wavelength_name = (
-                            wl  # epitt_data[0]["REFLEC_WAVELENGTH"]
-                        )
-                        transient_object.intensity = epitt_data[1][datacolname]
-                        results.reflectance_wavelengths.append(transient_object)
-                self.results = [results]
+        # reference process
+        if self.process.name:
+            self.process.normalize(archive, logger)
+            logger.info("Executed LayTecEpiTTMeasurement.process normalizer.")
+            sample_list = []
+            sample_list.append(
+                CompositeSystemReference(
+                    lab_id=self.process.reference.grown_sample.lab_id,
+                ),
+            )
+            self.samples = sample_list
+            self.samples[0].normalize(archive, logger)
 
         # plots
-        temperature_figure = px.scatter(
-            x=self.results[0].process_time,
-            y=self.results[0].pyrometer_temperature,
-            color=self.results[0].pyrometer_temperature,
-            title="Temperature",
-        )
-        temperature_figure.update_traces(mode="markers", marker={"size": 3})
-        temperature_figure.update_xaxes(title_text="Time [s]")
-        temperature_figure.update_yaxes(title_text="Temperature [°C]")
-        self.figures.append(
-            PlotlyFigure(
-                label="Temperature", index=1, figure=temperature_figure.to_plotly_json()
+        if self.results[0]:
+            figures_list = []
+            temperature_figure = px.scatter(
+                x=self.results[0].process_time,
+                y=self.results[0].pyrometer_temperature,
+                color=self.results[0].pyrometer_temperature,
+                title="Temperature",
             )
-        )
-        reflectance_figure = go.Figure()
-        for i, _ in enumerate(self.results[0].reflectance_wavelengths):
-            single_reflectance_figure = px.scatter(
-                x=self.results[0].process_time.magnitude,
-                y=self.results[0].reflectance_wavelengths[i].intensity,
-            )
-            single_reflectance_figure.update_traces(
-                mode="lines+markers", line={"width": 1}, marker={"size": 3}
-            )
-            single_reflectance_figure.update_xaxes(title_text="Time [s]")
-            single_reflectance_figure.update_yaxes(title_text="Reflectance")
-            self.figures.append(
+            temperature_figure.update_traces(mode="markers", marker={"size": 3})
+            temperature_figure.update_xaxes(title_text="Time [s]")
+            temperature_figure.update_yaxes(title_text="Temperature [°C]")
+            figures_list.append(
                 PlotlyFigure(
-                    label=f"{self.results[0].reflectance_wavelengths[i].wavelength} nm",
-                    index=i + 2,
-                    figure=single_reflectance_figure.to_plotly_json(),
+                    label="Temperature",
+                    index=1,
+                    figure=temperature_figure.to_plotly_json(),
                 )
             )
-            reflectance_figure.add_trace(
-                go.Scatter(
+            reflectance_figure = go.Figure()
+            for i, _ in enumerate(self.results[0].reflectance_wavelengths):
+                single_reflectance_figure = px.scatter(
                     x=self.results[0].process_time.magnitude,
                     y=self.results[0].reflectance_wavelengths[i].intensity,
-                    name=f"{self.results[0].reflectance_wavelengths[i].wavelength} nm",
-                    mode="lines",
+                )
+                single_reflectance_figure.update_traces(
+                    mode="lines+markers", line={"width": 1}, marker={"size": 3}
+                )
+                single_reflectance_figure.update_xaxes(title_text="Time [s]")
+                single_reflectance_figure.update_yaxes(title_text="Reflectance")
+                figures_list.append(
+                    PlotlyFigure(
+                        label=f"{self.results[0].reflectance_wavelengths[i].wavelength} nm",
+                        index=i + 2,
+                        figure=single_reflectance_figure.to_plotly_json(),
+                    )
+                )
+                reflectance_figure.add_trace(
+                    go.Scatter(
+                        x=self.results[0].process_time.magnitude,
+                        y=self.results[0].reflectance_wavelengths[i].intensity,
+                        name=f"{self.results[0].reflectance_wavelengths[i].wavelength} nm",
+                        mode="lines",
+                    )
+                )
+                reflectance_figure.update_traces(
+                    mode="lines+markers", line={"width": 1}, marker={"size": 3}
+                )
+                reflectance_figure.update_xaxes(title_text="Time [s]")
+                reflectance_figure.update_yaxes(title_text="Reflectance")
+            figures_list.append(
+                PlotlyFigure(
+                    label="Reflectance",
+                    index=0,
+                    figure=reflectance_figure.to_plotly_json(),
                 )
             )
-            reflectance_figure.update_traces(
-                mode="lines+markers", line={"width": 1}, marker={"size": 3}
-            )
-            reflectance_figure.update_xaxes(title_text="Time [s]")
-            reflectance_figure.update_yaxes(title_text="Reflectance")
-        self.figures.append(
-            PlotlyFigure(
-                label="Reflectance", index=0, figure=reflectance_figure.to_plotly_json()
-            )
-        )
+            self.figures = figures_list
 
+
+#            if self.process.reference:
+# with archive.m_context.raw_file(self.process.reference, 'r') as process_file:
+#     process_dict = yaml.safe_load(process_file)
+#     updated_dep_control['data']['grown_sample'] = GrownSamples(
+#             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, sample_filename)}#data",
+#         ).m_to_dict()
 
 m_package.__init_metainfo__()
