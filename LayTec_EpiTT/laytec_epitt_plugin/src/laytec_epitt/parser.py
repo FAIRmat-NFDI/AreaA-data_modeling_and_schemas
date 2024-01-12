@@ -24,7 +24,7 @@ from datetime import datetime
 
 from nomad.utils import hash
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import MSection, Quantity, Section
+from nomad.metainfo import Quantity, Section
 from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,

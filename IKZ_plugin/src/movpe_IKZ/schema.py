@@ -1,10 +1,5 @@
 import numpy as np
-import re
-from datetime import datetime as dt
-import pandas as pd
-import json
 import plotly.express as px
-import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 from ase.data import (
     chemical_symbols
@@ -18,7 +13,6 @@ from nomad.datamodel.metainfo.basesections import (
     Measurement,
     MeasurementResult,
     Process,
-    Collection,
     PureSubstanceComponent,
     EntityReference,
     CompositeSystemReference,
@@ -29,28 +23,19 @@ from nomad.datamodel.metainfo.basesections import (
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
-from nomad.files import StagingUploadFiles
-from nomad.metainfo.metainfo import (
-    MProxy,
-    QuantityReference
-)
 from nomad.parsing.tabular import (
-    TableData,
-    create_archive
+    TableData
 )
 from structlog.stdlib import (
     BoundLogger,
 )
 from nomad.metainfo import (
-    MSection,
     Package,
     Quantity,
     SubSection,
     MEnum,
-    Reference,
     Datetime,
-    Section,
-    QuantityReference
+    Section
 )
 from nomad.datamodel.data import (
     EntryData,
@@ -58,12 +43,7 @@ from nomad.datamodel.data import (
     Author
 )
 from nomad.search import search, MetadataPagination
-from nomad.datamodel.datamodel import (
-    EntryArchive,
-    EntryMetadata
-)
 
-from nomad.utils import hash
 
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 

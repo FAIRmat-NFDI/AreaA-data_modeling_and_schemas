@@ -15,11 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import yaml
 import numpy as np
-from datetime import datetime
-import re
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 
@@ -41,7 +37,7 @@ from nomad.datamodel.metainfo.basesections import (
 )
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
-from nomad_measurements import InSituMeasurement, ProcessReference
+from nomad_measurements import InSituMeasurement
 
 m_package = Package(name="LayTec EpiTT Schema")
 
