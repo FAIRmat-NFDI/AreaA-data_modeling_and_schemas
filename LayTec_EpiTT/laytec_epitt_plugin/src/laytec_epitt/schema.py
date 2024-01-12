@@ -177,14 +177,20 @@ class LayTecEpiTTMeasurement(InSituMeasurement, PlotSection, EntryData):
         if self.process.name:
             self.process.normalize(archive, logger)
             logger.info("Executed LayTecEpiTTMeasurement.process normalizer.")
-            sample_list = []
-            sample_list.append(
-                CompositeSystemReference(
-                    lab_id=self.process.reference.grown_sample.lab_id,
-                ),
-            )
-            self.samples = sample_list
-            self.samples[0].normalize(archive, logger)
+            if self.process.reference.grown_sample.lab_id:
+                sample_list = []
+                sample_list.append(
+                    CompositeSystemReference(
+                        lab_id=self.process.reference.grown_sample.lab_id,
+                    ),
+                )
+                self.samples = sample_list
+                self.samples[0].normalize(archive, logger)
+            else:
+                logger.error(
+                    "No lab_id found in GrowthMovpe2.grown_sample.lab_id.\
+                     No sample is referenced in LayTecEpiTTMeasurement."
+                )
 
         # plots
         if self.results[0]:
