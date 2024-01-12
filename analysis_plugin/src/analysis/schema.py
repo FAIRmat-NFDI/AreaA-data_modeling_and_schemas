@@ -48,11 +48,12 @@ from nomad.metainfo import (
     Section,
     Quantity,
     SubSection,
-    MEnum,
+    Category,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
+    EntryDataCategory,
 )
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
@@ -73,6 +74,15 @@ if TYPE_CHECKING:
     )
 
 m_package = Package(name = 'analysis_jupyter')
+
+class JupyterAnalysisCategory(EntryDataCategory):
+    '''
+    Category for Jupyter notebook analysis.
+    '''
+    m_def = Category(
+        label = 'Jupyter Notebook Analysis',
+        categories = [EntryDataCategory],
+    )
 
 class JupyterAnalysisResult(AnalysisResult):
     '''
@@ -125,9 +135,9 @@ class JupyterAnalysis(Analysis):
         '''
         super().normalize(archive, logger)
 
-class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
+class ELNJupyterAnalysis(JupyterAnalysis):
     '''
-    Entry section for Jupyter notebook analysis.
+    Base section for ELN Jupyter notebook analysis.
     '''
     m_def = Section(
         # TODO: add category when shifted to a specific plugin
@@ -135,13 +145,7 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         label = 'Jupyter Notebook Analysis',
     )
     analysis_type = Quantity(
-        type = MEnum(
-            [
-                'Generic',
-                'XRD',
-            ]
-        ),
-        default = 'Generic',
+        type = str,
         description = (
             'Based on the analysis type, code cells will be added to the Jupyter '
             'notebook. Code cells from **Generic** are always included.'
@@ -152,12 +156,11 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
                                     with entry data.                                |
             | **XRD**             | Adds XRD related analysis functions.            |
             '''
-        )
-        ,
-        a_eln = ELNAnnotation(
-            label = 'Analysis Type',
-            component = ELNComponentEnum.EnumEditQuantity,
         ),
+        # TODO uncomment when issue related to having a 'label' annotation is resolved
+        # a_eln = ELNAnnotation(
+        #     label = 'Analysis Type',
+        # ),
     )
     reset_notebook = Quantity(
         type = bool,
@@ -371,5 +374,31 @@ class ELNJupyterAnalysis(JupyterAnalysis, EntryData):
         if self.reset_notebook:
             self.write_jupyter_notebook(archive, logger)
             self.reset_notebook = False
+
+class ELNGenericJupyterAnalysis(ELNJupyterAnalysis, EntryData):
+    '''
+    Entry section for Jupyter notebook analysis with `Generic` analysis type.
+    '''
+    m_def = Section(
+        categories = [JupyterAnalysisCategory],
+        label = 'Generic Jupyter Notebook Analysis',
+    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        self.analysis_type = 'Generic'
+        super().normalize(archive, logger)
+
+class ELNXRDJupyterAnalysis(ELNJupyterAnalysis, EntryData):
+    '''
+    Entry section for Jupyter notebook analysis with `XRD` analysis type.
+    '''
+    m_def = Section(
+        categories = [JupyterAnalysisCategory],
+        label = 'XRD Jupyter Notebook Analysis',
+    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        self.analysis_type = 'XRD'
+        super().normalize(archive, logger)
 
 m_package.__init_metainfo__()
