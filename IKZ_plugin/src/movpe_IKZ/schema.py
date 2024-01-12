@@ -1098,7 +1098,11 @@ class GrowthMovpe2IKZ(Process, EntryData, TableData):
         section_def=GrowthStepMovpe2IKZ,
         repeats=True,
     )
+    def normalize(self, archive, logger):
 
+        super(GrowthMovpe2IKZ, self).normalize(archive, logger)
+        self.samples.normalize(archive, logger)
+        self.parent_sample.normalize(archive, logger)
 
 class GrowthsMovpe2IKZ(SectionReference):
     '''
