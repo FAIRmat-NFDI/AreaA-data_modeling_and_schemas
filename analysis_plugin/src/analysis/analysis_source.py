@@ -16,19 +16,22 @@
 from analysis.utils import category
 
 @category('Generic')
-def get_entry_archive_data(token_header: dict, base_url: str, entry_id: str) -> dict:
+def get_input_data(token_header: dict, base_url: str, analysis_entry_id: str) -> list:
     '''
-    Gets the archive data of an entry.
+    Gets the archive data of all the referenced input entries.
 
     Args:
         token_header (dict): Authentication token.
         base_url (str): Base URL of the NOMAD API.
-        entry_id (str): Entry ID of the entry.
+        analysis_entry_id (str): Entry ID of the analysis ELN.
 
     Returns:
-        dict: Data of the entry.
+        list: List of data from all the referenced entries.
     '''
     import requests
+
+    def entry_id_from_reference(reference: str):
+        return reference.split('#')[0].split('/')[-1]
 
     query = {
         "required" : {
@@ -36,16 +39,33 @@ def get_entry_archive_data(token_header: dict, base_url: str, entry_id: str) -> 
         }
     }
     response = requests.post(
-        f"{base_url}/entries/{entry_id}/archive/query",
+        f"{base_url}/entries/{analysis_entry_id}/archive/query",
         headers = {
             **token_header,
             'Accept': 'application/json'
         },
         json = query
     ).json()
-    if 'data' in response.keys():
-        return response['data']['archive']['data']
-    return response
+    referred_entries = response['data']['archive']['data']['inputs']
+
+    entry_ids = []
+    for entry in referred_entries:
+        entry_ids.append(entry_id_from_reference(entry['reference']))
+
+    entry_archive_data_list = []
+    for entry_id in entry_ids:
+        response = requests.post(
+            f"{base_url}/entries/{entry_id}/archive/query",
+            headers = {
+                **token_header,
+                'Accept': 'application/json'
+            },
+            json = query
+        ).json()
+        if 'data' in response.keys():
+            entry_archive_data_list.append(response['data']['archive']['data'])
+
+    return entry_archive_data_list
 
 @category('XRD')
 def xrd_plot_intensity_two_theta(archive_data: dict, peak_indices = None) -> None:
