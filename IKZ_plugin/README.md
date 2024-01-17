@@ -1,10 +1,32 @@
 # IKZ Plugin
 
-This directory contains plugins specific to the IKZ institute.
+This directory contains plugins designed for the IKZ institute.
+
+See also:
+
+[movpe_IKZ README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin/src/movpe_IKZ)
 
 ## Structure
 
-The directory structure is as follows:
+The directory tree:
+
+```bash
+IKZ_plugin/
+├── nomad.yaml
+├── src
+│   ├── basesections_IKZ
+│   ├── cz_IKZ
+│   ├── ds_IKZ
+│   ├── mbe_IKZ
+│   └── movpe_IKZ
+└── tests
+    └── data
+        ├── basesections_IKZ
+        ├── cz_IKZ
+        ├── ds_IKZ
+        ├── mbe_IKZ
+        └── movpe_IKZ
+```
 
 - `src/`: This directory contains the source code for the plugins.
 - `tests/`: This directory contains tests for the plugins.
