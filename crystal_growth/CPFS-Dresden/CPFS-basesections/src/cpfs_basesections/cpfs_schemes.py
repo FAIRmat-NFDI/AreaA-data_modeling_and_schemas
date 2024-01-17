@@ -97,7 +97,7 @@ class CPFSFurnace(Furnace,EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         '''
-        super(Furnace, self).normalize(archive, logger)
+        #super(CPFSFurnace, self).normalize(archive, logger)
         if self.name:
             furnace_list=[
                 ["Furnace1","FurnaceModel1","Steel","Box","Induction"],

@@ -429,6 +429,16 @@ class ChemicalVapourTransportStep(CrystalGrowthStep):
     transport_agent = SubSection(
         section_def=Ensemble,
     )
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `ChemicalVapourTransportStep` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(ChemicalVapourTransportStep, self).normalize(archive, logger)
 
 
 class ChemicalVapourTransport(CrystalGrowth):

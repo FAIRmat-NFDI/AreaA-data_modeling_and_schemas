@@ -1438,8 +1438,10 @@ class CPFSPPMSMeasurement(Measurement,PlotSection,EntryData):
                         data.measurement_type=measurement_type
                         if measurement_type=="field":
                             data.name="Field sweep at "+str(temp.magnitude)+" K."
+                            filename=self.data_file.strip(".dat")+"_field_sweep_"+str(temp.magnitude)+"_K.dat"
                         if measurement_type=="temperature":
                             data.name="Temperature sweep at "+str(field.magnitude)+" Oe."
+                            filename=self.data_file.strip(".dat")+"_temperature_sweep_"+str(field.magnitude)+"_Oe.dat"
                         data.title=data.name
                         for key in other_data:
                             clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
@@ -1482,6 +1484,11 @@ class CPFSPPMSMeasurement(Measurement,PlotSection,EntryData):
                                 if hasattr(map, 'map'):
                                     setattr(map, 'map', block[key])
                                 data.m_add_sub_section(CPFSACTPPMSData.maps, map)
+
+                        #create raw output files
+                        with archive.m_context.raw_file(filename, 'w') as outfile:
+                            outfile.write(header_section+"\n")
+                            block.to_csv(outfile,index=False,mode="a")
 
                         all_data.append(data)
 

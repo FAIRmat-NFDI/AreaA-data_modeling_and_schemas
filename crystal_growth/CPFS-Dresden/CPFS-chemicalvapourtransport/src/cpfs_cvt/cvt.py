@@ -62,7 +62,7 @@ class CPFSChemicalVapourTransportStep(ChemicalVapourTransportStep,EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         '''
-        super(ChemicalVapourTransportStep, self).normalize(archive, logger)
+        super(CPFSChemicalVapourTransportStep, self).normalize(archive, logger)
 
 
 class CPFSChemicalVapourTransport(ChemicalVapourTransport, EntryData):

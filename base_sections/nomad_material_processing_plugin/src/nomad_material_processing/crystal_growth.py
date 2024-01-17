@@ -38,7 +38,17 @@ class CrystalGrowthStep(ActivityStep):
     '''
     Details will be added later.
     '''
-    pass
+
+    def normalize(self, archive, logger: BoundLogger) -> None:
+        '''
+        The normalizer for the `CrystalGrowthStep` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        '''
+        super(CrystalGrowthStep, self).normalize(archive, logger)
 
 
 class CrystalGrowth(SampleDeposition):
