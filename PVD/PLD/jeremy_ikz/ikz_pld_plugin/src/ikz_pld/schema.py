@@ -53,6 +53,8 @@ from nomad.metainfo import (
     Section,
     SubSection,
     MProxy,
+    Reference,
+    SectionProxy,
 )
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -126,6 +128,20 @@ class IKZPLDTarget(PLDTarget, EntryData):
         ''',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.StringEditQuantity,
+        ),
+    )
+
+
+class IKZPLDTargetReference(CompositeSystemReference):
+    '''
+    A section used for referencing a CompositeSystem.
+    '''
+    reference = Quantity(
+        type=IKZPLDTarget,
+        description='A reference to an IKZ PLD Target.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Target Reference',
         ),
     )
 
@@ -264,6 +280,16 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
         categories=[IKZPLDCategory],
         label='Batch of Substrates',
     )
+    base_on = Quantity(
+        type=Reference(SectionProxy('IKZPLDSubstrateBatch')),
+        description='''
+        Optional reference to another substrate batch that this batch is based on.
+        ''',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='Base batch on',
+        ),
+    )
     material=Quantity(
         type=str,
         a_eln=ELNAnnotation(
@@ -304,7 +330,16 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
         '''
         if self.name is None and self.supplier_batch:
             self.name = self.supplier_batch
-        if (
+        if self.base_on is not None:
+            self.material = self.base_on.material
+            self.orientation = self.base_on.orientation
+            self.miscut_orientation = self.base_on.miscut_orientation
+            self.supplier_batch = self.base_on.supplier_batch
+            self.sub_batches = self.base_on.sub_batches
+            for sub_batch in self.sub_batches:
+                sub_batch.substrates = []
+            self.base_on = None
+        elif (
             len(self.sub_batches) > 0
             and any(len(sub.substrates) == 0 for sub in self.sub_batches)
         ):
@@ -615,12 +650,14 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                 r'%d%m%Y_%H%M',
             ).astimezone()
             self.name = match['name']
-            self.process_identifiers = ReadableIdentifiers(
-                short_name=self.name,
-                datetime=self.datetime,
-            )
-            self.process_identifiers.normalize(archive, logger)
-            self.lab_id = self.process_identifiers.lab_id
+            if self.process_identifiers is None:
+                self.process_identifiers = ReadableIdentifiers(
+                    institute='IKZ',
+                    short_name=self.name,
+                    datetime=self.datetime,
+                )
+                self.process_identifiers.normalize(archive, logger)
+                self.lab_id = self.process_identifiers.lab_id
 
             substrate_ref = None
             sample_id = None
