@@ -2,8 +2,8 @@ plugin_type: parser
 name: Directional Solidification IKZ
 description: |
   This is a schema and parser for DS IKZ
-mainfile_name_re: ^.+\.csv$
-mainfile_mime_re: "text/plain"
+mainfile_name_re: ^.+\.ds.manualprotocol.xlsx$
+mainfile_mime_re: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 # mainfile_contents_dict:
 #   {
 #     "Overview": { "__has_all_keys": ["Sample", "Substrate T", "VI III Ratio"] },
