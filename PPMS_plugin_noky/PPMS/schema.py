@@ -380,8 +380,8 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                     logger.error('Found unknown keyword '+line[:4])
             self.steps=all_steps
 
-        if archive.data.data_file and archive.data.sequence_file:
-            logger.info('Parsing PPMS measurement file using the sequence file.')
+        if archive.data.data_file:
+            logger.info('Parsing PPMS measurement file.')
             if not self.temperature_tolerance:
                 self.temperature_tolerance=0.01
             if not self.field_tolerance:
@@ -445,9 +445,14 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
 
-            if self.software.startswith("ACTRANSPORT"):
+            if archive.data.sequence_file:
+                logger.info('Parsing PPMS measurement file using the sequence file.')
                 other_data = [key for key in data_df.keys() if 'ch1' not in key and 'ch2' not in key and 'map' not in key.lower()]
                 all_data=[]
+                indexlist=[]
+                typelist=[]
+                templist=[]
+                fieldlist=[]
                 #identify separate measurements by following the steps structure
                 temp=float(data_df["Temperature (K)"].iloc[0])*self.temperature_tolerance.units
                 field=float(data_df["Magnetic Field (Oe)"].iloc[0])*self.field_tolerance.units
@@ -562,82 +567,93 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         measurement_ends=True
                     if measurement_ends:
                         measurement_active=False
-                        block=data_df.iloc[startval:index]
+                        indexlist.append([startval,index])
+                        typelist.append(measurement_type)
+                        templist.append(temp)
+                        fieldlist.append(field)
                         startval=index
-                        data = ACTPPMSData()
-                        data.measurement_type=measurement_type
-                        if measurement_type=="field":
-                            data.name="Field sweep at "+str(temp.magnitude)+" K."
-                            filename=self.data_file.strip(".dat")+"_field_sweep_"+str(temp.magnitude)+"_K.dat"
-                        if measurement_type=="temperature":
-                            data.name="Temperature sweep at "+str(field.magnitude)+" Oe."
-                            filename=self.data_file.strip(".dat")+"_temperature_sweep_"+str(field.magnitude)+"_Oe.dat"
-                        data.title=data.name
-                        for key in other_data:
-                            clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
-                            if hasattr(data, clean_key):
-                                setattr(data,
+
+            else:
+                logger.info("Parsing without sequence file not yet implemented.")
+
+            if self.software.startswith("ACTRANSPORT"):
+                logger.info("Parsing AC Transport measurement.")
+                for i in range(len(indexlist)):
+                    block=data_df.iloc[indexlist[i][0]:indexlist[i][1]]
+                    data = ACTPPMSData()
+                    data.measurement_type=typelist[i]
+                    if measurement_type=="field":
+                        data.name="Field sweep at "+str(templist[i].magnitude)+" K."
+                        filename=self.data_file.strip(".dat")+"_field_sweep_"+str(templist[i].magnitude)+"_K.dat"
+                    if measurement_type=="temperature":
+                        data.name="Temperature sweep at "+str(fieldlist[i].magnitude)+" Oe."
+                        filename=self.data_file.strip(".dat")+"_temperature_sweep_"+str(fieldlist[i].magnitude)+"_Oe.dat"
+                    data.title=data.name
+                    for key in other_data:
+                        clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
+                        if hasattr(data, clean_key):
+                            setattr(data,
+                                    clean_key,
+                                    block[key] # * ureg(data_template[f'{key}/@units'])
+                                    )
+                    channel_1_data = [key for key in block.keys() if 'ch1' in key.lower()]
+                    if channel_1_data:
+                        channel_1 = ACTChannelData()
+                        setattr(channel_1, 'name', 'Channel 1')
+                        for key in channel_1_data:
+                            clean_key = clean_channel_keys(key)
+                            if hasattr(channel_1, clean_key):
+                                setattr(channel_1,
                                         clean_key,
                                         block[key] # * ureg(data_template[f'{key}/@units'])
                                         )
-                        channel_1_data = [key for key in block.keys() if 'ch1' in key.lower()]
-                        if channel_1_data:
-                            channel_1 = ACTChannelData()
-                            setattr(channel_1, 'name', 'Channel 1')
-                            for key in channel_1_data:
-                                clean_key = clean_channel_keys(key)
-                                if hasattr(channel_1, clean_key):
-                                    setattr(channel_1,
-                                            clean_key,
-                                            block[key] # * ureg(data_template[f'{key}/@units'])
-                                            )
-                            data.m_add_sub_section(ACTPPMSData.channels, channel_1)
-                        channel_2_data = [key for key in block.keys() if 'ch2' in key.lower()]
-                        if channel_2_data:
-                            channel_2 = ACTChannelData()
-                            setattr(channel_2, 'name', 'Channel 2')
-                            for key in channel_2_data:
-                                clean_key = clean_channel_keys(key)
-                                if hasattr(channel_2, clean_key):
-                                    setattr(channel_2,
-                                            clean_key,
-                                            block[key] # * ureg(data_template[f'{key}/@units'])
-                                            )
-                            data.m_add_sub_section(ACTPPMSData.channels, channel_2)
+                        data.m_add_sub_section(ACTPPMSData.channels, channel_1)
+                    channel_2_data = [key for key in block.keys() if 'ch2' in key.lower()]
+                    if channel_2_data:
+                        channel_2 = ACTChannelData()
+                        setattr(channel_2, 'name', 'Channel 2')
+                        for key in channel_2_data:
+                            clean_key = clean_channel_keys(key)
+                            if hasattr(channel_2, clean_key):
+                                setattr(channel_2,
+                                        clean_key,
+                                        block[key] # * ureg(data_template[f'{key}/@units'])
+                                        )
+                        data.m_add_sub_section(ACTPPMSData.channels, channel_2)
 
-                        map_data = [key for key in block.keys() if 'Map' in key]
-                        if map_data:
-                            for key in map_data:
-                                map = ACTData()
-                                if hasattr(map, 'name'):
-                                    setattr(map, 'name', key)
-                                if hasattr(map, 'map'):
-                                    setattr(map, 'map', block[key])
-                                data.m_add_sub_section(ACTPPMSData.maps, map)
+                    map_data = [key for key in block.keys() if 'Map' in key]
+                    if map_data:
+                        for key in map_data:
+                            map = ACTData()
+                            if hasattr(map, 'name'):
+                                setattr(map, 'name', key)
+                            if hasattr(map, 'map'):
+                                setattr(map, 'map', block[key])
+                            data.m_add_sub_section(ACTPPMSData.maps, map)
 
-                        #create raw output files
-                        with archive.m_context.raw_file(filename, 'w') as outfile:
-                            outfile.write(header_section+"\n")
-                            block.to_csv(outfile,index=False,mode="a")
+                    #create raw output files
+                    with archive.m_context.raw_file(filename, 'w') as outfile:
+                        outfile.write(header_section+"\n")
+                        block.to_csv(outfile,index=False,mode="a")
 
-                        all_data.append(data)
+                    all_data.append(data)
 
-                self.data=all_data
+            self.data=all_data
 
-                #Now create the according plots
-                import plotly.express as px
-                from plotly.subplots import make_subplots
-                for data in self.data:
-                    if data.measurement_type=="field":
-                        resistivity_ch1=px.scatter(x=data.magnetic_field,y=data.channels[0].resistivity)
-                        resistivity_ch2=px.scatter(x=data.magnetic_field,y=data.channels[1].resistivity)
-                    if data.measurement_type=="temperature":
-                        resistivity_ch1=px.scatter(x=data.temperature,y=data.channels[0].resistivity)
-                        resistivity_ch2=px.scatter(x=data.temperature,y=data.channels[1].resistivity)
-                    figure1 = make_subplots(rows=2, cols=1, shared_xaxes=True)
-                    figure1.add_trace(resistivity_ch1.data[0], row=1, col=1)
-                    figure1.add_trace(resistivity_ch2.data[0], row=2, col=1)
-                    figure1.update_layout(height=400, width=716, title_text=data.name)
-                    self.figures.append(PlotlyFigure(label=data.name, figure=figure1.to_plotly_json()))
+            #Now create the according plots
+            import plotly.express as px
+            from plotly.subplots import make_subplots
+            for data in self.data:
+                if data.measurement_type=="field":
+                    resistivity_ch1=px.scatter(x=data.magnetic_field,y=data.channels[0].resistivity)
+                    resistivity_ch2=px.scatter(x=data.magnetic_field,y=data.channels[1].resistivity)
+                if data.measurement_type=="temperature":
+                    resistivity_ch1=px.scatter(x=data.temperature,y=data.channels[0].resistivity)
+                    resistivity_ch2=px.scatter(x=data.temperature,y=data.channels[1].resistivity)
+                figure1 = make_subplots(rows=2, cols=1, shared_xaxes=True)
+                figure1.add_trace(resistivity_ch1.data[0], row=1, col=1)
+                figure1.add_trace(resistivity_ch2.data[0], row=2, col=1)
+                figure1.update_layout(height=400, width=716, title_text=data.name)
+                self.figures.append(PlotlyFigure(label=data.name, figure=figure1.to_plotly_json()))
 
 m_package.__init_metainfo__()
