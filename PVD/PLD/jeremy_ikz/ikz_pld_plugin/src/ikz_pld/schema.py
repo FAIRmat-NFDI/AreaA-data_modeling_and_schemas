@@ -268,7 +268,7 @@ class IKZPLDSubstrateSubBatch(ArchiveSection):
             normalized.
             logger (BoundLogger): A structlog logger.
         '''
-        if self.name is None and self.minimum_miscut_angle and self.maximum_miscut_angle:
+        if self.minimum_miscut_angle and self.maximum_miscut_angle:
             mean_angle = (self.maximum_miscut_angle.magnitude + self.minimum_miscut_angle.magnitude) / 2
             self.name = f'{mean_angle:.3f}°'
 
@@ -688,6 +688,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     names=['time_h','process'],
                     header=None,
                 )
+            df_recipe = df_recipe[~df_recipe['process'].str.contains('Abort Button pressed')]
             df_recipe['time_s'] = df_recipe['time_h'].apply(time_convert)
             df_recipe['duration_s'] = df_recipe['time_s'].diff(-1) * -1
             df_steps = df_recipe.iloc[1:-1:3,:].copy()
