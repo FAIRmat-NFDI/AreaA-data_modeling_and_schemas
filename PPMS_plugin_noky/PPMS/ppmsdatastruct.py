@@ -159,7 +159,7 @@ class ETOPPMSData(PPMSData):
         unit='kelvin',
         shape=['*'],
         description='FILL')
-    field = Quantity(
+    magnetic_field = Quantity(
         type=np.dtype(np.float64),
         unit='gauss',
         shape=['*'],

@@ -90,6 +90,7 @@ def clean_channel_keys(input_key: str) -> str:
         .replace('Quad.Error', 'quad error')
         .replace('Harm.', 'harmonic')
         .replace('-', ' ')
+        .replace('Field (Oe)','Magnetic Field (Oe)')
         .lower()
         .replace('ch1','')
         .replace('ch2','')
@@ -439,16 +440,17 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         setattr(self, 'software', line.replace('BYAPP,', '').strip())
 
             data_section = header_match.string[header_match.end():]
+            data_section = data_section.replace(',Field',',Magnetic Field')
             data_buffer = StringIO(data_section)
             data_df = pd.read_csv(data_buffer, header=None, skipinitialspace=True, sep=',',engine='python')
             # Rename columns using the first row of data
             data_df.columns = data_df.iloc[0]
             data_df = data_df.iloc[1:].reset_index(drop=True)
+            other_data = [key for key in data_df.keys() if 'ch1' not in key and 'ch2' not in key and 'map' not in key.lower()]
+            all_data=[]
 
             if archive.data.sequence_file:
                 logger.info('Parsing PPMS measurement file using the sequence file.')
-                other_data = [key for key in data_df.keys() if 'ch1' not in key and 'ch2' not in key and 'map' not in key.lower()]
-                all_data=[]
                 indexlist=[]
                 typelist=[]
                 templist=[]
@@ -574,20 +576,55 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         startval=index
 
             else:
-                logger.info("Parsing without sequence file not yet implemented.")
+                logger.info('Parsing PPMS measurement file without using the sequence file.')
+                indexlist=[]
+                typelist=[]
+                templist=[]
+                fieldlist=[]
+                startval=0
+                measurement_type="undefined"
+                block_found=False
+                for i in range(len(data_df)):
+                    if i==len(data_df)-1:
+                        typelist.append(measurement_type)
+                        block_found=True
+                    elif measurement_type=="undefined":
+                        if abs(float(data_df["Temperature (K)"].iloc[i])-float(data_df["Temperature (K)"].iloc[i+4]))*self.temperature_tolerance.units<self.temperature_tolerance:
+                            measurement_type="field"
+                        if abs(float(data_df["Magnetic Field (Oe)"].iloc[i])-float(data_df["Magnetic Field (Oe)"].iloc[i+4]))*self.field_tolerance.units<self.field_tolerance:
+                            if measurement_type=="undefined":
+                                measurement_type="temperature"
+                            else:
+                                logger.error("Can't identify measurement type in line "+str(i)*".")
+                    elif measurement_type=="field":
+                        if abs(float(data_df["Temperature (K)"].iloc[i-1])-float(data_df["Temperature (K)"].iloc[i]))*self.temperature_tolerance.units>self.temperature_tolerance:
+                            typelist.append("field")
+                            block_found=True
+                    elif measurement_type=="temperature":
+                        if abs(float(data_df["Magnetic Field (Oe)"].iloc[i-1])-float(data_df["Magnetic Field (Oe)"].iloc[i]))*self.field_tolerance.units>self.field_tolerance:
+                            typelist.append("temperature")
+                            block_found=True
+                    if block_found==True:
+                        block_found=False
+                        indexlist.append([startval,i])
+                        startval=i
+                        measurement_type="undefined"
+                        templist.append(np.round(float(data_df["Temperature (K)"].iloc[i-1]),2))
+                        fieldlist.append(np.round(float(data_df["Magnetic Field (Oe)"].iloc[i-1]),2))
 
             if self.software.startswith("ACTRANSPORT"):
                 logger.info("Parsing AC Transport measurement.")
+                logger.info(typelist)
                 for i in range(len(indexlist)):
                     block=data_df.iloc[indexlist[i][0]:indexlist[i][1]]
                     data = ACTPPMSData()
                     data.measurement_type=typelist[i]
-                    if measurement_type=="field":
-                        data.name="Field sweep at "+str(templist[i].magnitude)+" K."
-                        filename=self.data_file.strip(".dat")+"_field_sweep_"+str(templist[i].magnitude)+"_K.dat"
-                    if measurement_type=="temperature":
-                        data.name="Temperature sweep at "+str(fieldlist[i].magnitude)+" Oe."
-                        filename=self.data_file.strip(".dat")+"_temperature_sweep_"+str(fieldlist[i].magnitude)+"_Oe.dat"
+                    if  data.measurement_type=="field":
+                        data.name="Field sweep at "+str(templist[i])+" K."
+                        filename=self.data_file.strip(".dat")+"_field_sweep_"+str(templist[i])+"_K.dat"
+                    if  data.measurement_type=="temperature":
+                        data.name="Temperature sweep at "+str(fieldlist[i])+" Oe."
+                        filename=self.data_file.strip(".dat")+"_temperature_sweep_"+str(fieldlist[i])+"_Oe.dat"
                     data.title=data.name
                     for key in other_data:
                         clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
