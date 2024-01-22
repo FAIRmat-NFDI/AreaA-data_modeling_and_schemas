@@ -577,6 +577,7 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
 
             else:
                 logger.info('Parsing PPMS measurement file without using the sequence file.')
+                all_steps=[]
                 indexlist=[]
                 typelist=[]
                 templist=[]
@@ -608,9 +609,14 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         block_found=False
                         indexlist.append([startval,i])
                         startval=i
-                        measurement_type="undefined"
                         templist.append(np.round(float(data_df["Temperature (K)"].iloc[i-1]),2))
                         fieldlist.append(np.round(float(data_df["Magnetic Field (Oe)"].iloc[i-1]),2))
+                        if measurement_type=="temperature":
+                            all_steps.append(PPMSMeasurementStep(name="Temperature sweep at "+str(fieldlist[-1])+" Oe."))
+                        if measurement_type=="field":
+                            all_steps.append(PPMSMeasurementStep(name="Field sweep at "+str(templist[-1])+" K."))
+                        measurement_type="undefined"
+                self.steps=all_steps
 
             if self.software.startswith("ACTRANSPORT"):
                 logger.info("Parsing AC Transport measurement.")
@@ -676,6 +682,8 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                     all_data.append(data)
 
             self.data=all_data
+
+
 
             #Now create the according plots
             import plotly.express as px
