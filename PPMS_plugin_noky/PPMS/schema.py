@@ -74,6 +74,9 @@ from ppms.ppmsdatastruct import (
     ACTPPMSData,
     ACTChannelData,
     ACTData,
+    ETOPPMSData,
+    ETOChannelData,
+    ETOData,
 )
 
 m_package = Package(name='ppms')
@@ -384,7 +387,7 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
         if archive.data.data_file:
             logger.info('Parsing PPMS measurement file.')
             if not self.temperature_tolerance:
-                self.temperature_tolerance=0.01
+                self.temperature_tolerance=0.05
             if not self.field_tolerance:
                 self.field_tolerance=5.
 
@@ -396,22 +399,20 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
             header_lines = header_section.split('\n')
 
             sample1_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE1_' in line]
-            if sample1_headers:
-                sample_1 = Sample()
-                for line in sample1_headers:
-                    parts = re.split(r',\s*', line)
-                    key = parts[-1].lower().replace('sample1_','')
-                    if hasattr(sample_1, key):
-                        setattr(sample_1, key, ", ".join(parts[1:-1]))
+            sample_1 = Sample()
+            for line in sample1_headers:
+                parts = re.split(r',\s*', line)
+                key = parts[-1].lower().replace('sample1_','')
+                if hasattr(sample_1, key):
+                    setattr(sample_1, key, ", ".join(parts[1:-1]))
 
             sample2_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE2_' in line]
-            if sample2_headers:
-                sample_2 = Sample()
-                for line in sample2_headers:
-                    parts = re.split(r',\s*', line)
-                    key = parts[-1].lower().replace('sample2_','')
-                    if hasattr(sample_2, key):
-                        setattr(sample_2, key, ", ".join(parts[1:-1]))
+            sample_2 = Sample()
+            for line in sample2_headers:
+                parts = re.split(r',\s*', line)
+                key = parts[-1].lower().replace('sample2_','')
+                if hasattr(sample_2, key):
+                    setattr(sample_2, key, ", ".join(parts[1:-1]))
 
             while self.samples:
                 self.m_remove_sub_section(PPMSMeasurement.samples, 0)
@@ -438,6 +439,12 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                 if line.startswith("BYAPP"):
                     if hasattr(self, 'software'):
                         setattr(self, 'software', line.replace('BYAPP,', '').strip())
+                if line.startswith("TEMPERATURETOLERANCE"):
+                    if hasattr(self, 'temperature_tolerance'):
+                        setattr(self, 'temperature_tolerance', float(line.replace('TEMPERATURETOLERANCE,', '').strip()))
+                if line.startswith("FIELDTOLERANCE"):
+                    if hasattr(self, 'field_tolerance'):
+                        setattr(self, 'field_tolerance', float(line.replace('FIELDTOLERANCE,', '').strip()))
 
             data_section = header_match.string[header_match.end():]
             data_section = data_section.replace(',Field',',Magnetic Field')
@@ -590,13 +597,22 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         typelist.append(measurement_type)
                         block_found=True
                     elif measurement_type=="undefined":
-                        if abs(float(data_df["Temperature (K)"].iloc[i])-float(data_df["Temperature (K)"].iloc[i+4]))*self.temperature_tolerance.units<self.temperature_tolerance:
-                            measurement_type="field"
-                        if abs(float(data_df["Magnetic Field (Oe)"].iloc[i])-float(data_df["Magnetic Field (Oe)"].iloc[i+4]))*self.field_tolerance.units<self.field_tolerance:
-                            if measurement_type=="undefined":
-                                measurement_type="temperature"
-                            else:
-                                logger.error("Can't identify measurement type in line "+str(i)*".")
+                        for k in [2,5,10,20,40]:
+                            if i+k-1>len(data_df):
+                                continue
+                            if abs(float(data_df["Temperature (K)"].iloc[i])-float(data_df["Temperature (K)"].iloc[i+k]))*self.temperature_tolerance.units<self.temperature_tolerance:
+                                measurement_type="field"
+
+                            if abs(float(data_df["Magnetic Field (Oe)"].iloc[i])-float(data_df["Magnetic Field (Oe)"].iloc[i+k]))*self.field_tolerance.units<self.field_tolerance:
+                                if measurement_type=="undefined":
+                                    measurement_type="temperature"
+                                else:
+                                    #logger.error("Can't identify measurement type in line "+str(i)+" with forward step "+str(k)+".")
+                                    measurement_type="undefined"
+                            if measurement_type!="undefined":
+                                break
+                        else:
+                            logger.warning("Can't identify measurement type in line "+str(i)+".")
                     elif measurement_type=="field":
                         if abs(float(data_df["Temperature (K)"].iloc[i-1])-float(data_df["Temperature (K)"].iloc[i]))*self.temperature_tolerance.units>self.temperature_tolerance:
                             typelist.append("field")
@@ -610,7 +626,7 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         indexlist.append([startval,i])
                         startval=i
                         templist.append(np.round(float(data_df["Temperature (K)"].iloc[i-1]),2))
-                        fieldlist.append(np.round(float(data_df["Magnetic Field (Oe)"].iloc[i-1]),2))
+                        fieldlist.append(np.round(float(data_df["Magnetic Field (Oe)"].iloc[i-1]),-1))
                         if measurement_type=="temperature":
                             all_steps.append(PPMSMeasurementStep(name="Temperature sweep at "+str(fieldlist[-1])+" Oe."))
                         if measurement_type=="field":
@@ -681,6 +697,69 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
 
                     all_data.append(data)
 
+            if self.software.startswith("Electrical Transport Option"):
+                logger.info("Parsing ETO measurement.")
+                logger.info(typelist)
+                for i in range(len(indexlist)):
+                    block=data_df.iloc[indexlist[i][0]:indexlist[i][1]]
+                    data = ETOPPMSData()
+                    data.measurement_type=typelist[i]
+                    if  data.measurement_type=="field":
+                        data.name="Field sweep at "+str(templist[i])+" K."
+                        filename=self.data_file.strip(".dat")+"_field_sweep_"+str(templist[i])+"_K.dat"
+                    if  data.measurement_type=="temperature":
+                        data.name="Temperature sweep at "+str(fieldlist[i])+" Oe."
+                        filename=self.data_file.strip(".dat")+"_temperature_sweep_"+str(fieldlist[i])+"_Oe.dat"
+                    data.title=data.name
+                    for key in other_data:
+                        clean_key = key.split('(')[0].strip().replace(' ','_').lower()#.replace('time stamp','timestamp')
+                        if hasattr(data, clean_key):
+                            setattr(data,
+                                    clean_key,
+                                    block[key] # * ureg(data_template[f'{key}/@units'])
+                                    )
+                    channel_1_data = [key for key in block.keys() if 'ch1' in key.lower()]
+                    if channel_1_data:
+                        channel_1 = ETOChannelData()
+                        setattr(channel_1, 'name', 'Channel 1')
+                        for key in channel_1_data:
+                            clean_key = clean_channel_keys(key)
+                            if hasattr(channel_1, clean_key):
+                                setattr(channel_1,
+                                        clean_key,
+                                        block[key] # * ureg(data_template[f'{key}/@units'])
+                                        )
+                        data.m_add_sub_section(ACTPPMSData.channels, channel_1)
+                    channel_2_data = [key for key in block.keys() if 'ch2' in key.lower()]
+                    if channel_2_data:
+                        channel_2 = ETOChannelData()
+                        setattr(channel_2, 'name', 'Channel 2')
+                        for key in channel_2_data:
+                            clean_key = clean_channel_keys(key)
+                            if hasattr(channel_2, clean_key):
+                                setattr(channel_2,
+                                        clean_key,
+                                        block[key] # * ureg(data_template[f'{key}/@units'])
+                                        )
+                        data.m_add_sub_section(ETOPPMSData.channels, channel_2)
+
+                    eto_channel_data = [key for key in data_df.keys() if 'ETO Channel' in key]
+                    if eto_channel_data:
+                        for key in eto_channel_data:
+                            eto_channel = ETOData()
+                            if hasattr(eto_channel, 'name'):
+                                setattr(eto_channel, 'name', key)
+                            if hasattr(eto_channel, 'ETO_channel'):
+                                setattr(eto_channel, 'ETO_channel', data_df[key])
+                            data.m_add_sub_section(ETOPPMSData.eto_channels, eto_channel)
+
+                    #create raw output files
+                    with archive.m_context.raw_file(filename, 'w') as outfile:
+                        outfile.write(header_section+"\n")
+                        block.to_csv(outfile,index=False,mode="a")
+
+                    all_data.append(data)
+
             self.data=all_data
 
 
@@ -689,12 +768,20 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
             import plotly.express as px
             from plotly.subplots import make_subplots
             for data in self.data:
-                if data.measurement_type=="field":
-                    resistivity_ch1=px.scatter(x=data.magnetic_field,y=data.channels[0].resistivity)
-                    resistivity_ch2=px.scatter(x=data.magnetic_field,y=data.channels[1].resistivity)
-                if data.measurement_type=="temperature":
-                    resistivity_ch1=px.scatter(x=data.temperature,y=data.channels[0].resistivity)
-                    resistivity_ch2=px.scatter(x=data.temperature,y=data.channels[1].resistivity)
+                if self.software.startswith("ACTRANSPORT"):
+                    if data.measurement_type=="field":
+                        resistivity_ch1=px.scatter(x=data.magnetic_field,y=data.channels[0].resistivity)
+                        resistivity_ch2=px.scatter(x=data.magnetic_field,y=data.channels[1].resistivity)
+                    if data.measurement_type=="temperature":
+                        resistivity_ch1=px.scatter(x=data.temperature,y=data.channels[0].resistivity)
+                        resistivity_ch2=px.scatter(x=data.temperature,y=data.channels[1].resistivity)
+                if self.software.startswith("Electrical Transport Option"):
+                    if data.measurement_type=="field":
+                        resistivity_ch1=px.scatter(x=data.magnetic_field,y=data.channels[0].resistance)
+                        resistivity_ch2=px.scatter(x=data.magnetic_field,y=data.channels[1].resistance)
+                    if data.measurement_type=="temperature":
+                        resistivity_ch1=px.scatter(x=data.temperature,y=data.channels[0].resistance)
+                        resistivity_ch2=px.scatter(x=data.temperature,y=data.channels[1].resistance)
                 figure1 = make_subplots(rows=2, cols=1, shared_xaxes=True)
                 figure1.add_trace(resistivity_ch1.data[0], row=1, col=1)
                 figure1.add_trace(resistivity_ch2.data[0], row=2, col=1)
