@@ -39,7 +39,7 @@ from movpe_IKZ import (
     PrecursorsPreparationMovpe1IKZ,
     PrecursorsPreparationsMovpe1IKZ,
     GrowthMovpe1IKZ,
-    GrownSamples,
+    GrownSampleReference,
     GrownSample,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -253,7 +253,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         deposition_control=DepositionControls(
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{deposition_control_entry['entry_id']}#data",
                         ),
-                        grown_sample=GrownSamples(
+                        grown_sample=GrownSampleReference(
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, sample_filename)}#data",
                         ),
                         precursors_preparation=PrecursorsPreparationsMovpe1IKZ(
@@ -275,7 +275,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     deposition_control_entry["mainfile"], "r"
                 ) as dep_control_file:
                     updated_dep_control = yaml.safe_load(dep_control_file)
-                    updated_dep_control["data"]["grown_sample"] = GrownSamples(
+                    updated_dep_control["data"]["grown_sample"] = GrownSampleReference(
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, sample_filename)}#data",
                     ).m_to_dict()
                 create_archive(
