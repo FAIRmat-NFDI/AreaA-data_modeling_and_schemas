@@ -17,7 +17,7 @@ It is derived from the former yaml schema:[AreaA-data_modeling_and_schemas/movpe
 
 The directory tree:
 
-```
+```bash
 IKZ_plugin/
 ├── nomad.yaml
 ├── src
@@ -31,10 +31,10 @@ IKZ_plugin/
 │       │   ├── deposition_control
 │       │   │   ├── nomad_plugin.yaml
 │       │   │   └── parser.py
-│       |   └── parser.py
+│       │   └── parser.py
 │       ├── movpe2_growth_parser
 │       │   ├── nomad_plugin.yaml
-│       |   └── parser.py
+│       │   └── parser.py
 │       └── substrate_parser
 │           ├── nomad_plugin.yaml
 │           └── parser.py
