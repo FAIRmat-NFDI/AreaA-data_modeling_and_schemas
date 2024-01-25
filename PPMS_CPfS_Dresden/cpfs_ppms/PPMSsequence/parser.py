@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-from PPMS.parser import PPMSParser, PPMSFile
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import Quantity

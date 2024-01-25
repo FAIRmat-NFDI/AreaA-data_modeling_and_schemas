@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-from PPMS.parser import PPMSParser, PPMSFile
+from ppms.PPMSdata.parser import PPMSParser, PPMSFile
 
 from time import (
     sleep,
