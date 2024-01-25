@@ -1,8 +1,10 @@
-# IKZ Plugin
+# Lakeshore Plugin
 
 This directory contains plugins designed for the IKZ institute.
 
 See also:
+
+[full IKZ_plugin README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin)
 
 [movpe_IKZ README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin/src/movpe_IKZ)
 
@@ -11,27 +13,47 @@ See also:
 The directory tree:
 
 ```bash
-IKZ_plugin/
+Lakeshore_plugin/
 ├── nomad.yaml
 ├── src
-│   ├── basesections_IKZ
-│   ├── cz_IKZ
-│   ├── ds_IKZ
-│   ├── mbe_IKZ
-│   └── movpe_IKZ
+│   └── hall
+│       ├── nomad_plugin.yaml
+│       ├── schema.py
+│       ├── hall_instrument.py
+│       ├── measurement.py
+│       ├── reader.py
+│       ├── nexus_to_msection.py
+│       ├── helpers.py
+│       ├── utils.py
+│       ├── enum_map.json
+│       ├── instrument_parser
+│       │   ├── nomad_plugin.yaml
+│       │   └── parser.py
+│       └── measurement_parser
+│           ├── nomad_plugin.yaml
+│           └── parser.py
 └── tests
-    └── data
-        ├── basesections_IKZ
-        ├── cz_IKZ
-        ├── ds_IKZ
-        ├── mbe_IKZ
-        └── movpe_IKZ
+    ├── data
+    │   └── hall
+    │       ├── 22-127-G_20K-320K_TT-Halter_WDH_060722.txt
+    │       ├── 22-127-G_Hall-RT_TT-Halter.txt
+    │       ├── 22-211-G_Hall_23K-320K_TT-Halter.txt
+    │       ├── 23-026-AG_Hall_RT.txt
+    │       ├── hall_eln_22-127-G_20K-320K_TT-Halter_WDH_060722.archive.yaml
+    │       ├── hall_eln_22-127-G_Hall-RT_TT-Halter.archive.yaml
+    │       ├── hall_eln_22-211-G_Hall_23K-320K_TT-Halter.archive.yaml
+    │       ├── hall_eln_23-026-AG_Hall_RT.archive.yaml
+    │       └── hall_eln.yaml
+    └── test_parsing.py
 ```
 
 - `src/`: contains the source code for the plugins.
 - `tests/`: contains tests for the plugins.
-
-Please refer to the README.md file in each subdirectory for more information about each plugin.
+- `hall/`: contains the source code for the hall measurement.
+- `schema.py`, `hall_instrument.py`, `mesurement.py`: define the structure of the data after it has been parsed. It specifies the fields that the structured data will contain and the types of those fields.
+- `parser.py` contains the logic for parsing the raw data from the MOVPE growth process. This includes reading the data from its original format, extracting the relevant information, and transforming it into a structured format.
+- `reader.py`, `nexus_to_msection.py`, `helpers.py`, `utils.py`, `enum_map.json`: contain as well the logic for parsing the raw data from the MOVPE growth process. This includes reading the data from its original format, extracting the relevant information, and transforming it into a structured format.
+- `nomad_plugin.yaml` defines the raw file matching rules of the parser. Check [NOMAD plugin official docs](https://nomad-lab.eu/prod/v1/staging/docs/howto/customization/plugins_dev.html#parser-plugin-metadata) for more info.
 
 ## Installation
 
@@ -39,7 +61,7 @@ To use these plugins, you need to:
 
 * add the `src/` directory to your `PYTHONPATH`. You can do this by running the following command in the terminal where you run NOMAD:
 ```sh
-export PYTHONPATH="$PYTHONPATH:/your/path/IKZ_plugin/src"
+export PYTHONPATH="$PYTHONPATH:/your/path/Lakeshore_plugin/src"
 ```
 Export this system variable in the same terminal where you run NOMAD (`nomad admin run appworker`).
 
@@ -49,17 +71,20 @@ To make this path persistent, write into the .pyenv/bin/activate file of your vi
 ```yaml
 plugins:
   include:
-    - 'parsers/movpe_growth_IKZ'
+    - 'parsers/hall_lakeshore_measurement'
+    - 'parsers/hall_lakeshore_instrument'
 ```
 The name after the `/` is user defined.
 Then, specify the Python package for the plugin in the options section:
 ```yaml
 options:
-  parsers/movpe_growth_IKZ:
-    python_package: movpe_IKZ.binaryoxides_growth_parser
+    parsers/hall_lakeshore_measurement:
+      python_package: hall.measurement_parser
+    parsers/hall_lakeshore_instrument:
+      python_package: hall.instrument_parser
 ```
 
-This plugin requires to clone in your local machines other plugin repositories:
+This plugin does not require other plugins to be loaded. Althought, it is called in other plugins, you can clone them in your local machine:
 
 ```sh
 git clone https://github.com/FAIRmat-NFDI/nomad-measurements
@@ -127,7 +152,8 @@ plugins:
 
 You need to copy and fill the tabular files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
 
-Please refer to the README.md file in each subdirectory for more information about each plugin.
+> [!NOTE]
+> The Lakeshore `.txt` files are missing metadata on the sample ID that is subject of the measurement, so the user need to navigate inside the measurement entry and reference manually the sample.
 
 ## Develop
 

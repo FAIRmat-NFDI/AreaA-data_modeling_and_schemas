@@ -3,6 +3,7 @@
 See also:
 
 [full IKZ_plugin README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin)
+
 [LayTec README](https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin)
 
 ## Overview
@@ -53,11 +54,11 @@ IKZ_plugin/
                 └── Substrates-for-MOVPE1.xlsx
 ```
 
-- `src/`: This directory contains the source code of the plugin.
-- `tests/`: This directory contains the tests and template file to use with the plugin.
-- `/movpe1_growth_parser`: contains the source code for machine "1" at IKZ.
-- `/movpe2_growth_parser`: contains the source code for machine "2" at IKZ.
-- `/substrate_parser`: contains the source code for substrate parser.
+- `src/`: contains the source code of the plugin.
+- `tests/`: contains the tests and template file to use with the plugin.
+- `movpe1_growth_parser/`: contains the source code for machine "1" at IKZ.
+- `movpe2_growth_parser/`: contains the source code for machine "2" at IKZ.
+- `substrate_parser/`: contains the source code for substrate parser.
 - `schema.py` defines the structure of the data after it has been parsed. It specifies the fields that the structured data will contain and the types of those fields.
 - `parser.py` contains the logic for parsing the raw data from the MOVPE growth process. This includes reading the data from its original format, extracting the relevant information, and transforming it into a structured format.
 - `nomad_plugin.yaml` defines the raw file matching rules of the parser. Check [NOMAD plugin official docs](https://nomad-lab.eu/prod/v1/staging/docs/howto/customization/plugins_dev.html#parser-plugin-metadata) for more info.
@@ -128,8 +129,7 @@ This plugin requires to clone in your local machines other plugin repositories:
 ```sh
 git clone https://github.com/FAIRmat-NFDI/nomad-measurements
 git clone https://github.com/FAIRmat-NFDI/nomad-material-processing
-git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/hall
-git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/LayTec_EpiTT
+git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas
 ( git clone https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin.git )
 ```
 
@@ -169,9 +169,9 @@ plugins:
     schemas/nomad_material_processing:
       python_package: nomad_material_processing
     parsers/hall_lakeshore_measurement:
-      python_package: lakeshore.measurement_parser
+      python_package: hall.measurement_parser
     parsers/hall_lakeshore_instrument:
-      python_package: lakeshore.instrument_parser
+      python_package: hall.instrument_parser
     parsers/laytec_epitt:
       python_package: laytec_epitt
     schemas/basesections_IKZ:
