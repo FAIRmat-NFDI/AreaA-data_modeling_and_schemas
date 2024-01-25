@@ -39,7 +39,6 @@ from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
     ExperimentMovpe1IKZ,
-    GrowthsMovpe1IKZ,
     GrowthMovpe1IKZ,
     GrownSample
 )

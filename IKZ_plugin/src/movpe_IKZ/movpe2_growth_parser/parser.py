@@ -99,6 +99,15 @@ class ParserMovpe2IKZ(MatchingParser):
         grown_sample_ids = []
         growth_run_file = pd.read_excel(mainfile, comment="#")
 
+        # creating experiment dict
+        growth_process_list: Dict[str, GrowthMovpe2IKZ] = {}
+        recipe_ids = [
+            recipe_experiment for recipe_experiment in growth_run_file["Recipe Name"]
+        ]
+        recipe_ids = list(set(recipe_ids))  # remove duplicates
+        for unique_id in recipe_ids:
+            growth_process_list[unique_id] = []
+
         # creating grown sample archives and growth process archives
         for index, grown_sample in enumerate(growth_run_file["Sample Name"]):
             # creating grown sample archives
@@ -107,6 +116,7 @@ class ParserMovpe2IKZ(MatchingParser):
                 f"{grown_sample}_{index}.GrownSample.archive.{filetype}"
             )
             substrate_id = growth_run_file["Substrate Name"][index]
+            substrate_reference_str = None
             search_result = search(
                 owner="all",
                 query={
@@ -126,13 +136,10 @@ class ParserMovpe2IKZ(MatchingParser):
                     f'"{substrate_id}". Will use the first one found.'
                 )
             if len(search_result.data) >= 1:
+                substrate_reference_str = f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
                 grown_sample_data = GrownSample(
                     lab_id=grown_sample,
-                    components=[
-                        SystemComponent(
-                            system=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
-                        )
-                    ],
+                    components=[SystemComponent(system=substrate_reference_str)],
                 )
             grown_sample_archive = EntryArchive(
                 data=grown_sample_data,
@@ -202,26 +209,23 @@ class ParserMovpe2IKZ(MatchingParser):
                     break
 
             # creating growth process objects
-            growth_process_list: Dict[str, GrowthMovpe2IKZ] = {}
-            growth_process_list[
-                growth_run_file["Recipe Name"][index]
-            ] = GrowthMovpe2IKZ(
+            growth_process_instance = GrowthMovpe2IKZ(
                 name=f"{grown_sample} growth run",
                 recipe_id=growth_run_file["Recipe Name"][index],
-                lab_id=f"{grown_sample}_growthprocess",
+                lab_id=f"{grown_sample} growth run",
                 samples=[
                     GrownSampleReference(
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
                     )
                 ],
+                substrate=[
+                    SubstrateReference(
+                        lab_id=growth_run_file["Substrate Name"][index],
+                    )
+                ],
                 parent_sample=[
                     ParentSampleReference(
                         lab_id=growth_run_file["Previous Layer Name"][index],
-                    )
-                ],
-                substrate=[
-                    SubstrateReference(
-                        reference=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data",
                     )
                 ],
                 steps=[
@@ -245,21 +249,16 @@ class ParserMovpe2IKZ(MatchingParser):
                     )
                 ],
             )
-
-        # creating experiment archive
-        recipe_ids = []
-        for recipe_experiment in growth_run_file["Recipe Name"]:
-            recipe_ids.append(recipe_experiment)  # collect all ids
-        recipe_ids = list(set(recipe_ids))  # remove duplicates
+            growth_process_list[growth_run_file["Recipe Name"][index]].append(
+                growth_process_instance
+            )
 
         experiment_reference = []
-        for recipe_id in recipe_ids:
-            experiment_filename = f"{recipe_id}.archive.{filetype}"
+        for unique_id in recipe_ids:
+            experiment_filename = f"{unique_id}.archive.{filetype}"
             experiment_data = ExperimentMovpe2IKZ(
-                lab_id=recipe_id,
-                growth_parameters=[
-                    value for k, value in growth_process_list.items() if k == recipe_id
-                ],
+                lab_id=unique_id,
+                growth_runs=growth_process_list[unique_id],
             )
             experiment_archive = EntryArchive(
                 data=experiment_data,
