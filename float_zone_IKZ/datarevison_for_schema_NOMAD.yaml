@@ -1,0 +1,228 @@
+Experiment:
+	No:
+	Description: Pedestal 
+	...(data as in process protocol - there's already a schema for that)...
+
+	Process pictures:
+		Camera 1:
+			Type: normal
+			Time:
+			...(pictures)...
+
+		Camera 2:
+			Type: normal
+			Time:
+			...(pictures)...
+
+		Camera 3:
+			Type: thermal
+			Time:
+			...(pictures)...
+
+
+Experiment:
+	No:
+	Description: FZ
+	...(data as in process protocol - there's already a schema for that)...
+
+	Process pictures:
+		Camera 1:
+			Type: normal
+			Time:
+			...(pictures)...
+
+		Camera 2:
+			Type: normal
+			Time:
+			...(pictures)...
+
+		Camera 3:
+			Type: thermal
+			Time:
+			...(pictures)...
+
+Carachterization:
+	Description: Crystal Diameter along fibre length
+	file:
+		...(.csv file)... # what is this csv file?
+	
+
+Simulation: # what are the common quantities and subsections for all Simulation types? Does the activity basesection match well for you already?
+	Description: Floating Zone
+
+	Geometry: 2D axisymmetric
+
+	Conditions:  # do they come diretly from experiment/process data entry?
+		Feed radius: 4 mm
+		Crystal radius: 1.5mm
+^		Pulling rate: 7.2 mm/min
+		Inductor frequency: 2.5 MHz
+		Set melt height: 5.5 mm
+		Inductor geometry: ...(CAD or figure)...
+
+	Solve for:    # would that be a list of fixed options? does this differ a lot for the different simulation types?
+		Electromagnetic Fields
+		Heat Transfer
+			Phase Boundaries
+		Laminar Flow
+			Free Surface
+			Tangential Stresses
+		Electromagnetic Heating (coupling)
+		Nonisothermal Flow (coupling)
+		Radiation exchange (coupling)
+		
+	Method: Finite Element # other methods possible?
+
+	Software: Comsol Multiphysics v6.0 # other Software possible?
+
+	Results:
+		Inductor current: 234.9 A  # is that the key result of the simulation? is this the relevant figure for the experimentalist?
+		Files:
+			...(vtk files)... # includes all details of simulation, no other maunal input needed?
+
+Simulation:
+	Description: Pedestal
+
+	Geometry: 2D axisymmetric
+
+	Conditions:
+		Feed radius: 4 mm
+		Crystal radius: 1.5mm
+		Pulling rate: 7.2 mm/min
+		Inductor frequency: 2.5 MHz
+		Set melt height: 5.5 mm
+		Inductor geometry: ...(CAD or figure)...
+
+	Solve for:
+		Electromagnetic Fields
+		Heat Transfer
+			Phase Boundaries
+		Laminar Flow
+			Free Surface
+			Tangential Stresses
+		Electromagnetic Heating (coupling)
+		Nonisothermal Flow (coupling)
+		Radiation exchange (coupling)
+		
+	Method: Finite Element
+
+	Software: Comsol Multiphysics v6.0
+
+	Results:
+		Inductor current: 233.4 A
+		Files:
+			...(vtk files)...
+
+Simulation:
+	Description: Floating Zone BHS
+
+	Geometry: 2D axisymmetric
+
+	Conditions:
+		Feed radius: 4 mm
+		Crystal radius: 1.5mm
+		Inductor geometry: ...(CAD or figure)...
+
+	Solve for:
+		Electromagnetic Fields
+		Heat Transfer
+		Electromagnetic Heating (coupling)
+		Radiation exchange (coupling)
+		
+	Method: Finite Element
+
+	Software: Comsol Multiphysics v6.0
+
+	Results:
+		Files:
+			...(vtk files)...
+
+Simulation:
+	Description: Floating Zone VHS
+
+	Geometry: 2D axisymmetric
+
+	Conditions:
+		Feed radius: 4 mm
+		Crystal radius: 1.5mm
+		Inductor geometry: ...(CAD or figure)...
+
+	Solve for:
+		Electromagnetic Fields
+		Heat Transfer
+		Electromagnetic Heating (coupling)
+		Radiation exchange (coupling)
+		
+	Method: Finite Element
+
+	Software: Comsol Multiphysics v6.0
+
+	Results:
+		Files:
+			...(vtk files)...
+
+Simulation:
+	Description: Floating Zone BHS
+
+	Geometry: 2D axisymmetric
+
+	Conditions:
+		Feed radius: 4 mm
+		Crystal radius: 1.5mm
+		Inductor geometry: ...(CAD or figure)...
+
+	Solve for:
+		Electromagnetic Fields
+		Heat Transfer
+		Electromagnetic Heating (coupling)
+		Radiation exchange (coupling)
+		
+	Method: Finite Element
+
+	Software: Comsol Multiphysics v6.0
+
+	Results:
+		Files:
+			...(vtk files)...
+
+Simulation:
+	Description: Floating Zone
+
+	Solve for: 
+		Laminar Flow
+		Heat Transfer
+
+	Method: Finite Volume
+
+	Software: OpenFOAM
+
+	Results:
+		...(vtk files)...
+
+Simulation:
+	Description: Pedestal
+
+	Solve for: 
+		Laminar Flow
+		Heat Transfer
+
+	Method: Finite Volume
+
+	Software: OpenFOAM
+
+	Results:
+		...(vtk files)...
+
+Simulation:
+	Solve for: Free Melt Surface shape without EM pressure
+	Method: 4th order Runge Kutta
+	Software: MATLAB
+	Results:
+		...(csv file)...
+
+Simulation:
+	Solve for: Free Melt Surface shape with EM pressure
+	Method: 4th order Runge Kutta
+	Software: MATLAB
+	Results:
+		...(csv file)...
