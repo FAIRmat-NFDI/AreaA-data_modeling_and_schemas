@@ -1,0 +1,1 @@
+recursive-include src/ikz_pld nomad_plugin.yaml
