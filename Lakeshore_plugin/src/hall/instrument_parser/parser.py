@@ -29,10 +29,8 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-from lakeshore.schema import (
-    HallExperiment,
+from hall.schema import (
     HallInstrument,
-    HallInstruments
 )
 
 from nomad.datamodel.datamodel import (
@@ -42,7 +40,7 @@ from nomad.datamodel.datamodel import (
 
 from nomad_material_processing.utils import create_archive
 
-class RawInstrumentFile(EntryData):
+class RawFileLakeshoreInstrument(EntryData):
     instrument = Quantity(
         type=HallInstrument,
         a_eln=ELNAnnotation(
@@ -68,5 +66,5 @@ class HallInstrumentParser(MatchingParser):
         entry.data_file = data_file_with_path
         file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = RawInstrumentFile(instrument=create_archive(entry,archive,file_name))
+        archive.data = RawFileLakeshoreInstrument(instrument=create_archive(entry,archive,file_name))
         archive.metadata.entry_name = data_file + ' instrument file'

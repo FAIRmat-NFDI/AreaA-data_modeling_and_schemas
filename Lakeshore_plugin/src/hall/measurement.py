@@ -19,6 +19,10 @@ import numpy as np
 from nomad.metainfo import MSection, Quantity, SubSection, Datetime, Section
 from nomad.datamodel.data import EntryData, ArchiveSection
 
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+
 from nomad.datamodel.metainfo.basesections import (
     ElementalComposition,
     Activity,
@@ -250,7 +254,17 @@ class VariableTemperatureData(ArchiveSection):
 
 class GenericMeasurement(Measurement):
     '''A general hall measaurement representation'''
-    data: SubSection
+    description = Quantity(
+        type=str,
+        description="description",
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+            label="Notes",
+        ),
+    )
+
+    data: SubSection()
+
 
 
 class IVCurveMeasurement(GenericMeasurement):
