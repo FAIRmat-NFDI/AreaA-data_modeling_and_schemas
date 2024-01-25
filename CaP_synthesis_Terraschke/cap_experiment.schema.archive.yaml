@@ -5,10 +5,29 @@ definitions:
       base_sections:
        - nomad.datamodel.metainfo.basesections.Experiment
        - nomad.datamodel.data.EntryData
+      quantities:
+        Based_on_Experiment:
+          type: '#/CaP_Experiment' # nomad.datamodel.metainfo.basesections.Experiment
+          description: "the experiment this experiment is based on"
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        Difference_to_previous_experiment:
+          type: str
+          shape: ['*']
+          description: "differences to previous experiment"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
       sub_sections:
+        Based_on_publication:
+          #repeats: true
+          m_annotations:
+            eln:
+          section: nomad.datamodel.metainfo.basesections.PublicationReference
         steps:
           repeats: true
-          section: '#/Steps'
+          section: '#/CaPSteps'
         solutions:
           repeats: true
           section:
@@ -18,22 +37,27 @@ definitions:
                 m_annotations:
                   eln:
                     component: ReferenceEditQuantity
-    Steps:
+    CaPSteps:
       base_sections:
-      - nomad.datamodel.metainfo.basesections.SectionReference
+      - nomad.datamodel.metainfo.basesections.ExperimentStep #SectionReference
       quantities:
-        reference:
-          type: '#/CaPSteps'
+        activity:
+          type: '#/CaPActivity' # CaPSteps'
           m_annotations:
             eln:
               component: ReferenceEditQuantity
-    CaPSteps:
+    CaPActivity:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Activity
+    CaP_sample:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.CompositeSystem
+      - nomad.datamodel.data.EntryData
+
     SolutionPreparation: #check if Huayna wans this
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
 
     Solution: # we will have a "solution" soon in base sections!
@@ -43,7 +67,7 @@ definitions:
     ReactorProgram:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
       sub_sections:
         steps:
@@ -124,8 +148,29 @@ definitions:
     LuminescenceMeasurements:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Measurement
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
+      quantities:
+        Filter:
+          type: np.float64
+          shape: [1]
+          unit: nanometer
+          description: "optical filter"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: nanometer
+        Measurement_Option:
+          type:
+            type_kind: Enum
+            type_data:
+              - 'in-situ'
+              - 'ex-situ'
+          description: "Measurement option"
+          m_annotations:
+            eln:
+              component: RadioEnumEditQuantity
+
       sub_sections:
         measurement_settings: #define standard values or fixedoptions
           section:
@@ -225,7 +270,7 @@ definitions:
     Sensors:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
       quantities:
         List_of_sensors: #maybe use different type!?
@@ -244,7 +289,7 @@ definitions:
     SampleRemoval:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
       quantities:
         Sample_removal: #maybe use different type!?
@@ -252,10 +297,32 @@ definitions:
           m_annotations:
             eln:
               component: BoolEditQuantity
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/SampleRemovalSteps'
+    SampleRemovalSteps:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ProcessStep
+      quantities:
+        sample_at_removal_time:
+          type: '#/CaP_sample'
+          description: "sample that was removed from the reactor at a given time in minutes"
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+        duration:
+          type: np.float64
+          unit: minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+              label: "removal time in minutes"
     SampleTreatment:
       base_sections:
       - nomad.datamodel.metainfo.basesections.Process
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
       sub_sections:
         steps:
@@ -273,5 +340,5 @@ definitions:
     Results: # define better with Huayna
       base_sections:
       - nomad.datamodel.metainfo.basesections.Analysis
-      - '#/CaPSteps'
+      - '#/CaPActivity'
       - nomad.datamodel.data.EntryData
