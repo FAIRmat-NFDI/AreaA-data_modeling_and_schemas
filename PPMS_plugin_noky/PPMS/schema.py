@@ -387,7 +387,7 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
         if archive.data.data_file:
             logger.info('Parsing PPMS measurement file.')
             if not self.temperature_tolerance:
-                self.temperature_tolerance=0.05
+                self.temperature_tolerance=0.2
             if not self.field_tolerance:
                 self.field_tolerance=5.
 
@@ -434,7 +434,10 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         try:
                             iso_date = datetime.strptime(line.split(',')[3], "%m/%d/%Y %H:%M:%S")
                         except ValueError:
-                            iso_date = datetime.strptime(" ".join(line.split(',')[2:4]), "%m-%d-%Y %I:%M %p")
+                            try:
+                                iso_date = datetime.strptime(" ".join(line.split(',')[2:4]), "%m-%d-%Y %I:%M %p")
+                            except ValueError:
+                                iso_date = datetime.strptime(line.split(',')[3], "%Y-%m-%d %H:%M:%S")
                         setattr(self, 'datetime', iso_date)
                 if line.startswith("BYAPP"):
                     if hasattr(self, 'software'):
@@ -625,7 +628,7 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         block_found=False
                         indexlist.append([startval,i])
                         startval=i
-                        templist.append(np.round(float(data_df["Temperature (K)"].iloc[i-1]),2))
+                        templist.append(np.round(float(data_df["Temperature (K)"].iloc[i-1]),1))
                         fieldlist.append(np.round(float(data_df["Magnetic Field (Oe)"].iloc[i-1]),-1))
                         if measurement_type=="temperature":
                             all_steps.append(PPMSMeasurementStep(name="Temperature sweep at "+str(fieldlist[-1])+" Oe."))
