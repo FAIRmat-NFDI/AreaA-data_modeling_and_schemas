@@ -1,0 +1,1444 @@
+definitions:
+  name: 'ELN for Float Zone'
+  sections:
+    FloatZoneExperiment:
+      base_sections:
+       - nomad.datamodel.metainfo.basesections.Experiment
+       - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          hide: ['description', 'name']
+        # template:
+        #   GrowthProcess:
+        #     Assembly: {}
+        #     Pumping: {}
+        #     Filling: {}
+        #     Annealing: {}
+        #     Preheating: {}
+        #     ProcessStart: {}
+        #     BackMelting: {}
+        #     DashNecking: {}
+        #     ConeAndBodyGrowing: {}
+        #     CrystalSupport: {}
+        #     Tailing: {}
+        #     DigitalProtocol1520: {}
+        #   Characterization:
+        #     BasicCrystalCharacterization: {}
+        #     Resistivity: {}
+        #     LateralPhotovoltageScanning: {}
+        #     Lifetime: {}
+      quantities:
+        tags:
+          type: str
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        activity_method:
+          type:
+            type_kind: Enum
+            type_data:
+              - float zone
+              - pedestal
+          description: |
+            a method is a series of steps for performing a function or accomplishing a result.
+
+            Or
+
+            any systematic way of obtaining information about a scientific nature or to obtain a desired material or product
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+      sub_sections:
+        steps:
+          repeats: true
+          section: '#/FloatZoneStep'
+    FloatZoneStep:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ExperimentStep
+      quantities:
+        activity:
+          type: '#/FloatZoneActivity'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+    FloatZoneActivity:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Activity
+    FzGrowthProcess:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Process
+      - '#/FloatZoneActivity'
+      - nomad.datamodel.data.EntryData
+      sub_sections:
+        instruments:
+          section:
+            quantities:
+              furnace_type:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - "1505/1"
+                    - "1505/2"
+                    - "1520"
+                    - "FZ30"
+                description: "Furnace description"
+                m_annotations:
+                  eln:
+                    component: EnumEditQuantity
+            sub_sections:
+              Coil:
+                section:
+                  quantities:
+                    coil_id:
+                      type: str
+                      description: "what is the coil id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    coil_drawing:
+                      type: str
+                      description: "Drawing of coil"
+                      m_annotations:
+                        eln:
+                          component: RichTextEditQuantity
+                    notes:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    documentation:
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+              PreHeater:
+                repeats: true
+                section:
+                  quantities:
+                    pre_heater_id:
+                      type: str
+                      description: "what is the pre_heater id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    pre_heater_type:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - "IR"
+                          - "Graphite Shell"
+                          - "Ta Shell"
+                          - "Mo Shell"
+                          - "Other"
+                      description: "Pre heater description"
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    pre_heater_position:
+                      type:
+                        type_kind: Enum
+                        type_data:
+                          - "up"
+                          - "down"
+                      description: "Pre heater position"
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    notes:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    pre_heater_drawing:
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+              Reflector:
+                repeats: true
+                section:
+                  quantities:
+                    reflector_id:
+                      type: str
+                      description: "what is the reflector id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    reflector_diameter:
+                      type: np.float64
+                      unit: millimeter
+                      description: reflector diameter in mm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    reflector_coil_position:
+                      type: np.float64
+                      unit: mm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mm
+                    notes:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    reflector_drawing:
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+              AfterHeater:
+                repeats: true
+                section:
+                  quantities:
+                    after_heater_id:
+                      type: str
+                      description: "what is the after_heater id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    after_heater_diameter:
+                      type: np.float64
+                      unit: millimeter
+                      description: after_heater diameter in mm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: millimeter
+                    after_heater_coil_position:
+                      type: np.float64
+                      unit: mm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: mm
+                    notes:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    after_heater_drawing:
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+              RodHolder:
+                section:
+                  quantities:
+                    rod_holder_id:
+                      type: str
+                      description: "what is the after_heater id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    notes:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    rod_holder_drawing:
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+              SeedHolder:
+                section:
+                  quantities:
+                    seed_holder_id:
+                      type: str
+                      description: "what is the seed_holder id?"
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    notes:
+                      type: str
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    seed_holder_drawing:
+                      type: str
+                      description: pdf files containing certificate and other documentation
+                      m_annotations:
+                        browser:
+                          adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+                        eln:
+                          component: FileEditQuantity
+        samples:
+          repeats: true
+          section: '#/FzMaterial'
+        steps:
+          repeats: true
+          section: '#/FzGrowthStep'
+    FzGrowthStep:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.ProcessStep
+      # more:
+      #  label_quantity: name
+    FzMaterial:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.System
+    Gas:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.System
+      - '#/FzMaterial'
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        name:
+          type:
+            type_kind: Enum
+            type_data:
+              - Ar from bottle
+              - Ar from pipeline
+              - N2 from bottle
+              - N2 from pipeline
+              - H2
+              - Other
+          description: "name/type of gas"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+    Dopant:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.System
+      - '#/FzMaterial'
+      - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+      quantities:
+        name:
+          type:
+            type_kind: Enum
+            type_data:
+              - PH3
+              - B2H6
+              - CH4
+              - Other
+          description: "name/type of dopant"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+    Feed_rod:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.System
+      - '#/FzMaterial'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        material:
+          type:
+            type_kind: Enum
+            type_data:
+              - Wacker
+              - ASIMI
+              - REC
+              - other
+          description: "feed rod material options"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        diameter:
+          type: np.float64
+          description: "diameter of feed rod"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        length:
+          type: np.float64
+          description: "length of feed rod"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        weight:
+          type: np.float64
+          description: "weight of feed rod"
+          unit: kg
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kg
+        rod_surface:
+          type:
+            type_kind: Enum
+            type_data:
+              - round grinded
+              - raw
+          description: "rod surface condition"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        rod_pretreatment:
+          type:
+            type_kind: Enum
+            type_data:
+              - etched
+              - raw
+              - US cleaned
+          description: "rod pretreatment"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        rod_angle:
+          type: np.float64
+          description: "angle of feed rod"
+          unit: deg
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: deg
+    Seed:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.System
+      - '#/FzMaterial'
+      - nomad.datamodel.data.EntryData
+      quantities:
+        orientation:
+          type:
+            type_kind: Enum
+            type_data:
+              - "100"
+              - "111"
+              - "Other"
+          description: "rod pretreatment"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+            # m_annotations:
+            #   eln:
+            # quantities:
+            #   name:
+            #     type: str
+            #     m_annotations:
+            #       eln:
+            #         component: StringEditQuantity
+            #         label: Materials
+            #   material:
+            #     type: 'nomad.datamodel.metainfo.eln.System'
+            #     m_annotations:
+            #       eln:
+            #         component: ReferenceEditQuantity
+
+        # GrowthProcess:
+        #   section:
+        #     m_annotations:
+        #       eln:
+        #         hide: ['description']
+        #     base_sections:
+        #     - nomad.datamodel.metainfo.eln.Activity
+        #     sub_sections:
+        #       Assembly:
+        #         section:  '#/Assembly'
+        #       Pumping:
+        #         section: '#/Pumping'
+        #       Filling:
+        #         section: '#/Filling'
+        #       Annealing:
+        #         section: '#/Annealing'
+        #       Preheating:
+        #         section: '#/Preheating'
+        #       ProcessStart:
+        #         section: '#/ProcessStart'
+        #       BackMelting:
+        #         section: '#/BackMelting'
+        #       DashNecking:
+        #         section: '#/DashNecking'
+        #       ConeAndBodyGrowing:
+        #         section: '#/ConeAndBodyGrowing'
+        #       CrystalSupport:
+        #         section: '#/CrystalSupport'
+        #       Tailing:
+        #         section: '#/Tailing'
+        #       DigitalProtocol1520:
+        #         section: '#/DigitalProtocol1520'
+        # Characterization:
+        #   section:
+        #     m_annotations:
+        #       eln:
+        #         hide: ['description']
+        #     sub_sections:
+        #       BasicCrystalCharacterization:
+        #         repeats: true
+        #         section: '#/BasicCrystalCharacterization'
+        #       Resistivity:
+        #         repeats: true
+        #         section: '#/Resistivity'
+        #       LateralPhotovoltageScanning:
+        #         repeats: true
+        #         section: '#/LateralPhotovoltageScanning'
+        #       Lifetime:
+        #         repeats: true
+        #         section: '#/Lifetime'
+        #           # m_annotations:
+        #           #   eln:
+
+
+    Assembly:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        name:
+          type: str
+          description:
+          default: "Assembly"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Characterization
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+    Pumping:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        name:
+          type: str
+          description:
+          default: "Pumping"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        vacuum:
+          type: np.float64
+          unit: mbar
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mbar
+          description: "Pressure"
+        furnace_leak_rate:
+          type:
+            type_kind: Enum
+            type_data:
+              - good
+              - bad
+          description: "Furnace leak rate"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+    Filling:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        pressure:
+          type: np.float64
+          unit: bar
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: bar
+          description: "Pressure"
+    Annealing:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        method:
+          type:
+            type_kind: Enum
+            type_data:
+              - IR
+              - Other
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        power:
+          type: np.float64
+          unit: watt
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: watt
+          description: "FILL THE DESCRIPTION"
+    Preheating:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Pre-process']
+        method:
+          type:
+            type_kind: Enum
+            type_data:
+              - IR
+              - Shell
+              - Other
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        rod_position:
+          type: np.float64
+          description: "position of rod during preheating"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        power:
+          type: np.float64
+          unit: watt
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: watt
+          description: "FILL THE DESCRIPTION"
+        voltage:
+          type: np.float64
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+          description: "FILL THE DESCRIPTION"
+    ProcessStart:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Characterization
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Process']
+        coil_offset:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        upper_rotation:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: rpm #1 / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm #1 / minute
+        lower_rotation:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: rpm #1 / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm #1 / minute
+        upper_speed:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm / minute
+        lower_speed:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm / minute
+        melting_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+        seed_touching_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+        glowing_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+    BackMelting:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Measurement
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Process']
+        coil_offset:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        upper_rotation:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: rpm #1 / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm #1 / minute
+        lower_rotation:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: rpm #1 / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm #1 / minute
+        upper_speed:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm / minute
+        lower_speed:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm / minute
+        max_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+        min_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+    DashNecking:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Characterization
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Process']
+        coil_offset:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        upper_rotation:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: rpm #1 / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm #1 / minute
+        lower_rotation:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: rpm #1 / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: rpm #1 / minute
+        upper_speed:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm / minute
+        lower_speed:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm / minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm / minute
+        max_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+        min_voltage:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: kV
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: kV
+        neck_length:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        pulling_time:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: minute
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: minute
+    ConeAndBodyGrowing:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Characterization
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Process']
+    CrystalSupport:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Characterization
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Process']
+        support_release_position:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        support_touching_position:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        support_return_position:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+    DigitalProtocol1520:
+      base_sections:
+       - '#/FzGrowthStep'
+       - nomad.parsing.tabular.TableData
+       - nomad.datamodel.data.EntryData
+      m_annotations:
+        eln:
+          #dict()
+        plot:
+        - label: control_parameter_set
+          x: "timestamp"
+          y:
+            - control_parameter_set
+        - label: lower_diameter_crystal
+          x: "timestamp"
+          y:
+            - lower_diameter_crystal
+        - label: zone_height
+          x: "timestamp"
+          y:
+            - zone_height
+        - label: upper_pull_speed_rod
+          x: "timestamp"
+          y:
+            - upper_pull_speed_rod
+        - label: control parameter set vs. lower diamenter crystal
+          x: "lower_diameter_crystal"
+          y: control_parameter_set #["./control_parameter_set", "./lower_diameter_crystal", "./zone_height", "./upper_pull_speed_rod"]
+        - label: all time-dependent data
+          x: "timestamp"
+          y:
+            - control_parameter_set
+            - lower_diameter_crystal
+            - zone_height
+            - upper_pull_speed_rod
+        # - label: time-dependent data plot
+        #   x: timestamp
+        #   y:
+        #     - control_parameter_set
+        #     - lower_diameter_crystal
+        #     - zone_height
+        #     - upper_pull_speed_rod
+      quantities:
+        data_file:
+          type: str
+          description: |
+            A reference to an uploaded .xlsx
+          m_annotations:
+            # The tabular_parser annotation, will treat the values of this
+            # quantity as files. It will try to interpret the files and fill
+            # quantities in this section (and sub_section) with the column
+            # data of .csv or .xlsx files.
+            tabular_parser:
+              # sep: ','
+              comment: '#'
+              mode: column
+            browser:
+              adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
+            eln:
+              component: FileEditQuantity  # A form field that allows to drop and select files.
+        measurment_no:
+          type: np.float64
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Index
+        # date:
+        #   type: str
+        #   shape: ['*']
+        #   m_annotations:
+        #     tabular:
+        #       name: Datum
+        timestamp:
+          type: Datetime
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Datum_Zeit
+        upper_position_rod:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: PosHubOb
+        upper_pull_speed_rod:
+          type: np.float64
+          unit: millimeter/minute
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: SollHubOb
+        upper_rotation_rod:
+          type: np.float64
+          unit: 1/minute
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: SollRotOb
+        lower_position_crystal:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: PosHubUnt
+        lower_pull_speed_crystal:
+          type: np.float64
+          unit: millimeter/minute
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: SollHubUnt
+        lower_rotation_crystal:
+          type: np.float64
+          unit: 1/minute
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: SollRotUnt
+        control_parameter:
+          type: str
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Betr.Art
+        control_parameter_set:
+          type: np.float64
+          unit: kV
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Gen-Soll
+        power_obtained:
+          type: np.float64
+          unit: kW
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: P-Ist
+        current_obtained:
+          type: np.float64
+          unit: A
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Ia-Ist
+        voltage_obtained:
+          type: np.float64
+          unit: kV
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Ua-Ist
+        grid_current:
+          type: np.float64
+          unit: A
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Ig-Ist
+        high_frequency_current:
+          type: np.float64
+          unit: A
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: I-hf
+        high_frequency_voltage:
+          type: np.float64
+          unit: kV
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: U-hf
+        frequency:
+          type: np.float64
+          unit: MHz
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: f-HF
+        inner_mechanisms_position_arbkr:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Pos-Arbkr
+        inner_mechanisms_position_spindel:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Pos-Spindel
+        inner_mechanisms_position_nachheizen:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: Pos-Nachheiz
+        upper_diameter_rod:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: DurchmObn
+        lower_diameter_crystal:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: DurchmUnt
+        zone_height:
+          type: np.float64
+          unit: millimeter
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: ZonenHo
+        meniscus_angle_on_left_side:
+          type: np.float64
+          unit: degree
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: WinkelLi
+        meniscus_angle_on_right_side:
+          type: np.float64
+          unit: degree
+          shape: ['*']
+          m_annotations:
+            tabular:
+              name: WinkelRe
+    Tailing:
+      base_sections:
+      - '#/FzGrowthStep'
+      quantities:
+        step_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - Pre-process
+              - Process
+              - Post-process
+              - Characterization
+              - Storage
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+          default: ['Process']
+        crystal_position:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        rod_position:
+          type: np.float64
+          description: "FILL THE DESCRIPTION"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+    Lifetime:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      quantities:
+        average_lifetime_on_body:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        lifetime_map:
+          type: str
+          description: "drop the lifetime map here"
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+    BasicCrystalCharacterization:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      quantities:
+        diameter_target_crystal:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        diameter_measured_crystal:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        body_diameter:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        body_length:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        process_conclusion:
+          type: str
+          description: "Comments and conclusion on the crystal growth process"
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+    Resistivity:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      quantities:
+        target_resistivity:
+          type: np.float64
+          unit: ohm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ohm
+        maximum_resistivity_on_body:
+          type: np.float64
+          unit: ohm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ohm
+        minimum_resistivity_on_body:
+          type: np.float64
+          unit: ohm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ohm
+        measurement_protocol:
+          type: str
+          description: "drop the LPS map here"
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+    LateralPhotovoltageScanning:
+      base_sections:
+      - nomad.datamodel.metainfo.eln.Activity
+      quantities:
+        interface_curvative:
+          type: np.float64
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        LPS_map:
+          type: str
+          description: "drop the LPS map here"
+          m_annotations:
+            eln:
+              component: RichTextEditQuantity
+
+        # process:
+        #   section:
+        #     m_annotations:
+        #       eln:
+        #         dict()
+        #     sub_sections:
+        #       gas_ambient_settings:
+        #         repeats: true
+        #         section:
+        #           # m_annotations:
+        #           #   eln:
+        #           quantities:
+        #             timestamp:
+        #               type: Datetime
+        #               m_annotations:
+        #                 eln:
+        #                   component: DateTimeEditQuantity
+        #             process_type:
+        #               type:
+        #                 type_kind: Enum
+        #                 type_data:
+        #                   - pre
+        #                   - main
+        #                   - post
+        #               description: "choose type of process"
+        #               m_annotations:
+        #                 eln:
+        #                   component: EnumEditQuantity
+        #             process_note:
+        #               type: str
+        #               description: "Text field for any process notes"
+        #               m_annotations:
+        #                 eln:
+        #                   component: RichTextEditQuantity
+        #             #gas_ambient:
+        #             #  section:
+        #             #    quantities:
+        #             gas_pressure:
+        #               type: np.float64
+        #               description: "where is this gas pressure measured? "
+        #               unit: mbar
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: mbar
+        #             Ar_inflow_rate:
+        #               type: np.float64
+        #               description: "Ar inflow rate measured at ???"
+        #               unit: cm/minute
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: cm/minute
+        #             gas_outflow_rate:
+        #               type: np.float64
+        #               description: "gas outflow rate measured at ???"
+        #               unit: cm/minute
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: cm/minute
+        #             N2_Gas_composition:
+        #               type: np.float64
+        #               description: "Ar inflow rate measured at ???"
+        #               unit: m
+        #               m_annotations:
+        #                 eln:
+        #                   component: NumberEditQuantity
+        #                   defaultDisplayUnit: m
+        #                 #sub_sections:
+        #                 #  doping:
+        #                 #    section:
+        #                 #      quantities:
+        #             dopant:
+        #               type:
+        #                 type_kind: Enum
+        #                 type_data:
+        #                   - PH3
+        #                   - B2H6
+        #               description: "doping type"
+        #               m_annotations:
+        #                 eln:
+        #                   component: EnumEditQuantity
+        #             doping_concentration:
+        #               type:
+        #                 type_kind: Enum
+        #                 type_data:
+        #                   - "0"
+        #                   - "1"
+        #                   - "10"
+        #                   - "100"
+        #                   - "500"
+        #               description: "applied doping concentration in ppm"
+        #               m_annotations:
+        #                 eln:
+        #                   component: EnumEditQuantity
