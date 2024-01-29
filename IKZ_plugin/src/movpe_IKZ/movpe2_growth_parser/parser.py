@@ -108,7 +108,6 @@ class ParserMovpe2IKZ(MatchingParser):
         for unique_id in recipe_ids:
             growth_process_list[unique_id] = []
 
-        # creating grown sample archives and growth process archives
         for index, grown_sample in enumerate(growth_run_file["Sample Name"]):
             # creating grown sample archives
             grown_sample_ids.append(grown_sample)  # collect all ids
@@ -208,6 +207,36 @@ class ParserMovpe2IKZ(MatchingParser):
                 else:
                     break
 
+            # creating gas source objects
+            gas_sources = []
+            gas_source_quantities = [
+                "Gas Material",
+                "Gas MFC",
+                "Gas Molar Flux",
+            ]
+            i = 0
+            while True:
+                if all(
+                    f"{key}{'' if i == 0 else '.' + str(i)}" in growth_run_file.columns
+                    for key in gas_source_quantities
+                ):
+                    gas_sources.append(
+                        GasSource(
+                            material=growth_run_file.get(
+                                f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                            )[index],
+                            mass_flow_controller=growth_run_file.get(
+                                f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
+                            )[index],
+                            molar_flux=growth_run_file.get(
+                                f"Gas Molar Flux{'' if i == 0 else '.' + str(i)}", 0
+                            )[index],
+                        )
+                    )
+                    i += 1
+                else:
+                    break
+
             # creating growth process objects
             growth_process_instance = GrowthMovpe2IKZ(
                 name=f"{grown_sample} growth run",
@@ -246,6 +275,7 @@ class ParserMovpe2IKZ(MatchingParser):
                         ],
                         comments=growth_run_file["Comments"][index],
                         bubblers=bubblers,
+                        gas_source=gas_sources,
                     )
                 ],
             )

@@ -39,7 +39,7 @@ from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
     ExperimentMovpe1IKZ,
-    GrowthMovpe1IKZ,
+    GrowthMovpe1IKZConstantParameters,
     GrownSample
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -55,7 +55,7 @@ class RawFileConstantParameters(EntryData):
         label = 'Raw File Constant Parameters'
     )
     constant_parameters_file = Quantity(
-        type=GrowthMovpe1IKZ,
+        type=GrowthMovpe1IKZConstantParameters,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -83,7 +83,7 @@ class ParserMovpe1IKZ(MatchingParser):
         filetype = "yaml"
         filename = f"{overview['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
-            data=GrowthMovpe1IKZ(
+            data=GrowthMovpe1IKZConstantParameters(
                 lab_id=overview["Constant Parameters ID"][0],
                 data_file=data_file_with_path
                 ),
