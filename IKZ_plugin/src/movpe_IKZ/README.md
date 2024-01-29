@@ -77,16 +77,17 @@ IKZ_plugin/
 
 This folder contains two files with custom filename and `.xlsx` extension. Download these file if you use the "MOVPE 1" machine at IKZ.
 
-* Upload the `constant_parameters.xlsx` file BEFORE the `deposition_control.xlsx` one to reference automatically the generated samples in each activity.
+* Upload in your NOMAD Oasis `constant_parameters.xlsx` BEFORE `deposition_control.xlsx` to reference automatically the generated samples in each activity.
+Each row is used to record one experiment.
 
 > [!NOTE]
-> `deposition_control.xlsx` contains two sheets: "Deposition Control" and "Precursors". Each row is used to record one experiment.
+> `deposition_control.xlsx` contains two sheets: "Deposition Control" and "Precursors". Some column header must be present for the file to be parsed: `Constant Parameters ID`, `Sample ID`, `Date`, `number` in "Deposition Control" and `Sample ID` in "Precursors".
 
 * Fill the `Constant Parameters ID` with the same ID you write into the `constant_parameters.xlsx` file, in this way the parameters that remain constant across several experiments will be correctly referenced.
 * Generate one row in "Deposition Control" sheet and in "Precursors" sheet for each growth experiment. They refer to the same sample and hence must contain the same unique `Sample ID`. An error will be thrown if the rows in the two sheets contain different `Sample ID` fields.
 
 > [!NOTE]
-> After uploading the `constant_parameters.xlsx` and `deposition_control.xlsx` files, please open `RawFileConstantParameters` and `RawFileDepositionControl` generated entries in NOMAD to check if there is some processing error. Carefully analize any warning or error and upload the file again if needed.
+> After uploading `constant_parameters.xlsx` and `deposition_control.xlsx`, please open `RawFileConstantParameters` and `RawFileDepositionControl` generated entries in NOMAD to check if there is some processing error. Carefully analize any warning or error and upload the file again if needed.
 
 ### `movpe2_growth_parser`
 
