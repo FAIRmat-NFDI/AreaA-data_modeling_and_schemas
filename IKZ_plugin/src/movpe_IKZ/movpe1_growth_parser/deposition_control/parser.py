@@ -57,6 +57,7 @@ from movpe_IKZ import (
     OxygenTemperature,
     ShaftTemperature,
     ThrottleValve,
+    RawFileMovpeDepositionControl,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
@@ -81,89 +82,6 @@ def create_archive(
             f"{file_name} archive file already exists."
             f"If you intend to reprocess the older archive file, remove the existing one and run reprocessing again."
         )
-
-
-class IKZPLDLayerProcessConditions(ArchiveSection):
-    m_def = Section(
-        # categories=[IKZPLDCategory],
-        label="Process Conditions",
-    )
-    growth_temperature = (
-        Quantity(
-            type=float,
-            unit="kelvin",
-            a_eln=ELNAnnotation(
-                component=ELNComponentEnum.NumberEditQuantity,
-                defaultDisplayUnit="celsius",
-            ),
-        ),
-    )
-    sample_to_target_distance = (
-        Quantity(
-            type=float,
-            unit="meter",
-            a_eln=ELNAnnotation(
-                component=ELNComponentEnum.NumberEditQuantity,
-                defaultDisplayUnit="millimeter",
-            ),
-        ),
-    )
-    oxygen_flow = (
-        Quantity(
-            type=float,
-            unit="meter ** 3 / second",
-            a_eln=ELNAnnotation(
-                component=ELNComponentEnum.NumberEditQuantity,
-                defaultDisplayUnit="cm ** 3 / minute",
-            ),
-        ),
-    )
-    number_of_pulses = (
-        Quantity(
-            type=int,
-            a_eln=ELNAnnotation(
-                component=ELNComponentEnum.NumberEditQuantity,
-            ),
-        ),
-    )
-    laser_repetition_rate = (
-        Quantity(
-            type=float,
-            unit="hertz",
-            a_eln=ELNAnnotation(
-                component=ELNComponentEnum.NumberEditQuantity,
-            ),
-        ),
-    )
-    laser_energy = (
-        Quantity(
-            type=float,
-            unit="joule",
-            a_eln=ELNAnnotation(
-                component=ELNComponentEnum.NumberEditQuantity,
-                defaultDisplayUnit="millijoule",
-            ),
-        ),
-    )
-
-
-class RawFileMovpeDepositionControl(EntryData):
-    m_def = Section(
-        a_eln=None,
-        categories=[IKZMOVPE1Category],
-        label="Raw File Growth Run Deposition Control",
-    )
-    growth_run_deposition_control = Quantity(
-        type=ExperimentMovpe1IKZ,
-        a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-        ),
-        shape=["*"],
-    )
-    test = SubSection(
-        section_def=IKZPLDLayerProcessConditions,
-        # repeats=True,
-    )
 
 
 class ParserMovpe1DepositionControlIKZ(MatchingParser):
