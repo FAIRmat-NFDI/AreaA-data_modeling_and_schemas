@@ -280,20 +280,32 @@ definitions:
                           adaptor: RawFileAdaptor  # Allows to navigate to files in the data browser
                         eln:
                           component: FileEditQuantity
-        samples:
+        FzMaterials:
           repeats: true
-          section: '#/FzMaterial'
+          section: '#/Fz_Materials'
         steps:
           repeats: true
           section: '#/FzGrowthStep'
+        samples:
+          section: '#/FzCrystal'
     FzGrowthStep:
       base_sections:
       - nomad.datamodel.metainfo.basesections.ProcessStep
       # more:
       #  label_quantity: name
+    Fz_Materials:
+      # base_sections:
+      # - nomad.datamodel.metainfo.basesections.System
+      quantities:
+        Fz_material_reference:
+          type: '#/FzMaterial' # CaPSteps'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
     FzMaterial:
       base_sections:
       - nomad.datamodel.metainfo.basesections.System
+      - nomad.datamodel.data.EntryData
     Gas:
       base_sections:
       - nomad.datamodel.metainfo.basesections.System
@@ -491,6 +503,104 @@ definitions:
         #         section: '#/Lifetime'
         #           # m_annotations:
         #           #   eln:
+    FzCrystal:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.CompositeSystem
+      quantities: # add quantities for labID description Status Anlage diameter Length Orientierung Resistance L-Typ Location Datum
+        name:
+          type: str
+          description: "name of crystal"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        lab_id:
+          type: str
+          description: "lab id of crystal"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        description:
+          type: str
+          description: "description of crystal"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        status:
+          type:
+            type_kind: Enum
+            type_data:
+              - "in process"
+              - "finished"
+              - "other"
+          description: "status of crystal"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        anlage:
+          type:
+            type_kind: Enum
+            type_data:
+              - "1505/1"
+              - "1505/2"
+              - "1520"
+              - "FZ30"
+              - "other"
+          description: "anlage of crystal"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        diameter:
+          type: np.float64
+          description: "diameter of crystal"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        length:
+          type: np.float64
+          description: "length of crystal"
+          unit: mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        orientation:
+          type:
+            type_kind: Enum
+            type_data:
+              - "100"
+              - "111"
+              - "other"
+          description: "orientation of crystal"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        resistance:
+          type: np.float64
+          description: "resistance of crystal"
+          unit: ohm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: ohm
+        l_type:
+          type:
+            type_kind: Enum
+            type_data:
+              - "p"
+              - "n"
+              - "other"
+          description: "l-type of crystal"
+          m_annotations:
+            eln:
+              component: EnumEditQuantity
+        location:
+          type: str
+          description: "location of crystal"
+          m_annotations:
+            eln:
+
 
 
     Assembly:
@@ -1260,8 +1370,21 @@ definitions:
             eln:
               component: RichTextEditQuantity
     BasicCrystalCharacterization:
+      # section_definitions:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
+      # - nomad.datamodel.metainfo.plot.PlotSection
+      - nomad.datamodel.metainfo.basesections.Measurement
+      - '#/FloatZoneActivity'
+      - nomad.datamodel.data.EntryData
+      # m_annotations:
+      #   plotly_graph_object:
+      #   - data:
+      #       x: '#body_diameter'
+      #       y: '#body_length'
+      #     layout:
+      #       yaxis:
+      #         title: birth rate (per 1,000 people)
+      #     index: 0
       quantities:
         diameter_target_crystal:
           type: np.float64
@@ -1297,9 +1420,12 @@ definitions:
           m_annotations:
             eln:
               component: RichTextEditQuantity
+
     Resistivity:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.metainfo.basesections.Measurement
+      - '#/FloatZoneActivity'
+      - nomad.datamodel.data.EntryData
       quantities:
         target_resistivity:
           type: np.float64
@@ -1330,7 +1456,9 @@ definitions:
               component: RichTextEditQuantity
     LateralPhotovoltageScanning:
       base_sections:
-      - nomad.datamodel.metainfo.eln.Activity
+      - nomad.datamodel.metainfo.basesections.Measurement
+      - '#/FloatZoneActivity'
+      - nomad.datamodel.data.EntryData
       quantities:
         interface_curvative:
           type: np.float64
