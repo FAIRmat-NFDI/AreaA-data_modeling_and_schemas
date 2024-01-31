@@ -30,12 +30,17 @@ from nomad_material_processing import (
     CrystallineSubstrate,
     ThinFilm,
     ThinFilmStack,
+    Parallelepiped,
+    SubstrateCrystalProperties,
+    Miscut,
+    Dopant,
 )
 from nomad_material_processing.physical_vapor_deposition import (
     PLDLaser,
     PLDSource,
     PVDChamberEnvironment,
     PVDPressure,
+    PVDGasFlow,
     PVDSourcePower,
     PVDSubstrate,
     PVDSubstrateTemperature,
@@ -69,6 +74,7 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
     PureSubstanceComponent,
+    PureSubstanceSection,
     PubChemPureSubstanceSection,
     ReadableIdentifiers,
     CompositeSystemReference,
@@ -155,43 +161,8 @@ class IKZPLDSubstrate(CrystallineSubstrate, IKZPLDPossibleSubstrate, EntryData):
         categories=[IKZPLDCategory],
         label='Substrate',
     )
-    material=Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component='StringEditQuantity',
-        ),
-    )
-    orientation = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component='StringEditQuantity',
-        ),
-    )
-    miscut_orientation = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component='StringEditQuantity',
-        ),
-    )
-    minimum_miscut_angle = Quantity(
-        type=float,
-        unit='degree',
-        a_eln=ELNAnnotation(
-            component='NumberEditQuantity',
-        ),
-    )
-    maximum_miscut_angle = Quantity(
-        type=float,
-        unit='degree',
-        a_eln=ELNAnnotation(
-            component='NumberEditQuantity',
-        ),
-    )
-    supplier_batch = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component='StringEditQuantity',
-        ),
+    geometry = SubSection(
+        section_def=Parallelepiped,
     )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
@@ -203,12 +174,6 @@ class IKZPLDSubstrate(CrystallineSubstrate, IKZPLDPossibleSubstrate, EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         '''
-        if self.material and len(self.components) == 0:
-            self.components = [PureSubstanceComponent(
-                    pure_substance=PubChemPureSubstanceSection(
-                        name=self.material
-                    )
-                )]
         super(IKZPLDSubstrate, self).normalize(archive, logger)
 
 
@@ -279,6 +244,13 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
     m_def=Section(
         categories=[IKZPLDCategory],
         label='Batch of Substrates',
+        a_template={
+            'geometry': {
+                'height': 5e-4,
+                'width': 5e-3,
+                'length': 5e-3,
+            },
+        },
     )
     base_on = Quantity(
         type=Reference(SectionProxy('IKZPLDSubstrateBatch')),
@@ -314,8 +286,21 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
             component='StringEditQuantity',
         ),
     )
+    supplier = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
     sub_batches = SubSection(
         section_def=IKZPLDSubstrateSubBatch,
+        repeats=True,
+    )
+    geometry = SubSection(
+        section_def=Parallelepiped,
+    )
+    dopants = SubSection(
+        section_def=Dopant,
         repeats=True,
     )
 
@@ -359,19 +344,27 @@ class IKZPLDSubstrateBatch(CompositeSystem, EntryData):  # TODO: Inherit from ba
                 else:
                     batch_name = f'batch-{datetime.datetime.now().isoformat()}'
                 file_name = f'{batch_name}_sub-batch-%d_substrate-%d.archive.json'
+                angle_deviation = (sub_batch.maximum_miscut_angle.magnitude - sub_batch.minimum_miscut_angle.magnitude) / 2
+                angle = sub_batch.minimum_miscut_angle.magnitude + angle_deviation
                 sub_batch.substrates = [
                     IKZPLDSubstrateReference(
                         substrate_number=substrate_idx,
                         substrate=create_archive(
                             IKZPLDSubstrate(
                                 name=f'{batch_name} {sub_batch.name} substrate-{substrate_idx}',
-                                material=self.material,
-                                orientation=self.orientation,
-                                miscut_orientation=self.miscut_orientation,
-                                supplier_batch=self.supplier_batch,
-                                minimum_miscut_angle=sub_batch.minimum_miscut_angle.magnitude,
-                                maximum_miscut_angle=sub_batch.maximum_miscut_angle.magnitude,
-                                components=self.components
+                                geometry=self.geometry,
+                                crystal_properties=SubstrateCrystalProperties(
+                                    orientation=self.orientation,
+                                    miscut=Miscut(
+                                        orientation=self.miscut_orientation,
+                                        angle=angle,
+                                        angle_deviation=angle_deviation,
+                                    )
+                                ),
+                                components=self.components,
+                                supplier_id=self.supplier_batch,
+                                supplier=self.supplier,
+                                dopants=self.dopants,
                             ),
                             archive,
                             file_name % (sub_batch_idx, substrate_idx),
@@ -392,10 +385,71 @@ class IKZPLDSample(ThinFilmStack, IKZPLDPossibleSubstrate, EntryData):
     )
 
 
+class IKZPLDLayerProcessConditions(ArchiveSection):
+    '''
+    Process conditions for a layer in a pulsed laser deposition process at IKZ.
+    '''
+    m_def=Section(
+        categories=[IKZPLDCategory],
+        label='Process Conditions',
+    )
+    growth_temperature = Quantity(
+        type=float,
+        unit='kelvin',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='celsius',
+        ),
+    )
+    sample_to_target_distance = Quantity(
+        type=float,
+        unit='meter',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='millimeter',
+        ),
+    )
+    oxygen_flow = Quantity(
+        type=float,
+        unit='meter ** 3 / second',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='cm ** 3 / minute',
+        ),
+    )
+    number_of_pulses = Quantity(
+        type=float,
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
+    )
+    laser_repetition_rate = Quantity(
+        type=float,
+        unit='hertz',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+        ),
+    )
+    laser_energy = Quantity(
+        type=float,
+        unit='joule',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='millijoule',
+        ),
+    )
+
+
 class IKZPLDLayer(ThinFilm, EntryData):
     m_def=Section(
         categories=[IKZPLDCategory],
         label='Layer',
+    )
+    process_conditions = SubSection(
+        section_def=IKZPLDLayerProcessConditions,
+    )
+    geometry = SubSection(
+        section_def=Parallelepiped,
     )
 
 
@@ -485,7 +539,9 @@ class IKZPLDStep(PLDStep):
             logger (BoundLogger): A structlog logger.
         '''
         super(IKZPLDStep, self).normalize(archive, logger)
-        self.substrate.distance_to_source = [self.sample_to_target_distance]
+        if self.sample_to_target_distance is not None:
+            for substrate in self.substrate:
+                substrate.distance_to_source = [self.sample_to_target_distance.to('meter').magnitude]
 
 
 def time_convert(x: Union[str, int])-> int:
@@ -521,6 +577,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     'lab_id',
                     'attenuated_laser_energy',
                     'laser_spot_size',
+                    'substrate',
+                    'targets',
                     'data_log',
                     'recipe_log',
                     'steps',
@@ -640,6 +698,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
         if self.data_log and self.recipe_log:
             import pandas as pd
             import numpy as np
+            from nomad.units import ureg
 
             pattern = re.compile(
                 r'(?P<datetime>\d{8}_\d{4})-(?P<name>.+)\.(?P<type>d|e)log',
@@ -658,28 +717,6 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                 )
                 self.process_identifiers.normalize(archive, logger)
                 self.lab_id = self.process_identifiers.lab_id
-
-            substrate_ref = None
-            sample_id = None
-            if isinstance(self.substrate, MProxy):
-                self.substrate.m_proxy_resolve()
-            if (
-                len(self.steps) > 0
-                and len(self.steps[0].substrate) > 0
-                and self.steps[0].substrate[0].substrate is not None
-            ):
-                substrate_ref = self.steps[0].substrate[0].substrate
-                sample_id = substrate_ref.lab_id
-            elif isinstance(self.substrate, IKZPLDSubstrate):
-                sample_id = f'{self.lab_id}-PLD-Sample'
-                substrate_ref = create_archive(
-                    entity=IKZPLDSample(substrate=self.substrate.m_proxy_value, lab_id=sample_id),
-                    archive=archive,
-                    file_name=f'{sample_id}.archive.json',
-                )
-            elif isinstance(self.substrate, IKZPLDSample):
-                substrate_ref = self.substrate
-                sample_id = substrate_ref.lab_id
 
             with archive.m_context.raw_file(self.recipe_log, 'r') as e_log:
                 df_recipe = pd.read_csv(
@@ -714,10 +751,25 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     sep='\t',
                     names=columns,
                 )
-
+            substrate_ref = None
+            sample_id = None
+            if isinstance(self.substrate, MProxy):
+                self.substrate.m_proxy_resolve()
+            if isinstance(self.substrate, IKZPLDSubstrate):
+                sample_id = f'{self.lab_id}-PLD-Sample'
+                substrate_ref = self.substrate
+            elif isinstance(self.substrate, IKZPLDSample):
+                sample_id = self.substrate.sample_id.lab_id
+                substrate_ref = self.substrate.substrate
             steps = []
             target_recipe_names = [target.recipe_name for target in self.targets]
-            for _, row in df_steps.iterrows():
+            if len(self.steps) == len(df_steps):
+                target_distances = [step.sample_to_target_distance for step in self.steps]
+            else:
+                target_distances = [None] * len(df_steps)
+            for target_distance, (_, row) in zip(target_distances, df_steps.iterrows()):
+                if target_distance is not None:
+                    target_distance = target_distance.to('meter').magnitude
                 step_pattern = re.compile(
                     r'^(?P<step>[a-z]*?)(?P<target>[A-Z]*)(?P<temp>\d*)$'
                 )
@@ -761,18 +813,48 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                     evaporation_source=evaporation_source,
                     material_source=target_source,
                 )
+                environment = PVDChamberEnvironment(
+                    pressure=PVDPressure(
+                        pressure=data['pressure_mbar'],
+                        process_time=data['time_s'],
+                    ),
+                    gas_flow=[PVDGasFlow(
+                        gas=PubChemPureSubstanceSection(name='Oxygen'),
+                        flow=ureg.Quantity(data['o2_flow_sccm'].values, ureg('cm ** 3 / minute')).to('meter ** 3 / second').magnitude,
+                        process_time=data['time_s'],
+                    ), PVDGasFlow(
+                        gas=PureSubstanceSection(name='Argon/Nitrogen'),
+                        flow=ureg.Quantity(data['n2_ar_flow_sccm'].values, ureg('cm ** 3 / minute')).to('meter ** 3 / second').magnitude,
+                        process_time=data['time_s'],
+                    )],
+                )
                 thin_film = None
-                if creates_new_thin_film:
+                if creates_new_thin_film and target_distance is not None and sample_id is not None:
                     layer_count = len(layers) + 1
                     layer_id = f'{sample_id}-L{layer_count}'
                     elemental_composition = []
                     if target is not None:
                         elemental_composition = target.elemental_composition
+                    if substrate_ref is not None and substrate_ref.geometry is not None:
+                        geometry = Parallelepiped()
+                        geometry.width=substrate_ref.geometry.width
+                        geometry.length=substrate_ref.geometry.length
+                    else:
+                        geometry = None
                     name = f'{sample_id} Layer {layer_count}'
                     thin_film = create_archive(
                         entity=IKZPLDLayer(
                             name=name,
                             elemental_composition=elemental_composition,
+                            process_conditions=IKZPLDLayerProcessConditions(
+                                growth_temperature=data['temperature_degc'].mean() + 273.15,
+                                sample_to_target_distance=target_distance,
+                                oxygen_flow=ureg.Quantity(data['o2_flow_sccm'].mean(), ureg('cm ** 3 / minute')).to('meter ** 3 / second').magnitude,
+                                number_of_pulses=row['pulses'],
+                                laser_repetition_rate=data['frequency_hz'].mean(),
+                                laser_energy=data['laser_energy_mj'].mean() * 1e-3,
+                            ),
+                            geometry=geometry,
                         ),
                         archive=archive,
                         file_name=f'{layer_id}.archive.json',
@@ -785,30 +867,43 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                         measurement_type='Heater thermocouple',
                     ),
                     heater='Resistive element',
-                    substrate=substrate_ref,
                     thin_film=thin_film,
-                )
-                environment = PVDChamberEnvironment(
-                    pressure=PVDPressure(
-                        pressure=data['pressure_mbar'],
-                        process_time=data['time_s'],
-                    )
                 )
                 step = IKZPLDStep(
                     name=row['recipe'],
                     creates_new_thin_film=creates_new_thin_film,
+                    sample_to_target_distance=target_distance,
                     duration=row['duration_s'],
                     sources=[source],
                     substrate=[substrate],
                     environment=environment,
                 )
+                step.normalize(archive, logger)
                 steps.append(step)
             self.steps = steps
-            if len(self.steps) > 0 and substrate_ref is not None:
+
+            if isinstance(self.substrate, IKZPLDSubstrate) and len(layers) > 0:
                 self.samples = [CompositeSystemReference(
                     name=sample_id,
-                    reference=substrate_ref,
+                    reference=create_archive(
+                        entity=IKZPLDSample(
+                            substrate=self.substrate.m_proxy_value,
+                            lab_id=sample_id,
+                            layers=[layer for layer in layers.values()],
+                        ),
+                        archive=archive,
+                        file_name=f'{sample_id}.archive.json',
+                    ),
                 )]
+            elif isinstance(self.substrate, IKZPLDSample) and len(steps) > 0:
+                self.samples = [CompositeSystemReference(
+                    name=sample_id,
+                    reference=self.substrate,
+                )]
+            if len(self.samples) > 0:
+                for step in self.steps:
+                    step.substrate[0].substrate = self.samples[0].reference
+
         archive.workflow2 = None
         super(IKZPulsedLaserDeposition, self).normalize(archive, logger)
         if self.substrate is not None:
@@ -823,7 +918,6 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
             archive.workflow2.outputs.append(
                 Link(name=f'Layer: {name}', section=layer)
             )
-
 
 
 m_package.__init_metainfo__()
