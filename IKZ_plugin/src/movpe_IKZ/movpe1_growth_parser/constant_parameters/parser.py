@@ -40,7 +40,7 @@ from nomad_material_processing.utils import create_archive as create_archive_ref
 from movpe_IKZ import (
     ExperimentMovpe1IKZ,
     GrowthMovpe1IKZConstantParameters,
-    GrownSample
+    ThinFilmStackMovpe
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.parsing.tabular import create_archive

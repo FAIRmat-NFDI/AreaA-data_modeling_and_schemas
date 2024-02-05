@@ -47,8 +47,8 @@ from movpe_IKZ import (
     PrecursorsPreparationMovpe1IKZReference,
     PureSubstanceComponentMovpe1IKZ,
     PubChemPureSubstanceSectionMovpe1,
-    GrownSampleReference,
-    GrownSample,
+    ThinFilmStackMovpeReference,
+    ThinFilmStackMovpe,
     ChamberPressure,
     Rotation,
     FilamentTemperature,
@@ -182,9 +182,9 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     continue
             elif search_experiments.pagination.total == 0:
                 # create grown sample archive
-                sample_filename = f"{dep_control_run}.GrownSample.archive.{filetype}"
+                sample_filename = f"{dep_control_run}.ThinFilmStackMovpe.archive.{filetype}"
                 sample_archive = EntryArchive(
-                    data=GrownSample(lab_id=dep_control_run),
+                    data=ThinFilmStackMovpe(lab_id=dep_control_run),
                     m_context=current_parse_archive.m_context,
                     metadata=EntryMetadata(
                         upload_id=current_parse_archive.m_context.upload_id
@@ -336,7 +336,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                             lab_id=dep_control["Constant Parameters ID"][index],
                         ),
                         growth_run_deposition_control=dep_control_data,
-                        grown_sample=GrownSampleReference(
+                        grown_sample=ThinFilmStackMovpeReference(
                             reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, sample_filename)}#data",
                         ),
                     ),
@@ -367,7 +367,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #                 lab_id=dep_control["Constant Parameters ID"][index],
                 #             ),
                 #             growth_run_deposition_control=dep_control_data,
-                #             grown_sample=GrownSampleReference(
+                #             grown_sample=ThinFilmStackMovpeReference(
                 #                 reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, sample_filename)}#data",
                 #             ),
                 #         ),
@@ -417,7 +417,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #         updated_experiment["data"][
                 #             "growth_run_deposition_control"
                 #         ] = dep_control_data.m_to_dict()
-                #         updated_experiment["data"]["grown_sample"] = GrownSampleReference(
+                #         updated_experiment["data"]["grown_sample"] = ThinFilmStackMovpeReference(
                 #             reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, sample_filename)}#data",
                 #         ).m_to_dict()
 

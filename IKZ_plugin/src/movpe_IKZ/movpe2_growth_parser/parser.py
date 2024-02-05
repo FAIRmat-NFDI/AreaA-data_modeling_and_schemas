@@ -38,14 +38,21 @@ from nomad.datamodel.metainfo.basesections import SystemComponent
 from basesections_IKZ import IKZMOVPE2Category
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
+from nomad_material_processing import (
+    SubstrateReference,
+)
+from nomad_material_processing.vapor_deposition import (
+    Substrate,
+)
 from movpe_IKZ import (
     ExperimentMovpe2IKZ,
+    GrowthStepMovpe2IKZ,
     GrowthMovpe2IKZ,
-    GrownSample,
-    GrownSampleReference,
+    GrowthMovpe2IKZReference,
+    ThinFilmStackMovpe,
+    ThinFilmStackMovpeReference,
     ParentSampleReference,
     SubstrateReference,
-    GrowthStepMovpe2IKZ,
     Bubbler,
     GasSource,
 )
@@ -101,18 +108,18 @@ class ParserMovpe2IKZ(MatchingParser):
 
         # creating experiment dict
         growth_process_list: Dict[str, GrowthMovpe2IKZ] = {}
-        recipe_ids = [
-            recipe_experiment for recipe_experiment in growth_run_file["Recipe Name"]
-        ]
-        recipe_ids = list(set(recipe_ids))  # remove duplicates
+        recipe_ids = list(
+            set(growth_run_file["Recipe Name"])
+        )  # "set" removes duplicates
+
         for unique_id in recipe_ids:
-            growth_process_list[unique_id] = []
+            growth_process_list[unique_id] = None
 
         for index, grown_sample in enumerate(growth_run_file["Sample Name"]):
             # creating grown sample archives
             grown_sample_ids.append(grown_sample)  # collect all ids
             grown_sample_filename = (
-                f"{grown_sample}_{index}.GrownSample.archive.{filetype}"
+                f"{grown_sample}_{index}.ThinFilmStack.archive.{filetype}"
             )
             substrate_id = growth_run_file["Substrate Name"][index]
             substrate_reference_str = None
@@ -125,9 +132,9 @@ class ParserMovpe2IKZ(MatchingParser):
                 user_id=archive.metadata.main_author.user_id,
             )
             if not search_result.data:
-                grown_sample_data = GrownSample(lab_id=grown_sample)
+                grown_sample_data = ThinFilmStackMovpe(lab_id=grown_sample)
                 logger.warning(
-                    f"Substrate entry [{substrate_id}] was not found, upload and reprocess to reference it in GrownSample entry [{grown_sample}]"
+                    f"Substrate entry [{substrate_id}] was not found, upload and reprocess to reference it in ThinFilmStack entry [{grown_sample}]"
                 )
             if len(search_result.data) > 1:
                 logger.warn(
@@ -136,9 +143,9 @@ class ParserMovpe2IKZ(MatchingParser):
                 )
             if len(search_result.data) >= 1:
                 substrate_reference_str = f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
-                grown_sample_data = GrownSample(
-                    lab_id=grown_sample,
-                    components=[SystemComponent(system=substrate_reference_str)],
+                grown_sample_data = ThinFilmStackMovpe(
+                    lab_id=grown_sample,  ### problem: ThinFilm would have the same lab_id than ThinFilmStack, ask Ta-Shun
+                    substrate=[SubstrateReference(reference=substrate_reference_str)],
                 )
             grown_sample_archive = EntryArchive(
                 data=grown_sample_data,
@@ -238,57 +245,92 @@ class ParserMovpe2IKZ(MatchingParser):
                     break
 
             # creating growth process objects
-            growth_process_instance = GrowthMovpe2IKZ(
-                name=f"{grown_sample} growth run",
-                recipe_id=growth_run_file["Recipe Name"][index],
-                lab_id=f"{grown_sample} growth run",
-                samples=[
-                    GrownSampleReference(
+            if not growth_process_list[growth_run_file["Recipe Name"][index]]:
+                growth_process_list[growth_run_file["Recipe Name"][index]] = (
+                    GrowthMovpe2IKZ(
+                        name=f"{grown_sample} growth run",
+                        recipe_id=growth_run_file["Recipe Name"][index],
+                        lab_id=f"{grown_sample} growth run",
+                        steps=[  #### implement the different step number !!!
+                            GrowthStepMovpe2IKZ(
+                                name=growth_run_file["Step name"][index],
+                                step_index=growth_run_file["Step Index"][index],
+                                elapsed_time=growth_run_file["Duration"][index],
+                                temperature_shaft=growth_run_file["T Shaft"][index],
+                                temperature_filament=growth_run_file["T Filament"][
+                                    index
+                                ],
+                                temperature_laytec=growth_run_file["T LayTec"][index],
+                                pressure=growth_run_file["Pressure"][index],
+                                rotation=growth_run_file["Rotation"][index],
+                                carrier_gas=growth_run_file["Carrier Gas"][index],
+                                push_gas_valve=growth_run_file["Pushgas Valve"][index],
+                                uniform_valve=growth_run_file["Uniform Valve"][index],
+                                comments=growth_run_file["Comments"][index],
+                                bubblers=bubblers,
+                                gas_source=gas_sources,
+                                substrate=Substrate(
+                                    substrate_specimen=[
+                                        ThinFilmStackMovpeReference(
+                                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                                        )
+                                    ],
+                                    distance_to_source=growth_run_file[
+                                        "Distance of Showerhead"
+                                    ][index],
+                                ),
+                                # substrate=[
+                                #     SubstrateReference(
+                                #         lab_id=growth_run_file["Substrate Name"][index],
+                                #     )
+                                # ],
+                                # parent_sample=[
+                                #     ParentSampleReference(
+                                #         lab_id=growth_run_file["Previous Layer Name"][index],
+                                #     )
+                                # ],
+                            )
+                        ],
+                    )
+                )
+            else:
+                growth_process_list[growth_run_file["Recipe Name"][index]].steps[
+                    0
+                ].substrate.substrate_specimen.append(  ########## IMPLEMENT THE STEP!!
+                    ThinFilmStackMovpeReference(
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
                     )
-                ],
-                substrate=[
-                    SubstrateReference(
-                        lab_id=growth_run_file["Substrate Name"][index],
-                    )
-                ],
-                parent_sample=[
-                    ParentSampleReference(
-                        lab_id=growth_run_file["Previous Layer Name"][index],
-                    )
-                ],
-                steps=[
-                    GrowthStepMovpe2IKZ(
-                        name=growth_run_file["Step name"][index],
-                        step_index=growth_run_file["Step Index"][index],
-                        elapsed_time=growth_run_file["Duration"][index],
-                        temperature_shaft=growth_run_file["T Shaft"][index],
-                        temperature_filament=growth_run_file["T Filament"][index],
-                        temperature_laytec=growth_run_file["T LayTec"][index],
-                        pressure=growth_run_file["Pressure"][index],
-                        rotation=growth_run_file["Rotation"][index],
-                        carrier_gas=growth_run_file["Carrier Gas"][index],
-                        push_gas_valve=growth_run_file["Pushgas Valve"][index],
-                        uniform_valve=growth_run_file["Uniform Valve"][index],
-                        showerhead_distance=growth_run_file["Distance of Showerhead"][
-                            index
-                        ],
-                        comments=growth_run_file["Comments"][index],
-                        bubblers=bubblers,
-                        gas_source=gas_sources,
-                    )
-                ],
+                )
+
+            # growth_process_list[growth_run_file["Recipe Name"][index]].append(
+            #     growth_process_instance
+            # )
+
+        # creating growth process archives
+        for unique_id, growth_process_object in growth_process_list.items():
+            growth_process_filename = f"{unique_id}.GrowthMovpe2IKZ.archive.{filetype}"
+            growth_process_archive = EntryArchive(
+                data=growth_process_object,
+                m_context=archive.m_context,
+                metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
             )
-            growth_process_list[growth_run_file["Recipe Name"][index]].append(
-                growth_process_instance
+            create_archive(
+                growth_process_archive.m_to_dict(),
+                archive.m_context,
+                growth_process_filename,
+                filetype,
+                logger,
             )
 
         experiment_reference = []
         for unique_id in recipe_ids:
             experiment_filename = f"{unique_id}.archive.{filetype}"
+            growth_process_filename = f"{unique_id}.GrowthMovpe2IKZ.archive.{filetype}"
             experiment_data = ExperimentMovpe2IKZ(
                 lab_id=unique_id,
-                growth_runs=growth_process_list[unique_id],
+                growth_run=GrowthMovpe2IKZReference(
+                    reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data"
+                ),
             )
             experiment_archive = EntryArchive(
                 data=experiment_data,
