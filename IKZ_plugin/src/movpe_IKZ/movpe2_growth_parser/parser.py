@@ -42,7 +42,7 @@ from nomad_material_processing import (
     SubstrateReference,
 )
 from nomad_material_processing.vapor_deposition import (
-    Substrate,
+    SubstrateSetup,
 )
 from movpe_IKZ import (
     ExperimentMovpe2IKZ,
@@ -145,7 +145,7 @@ class ParserMovpe2IKZ(MatchingParser):
                 substrate_reference_str = f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
                 grown_sample_data = ThinFilmStackMovpe(
                     lab_id=grown_sample,  ### problem: ThinFilm would have the same lab_id than ThinFilmStack, ask Ta-Shun
-                    substrate=[SubstrateReference(reference=substrate_reference_str)],
+                    substrate=SubstrateReference(reference=substrate_reference_str),
                 )
             grown_sample_archive = EntryArchive(
                 data=grown_sample_data,
@@ -246,59 +246,61 @@ class ParserMovpe2IKZ(MatchingParser):
 
             # creating growth process objects
             if not growth_process_list[growth_run_file["Recipe Name"][index]]:
-                growth_process_list[growth_run_file["Recipe Name"][index]] = (
-                    GrowthMovpe2IKZ(
-                        name=f"{grown_sample} growth run",
-                        recipe_id=growth_run_file["Recipe Name"][index],
-                        lab_id=f"{grown_sample} growth run",
-                        steps=[  #### implement the different step number !!!
-                            GrowthStepMovpe2IKZ(
-                                name=growth_run_file["Step name"][index],
-                                step_index=growth_run_file["Step Index"][index],
-                                elapsed_time=growth_run_file["Duration"][index],
-                                temperature_shaft=growth_run_file["T Shaft"][index],
-                                temperature_filament=growth_run_file["T Filament"][
-                                    index
-                                ],
-                                temperature_laytec=growth_run_file["T LayTec"][index],
-                                pressure=growth_run_file["Pressure"][index],
-                                rotation=growth_run_file["Rotation"][index],
-                                carrier_gas=growth_run_file["Carrier Gas"][index],
-                                push_gas_valve=growth_run_file["Pushgas Valve"][index],
-                                uniform_valve=growth_run_file["Uniform Valve"][index],
-                                comments=growth_run_file["Comments"][index],
-                                bubblers=bubblers,
-                                gas_source=gas_sources,
-                                substrate=Substrate(
-                                    substrate_specimen=[
-                                        ThinFilmStackMovpeReference(
-                                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
-                                        )
+                growth_process_list[
+                    growth_run_file["Recipe Name"][index]
+                ] = GrowthMovpe2IKZ(
+                    name=f"{grown_sample} growth run",
+                    recipe_id=growth_run_file["Recipe Name"][index],
+                    lab_id=f"{grown_sample} growth run",
+                    steps=[  #### implement the different step number !!!
+                        GrowthStepMovpe2IKZ(
+                            name=growth_run_file["Step name"][index],
+                            step_index=growth_run_file["Step Index"][index],
+                            elapsed_time=growth_run_file["Duration"][index],
+                            temperature_shaft=growth_run_file["T Shaft"][index],
+                            temperature_filament=growth_run_file["T Filament"][index],
+                            temperature_laytec=growth_run_file["T LayTec"][index],
+                            pressure=growth_run_file["Pressure"][index],
+                            rotation=growth_run_file["Rotation"][index],
+                            carrier_gas=growth_run_file["Carrier Gas"][index],
+                            push_gas_valve=growth_run_file["Pushgas Valve"][index],
+                            uniform_valve=growth_run_file["Uniform Valve"][index],
+                            comments=growth_run_file["Comments"][index],
+                            bubblers=bubblers,
+                            gas_source=gas_sources,
+                            substrate=[
+                                SubstrateSetup(
+                                    substrate_specimen=ThinFilmStackMovpeReference(
+                                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                                    ),
+                                    distance_to_source=[
+                                        growth_run_file["Distance of Showerhead"][index]
                                     ],
-                                    distance_to_source=growth_run_file[
-                                        "Distance of Showerhead"
-                                    ][index],
-                                ),
-                                # substrate=[
-                                #     SubstrateReference(
-                                #         lab_id=growth_run_file["Substrate Name"][index],
-                                #     )
-                                # ],
-                                # parent_sample=[
-                                #     ParentSampleReference(
-                                #         lab_id=growth_run_file["Previous Layer Name"][index],
-                                #     )
-                                # ],
-                            )
-                        ],
-                    )
+                                )
+                            ],
+                            # substrate=[
+                            #     SubstrateReference(
+                            #         lab_id=growth_run_file["Substrate Name"][index],
+                            #     )
+                            # ],
+                            # parent_sample=[
+                            #     ParentSampleReference(
+                            #         lab_id=growth_run_file["Previous Layer Name"][index],
+                            #     )
+                            # ],
+                        )
+                    ],
                 )
             else:
-                growth_process_list[growth_run_file["Recipe Name"][index]].steps[
-                    0
-                ].substrate.substrate_specimen.append(  ########## IMPLEMENT THE STEP!!
-                    ThinFilmStackMovpeReference(
-                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                growth_process_list[
+                    growth_run_file["Recipe Name"][
+                        index
+                    ]  ########## IMPLEMENT THE STEP!!
+                ].steps[0].substrate.append(
+                    SubstrateSetup(
+                        substrate_specimen=ThinFilmStackMovpeReference(
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                        )
                     )
                 )
 
