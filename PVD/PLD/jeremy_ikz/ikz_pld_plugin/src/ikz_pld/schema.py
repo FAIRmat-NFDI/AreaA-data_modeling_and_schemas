@@ -894,7 +894,9 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                                 sample_to_target_distance=target_distance,
                                 number_of_pulses=row["pulses"],
                                 laser_repetition_rate=data["frequency_hz"].mean(),
-                                laser_energy=self.attenuated_laser_energy,
+                                laser_energy=self.attenuated_laser_energy.to(
+                                    "joule"
+                                ).magnitude,
                             ),
                             geometry=geometry,
                         ),
