@@ -409,12 +409,12 @@ class IKZPLDLayerProcessConditions(ArchiveSection):
             defaultDisplayUnit='millimeter',
         ),
     )
-    oxygen_flow = Quantity(
+    pressure = Quantity(
         type=float,
-        unit='meter ** 3 / second',
+        unit='pascal',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity,
-            defaultDisplayUnit='cm ** 3 / minute',
+            defaultDisplayUnit='mbar',
         ),
     )
     number_of_pulses = Quantity(
@@ -848,11 +848,11 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, EntryData):
                             elemental_composition=elemental_composition,
                             process_conditions=IKZPLDLayerProcessConditions(
                                 growth_temperature=data['temperature_degc'].mean() + 273.15,
+                                pressure=ureg.Quantity(data['pressure_mbar'].mean(), ureg('mbar')).to('pascal').magnitude,
                                 sample_to_target_distance=target_distance,
-                                oxygen_flow=ureg.Quantity(data['o2_flow_sccm'].mean(), ureg('cm ** 3 / minute')).to('meter ** 3 / second').magnitude,
                                 number_of_pulses=row['pulses'],
                                 laser_repetition_rate=data['frequency_hz'].mean(),
-                                laser_energy=data['laser_energy_mj'].mean() * 1e-3,
+                                laser_energy=self.attenuated_laser_energy,
                             ),
                             geometry=geometry,
                         ),
