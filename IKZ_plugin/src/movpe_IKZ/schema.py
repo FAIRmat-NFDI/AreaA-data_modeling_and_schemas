@@ -49,6 +49,8 @@ from nomad_material_processing import (
 from nomad_material_processing.vapor_deposition import (
     VaporDepositionSource,
     VaporDepositionStep,
+    SampleParameters,
+    SubstrateTemperature,
 )
 
 from nomad_measurements import (
@@ -1506,7 +1508,62 @@ class CharacterizationMovpe(ArchiveSection):
     )
 
 
-class Substrate(ArchiveSection):
+class SubstrateTemperatureMovpe(SubstrateTemperature):
+    m_def = Section(
+        a_plot=dict(
+            x="process_time",
+            y="temperature",
+        ),
+    )
+    temperature = Quantity(
+        type=float,
+        unit="celsius",
+        shape=["*"],
+        a_eln=ELNAnnotation(
+            defaultDisplayUnit="celsius",
+            component="NumberEditQuantity",
+        ),
+        description="""
+        The measured temperature by Pyrometer (Laytec GmbH),
+        which is supposed to be the real temperature during the thin-film growth,
+        excluding the heat-up and the cooling-down steps.
+        """,
+    )
+    temperature_shaft = Quantity(
+        type=np.float64,
+        description="""The input value of central shaft temperature (to hold the susceptor)
+        on MOVPE UI exclusively represents during the thin-film growth,
+        excluding the heat-up and the cooling-down steps.""",
+        a_tabular={"name": "GrowthRun/T Shaft"},
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
+        unit="celsius",
+    )
+    temperature_filament = Quantity(
+        type=np.float64,
+        description="""The input value of heating filament temperature
+        on MOVPE UI exclusively represents during the thin-film growth,
+        excluding the heat-up and the cooling-down steps.""",
+        a_tabular={"name": "GrowthRun/T Filament"},
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
+        unit="celsius",
+    )
+    process_time = Quantity(
+        type=float,
+        unit="second",
+        shape=["*"],
+        a_eln=ELNAnnotation(
+            defaultDisplayUnit="second",
+        ),
+    )
+    measurement_type = Quantity(
+        type=MEnum(
+            "Heater thermocouple",
+            "Pyrometer",
+        )
+    )
+
+
+class SampleParametersMovpe(SampleParameters):
     m_def = Section(
         a_plotly_graph_object={
             "data": {"x": "temperature/duration", "y": "temperature/temperature"},
@@ -1515,35 +1572,19 @@ class Substrate(ArchiveSection):
             "index": 1,
         },
     )
-    thin_film = Quantity(
-        description="""
-        The thin film that is being created during this step.
-        """,
-        type=ThinFilm,
-    )
-    heater = Quantity(
-        type=MEnum(
-            "No heating",
-            "Halogen lamp",
-            "Filament",
-            "Resistive element",
-            "CO2 laser",
-        )
-    )
     distance_to_source = Quantity(
         type=float,
         unit="meter",
-        shape=["*"],
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "millimeter"},
-        label="Showerhead to substrate distance",
+        description="""
+        The distance between the substrate and the source.
+        It is an array because multiple sources can be used.
+        """,
+        shape=["*"],
     )
-    # parent_sample = SubSection(
-    #     section_def=ParentSampleReference, repeats=True, label="Parent Sample"
-    # )
-    substrate_specimen = SubSection(
-        section_def=ThinFilmStackReference,
-        repeats=True,
-        # label="Substrate"
+
+    temperature = SubSection(
+        section_def=SubstrateTemperatureMovpe,
     )
 
 
@@ -1591,27 +1632,6 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
         unit="minute",
     )
-    temperature_shaft = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/T Shaft"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
-    temperature_filament = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/T Filament"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
-    temperature_laytec = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/T LayTec"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
     pressure = Quantity(
         type=np.float64,
         description="FILL THE DESCRIPTION",
@@ -1658,10 +1678,10 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
         a_tabular={"name": "GrowthRun/Comments"},
         a_eln={"component": "StringEditQuantity"},
     )
-    # substrate = SubSection(
-    #     section_def=Substrate,
-    #     repeats=True,
-    # )
+    sample_parameters = SubSection(
+        section_def=SampleParametersMovpe,
+        repeats=True,
+    )
     bubblers = SubSection(
         section_def=Bubbler,
         repeats=True,
