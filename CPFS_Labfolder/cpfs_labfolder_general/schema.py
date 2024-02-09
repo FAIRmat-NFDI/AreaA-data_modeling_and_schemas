@@ -19,6 +19,8 @@
 
 import pandas as pd
 
+import pint
+
 from nomad.units import ureg
 
 import nomad.datamodel as nodm
@@ -84,6 +86,7 @@ _section_selection_mapping = {
 def clean_attribute(input_key: str) -> str:
     output_key = (
         input_key
+        .split("NOMAD: ")[0]
         .lower()
         .strip()
         .replace('/ ','_')
@@ -129,12 +132,39 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                         if element.element_type=="TEXT":
                             line=TAG_RE.sub("",element.content)
                             data_content=data_content|dict({line.split("\n")[0]+";;;description":";".join(line.split("\n")[1:])})
+                        if element.element_type=="TABLE":
+                            for key in element.content["sheets"]:
+                                name=element.content["sheets"][key]["name"].replace("NOMAD- ","NOMAD: ")
+                                if "NOMAD: " in name:
+                                    table=element.content["sheets"][key]["data"]["dataTable"]
+                                    df=pd.DataFrame.from_dict({(i): {(j): table[i][j]["value"]  for j in table[i].keys()} for i in table.keys()},orient="index")
+                                    df.columns=df.iloc[0]
+                                    df=df.iloc[1:].reset_index(drop=True)
+                                    for i in range(len(df)):
+                                        for key in df:
+                                            if "rep per line" in name:
+                                                #figure out unit
+                                                unit=re.findall(r'\(.*?\)',key)
+                                                if len(unit)==1:
+                                                    try:
+                                                        a=ureg(unit[0].strip("(").strip(")"))
+                                                        data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key.replace(unit[0],"")+";;;unit":unit[0].strip("(").strip(")")})
+                                                        data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key.replace(unit[0],"")+";;;value":df[key][i]})
+                                                    except pint.errors.UndefinedUnitError:
+                                                        data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key.replace(unit[0],"")+";;;description":df[key][i]})
+                                                elif len(unit)==0:
+                                                    data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key+";;;description":df[key][i]})
+                                                else:
+                                                    logger.warning("Could not match table entry "+key+". Too many parenthesis.")
+                    logger.info(data_content)
                     subsection_list=[]
                     for key in data_content.keys():
                         if data_content[key]==None or data_content[key]=="":
                             continue
                         if "NOMAD:" in key:
                             line=key.split("NOMAD: ")[1].split(";;;")[0].strip()
+                            if " rep " in line:
+                                line=line.split(" rep ")[0]+" rep"
                             if not line in subsection_list:
                                 subsection_list.append(line)
                         else:
@@ -157,46 +187,59 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                         logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
 
                     for section in subsection_list:
-                        if section.startswith("Subs") or section.startswith("Arch"):
-                            if not hasattr(labfolder_section,section.split(" ")[2]):
-                                logger.warning("The schema does not have a Subsection "+section.split(" ")[1])
-                                break
-                            if section.startswith("Subs"):
-                                logger.info("Creating Subsection "+section.split(" ")[1])
-                            if section.startswith("Arch"):
-                                logger.info("Creating Archive "+section.split(" ")[1])
-                            section_object=_section_selection_mapping[section.split(" ")[1]]()
-                            for key in data_content.keys():
-                                if data_content[key]==None or data_content[key]=="":
-                                    continue
-                                if "NOMAD: " in key and section in key:
-                                    if key.split(";;;")[-1]=="unit":
-                                        continue
-                                    attrib=clean_attribute(key.split(";;;")[-2])
-                                    if hasattr(section_object,attrib):
-                                        if key.split(";;;")[-1]=="value":
-                                            try:
-                                                setattr(section_object,attrib,ureg.Quantity(float(data_content[key]),data_content[key.strip("value")+"unit"]))
-                                            except TypeError:
-                                                try:
-                                                    setattr(section_object,attrib,ureg.Quantity(int(data_content[key]),data_content[key.strip("value")+"unit"]))
-                                                except TypeError as error:
-                                                    logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
-                                        if key.split(";;;")[-1]=="description":
-                                            try:
-                                                setattr(section_object,attrib,data_content[key])
-                                            except Exception as error:
-                                                logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
-
-                            if section.startswith("Arch"):
-                                section_object = create_archive(
-                                        section_object,
-                                        archive,
-                                        entry.title + "_" + entry.id + "_"+section.split(" ")[1]+".archive.json"
-                                    )
+                        repcount=0
+                        replist=[]
+                        for repcount in range(1000):
                             if "rep" in section:
-                                section_object=[section_object]
-                            setattr(labfolder_section,section.split(" ")[2],section_object)
+                                section=section.replace("rep","rep "+str(repcount))
+                                found=False
+                            if section.startswith("Subs") or section.startswith("Arch"):
+                                if not hasattr(labfolder_section,section.split(" ")[2]):
+                                    logger.warning("The schema does not have a Subsection "+section.split(" ")[1])
+                                    break
+                                if section.startswith("Subs"):
+                                    logger.info("Creating Subsection "+section.split(" ")[1])
+                                if section.startswith("Arch"):
+                                    logger.info("Creating Archive "+section.split(" ")[1])
+                                section_object=_section_selection_mapping[section.split(" ")[1]]()
+                                for key in data_content.keys():
+                                    if data_content[key]==None or data_content[key]=="":
+                                        continue
+                                    if "NOMAD: " in key and section in key:
+                                        found=True
+                                        if key.split(";;;")[-1]=="unit":
+                                            continue
+                                        attrib=clean_attribute(key.split(";;;")[-2])
+                                        if hasattr(section_object,attrib):
+                                            if key.split(";;;")[-1]=="value":
+                                                try:
+                                                    setattr(section_object,attrib,ureg.Quantity(float(data_content[key]),data_content[key.strip("value")+"unit"]))
+                                                except TypeError:
+                                                    try:
+                                                        setattr(section_object,attrib,ureg.Quantity(int(data_content[key]),data_content[key.strip("value")+"unit"]))
+                                                    except TypeError as error:
+                                                        logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
+                                            if key.split(";;;")[-1]=="description":
+                                                try:
+                                                    setattr(section_object,attrib,data_content[key])
+                                                except Exception as error:
+                                                    logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
+
+                                if section.startswith("Arch"):
+                                    section_object = create_archive(
+                                            section_object,
+                                            archive,
+                                            entry.title + "_" + entry.id + "_"+section.split(" ")[1]+".archive.json"
+                                        )
+
+                            replist.append(section_object)
+                            if found==False or not "rep" in section:
+                                break
+
+                        if not "rep" in section:
+                            setattr(labfolder_section,section.split(" ")[2],replist[0])
+                        else:
+                            setattr(labfolder_section,section.split(" ")[2],replist)
 
 
 
