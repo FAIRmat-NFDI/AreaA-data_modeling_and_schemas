@@ -1510,19 +1510,19 @@ class CharacterizationMovpe(ArchiveSection):
 
 class SubstrateTemperatureMovpe(SubstrateTemperature):
     m_def = Section(
-        a_plot=dict(
-            x="process_time",
-            y="temperature",
-        ),
+        # a_plot=dict(
+        #     x="process_time",
+        #     y="temperature",
+        # ),
     )
     temperature = Quantity(
         type=float,
         unit="celsius",
         shape=["*"],
-        a_eln=ELNAnnotation(
-            defaultDisplayUnit="celsius",
-            component="NumberEditQuantity",
-        ),
+        # a_eln=ELNAnnotation(
+        #     defaultDisplayUnit="celsius",
+        #     component="NumberEditQuantity",
+        # ),
         description="""
         The measured temperature by Pyrometer (Laytec GmbH),
         which is supposed to be the real temperature during the thin-film growth,
@@ -1551,9 +1551,6 @@ class SubstrateTemperatureMovpe(SubstrateTemperature):
         type=float,
         unit="second",
         shape=["*"],
-        a_eln=ELNAnnotation(
-            defaultDisplayUnit="second",
-        ),
     )
     measurement_type = Quantity(
         type=MEnum(
@@ -1565,12 +1562,70 @@ class SubstrateTemperatureMovpe(SubstrateTemperature):
 
 class SampleParametersMovpe(SampleParameters):
     m_def = Section(
+        label_quantity="test_quantity",
         a_plotly_graph_object={
-            "data": {"x": "temperature/duration", "y": "temperature/temperature"},
-            "layout": {"title": {"text": "Plotly Graph Object"}},
-            "label": "Plotly Graph Object",
+            "label": "Measured Temperatures",
             "index": 1,
+            "dragmode": "pan",
+            "data": {
+                "type": "scattergl",
+                "line": {"width": 2},
+                "marker": {"size": 2},
+                "mode": "lines+markers",
+                "name": "Temperature",
+                "x": "#temperature/process_time",
+                "y": "#temperature/temperature",
+            },
+            "layout": {
+                "title": {"text": "Measured Temperature"},
+                "xaxis": {
+                    "showticklabels": True,
+                    "ticks": "",
+                    "title": {"text": "Process time [s]"},
+                    "showline": True,
+                    "linewidth": 1,
+                    "linecolor": "black",
+                    "mirror": True,
+                },
+                "yaxis": {
+                    "showticklabels": True,
+                    "ticks": "",
+                    "title": {"text": "Temperature [°C]"},
+                    "showline": True,
+                    "linewidth": 1,
+                    "linecolor": "black",
+                    "mirror": True,
+                },
+                "showlegend": False,
+                "dragmode": "pan",
+            },
+            "config": {
+                "displayModeBar": True,
+                "scrollZoom": True,
+                "responsive": False,
+                "displaylogo": False,
+            },
+            #     "annotations": [
+            #         {
+            #             "font": {"size": 16},
+            #             "showarrow": False,
+            #             "text": "Measured Reflectance",
+            #             "x": 0.5,
+            #             "xanchor": "center",
+            #             "xref": "paper",
+            #             "y": 1,
+            #             "yanchor": "bottom",
+            #             "yref": "paper",
+            #         }
+            #     ],
         },
+    )
+    test_quantity = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+            label="Step name",
+        ),
     )
     distance_to_source = Quantity(
         type=float,
@@ -1672,11 +1727,11 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
         },
         unit="cm ** 3 / minute",
     )
-    comments = Quantity(
+    comment = Quantity(
         type=str,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Comments"},
+        description="description",
         a_eln={"component": "StringEditQuantity"},
+        label="Notes",
     )
     sample_parameters = SubSection(
         section_def=SampleParametersMovpe,
@@ -1715,6 +1770,7 @@ class GrowthMovpe2IKZ(Process, EntryData):
         type=str,
         description="description",
         a_eln={"component": "StringEditQuantity"},
+        label="Notes",
     )
     recipe_id = Quantity(
         type=str,
