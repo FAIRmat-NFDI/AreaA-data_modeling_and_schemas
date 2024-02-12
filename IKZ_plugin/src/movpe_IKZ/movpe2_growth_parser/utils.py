@@ -33,7 +33,10 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-from nomad.datamodel.metainfo.basesections import SystemComponent
+from nomad.datamodel.metainfo.basesections import (
+    SystemComponent,
+    CompositeSystemReference,
+)
 
 from basesections_IKZ import IKZMOVPE2Category
 from nomad.search import search
@@ -42,6 +45,13 @@ from nomad.search import search
 from nomad_material_processing import (
     SubstrateReference,
 )
+from nomad_material_processing.chemical_vapor_deposition import (
+    CVDBubbler,
+    CVDVaporRate,
+    CVDSource,
+    DepositionRate,
+)
+
 from movpe_IKZ import (
     ExperimentMovpe2IKZ,
     GrowthStepMovpe2IKZ,
@@ -53,8 +63,8 @@ from movpe_IKZ import (
     SubstrateReference,
     SubstrateTemperatureMovpe,
     SampleParametersMovpe,
-    Bubbler,
-    GasSource,
+    BubblerMovpeIKZ,
+    GasSourceMovpeIKZ,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.utils import hash
@@ -103,21 +113,21 @@ def fetch_substrate(archive, sample_id, substrate_id, logger):
         return substrate_reference_str
 
 
-def populate_bubbler(line_number, growth_run_file: pd.DataFrame):
+def populate_sources(line_number, growth_run_file: pd.DataFrame):
     """
     Populate the Bubbler object from the growth run file
     """
-    bubblers = []
+    sources = []
     bubbler_quantities = [
-        "Bubbler Material",
-        "Bubbler MFC",
+        "Bubbler Temp",
         "Bubbler Pressure",
+        "Bubbler Partial Pressure",
         "Bubbler Dilution",
         "Source",
         "Inject",
-        "Bubbler Temp",
-        "Bubbler Partial Pressure",
+        "Bubbler MFC",
         "Bubbler Molar Flux",
+        "Bubbler Material",
     ]
     i = 0
     while True:
@@ -125,42 +135,54 @@ def populate_bubbler(line_number, growth_run_file: pd.DataFrame):
             f"{key}{'' if i == 0 else '.' + str(i)}" in growth_run_file.columns
             for key in bubbler_quantities
         ):
-            bubblers.append(
-                Bubbler(
+            sources.append(
+                BubblerMovpeIKZ(
                     name=growth_run_file.get(
                         f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
-                    mass_flow_controller=growth_run_file.get(
-                        f"Bubbler MFC{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    pressure=growth_run_file.get(
-                        f"Bubbler Pressure{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    dilution=growth_run_file.get(
-                        f"Bubbler Dilution{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    source=growth_run_file.get(
-                        f"Source{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    inject=growth_run_file.get(
-                        f"Inject{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    temperature=growth_run_file.get(
-                        f"Bubbler Temp{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    partial_pressure=growth_run_file.get(
-                        f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
-                        0,
-                    )[line_number],
-                    molar_flux=growth_run_file.get(
-                        f"Bubbler Molar Flux{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
+                    material=CompositeSystemReference(
+                        name=growth_run_file.get(
+                            f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
+                        )[line_number],
+                    ),
+                    vapor_source=CVDBubbler(
+                        temperature=growth_run_file.get(
+                            f"Bubbler Temp{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                        pressure=growth_run_file.get(
+                            f"Bubbler Pressure{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                        partial_pressure=growth_run_file.get(
+                            f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
+                            0,
+                        )[line_number],
+                        dilution=growth_run_file.get(
+                            f"Bubbler Dilution{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                        source=growth_run_file.get(
+                            f"Source{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                        inject=growth_run_file.get(
+                            f"Inject{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                    ),
+                    vapor_rate=CVDVaporRate(
+                        mass_flow_controller=growth_run_file.get(
+                            f"Bubbler MFC{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                        rate=[
+                            growth_run_file.get(
+                                f"Bubbler Molar Flux{'' if i == 0 else '.' + str(i)}", 0
+                            )[line_number]
+                        ],
+                    ),
                 )
             )
+
             i += 1
         else:
             break
-    return bubblers
+    return sources
 
 
 def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
@@ -180,16 +202,25 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
             for key in gas_source_quantities
         ):
             gas_sources.append(
-                GasSource(
-                    material=growth_run_file.get(
+                GasSourceMovpeIKZ(
+                    name=growth_run_file.get(
                         f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
-                    mass_flow_controller=growth_run_file.get(
-                        f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
-                    molar_flux=growth_run_file.get(
-                        f"Gas Molar Flux{'' if i == 0 else '.' + str(i)}", 0
-                    )[line_number],
+                    material=CompositeSystemReference(
+                        name=growth_run_file.get(
+                            f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                        )[line_number],
+                    ),
+                    vapor_rate=CVDVaporRate(
+                        mass_flow_controller=growth_run_file.get(
+                            f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
+                        )[line_number],
+                        rate=[
+                            growth_run_file.get(
+                                f"Gas Molar Flux{'' if i == 0 else '.' + str(i)}", 0
+                            )[line_number],
+                        ],
+                    ),
                 )
             )
             i += 1

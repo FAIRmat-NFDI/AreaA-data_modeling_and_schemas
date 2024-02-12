@@ -49,12 +49,9 @@ from movpe_IKZ import (
     GrowthMovpe2IKZReference,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
-    ParentSampleReference,
-    SubstrateReference,
+    # SubstrateReference,
     SubstrateTemperatureMovpe,
     SampleParametersMovpe,
-    Bubbler,
-    GasSource,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.utils import hash
@@ -62,7 +59,7 @@ from nomad.utils import hash
 from .utils import (
     create_archive,
     fetch_substrate,
-    populate_bubbler,
+    populate_sources,
     populate_gas_source,
 )
 
@@ -115,14 +112,11 @@ class ParserMovpe2IKZ(MatchingParser):
             grown_sample_filename = (
                 f"{sample_id}_{index}.ThinFilmStack.archive.{filetype}"
             )
-            if fetch_substrate(archive, sample_id, substrate_id, logger):
+            substrate_ref = fetch_substrate(archive, sample_id, substrate_id, logger)
+            if substrate_ref is not None:
                 grown_sample_data = ThinFilmStackMovpe(
                     lab_id=sample_id,  ### problem: ThinFilm would have the same lab_id than ThinFilmStack, ask Ta-Shun
-                    substrate=SubstrateReference(
-                        reference=fetch_substrate(
-                            archive, sample_id, substrate_id, logger
-                        )
-                    ),
+                    substrate=SubstrateReference(reference=substrate_ref),
                 )
             else:
                 grown_sample_data = ThinFilmStackMovpe(
@@ -180,8 +174,8 @@ class ParserMovpe2IKZ(MatchingParser):
                 push_gas_valve=growth_run_file["Pushgas Valve"][index],
                 uniform_valve=growth_run_file["Uniform Valve"][index],
                 comment=growth_run_file["Comments"][index],
-                bubblers=populate_bubbler(index, growth_run_file),
-                gas_source=populate_gas_source(index, growth_run_file),
+                sources=populate_sources(index, growth_run_file)
+                + populate_gas_source(index, growth_run_file),
             )
             # else:
             #     ### IMPLEMENT THE CHECK OF STEP PARAMETERS
