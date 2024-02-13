@@ -12,6 +12,7 @@ from nomad.datamodel.metainfo.basesections import (
     MeasurementResult,
     Process,
     PureSubstanceComponent,
+    PureSubstanceSection,
     EntityReference,
     CompositeSystemReference,
     PubChemPureSubstanceSection,
@@ -47,10 +48,15 @@ from nomad_material_processing import (
     ThinFilmStackReference,
 )
 from nomad_material_processing.vapor_deposition import (
+    VaporDeposition,
     VaporDepositionSource,
     VaporDepositionStep,
     SampleParameters,
     SubstrateTemperature,
+    ChamberEnvironment,
+    GasFlow,
+    Pressure,
+    SubstrateHeater,
 )
 
 from nomad_material_processing.chemical_vapor_deposition import (
@@ -914,7 +920,7 @@ class PubChemPureSubstanceSectionMovpe1(PubChemPureSubstanceSection):
         super(PubChemPureSubstanceSectionMovpe1, self).normalize(archive, logger)
 
 
-class PureSubstanceComponentMovpe1IKZ(PureSubstanceComponent):
+class PureSubstanceComponentMovpe1IKZ(PureSubstanceComponent): # TODO remove this class if not needed anymore (remove tabular)
     """
     A section for describing a component and its role in a composite system.
     """
@@ -1479,6 +1485,7 @@ class SubstrateTemperatureMovpe(SubstrateTemperature):
 
 class SampleParametersMovpe(SampleParameters):
     m_def = Section(
+        # label_quantity="layer/lab_id",
         a_plotly_graph_object={
             "label": "Measured Temperatures",
             "index": 1,
@@ -1533,7 +1540,7 @@ class SampleParametersMovpe(SampleParameters):
         The distance between the substrate and the source.
         It is an array because multiple sources can be used.
         """,
-        shape=["*"],
+        shape=[1],
     )
 
     temperature = SubSection(
@@ -1543,6 +1550,85 @@ class SampleParametersMovpe(SampleParameters):
 
 class ChemicalVaporDepositionSource(VaporDepositionSource):
     pass
+
+
+class CVDPressure(Pressure):
+
+    m_def = Section(
+        a_plot=dict(
+            x="process_time",
+            y="pressure",
+        ),
+    )
+    pressure = Quantity(
+        type=np.float64,
+        description="FILL THE DESCRIPTION",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mbar"},
+        unit="pascal",
+        shape=[1],
+    )
+    process_time = Quantity(
+        type=float,
+        unit="second",
+        shape=[1],
+    )
+
+
+class CVDGasFlow(GasFlow):
+    m_def = Section(
+        a_plot=dict(
+            x="process_time",
+            y="flow",
+        ),
+    )
+    gas = SubSection(
+        section_def=PubChemPureSubstanceSection,
+    )
+    flow = Quantity(
+        type=float,
+        unit="meter ** 3 / second",
+        shape=[1],
+    )
+    push_gas_valve = Quantity(
+        type=np.float64,
+        description="FILL THE DESCRIPTION",
+        a_tabular={"name": "GrowthRun/Pushgas Valve"},
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute",
+        },
+        unit="meter ** 3 / second",
+        shape=[1],
+    )
+    uniform_valve = Quantity(
+        type=np.float64,
+        description="FILL THE DESCRIPTION",
+        a_tabular={"name": "GrowthRun/Uniform Valve"},
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute",
+        },
+        unit="meter ** 3 / second",
+        shape=[1],
+    )
+    process_time = Quantity(
+        type=float,
+        unit="second",
+        shape=[1],
+    )
+
+
+class CVDChamberEnvironment(ChamberEnvironment):
+    gas_flow = SubSection(
+        section_def=CVDGasFlow,
+        repeats=True,
+    )
+    pressure = SubSection(
+        section_def=CVDPressure,
+    )
+    heater = SubSection(
+        section_def=SubstrateHeater,
+    )
 
 
 class GrowthStepMovpe2IKZ(VaporDepositionStep):
@@ -1585,45 +1671,12 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
         unit="minute",
     )
-    pressure = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Pressure"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mbar"},
-        unit="mbar",
-    )
     rotation = Quantity(
         type=np.float64,
         description="FILL THE DESCRIPTION",
         a_tabular={"name": "GrowthRun/Rotation"},
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
         unit="rpm",
-    )
-    carrier_gas = Quantity(
-        type=str,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Carrier Gas"},
-        a_eln={"component": "StringEditQuantity"},
-    )
-    push_gas_valve = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Pushgas Valve"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    uniform_valve = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Uniform Valve"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
     )
     comment = Quantity(
         type=str,
@@ -1641,7 +1694,7 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
     )
 
 
-class GrowthMovpe2IKZ(Process, EntryData):
+class GrowthMovpe2IKZ(VaporDeposition, EntryData): # Process
     """
     Class autogenerated from yaml schema.
     """

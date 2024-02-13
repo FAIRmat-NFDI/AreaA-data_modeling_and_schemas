@@ -22,6 +22,7 @@ import yaml
 import json
 from typing import Dict, List
 
+from nomad.units import ureg
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import MSection, Quantity, Section
@@ -33,7 +34,10 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-from nomad.datamodel.metainfo.basesections import SystemComponent
+from nomad.datamodel.metainfo.basesections import (
+    SystemComponent,
+    PubChemPureSubstanceSection,
+)
 
 from basesections_IKZ import IKZMOVPE2Category
 from nomad.search import search
@@ -52,6 +56,9 @@ from movpe_IKZ import (
     # SubstrateReference,
     SubstrateTemperatureMovpe,
     SampleParametersMovpe,
+    CVDChamberEnvironment,
+    CVDPressure,
+    CVDGasFlow,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.utils import hash
@@ -149,7 +156,8 @@ class ParserMovpe2IKZ(MatchingParser):
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
                     ),
                     distance_to_source=[
-                        growth_run_file["Distance of Showerhead"][index]
+                        (growth_run_file["Distance of Showerhead"][index])
+                        * ureg("millimeter").to("meter").magnitude
                     ],
                     temperature=SubstrateTemperatureMovpe(
                         temperature=[growth_run_file["T LayTec"][index]],
@@ -159,6 +167,7 @@ class ParserMovpe2IKZ(MatchingParser):
                     ),
                 )
             )
+
             # creating growth process step objects
             if recipe_id not in process_steps_lists:
                 process_steps_lists[recipe_id] = {}
@@ -168,14 +177,37 @@ class ParserMovpe2IKZ(MatchingParser):
                 name=growth_run_file["Step name"][index] + " step " + str(step_id),
                 step_index=step_id,
                 elapsed_time=growth_run_file["Duration"][index],
-                pressure=growth_run_file["Pressure"][index],
                 rotation=growth_run_file["Rotation"][index],
-                carrier_gas=growth_run_file["Carrier Gas"][index],
-                push_gas_valve=growth_run_file["Pushgas Valve"][index],
-                uniform_valve=growth_run_file["Uniform Valve"][index],
                 comment=growth_run_file["Comments"][index],
                 sources=populate_sources(index, growth_run_file)
                 + populate_gas_source(index, growth_run_file),
+                environment=CVDChamberEnvironment(
+                    pressure=CVDPressure(
+                        pressure=[
+                            (growth_run_file["Pressure"][index])
+                            * ureg("mbar").to("pascal").magnitude
+                        ],
+                    ),
+                    gas_flow=[
+                        CVDGasFlow(
+                            gas=PubChemPureSubstanceSection(
+                                name=growth_run_file["Carrier Gas"][index],
+                            ),
+                            push_gas_valve=[
+                                growth_run_file["Pushgas Valve"][index]
+                                * ureg("cm ** 3 / minute")
+                                .to("meter ** 3 / second")
+                                .magnitude
+                            ],
+                            uniform_valve=[
+                                growth_run_file["Uniform Valve"][index]
+                                * ureg("cm ** 3 / minute")
+                                .to("meter ** 3 / second")
+                                .magnitude
+                            ],
+                        )
+                    ],
+                ),
             )
             # else:
             #     ### IMPLEMENT THE CHECK OF STEP PARAMETERS
