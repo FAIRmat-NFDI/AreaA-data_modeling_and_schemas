@@ -81,6 +81,7 @@ _section_selection_mapping = {
     'CPFSTube': CPFSCrystalGrowthTube,
     'CPFSCVTStep': CPFSChemicalVapourTransportStep,
     'CCry': CPFSCrystal,
+    'CPFSInitialSynthesisComponent': CPFSInitialSynthesisComponent,
 }
 
 def clean_attribute(input_key: str) -> str:
@@ -156,7 +157,6 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                                     data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key+";;;description":df[key][i]})
                                                 else:
                                                     logger.warning("Could not match table entry "+key+". Too many parenthesis.")
-                    logger.info(data_content)
                     subsection_list=[]
                     for key in data_content.keys():
                         if data_content[key]==None or data_content[key]=="":
@@ -164,7 +164,7 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                         if "NOMAD:" in key:
                             line=key.split("NOMAD: ")[1].split(";;;")[0].strip()
                             if " rep " in line:
-                                line=line.split(" rep ")[0]+" rep"
+                                line=line.split(" rep ")[0]+" rep "
                             if not line in subsection_list:
                                 subsection_list.append(line)
                         else:
@@ -190,8 +190,8 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                         repcount=0
                         replist=[]
                         for repcount in range(1000):
-                            if "rep" in section:
-                                section=section.replace("rep","rep "+str(repcount))
+                            if " rep " in section:
+                                section=section.split(" rep ")[0]+" rep "+str(repcount)
                                 found=False
                             if section.startswith("Subs") or section.startswith("Arch"):
                                 if not hasattr(labfolder_section,section.split(" ")[2]):
@@ -232,19 +232,15 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                             entry.title + "_" + entry.id + "_"+section.split(" ")[1]+".archive.json"
                                         )
 
-                            replist.append(section_object)
-                            if found==False or not "rep" in section:
+                            if found==True:
+                                replist.append(section_object)
+                            if found==False or not " rep " in section:
                                 break
 
-                        if not "rep" in section:
+                        if not " rep " in section:
                             setattr(labfolder_section,section.split(" ")[2],replist[0])
                         else:
                             setattr(labfolder_section,section.split(" ")[2],replist)
-
-
-
-
-
 
 
                     create_archive(
