@@ -30,7 +30,7 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from movpe_IKZ import SubstrateInventory
+#from movpe_IKZ import SubstrateInventory
 
 class RawFile(EntryData):
     measurement = Quantity(

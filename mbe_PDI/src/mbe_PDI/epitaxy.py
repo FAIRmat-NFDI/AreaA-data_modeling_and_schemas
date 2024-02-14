@@ -58,8 +58,8 @@ from nomad.datamodel.datamodel import (
 
 from nomad.utils import hash
 
-from laytec_epitt import LayTec_EpiTT_Measurement
-from lakeshore import HallMeasurement
+#from laytec_epitt import LayTec_EpiTT_Measurement
+#from lakeshore import HallMeasurement
 
 from mbe_PDI import MbePDIExperiment
 
