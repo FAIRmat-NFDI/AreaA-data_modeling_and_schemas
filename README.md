@@ -86,3 +86,62 @@ Various | Experiments permormed in Max Planck Institute for Chemical Physics of 
 
 - - - -
 
+## Installation
+
+To use the plugin packages maintained by FAIRmat Area A, you need to:
+1. Clone this repo and, additionally, individual repos of other plugins like `nomad-measurement`.
+2. Add their `src/` directory to your environmental variable `PYTHONPATH`.
+3. Update the `nomad.yaml` file of present in the root of your local NOMAD installation.
+
+### Cloning AreaA repos
+You can run the following commands in your terminal to clone the GitHub repos containing AreaA plugins.
+```sh
+git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas
+git clone https://github.com/FAIRmat-NFDI/nomad-measurements
+git clone https://github.com/FAIRmat-NFDI/nomad-material-processing
+# ( git clone https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin.git )
+```
+
+### Adding the package path to `PYTHONPATH`
+To add the `src/` directory of the plugins to your `PYTHONPATH`, you can use the `export` command in your terminal. Make sure to do this in the same terminal before running NOMAD (`nomad admin run appworker`). Run the following command to include the actively maintained plugins:
+```sh
+export AREA_A_REPO_PATH="{local path to root of AreaA-data_modeling_and_schemas}"
+export NOMAD_MEASUREMENTS_REPO_PATH="{local path to root of nomad-measurements}"
+export NOMAD_MATERIAL_PROCESSING_REPO_PATH="{local path to root of nomad-material-processing}"
+export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/IKZ_plugin/src"
+export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/Lakeshore_plugin/src"
+export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/LayTec_EpiTT/laytec_epitt_plugin/src"
+export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/analysis_plugin/src"
+export PYTHONPATH="$PYTHONPATH:$NOMAD_MEASUREMENTS_REPO_PATH/src"
+export PYTHONPATH="$PYTHONPATH:$NOMAD_MEASUREMENTS_REPO_PATH/src/nomad_measurements"
+export PYTHONPATH="$PYTHONPATH:$NOMAD_MATERIAL_PROCESSING_REPO_PATH/src/nomad_material_processing"
+# ( export PYTHONPATH=$PYTHONPATH:$MYPATH/laytec_epitt_nomad_plugin/src )
+```
+To make this path persistent, write these code lines into the `.pyenv/bin/activate` file of your virtual python environment. This automatically appends the paths every time the python environment is activated in a new terminal. Make sure to prepend the correct local path where you cloned this repository.
+
+### Including the plugins in NOMAD config
+To use the plugins in your NOMAD instance, include it in the `nomad.yaml` configuration file available in the root of your NOMAD installation. Additionally, you should also specify the Python package for the plugin in the `options` section as follows:
+```yaml
+plugins:
+  include:
+    - 'parsers/movpe_growth_IKZ'
+    - 'schemas/analysis'
+    - 'schemas/nomad_material_processing'
+    - 'schemas/nomad_measurements'
+    - 'parsers/xrd'
+
+options:
+  parsers/movpe_growth_IKZ:
+    python_package: movpe_IKZ.binaryoxides_growth_parser
+  schemas/analysis:
+    python_package: analysis
+  schemas/nomad_material_processing:
+    python_package: nomad_material_processing
+  schemas/nomad_measurements:
+    python_package: nomad_measurements
+  parsers/xrd:
+    python_package: xrd
+```
+The name after the `/` in `include` section is user defined. However, same name should be used as key when specifying the python package in `options` section.
+
+- - - -
