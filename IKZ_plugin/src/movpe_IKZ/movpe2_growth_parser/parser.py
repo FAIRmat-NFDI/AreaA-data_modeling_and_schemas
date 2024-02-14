@@ -51,6 +51,7 @@ from movpe_IKZ import (
     GrowthStepMovpe2IKZ,
     GrowthMovpe2IKZ,
     GrowthMovpe2IKZReference,
+    ThinFilmMovpe,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
     # SubstrateReference,
@@ -115,7 +116,9 @@ class ParserMovpe2IKZ(MatchingParser):
             recipe_id = growth_run_file["Recipe Name"][index]
             step_id = growth_run_file["Step Index"][index]
             substrate_id = growth_run_file["Substrate Name"][index]
-            # creating ThinFilmStack archives
+
+            # creating ThinFiln and ThinFilmStack archives
+            layer_filename = f"{sample_id}_{index}.ThinFilm.archive.{filetype}"
             grown_sample_filename = (
                 f"{sample_id}_{index}.ThinFilmStack.archive.{filetype}"
             )
@@ -130,6 +133,20 @@ class ParserMovpe2IKZ(MatchingParser):
                     lab_id=sample_id,  ### problem: ThinFilm would have the same lab_id than ThinFilmStack, ask Ta-Shun
                     substrate=SubstrateReference(lab_id=substrate_id),
                 )
+            layer_archive = EntryArchive(
+                data=ThinFilmMovpe(
+                    lab_id=sample_id + "layer",
+                ),
+                m_context=archive.m_context,
+                metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+            )
+            create_archive(
+                layer_archive.m_to_dict(),
+                archive.m_context,
+                layer_filename,
+                filetype,
+                logger,
+            )
             grown_sample_archive = EntryArchive(
                 data=grown_sample_data,
                 m_context=archive.m_context,
@@ -150,7 +167,7 @@ class ParserMovpe2IKZ(MatchingParser):
             samples_lists[recipe_id][step_id].append(
                 SampleParametersMovpe(
                     layer=ThinFilmStackMovpeReference(
-                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data",
                     ),
                     substrate=ThinFilmStackMovpeReference(
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
@@ -176,7 +193,8 @@ class ParserMovpe2IKZ(MatchingParser):
             process_steps_lists[recipe_id][step_id] = GrowthStepMovpe2IKZ(
                 name=growth_run_file["Step name"][index] + " step " + str(step_id),
                 step_index=step_id,
-                elapsed_time=growth_run_file["Duration"][index],
+                duration=growth_run_file["Duration"][index]
+                * ureg("minute").to("second").magnitude,
                 rotation=growth_run_file["Rotation"][index],
                 comment=growth_run_file["Comments"][index],
                 sources=populate_sources(index, growth_run_file)

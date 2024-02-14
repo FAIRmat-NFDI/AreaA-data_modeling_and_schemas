@@ -49,7 +49,6 @@ from nomad_material_processing.chemical_vapor_deposition import (
     CVDBubbler,
     CVDVaporRate,
     CVDSource,
-    DepositionRate,
 )
 
 from movpe_IKZ import (
