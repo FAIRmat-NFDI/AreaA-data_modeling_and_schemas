@@ -28,6 +28,8 @@ from structlog.stdlib import (
 )
 #from PPMS.schema import PPMSMeasurement, PPMSData, Sample, ChannelData, ETOData
 
+from nomad.units import ureg
+
 from nomad.metainfo import Package, Section, MEnum, SubSection
 
 from nomad.datamodel.metainfo.basesections import Measurement
@@ -67,6 +69,10 @@ from ppms.schema import (
     PPMSMeasurement,
 )
 
+from ppms.ppmsdatastruct import (
+    PPMSData,
+)
+
 from time import (
     sleep,
     perf_counter
@@ -82,6 +88,43 @@ class CPFSSample(Sample):
             component='ReferenceEditQuantity',
         )
     )
+
+class CPFSETOAnalyzedData(PPMSData):
+    field = Quantity(
+        type=np.dtype(np.float64),
+        unit='gauss',
+        shape=['*'],
+        description='FILL')
+    rho_xx_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    rho_xx_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    mr_up = Quantity(
+        type=np.dtype(np.float64),
+        shape=['*'],
+        unit='dimensionless',
+        description='FILL')
+    mr_down = Quantity(
+        type=np.dtype(np.float64),
+        shape=['*'],
+        unit='dimensionless',
+        description='FILL')
+    rho_xy_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
+    rho_xy_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm',
+        shape=['*'],
+        description='FILL')
 
 class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
 
@@ -110,6 +153,23 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             ),
             lane_width='600px',
             ),
+    )
+
+    analyzed_data = SubSection(
+        section_def = CPFSETOAnalyzedData,
+        repeats = True,
+    )
+
+    channel_measurement_type = Quantity(
+        type=MEnum(
+            'TMR',
+            'Hall',
+            'undefined',
+        ),
+        shape=['*'],
+        a_eln=ELNAnnotation(
+            component='EnumEditQuantity',
+        ),
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -173,5 +233,94 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             self.m_remove_sub_section(CPFSPPMSMeasurement.samples, 0)
         self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_1)
         self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_2)
+
+        #find measurement modes, for now coming from sample.comment
+        modelist=[]
+        for channel in ["Ch1_","Ch2_"]:
+            if channel+"TMR" in self.samples[0].comment:
+                modelist.append("TMR")
+            elif channel+"Hall" in self.samples[0].comment:
+                modelist.append("Hall")
+            else:
+                modelist.append("undefined")
+        self.channel_measurement_type=modelist
+
+        if self.software.startswith("Electrical Transport Option"):
+            #Try to symmetrize data for each measurement
+            maxfield=90000*ureg("gauss")
+            data_analyzed = []
+            for mdata in self.data:
+                #For now only for field sweeps
+                if not mdata.name.startswith("Field sweep"):
+                    continue
+                ana_data=CPFSETOAnalyzedData()
+                ana_data.name=mdata.name
+                ana_data.title=mdata.name
+                fitlength=len(mdata.magnetic_field)/4
+                fitlength-=fitlength % -100
+                fitlength+=1
+                fitfield=np.linspace(-maxfield,maxfield,int(fitlength))
+                ana_data.field=fitfield
+                for channel in [0,1]:
+                    field=mdata.magnetic_field[np.invert(pd.isnull(mdata.channels[channel].resistance))]
+                    res=mdata.channels[channel].resistance[np.invert(pd.isnull(mdata.channels[channel].resistance))]
+                    #Check if field sweeps down and up:
+                    downsweep=[]
+                    upsweep=[]
+                    for i in range(len(field)):
+                        if abs(field[i]-maxfield)<self.field_tolerance:
+                            if len(downsweep)==0:
+                                downsweep.append(i) #downsweep started
+                            if len(upsweep)==1:
+                                upsweep.append(i) # upsweep finished
+                        if abs(field[i]+maxfield)<self.field_tolerance:
+                            if len(downsweep)==1:
+                                downsweep.append(i) #downsweep finished
+                            if len(upsweep)==0:
+                                upsweep.append(i) # upsweep started
+                    if len(upsweep)!=2 or len(downsweep)!=2:
+                        logger.warning("Measurement "+mdata.name+" did not contain up- and downsweep in field.")
+                        continue
+                    downfit=np.interp(fitfield,field[downsweep[0]:downsweep[1]],res[downsweep[0]:downsweep[1]])
+                    upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
+                    if self.channel_measurement_type[channel]=="Hall":
+                        intermediate=(upfit+downfit)/2.
+                        ana_data.rho_xy_down=downfit-intermediate
+                        ana_data.rho_xy_up=upfit-intermediate
+                    if self.channel_measurement_type[channel]=="TMR":
+                        intermediate=(downfit-upfit)/2.
+                        ana_data.rho_xx_down=downfit+intermediate
+                        ana_data.rho_xx_up=upfit-intermediate
+                        ana_data.mr_down=(ana_data.rho_xx_down-ana_data.rho_xx_down[int(fitlength/2)])/ana_data.rho_xx_down[int(fitlength/2)]
+                        ana_data.mr_up=(ana_data.rho_xx_up-ana_data.rho_xx_up[int(fitlength/2)])/ana_data.rho_xx_up[int(fitlength/2)]
+                data_analyzed.append(ana_data)
+            self.analyzed_data=data_analyzed
+
+            #Now create the according plots
+            import plotly.express as px
+            import plotly.graph_objs as go
+            from plotly.subplots import make_subplots
+            self.figures=[]
+            figure1 = make_subplots(rows=3, cols=1, subplot_titles=(["TMR","MR","Hall"]), shared_xaxes=True)
+            for data in self.analyzed_data:
+                color=int(255./len(self.analyzed_data)*self.analyzed_data.index(data))
+                resistivity_tmr_up=go.Scatter(x=data.field,y=data.rho_xx_up, name=data.title.split("at")[1].strip("."), marker_color='rbg({},0,255)'.format(color))
+                resistivity_tmr_down=go.Scatter(x=data.field,y=data.rho_xx_down, marker_color='rbg({},0,255)'.format(color))
+                resistivity_mr_up=go.Scatter(x=data.field,y=data.mr_up, name=data.title.split("at")[1].strip("."), marker_color='rbg({},0,255)'.format(color))
+                resistivity_mr_down=go.Scatter(x=data.field,y=data.mr_down, marker_color='rbg({},0,255)'.format(color))
+                resistivity_hall_up=go.Scatter(x=data.field,y=data.rho_xy_up, name=data.title.split("at")[1].strip("."), marker_color='rbg({},0,255)'.format(color))
+                resistivity_hall_down=go.Scatter(x=data.field,y=data.rho_xy_down, marker_color='rbg({},0,255)'.format(color))
+                figure1.add_trace(resistivity_tmr_up, row=1, col=1)
+                figure1.add_trace(resistivity_tmr_down, row=1, col=1)
+                figure1.add_trace(resistivity_mr_up, row=2, col=1)
+                figure1.add_trace(resistivity_mr_down, row=2, col=1)
+                figure1.add_trace(resistivity_hall_up, row=3, col=1)
+                figure1.add_trace(resistivity_hall_down, row=3, col=1)
+            figure1.update_layout(height=400, width=716,showlegend=True)
+            self.figures.append(PlotlyFigure(label="Analyzed data", figure=figure1.to_plotly_json()))
+
+
+
+
 
 m_package.__init_metainfo__()
