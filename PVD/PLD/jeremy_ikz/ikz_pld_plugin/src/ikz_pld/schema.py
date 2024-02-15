@@ -803,7 +803,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
             scrollZoom=False,
         )
         self.figures.append(PlotlyFigure(
-            label='Power and pressure',
+            label='Power, pressure, and temperature',
             figure=plot_json,
         ))
 
