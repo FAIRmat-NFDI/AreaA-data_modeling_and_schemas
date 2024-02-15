@@ -18,8 +18,6 @@
 
 from time import sleep, perf_counter
 import pandas as pd
-import yaml
-import json
 from typing import Dict, List
 
 
@@ -66,25 +64,58 @@ from movpe_IKZ import (
     GasSourceMovpeIKZ,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.utils import hash
+
+
+def get_reference(upload_id, entry_id):
+    return f'../uploads/{upload_id}/archive/{entry_id}#data'
+
+
+def get_entry_id_from_file_name(filename, upload_id):
+    from nomad.utils import hash
+    return hash(upload_id, filename)
 
 
 def create_archive(
-    entry_dict, context, file_name, file_type, logger, *, bypass_check: bool = False
+    entry_dict, context, filename, file_type, logger, *, bypass_check: bool = False
 ):
-    if not context.raw_path_exists(file_name) or bypass_check:
-        with context.raw_file(file_name, "w") as outfile:
-            if file_type == "json":
-                json.dump(entry_dict, outfile)
-            elif file_type == "yaml":
-                yaml.dump(entry_dict, outfile)
-        context.upload.process_updated_raw_file(file_name, allow_modify=True)
-    else:
+    import yaml
+    import json
+    from nomad.datamodel.context import ClientContext
+    if isinstance(context, ClientContext):
+        return None
+    if context.raw_path_exists(filename):
+        with context.raw_file(filename, "r") as file:
+            existing_dict = yaml.safe_load(file)
+    if context.raw_path_exists(filename) and existing_dict != entry_dict:
         logger.error(
-            f"{file_name} archive file already exists."
-            f"If you intend to reprocess the older archive file, remove the existing one and run reprocessing again."
+            f"{filename} archive file already exists. "
+            f"You are trying to overwrite it with a different content. "
+            f"To do so, remove the existing archive and click reprocess again."
         )
+    if not context.raw_path_exists(filename) or existing_dict == entry_dict or bypass_check:
+        with context.raw_file(filename, "w") as newfile:
+            if file_type == "json":
+                json.dump(entry_dict, newfile)
+            elif file_type == "yaml":
+                yaml.dump(entry_dict, newfile)
+        context.upload.process_updated_raw_file(filename, allow_modify=True)
 
+    return get_reference(
+        context.upload_id,
+        get_entry_id_from_file_name(filename, context.upload_id)
+    )
+
+        # !! useful to fetch the upload_id from another upload.
+        # experiment_context = ServerContext(
+                #         get_upload_with_read_access(
+                #             matches["upload_id"][0],
+                #             User(
+                #                 is_admin=True,
+                #                 user_id=current_parse_archive.metadata.main_author.user_id,
+                #             ),
+                #             include_others=True,
+                #         )
+                #     )  # Upload(upload_id=matches["upload_id"][0]))
 
 def fetch_substrate(archive, sample_id, substrate_id, logger):
     substrate_reference_str = None
