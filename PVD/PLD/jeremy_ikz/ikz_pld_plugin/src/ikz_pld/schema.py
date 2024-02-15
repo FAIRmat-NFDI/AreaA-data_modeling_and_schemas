@@ -677,7 +677,11 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
             x = step.environment.pressure.process_time.to("second").magnitude
             y = step.environment.pressure.pressure.to("mbar").magnitude
             y2 = step.sources[0].vapor_source.power.power.to("watt").magnitude
-            y3 = step.sample_parameters[0].temperature.temperature.to("celsius").magnitude
+            y3 = (
+                step.sample_parameters[0]
+                .temperature.temperature.to("celsius")
+                .magnitude
+            )
             if x0 is not None:
                 x = np.insert(x, 0, x0)
                 y = np.insert(y, 0, y0)
@@ -688,7 +692,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                     x=x,
                     y=y,
                     name=step.name,
-                    line=dict(color='#2A4CDF', width=2),
+                    line=dict(color="#2A4CDF", width=2),
                     yaxis="y",
                 ),
             )
@@ -697,7 +701,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                     x=x,
                     y=y3,
                     name=step.name,
-                    line=dict(color='#008A68', width=2),
+                    line=dict(color="#008A68", width=2),
                     yaxis="y3",
                 ),
             )
@@ -706,14 +710,14 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                     x=x,
                     y=y2,
                     name=step.name,
-                    line=dict(color='#192E87', width=2),
+                    line=dict(color="#192E87", width=2),
                     yaxis="y2",
                 ),
             )
             fig.add_annotation(
                 text=step.name,
                 yref="paper",
-                x=(x[0]+(x[-1]-x[0])/2),
+                x=(x[0] + (x[-1] - x[0]) / 2),
                 y=0.85,
                 showarrow=False,
                 textangle=-90,
@@ -739,7 +743,6 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
             )
         fig.update_layout(shapes=shapes)
         fig.update_layout(
-            # plot_bgcolor='rgba(0,0,0,0)',
             template="plotly_white",
             hovermode="closest",
             dragmode="zoom",
@@ -761,12 +764,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                 anchor="x",
                 title="Chamber pressure / mbar",
                 domain=[0, 0.48],
-                titlefont=dict(
-                    color="#2A4CDF"
-                ),
-                tickfont=dict(
-                    color="#2A4CDF"
-                ),
+                titlefont=dict(color="#2A4CDF"),
+                tickfont=dict(color="#2A4CDF"),
                 gridcolor="#EAEDFC",
             ),
             yaxis2=dict(
@@ -774,12 +773,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                 anchor="x",
                 title="Source power / W",
                 domain=[0.52, 1],
-                titlefont=dict(
-                    color="#192E87"
-                ),
-                tickfont=dict(
-                    color="#192E87"
-                ),
+                titlefont=dict(color="#192E87"),
+                tickfont=dict(color="#192E87"),
                 gridcolor="#EAEDFC",
             ),
             yaxis3=dict(
@@ -788,12 +783,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                 title="Substrate Temperature / °C",
                 side="right",
                 overlaying="y",
-                titlefont=dict(
-                    color="#008A68"
-                ),
-                tickfont=dict(
-                    color="#008A68"
-                ),
+                titlefont=dict(color="#008A68"),
+                tickfont=dict(color="#008A68"),
                 ticks="outside",
                 gridcolor="#CCE8E1",
             ),
@@ -802,10 +793,12 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
         plot_json["config"] = dict(
             scrollZoom=False,
         )
-        self.figures.append(PlotlyFigure(
-            label='Power, pressure, and temperature',
-            figure=plot_json,
-        ))
+        self.figures.append(
+            PlotlyFigure(
+                label="Power, pressure, and temperature",
+                figure=plot_json,
+            )
+        )
 
     def normalize(self, archive: "EntryArchive", logger: "BoundLogger") -> None:
         """
