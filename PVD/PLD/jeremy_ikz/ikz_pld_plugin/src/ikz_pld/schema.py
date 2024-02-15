@@ -798,9 +798,13 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                 gridcolor="#CCE8E1",
             ),
         )
+        plot_json = fig.to_plotly_json()
+        plot_json["config"] = dict(
+            scrollZoom=False,
+        )
         self.figures.append(PlotlyFigure(
             label='Power and pressure',
-            figure=fig.to_plotly_json(),
+            figure=plot_json,
         ))
 
     def normalize(self, archive: "EntryArchive", logger: "BoundLogger") -> None:
