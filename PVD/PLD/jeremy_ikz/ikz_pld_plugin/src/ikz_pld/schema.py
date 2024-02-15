@@ -591,25 +591,6 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
             ),
             lane_width="800px",
         ),
-        a_plot=[
-            # dict(
-            #     x="steps/:/sources/:/vapor_source/power/process_time",
-            #     y="steps/:/sources/:/vapor_source/power/power",
-            # ),
-            dict(
-                x="steps/:/sample_parameters/:/temperature/process_time",
-                y="steps/:/sample_parameters/:/temperature/temperature",
-            ),
-            # dict(
-            #     x="steps/:/environment/pressure/process_time",
-            #     y="steps/:/environment/pressure/pressure",
-            #     layout=dict(
-            #         yaxis=dict(
-            #             type="log",
-            #         ),
-            #     ),
-            # ),
-        ],
     )
     substrate = Quantity(
         type=IKZPLDPossibleSubstrate,
@@ -690,22 +671,34 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
         x0 = None
         y0 = None
         y20 = None
+        y30 = None
         shapes = []
         for step in self.steps:
             x = step.environment.pressure.process_time.to("second").magnitude
             y = step.environment.pressure.pressure.to("mbar").magnitude
             y2 = step.sources[0].vapor_source.power.power.to("watt").magnitude
+            y3 = step.sample_parameters[0].temperature.temperature.to("celsius").magnitude
             if x0 is not None:
                 x = np.insert(x, 0, x0)
                 y = np.insert(y, 0, y0)
                 y2 = np.insert(y2, 0, y20)
+                y3 = np.insert(y3, 0, y30)
             fig.add_trace(
                 go.Scatter(
                     x=x,
                     y=y,
                     name=step.name,
-                    line=dict(color='royalblue', width=2),
+                    line=dict(color='#2A4CDF', width=2),
                     yaxis="y",
+                ),
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=x,
+                    y=y3,
+                    name=step.name,
+                    line=dict(color='#008A68', width=2),
+                    yaxis="y3",
                 ),
             )
             fig.add_trace(
@@ -713,7 +706,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                     x=x,
                     y=y2,
                     name=step.name,
-                    line=dict(color='#EF553B', width=2),
+                    line=dict(color='#192E87', width=2),
                     yaxis="y2",
                 ),
             )
@@ -728,6 +721,7 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
             x0 = x[-1]
             y0 = y[-1]
             y20 = y2[-1]
+            y30 = y3[-1]
             shapes.append(
                 dict(
                     type="line",
@@ -745,13 +739,21 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
             )
         fig.update_layout(shapes=shapes)
         fig.update_layout(
+            # plot_bgcolor='rgba(0,0,0,0)',
+            template="plotly_white",
+            hovermode="closest",
+            dragmode="zoom",
             xaxis=dict(
                 fixedrange=False,
                 autorange=True,
                 rangeslider=dict(
                     autorange=True,
+                    borderwidth=1,
                 ),
                 title="Process time / s",
+                mirror="all",
+                showline=True,
+                gridcolor="#EAEDFC",
             ),
             yaxis=dict(
                 fixedrange=False,
@@ -759,12 +761,41 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                 anchor="x",
                 title="Chamber pressure / mbar",
                 domain=[0, 0.48],
+                titlefont=dict(
+                    color="#2A4CDF"
+                ),
+                tickfont=dict(
+                    color="#2A4CDF"
+                ),
+                gridcolor="#EAEDFC",
             ),
             yaxis2=dict(
                 fixedrange=False,
                 anchor="x",
                 title="Source power / W",
                 domain=[0.52, 1],
+                titlefont=dict(
+                    color="#192E87"
+                ),
+                tickfont=dict(
+                    color="#192E87"
+                ),
+                gridcolor="#EAEDFC",
+            ),
+            yaxis3=dict(
+                fixedrange=False,
+                anchor="x",
+                title="Substrate Temperature / °C",
+                side="right",
+                overlaying="y",
+                titlefont=dict(
+                    color="#008A68"
+                ),
+                tickfont=dict(
+                    color="#008A68"
+                ),
+                ticks="outside",
+                gridcolor="#CCE8E1",
             ),
         )
         self.figures.append(PlotlyFigure(
