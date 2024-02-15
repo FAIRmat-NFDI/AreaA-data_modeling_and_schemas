@@ -257,16 +257,6 @@ class ELNJupyterAnalysis(JupyterAnalysis):
         '\n'
         f'{generic_analysis_functions}'
         'input_data = get_input_data(token_header, base_url, analysis_entry_id)\n'
-        '\n'
-        'print(f"Retrieved {len(input_data)} entry(ies). Please check '
-        'the contents by accessing `input_data` variable.")\n'
-        )
-        cells.append(nbf.v4.new_code_cell(source=code))
-
-        code = (
-            '# Pre-defined block\n'
-            '\n'
-            'input_data[0].keys()'
         )
         cells.append(nbf.v4.new_code_cell(source=code))
 
@@ -280,6 +270,14 @@ class ELNJupyterAnalysis(JupyterAnalysis):
             analysis_functions = get_function_source(category_name=self.analysis_type)
             code = list_to_string(analysis_functions)
             cells.append(nbf.v4.new_code_cell(source = comment + code))
+
+        if self.analysis_type == 'XRD':
+            code = (
+                '# Pre-defined block\n'
+                '\n'
+                'xrd_voila_analysis(input_data)\n'
+            )
+            cells.append(nbf.v4.new_code_cell(source=code))
 
         return cells
 

@@ -89,6 +89,8 @@ def xrd_plot_intensity_two_theta(archive_data: dict, peak_indices = None) -> Non
                 'x': '2θ (°)',
                 'y': 'Intensity',
             },
+            height=600,
+            width=800,
             title='Intensity vs 2θ (linear scale)',
         )
     if peak_indices is not None or len(peak_indices) > 0:
@@ -128,6 +130,8 @@ def xrd_plot_logy_intensity_two_theta(archive_data: dict, peak_indices = None) -
             'x': '2θ (°)',
             'y': 'Intensity',
         },
+        height=600,
+        width=800,
         title='Intensity vs 2θ (log scale)',
     )
     if peak_indices is not None or len(peak_indices) > 0:
@@ -196,7 +200,11 @@ def xrd_save_analysis_results(
         json.dump(results, f)
 
 @category('XRD')
-def xrd_conduct_analysis(archive_data: dict, plot: bool = True) -> None:
+def xrd_conduct_analysis(
+    archive_data: dict,
+    options: dict = None,
+    plot: bool = True,
+) -> None:
     '''
     Conducts XRD analysis on the given archive data. Also saves the analysis results as
     a json file which can be used to fill `analysis_results` section.
@@ -207,11 +215,12 @@ def xrd_conduct_analysis(archive_data: dict, plot: bool = True) -> None:
     '''
     import collections
 
-    options = {
-        'height': 20,
-        'threshold': 30,
-        'distance': 1,
-    }
+    if options is None:
+        options = {
+            'height': 20,
+            'threshold': 30,
+            'distance': 1,
+        }
     peaks, peak_indices = xrd_find_peaks(archive_data, options = options)
     if plot:
         xrd_plot_intensity_two_theta(archive_data, peak_indices)
@@ -221,3 +230,114 @@ def xrd_conduct_analysis(archive_data: dict, plot: bool = True) -> None:
     results['peaks'] = peaks
 
     xrd_save_analysis_results(results)
+
+@category('XRD')
+def xrd_voila_analysis(input_data) -> None:
+    '''
+    Use ipywidgets to create an interactive XRD analysis. These widgets can be rendered
+    using Voila.
+    '''
+    ## Voila specific code
+
+    import ipywidgets as widgets
+    from IPython.display import display, clear_output
+
+    def get_input_entry_names(input_data: list) -> list:
+        '''
+        Gets the names of the input entries.
+
+        Args:
+            input_data (list): List of input data.
+
+        Returns:
+            list: Names of the input entries.
+        '''
+        names = []
+        for entry in input_data:
+            if entry['m_def'] == 'nomad_measurements.xrd.schema.ELNXRayDiffraction':
+                names.append(entry['name'])
+        return names
+
+    available_entries = get_input_entry_names(input_data)
+    dropdown = widgets.Dropdown(options=available_entries)
+    find_peak_parameters = [
+        widgets.FloatText(
+            description = 'Height:',
+            value = 10,
+            readout_format = '.1f',
+            tooltip = 'Required height of peaks.',
+        ),
+        widgets.FloatText(
+            description = 'Threshold:',
+            value = 10,
+            readout_format = '.1f',
+            tooltip = 'Required threshold of peaks, the vertical distance'
+                'to its neighboring samples.',
+        ),
+        widgets.FloatText(
+            description = 'Distance:',
+            value = 1,
+            readout_format = '.1f',
+            tooltip = 'Required minimal horizontal distance (>= 1) in samples'
+                'between neighbouring peaks.',
+        ),
+    ]
+    find_peak_button = widgets.Button(
+                    description = 'Find peaks',
+                    button_style = 'primary',
+                )
+
+    no_input_alert = widgets.HTML('<p style="color:red;">No input entry of class'
+                                '`ELNXRayDiffraction` found.</p>')
+    no_input_alert.layout.visibility = 'hidden'
+
+    input_box = widgets.VBox([
+        widgets.HTML('<h1>XRD Analysis</h1>'),
+        widgets.Label(value='Select input entry:'),
+        dropdown,
+        widgets.VBox([
+            widgets.HTML('<h2>Locate the intensity peaks</h2>\
+                        Select the parameters for peak finding algorithm:'),
+            widgets.HBox(
+                find_peak_parameters
+            ),
+            widgets.HTML('<br>'),
+            find_peak_button,
+        ]),
+        no_input_alert,
+        ]
+    )
+
+    if not available_entries:
+        no_input_alert.layout.visibility = 'visible'
+        dropdown.disabled = True
+        find_peak_button.disabled = True
+
+    out = widgets.Output(
+        layout = dict(),
+    )
+
+    def on_click_find_peaks(button):
+        '''
+        Event handler for the button click.
+        '''
+        if find_peak_parameters[2].value < 1:
+            find_peak_parameters[2].value = 1
+        entry_name = dropdown.value
+        entry_index = get_input_entry_names(input_data).index(entry_name)
+
+        with out:
+            options = {
+                'height': find_peak_parameters[0].value,
+                'threshold': find_peak_parameters[1].value,
+                'distance': find_peak_parameters[2].value,
+            }
+            xrd_conduct_analysis(
+                archive_data = input_data[entry_index],
+                options = options,
+                plot = True)
+            clear_output(wait=True)
+
+    find_peak_button.on_click(on_click_find_peaks)
+
+    display(input_box, out)
