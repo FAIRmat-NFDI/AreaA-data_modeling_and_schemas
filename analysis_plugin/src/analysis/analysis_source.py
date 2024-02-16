@@ -38,14 +38,22 @@ def get_input_data(token_header: dict, base_url: str, analysis_entry_id: str) ->
             "data": "*",
         }
     }
-    response = requests.post(
-        f"{base_url}/entries/{analysis_entry_id}/archive/query",
-        headers = {
-            **token_header,
-            'Accept': 'application/json'
-        },
-        json = query
-    ).json()
+    try:
+        response = requests.post(
+            f"{base_url}/entries/{analysis_entry_id}/archive/query",
+            headers = {
+                **token_header,
+                'Accept': 'application/json'
+            },
+            json = query
+        ).json()
+        if response.status_code == 401:
+            print('Authentication failed as the token expired.'
+                  'Please re-launch JupyterHub or Voila.')
+    except requests.exceptions.RequestException as e:
+        print(f'Error occurred while fetching the data: {e}')
+        return []
+
     referred_entries = response['data']['archive']['data']['inputs']
 
     entry_ids = []
@@ -226,8 +234,7 @@ def xrd_conduct_analysis(
         xrd_plot_intensity_two_theta(archive_data, peak_indices)
         xrd_plot_logy_intensity_two_theta(archive_data, peak_indices)
 
-    results = collections.defaultdict(None)
-    results['peaks'] = peaks
+    results = peaks
 
     xrd_save_analysis_results(results)
 
@@ -239,8 +246,10 @@ def xrd_voila_analysis(input_data) -> None:
     '''
     ## Voila specific code
 
+    import collections
     import ipywidgets as widgets
-    from IPython.display import display, clear_output
+    from IPython.display import display, clear_output, HTML
+    import pandas as pd
 
     def get_input_entry_names(input_data: list) -> list:
         '''
@@ -286,12 +295,24 @@ def xrd_voila_analysis(input_data) -> None:
                     description = 'Find peaks',
                     button_style = 'primary',
                 )
+    export_results_button = widgets.Button(
+                    description = 'Export results',
+                    button_style = 'primary',
+                )
+    download_csv_button = widgets.Button(
+                    description = 'Download as CSV',
+                    button_style = 'primary',
+                )
 
     no_input_alert = widgets.HTML('<p style="color:red;">No input entry of class'
                                 '`ELNXRayDiffraction` found.</p>')
     no_input_alert.layout.visibility = 'hidden'
+    no_peak_alert = widgets.HTML('<p style="color:red;">No peaks found.'
+                                 'Change the parameters for peak finding algorithm</p>')
+    no_peak_alert.layout.visibility = 'hidden'
+    out = widgets.Output()
 
-    input_box = widgets.VBox([
+    display_panel = widgets.VBox([
         widgets.HTML('<h1>XRD Analysis</h1>'),
         widgets.Label(value='Select input entry:'),
         dropdown,
@@ -302,42 +323,86 @@ def xrd_voila_analysis(input_data) -> None:
                 find_peak_parameters
             ),
             widgets.HTML('<br>'),
-            find_peak_button,
+            widgets.HBox([
+                find_peak_button,
+                export_results_button,
+                download_csv_button,
+            ]),
         ]),
+        no_peak_alert,
         no_input_alert,
+        out,
         ]
     )
+
+    results = collections.defaultdict(None)
+
+    def on_click_find_peaks(button):
+        '''
+        Event handler for the find peaks button click.
+        '''
+        entry_name = dropdown.value
+        entry_index = get_input_entry_names(input_data).index(entry_name)
+        input_data_entry = input_data[entry_index]
+        if find_peak_parameters[2].value < 1:
+            find_peak_parameters[2].value = 1
+        options = {
+            'height': find_peak_parameters[0].value,
+            'threshold': find_peak_parameters[1].value,
+            'distance': find_peak_parameters[2].value,
+        }
+        peaks, peak_indices = xrd_find_peaks(
+            archive_data = input_data_entry,
+            options = options,
+        )
+        peaks_table = pd.DataFrame({
+            '2θ (°)': peaks['peaks']['two_theta'],
+            'Intensity': peaks['peaks']['intensity'],
+        })
+        peaks_table.set_index('2θ (°)', inplace=True)
+        results[entry_name] = peaks
+
+        with out:
+            xrd_plot_logy_intensity_two_theta(input_data_entry, peak_indices)
+            if not peaks_table.empty:
+                display(peaks_table)
+                export_results_button.disabled = False
+            clear_output(wait=True)
+
+    def on_click_export_results(button):
+        '''
+        Event handler for the export results button click.
+        '''
+        xrd_save_analysis_results(results)
+        button.disabled = True
+
+    def on_click_download_csv(button):
+        '''
+        Event handler for the download as CSV button click.
+        '''
+        entry_name = dropdown.value
+        entry_index = get_input_entry_names(input_data).index(entry_name)
+        input_data_entry = input_data[entry_index]
+        intensity = input_data_entry['results'][0]['intensity']
+        two_theta = input_data_entry['results'][0]['two_theta']
+        if input_data_entry:
+            peaks_table = pd.DataFrame({
+                '2θ (°)': two_theta,
+                'Intensity': intensity,
+            })
+            peaks_table.set_index('2θ (°)', inplace=True)
+            peaks_table.to_csv(f'tmp_intensity_2theta.csv')
 
     if not available_entries:
         no_input_alert.layout.visibility = 'visible'
         dropdown.disabled = True
         find_peak_button.disabled = True
+        download_csv_button.disabled = True
 
-    out = widgets.Output(
-        layout = dict(),
-    )
-
-    def on_click_find_peaks(button):
-        '''
-        Event handler for the button click.
-        '''
-        if find_peak_parameters[2].value < 1:
-            find_peak_parameters[2].value = 1
-        entry_name = dropdown.value
-        entry_index = get_input_entry_names(input_data).index(entry_name)
-
-        with out:
-            options = {
-                'height': find_peak_parameters[0].value,
-                'threshold': find_peak_parameters[1].value,
-                'distance': find_peak_parameters[2].value,
-            }
-            xrd_conduct_analysis(
-                archive_data = input_data[entry_index],
-                options = options,
-                plot = True)
-            clear_output(wait=True)
+    export_results_button.disabled = True
 
     find_peak_button.on_click(on_click_find_peaks)
+    download_csv_button.on_click(on_click_download_csv)
+    export_results_button.on_click(on_click_export_results)
 
-    display(input_box, out)
+    display(display_panel)
