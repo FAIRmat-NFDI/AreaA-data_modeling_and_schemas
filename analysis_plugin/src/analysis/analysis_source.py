@@ -46,7 +46,7 @@ def get_input_data(token_header: dict, base_url: str, analysis_entry_id: str) ->
                 'Accept': 'application/json'
             },
             json = query
-        ).json()
+        )
         if response.status_code == 401:
             print('Authentication failed as the token expired.'
                   'Please re-launch JupyterHub or Voila.')
@@ -54,6 +54,7 @@ def get_input_data(token_header: dict, base_url: str, analysis_entry_id: str) ->
         print(f'Error occurred while fetching the data: {e}')
         return []
 
+    response = response.json()
     referred_entries = response['data']['archive']['data']['inputs']
 
     entry_ids = []
