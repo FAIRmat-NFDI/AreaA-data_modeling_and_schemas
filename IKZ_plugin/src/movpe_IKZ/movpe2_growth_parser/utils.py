@@ -75,47 +75,67 @@ def get_entry_id_from_file_name(filename, upload_id):
     return hash(upload_id, filename)
 
 
+# def create_archive(
+#     entry_dict, context, filename, file_type, logger, *, bypass_check: bool = False
+# ):
+#     import yaml
+#     import json
+#     from nomad.datamodel.context import ClientContext
+#     if isinstance(context, ClientContext):
+#         return None
+#     if context.raw_path_exists(filename):
+#         with context.raw_file(filename, "r") as file:
+#             existing_dict = yaml.safe_load(file)
+#     if context.raw_path_exists(filename) and existing_dict != entry_dict:
+#         logger.error(
+#             f"{filename} archive file already exists. "
+#             f"You are trying to overwrite it with a different content. "
+#             f"To do so, remove the existing archive and click reprocess again."
+#         )
+#     if not context.raw_path_exists(filename) or existing_dict == entry_dict or bypass_check:
+#         with context.raw_file(filename, "w") as newfile:
+#             if file_type == "json":
+#                 json.dump(entry_dict, newfile)
+#             elif file_type == "yaml":
+#                 yaml.dump(entry_dict, newfile)
+#         context.upload.process_updated_raw_file(filename, allow_modify=True)
+
+#     return get_reference(
+#         context.upload_id,
+#         get_entry_id_from_file_name(filename, context.upload_id)
+#     )
+
+#         # !! useful to fetch the upload_id from another upload.
+#         # experiment_context = ServerContext(
+#                 #         get_upload_with_read_access(
+#                 #             matches["upload_id"][0],
+#                 #             User(
+#                 #                 is_admin=True,
+#                 #                 user_id=current_parse_archive.metadata.main_author.user_id,
+#                 #             ),
+#                 #             include_others=True,
+#                 #         )
+#                 #     )  # Upload(upload_id=matches["upload_id"][0]))
+
 def create_archive(
-    entry_dict, context, filename, file_type, logger, *, bypass_check: bool = False
+    entry_dict, context, file_name, file_type, logger, *, bypass_check: bool = False
 ):
     import yaml
     import json
-    from nomad.datamodel.context import ClientContext
-    if isinstance(context, ClientContext):
-        return None
-    if context.raw_path_exists(filename):
-        with context.raw_file(filename, "r") as file:
-            existing_dict = yaml.safe_load(file)
-    if context.raw_path_exists(filename) and existing_dict != entry_dict:
-        logger.error(
-            f"{filename} archive file already exists. "
-            f"You are trying to overwrite it with a different content. "
-            f"To do so, remove the existing archive and click reprocess again."
-        )
-    if not context.raw_path_exists(filename) or existing_dict == entry_dict or bypass_check:
-        with context.raw_file(filename, "w") as newfile:
+    if not context.raw_path_exists(file_name) or bypass_check:
+        with context.raw_file(file_name, "w") as outfile:
             if file_type == "json":
-                json.dump(entry_dict, newfile)
+                json.dump(entry_dict, outfile)
             elif file_type == "yaml":
-                yaml.dump(entry_dict, newfile)
-        context.upload.process_updated_raw_file(filename, allow_modify=True)
+                yaml.dump(entry_dict, outfile)
+        context.upload.process_updated_raw_file(file_name, allow_modify=True)
+    else:
+        logger.error(
+            f"{file_name} archive file already exists."
+            f"If you intend to reprocess the older archive file, remove the existing one and run reprocessing again."
+        )
 
-    return get_reference(
-        context.upload_id,
-        get_entry_id_from_file_name(filename, context.upload_id)
-    )
 
-        # !! useful to fetch the upload_id from another upload.
-        # experiment_context = ServerContext(
-                #         get_upload_with_read_access(
-                #             matches["upload_id"][0],
-                #             User(
-                #                 is_admin=True,
-                #                 user_id=current_parse_archive.metadata.main_author.user_id,
-                #             ),
-                #             include_others=True,
-                #         )
-                #     )  # Upload(upload_id=matches["upload_id"][0]))
 
 def fetch_substrate(archive, sample_id, substrate_id, logger):
     substrate_reference_str = None
