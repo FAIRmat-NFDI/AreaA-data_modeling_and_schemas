@@ -102,7 +102,7 @@ def xrd_plot_intensity_two_theta(archive_data: dict, peak_indices = None) -> Non
             width=800,
             title='Intensity vs 2θ (linear scale)',
         )
-    if peak_indices is not None or len(peak_indices) > 0:
+    if peak_indices is not None and len(peak_indices) > 0:
         line_linear.add_scatter(
             x=two_theta[peak_indices],
             y=intensity[peak_indices],
@@ -143,7 +143,7 @@ def xrd_plot_logy_intensity_two_theta(archive_data: dict, peak_indices = None) -
         width=800,
         title='Intensity vs 2θ (log scale)',
     )
-    if peak_indices is not None or len(peak_indices) > 0:
+    if peak_indices is not None and len(peak_indices) > 0:
         line_log.add_scatter(
             x=two_theta[peak_indices],
             y=intensity[peak_indices],
@@ -300,8 +300,8 @@ def xrd_voila_analysis(input_data) -> None:
                     description = 'Export results',
                     button_style = 'primary',
                 )
-    download_csv_button = widgets.Button(
-                    description = 'Download as CSV',
+    export_csv_button = widgets.Button(
+                    description = 'Export CSV',
                     button_style = 'primary',
                 )
 
@@ -327,16 +327,33 @@ def xrd_voila_analysis(input_data) -> None:
             widgets.HBox([
                 find_peak_button,
                 export_results_button,
-                download_csv_button,
             ]),
         ]),
         no_peak_alert,
         no_input_alert,
+        export_csv_button,
         out,
         ]
     )
 
     results = collections.defaultdict(None)
+    entry_name = dropdown.value
+    entry_index = get_input_entry_names(input_data).index(entry_name)
+    input_data_entry = input_data[entry_index]
+    with out:
+        xrd_plot_logy_intensity_two_theta(input_data_entry, None)
+        clear_output(wait=True)
+
+    def on_change_dropdown(change):
+        '''
+        Event handler for the dropdown change.
+        '''
+        entry_name = dropdown.value
+        entry_index = get_input_entry_names(input_data).index(entry_name)
+        input_data_entry = input_data[entry_index]
+        with out:
+            xrd_plot_logy_intensity_two_theta(input_data_entry, None)
+            clear_output(wait=True)
 
     def on_click_find_peaks(button):
         '''
@@ -361,9 +378,11 @@ def xrd_voila_analysis(input_data) -> None:
             'Intensity': peaks['peaks']['intensity'],
         })
         peaks_table.set_index('2θ (°)', inplace=True)
-        results[entry_name] = peaks
+        if not peaks_table.empty:
+            results[entry_name] = peaks
 
         with out:
+            print(f'{len(peaks_table)} peak(s) found.')
             xrd_plot_logy_intensity_two_theta(input_data_entry, peak_indices)
             if not peaks_table.empty:
                 display(peaks_table)
@@ -392,18 +411,19 @@ def xrd_voila_analysis(input_data) -> None:
                 'Intensity': intensity,
             })
             peaks_table.set_index('2θ (°)', inplace=True)
-            peaks_table.to_csv(f'tmp_intensity_2theta.csv')
+            peaks_table.to_csv(f'tmp_{entry_name.replace(" ", "_")}_intensity_2theta.csv')
 
     if not available_entries:
         no_input_alert.layout.visibility = 'visible'
         dropdown.disabled = True
         find_peak_button.disabled = True
-        download_csv_button.disabled = True
+        export_csv_button.disabled = True
 
     export_results_button.disabled = True
 
+    dropdown.observe(on_change_dropdown, names='value')
     find_peak_button.on_click(on_click_find_peaks)
-    download_csv_button.on_click(on_click_download_csv)
+    export_csv_button.on_click(on_click_download_csv)
     export_results_button.on_click(on_click_export_results)
 
     display(display_panel)
