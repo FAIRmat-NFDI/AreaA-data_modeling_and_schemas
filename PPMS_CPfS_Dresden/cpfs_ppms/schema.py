@@ -284,11 +284,11 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                     downfit=np.interp(fitfield,field[downsweep[0]:downsweep[1]],res[downsweep[0]:downsweep[1]])
                     upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
                     if self.channel_measurement_type[channel]=="Hall":
-                        intermediate=(upfit+downfit)/2.
+                        intermediate=(upfit+np.flip(downfit))/2.
                         ana_data.rho_xy_down=downfit-intermediate
                         ana_data.rho_xy_up=upfit-intermediate
                     if self.channel_measurement_type[channel]=="TMR":
-                        intermediate=(downfit-upfit)/2.
+                        intermediate=(np.flip(downfit)-upfit)/2.
                         ana_data.rho_xx_down=downfit+intermediate
                         ana_data.rho_xx_up=upfit-intermediate
                         ana_data.mr_down=(ana_data.rho_xx_down-ana_data.rho_xx_down[int(fitlength/2)])/ana_data.rho_xx_down[int(fitlength/2)]
@@ -304,12 +304,12 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             figure1 = make_subplots(rows=3, cols=1, subplot_titles=(["TMR","MR","Hall"]), shared_xaxes=True)
             for data in self.analyzed_data:
                 color=int(255./len(self.analyzed_data)*self.analyzed_data.index(data))
-                resistivity_tmr_up=go.Scatter(x=data.field,y=data.rho_xx_up, name=data.title.split("at")[1].strip("."), marker_color='rbg({},0,255)'.format(color))
-                resistivity_tmr_down=go.Scatter(x=data.field,y=data.rho_xx_down, marker_color='rbg({},0,255)'.format(color))
-                resistivity_mr_up=go.Scatter(x=data.field,y=data.mr_up, name=data.title.split("at")[1].strip("."), marker_color='rbg({},0,255)'.format(color))
-                resistivity_mr_down=go.Scatter(x=data.field,y=data.mr_down, marker_color='rbg({},0,255)'.format(color))
-                resistivity_hall_up=go.Scatter(x=data.field,y=data.rho_xy_up, name=data.title.split("at")[1].strip("."), marker_color='rbg({},0,255)'.format(color))
-                resistivity_hall_down=go.Scatter(x=data.field,y=data.rho_xy_down, marker_color='rbg({},0,255)'.format(color))
+                resistivity_tmr_up=go.Scatter(x=data.field,y=data.rho_xx_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                resistivity_tmr_down=go.Scatter(x=data.field,y=data.rho_xx_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                resistivity_mr_up=go.Scatter(x=data.field,y=data.mr_up, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                resistivity_mr_down=go.Scatter(x=data.field,y=data.mr_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                resistivity_hall_up=go.Scatter(x=data.field,y=data.rho_xy_up, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                resistivity_hall_down=go.Scatter(x=data.field,y=data.rho_xy_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
                 figure1.add_trace(resistivity_tmr_up, row=1, col=1)
                 figure1.add_trace(resistivity_tmr_down, row=1, col=1)
                 figure1.add_trace(resistivity_mr_up, row=2, col=1)
