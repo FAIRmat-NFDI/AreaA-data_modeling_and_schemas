@@ -621,8 +621,8 @@ class ThinFilmStackMovpeReference(ThinFilmStackReference):
 class GasSourceMovpeIKZ(CVDSource):
     m_def = Section(
         a_plot=dict(
-            x="deposition_rate/process_time",
-            y="deposition_rate/rate",
+            x="vapor_rate/process_time",
+            y="vapor_rate/rate",
         ),
     )
     name = Quantity(
@@ -642,8 +642,8 @@ class GasSourceMovpeIKZ(CVDSource):
 class BubblerMovpeIKZ(CVDSource):
     m_def = Section(
         a_plot=dict(
-            x="deposition_rate/process_time",
-            y="deposition_rate/rate",
+            x="vapor_rate/process_time",
+            y="vapor_rate/rate",
         ),
     )
     name = Quantity(
@@ -1594,10 +1594,6 @@ class SampleParametersMovpe(SampleParameters):
     )
 
 
-class ChemicalVaporDepositionSource(VaporDepositionSource):
-    pass
-
-
 class CVDPressure(Pressure):
     m_def = Section(
         a_plot=dict(
@@ -1733,7 +1729,7 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
         repeats=True,
     )
     sources = SubSection(
-        section_def=ChemicalVaporDepositionSource,
+        section_def=CVDSource,
         repeats=True,
     )
 
