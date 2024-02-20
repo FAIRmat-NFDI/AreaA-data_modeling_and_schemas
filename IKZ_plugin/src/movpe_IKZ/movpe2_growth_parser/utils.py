@@ -31,6 +31,8 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
+from nomad.units import ureg
+
 from nomad.datamodel.metainfo.basesections import (
     SystemComponent,
     CompositeSystemReference,
@@ -45,7 +47,6 @@ from nomad_material_processing import (
 )
 from nomad_material_processing.chemical_vapor_deposition import (
     CVDBubbler,
-    CVDVaporRate,
     CVDSource,
 )
 
@@ -62,16 +63,18 @@ from movpe_IKZ import (
     SampleParametersMovpe,
     BubblerMovpeIKZ,
     GasSourceMovpeIKZ,
+    CVDVaporRateMovpeIKZ,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 
 def get_reference(upload_id, entry_id):
-    return f'../uploads/{upload_id}/archive/{entry_id}#data'
+    return f"../uploads/{upload_id}/archive/{entry_id}#data"
 
 
 def get_entry_id_from_file_name(filename, upload_id):
     from nomad.utils import hash
+
     return hash(upload_id, filename)
 
 
@@ -117,11 +120,13 @@ def get_entry_id_from_file_name(filename, upload_id):
 #                 #         )
 #                 #     )  # Upload(upload_id=matches["upload_id"][0]))
 
+
 def create_archive(
     entry_dict, context, file_name, file_type, logger, *, bypass_check: bool = False
 ):
     import yaml
     import json
+
     if not context.raw_path_exists(file_name) or bypass_check:
         with context.raw_file(file_name, "w") as outfile:
             if file_type == "json":
@@ -134,7 +139,6 @@ def create_archive(
             f"{file_name} archive file already exists."
             f"If you intend to reprocess the older archive file, remove the existing one and run reprocessing again."
         )
-
 
 
 def fetch_substrate(archive, sample_id, substrate_id, logger):
@@ -216,7 +220,8 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             f"Inject{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
                     ),
-                    vapor_rate=CVDVaporRate(
+                    vapor_rate=CVDVaporRateMovpeIKZ(
+                        measurement_type="Mass Flow Controller",
                         mass_flow_controller=growth_run_file.get(
                             f"Bubbler MFC{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
@@ -224,7 +229,9 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             growth_run_file.get(
                                 f"Bubbler Molar Flux{'' if i == 0 else '.' + str(i)}", 0
                             )[line_number]
+                            * ureg("mol / minute").to("mol / second").magnitude
                         ],
+                        process_time=[0],
                     ),
                 )
             )
@@ -261,15 +268,18 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                             f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                         )[line_number],
                     ),
-                    vapor_rate=CVDVaporRate(
+                    vapor_rate=CVDVaporRateMovpeIKZ(
+                        measurement_type="Mass Flow Controller",
                         mass_flow_controller=growth_run_file.get(
                             f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
                         rate=[
                             growth_run_file.get(
                                 f"Gas Molar Flux{'' if i == 0 else '.' + str(i)}", 0
-                            )[line_number],
+                            )[line_number]
+                            * ureg("mol / minute").to("mol / second").magnitude
                         ],
+                        process_time=[0],
                     ),
                 )
             )

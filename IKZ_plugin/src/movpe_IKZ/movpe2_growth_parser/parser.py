@@ -45,6 +45,7 @@ from nomad.search import search
 # from nomad_material_processing.utils import create_archive as create_archive_ref
 from nomad_material_processing import (
     SubstrateReference,
+    ThinFilmReference,
 )
 from movpe_IKZ import (
     ExperimentMovpe2IKZ,
@@ -166,7 +167,7 @@ class ParserMovpe2IKZ(MatchingParser):
                 samples_lists[recipe_id][step_id] = []
             samples_lists[recipe_id][step_id].append(
                 SampleParametersMovpe(
-                    layer=ThinFilmStackMovpeReference(
+                    layer=ThinFilmReference(
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data",
                     ),
                     substrate=ThinFilmStackMovpeReference(
@@ -178,7 +179,7 @@ class ParserMovpe2IKZ(MatchingParser):
                     ],
                     temperature=SubstrateTemperatureMovpe(
                         temperature=[growth_run_file["T LayTec"][index]],
-                        process_time=[growth_run_file["Duration"][index]],
+                        process_time=[0],  # [growth_run_file["Duration"][index]],
                         temperature_shaft=growth_run_file["T Shaft"][index],
                         temperature_filament=growth_run_file["T Filament"][index],
                     ),

@@ -618,6 +618,44 @@ class ThinFilmStackMovpeReference(ThinFilmStackReference):
         super(ThinFilmStackMovpeReference, self).normalize(archive, logger)
 
 
+class CVDVaporRateMovpeIKZ(CVDVaporRate):
+    m_def = Section(
+        a_plot=dict(
+            x="process_time",
+            y="rate",
+        ),
+    )
+    mass_flow_controller = Quantity(
+        type=float,
+        description="Flux of material with mass flow controller.",
+        a_eln={
+            "component": "NumberEditQuantity",
+            "defaultDisplayUnit": "cm ** 3 / minute",
+        },
+        unit="cm ** 3 / minute",
+    )
+    rate = Quantity(
+        type=float,
+        description="FILL THE DESCRIPTION",
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit="mol / minute",
+        ),
+        shape=[1],
+        unit="mol / second",
+        label="Molar flux",
+    )
+    process_time = Quantity(
+        type=float,
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit="minute",
+        ),
+        unit="second",
+        shape=[1],
+    )
+
+
 class GasSourceMovpeIKZ(CVDSource):
     m_def = Section(
         a_plot=dict(
@@ -632,7 +670,7 @@ class GasSourceMovpeIKZ(CVDSource):
         """,
     )
     vapor_rate = SubSection(
-        section_def=CVDVaporRate,
+        section_def=CVDVaporRateMovpeIKZ,
         description="""
         The rate of the material being evaporated (mol/time).
         """,
@@ -659,7 +697,7 @@ class BubblerMovpeIKZ(CVDSource):
         """,
     )
     vapor_rate = SubSection(
-        section_def=CVDVaporRate,
+        section_def=CVDVaporRateMovpeIKZ,
         description="""
         The rate of the material being evaporated (mol/time).
         """,
@@ -1521,12 +1559,6 @@ class SubstrateTemperatureMovpe(SubstrateTemperature):
         unit="second",
         shape=["*"],
     )
-    measurement_type = Quantity(
-        type=MEnum(
-            "Heater thermocouple",
-            "Pyrometer",
-        )
-    )
 
 
 class SampleParametersMovpe(SampleParameters):
@@ -1691,11 +1723,6 @@ class GrowthStepMovpe2IKZ(VaporDepositionStep):
             component="StringEditQuantity",
             label="Step name",
         ),
-    )
-    lab_id = Quantity(
-        type=str,
-        description="the ID of the current growth process - derived from a sample ID",
-        a_eln={"component": "StringEditQuantity", "label": "Growth Run ID"},
     )
     step_index = Quantity(
         type=str,
