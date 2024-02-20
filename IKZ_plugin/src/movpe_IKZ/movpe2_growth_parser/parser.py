@@ -283,7 +283,8 @@ class ParserMovpe2IKZ(MatchingParser):
             experiment_data = ExperimentMovpe2IKZ(
                 lab_id=recipe_id,
                 growth_run=GrowthMovpe2IKZReference(
-                    reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data"
+                    name="Growth process",
+                    reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data",
                 ),
             )
             experiment_archive = EntryArchive(

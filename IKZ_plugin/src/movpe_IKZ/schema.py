@@ -1786,20 +1786,20 @@ class GrowthMovpe2IKZ(
                     for sample in step.sample_parameters:
                         outputs.append(
                             Link(
-                                name=f"Added Layer: {sample.layer.name}",
+                                name=f"{sample.layer.name}",
                                 section=sample.layer.reference,
                             )
                         )
                         outputs.append(
                             Link(
-                                name=f"Grown Sample: {sample.substrate.name}",
+                                name=f"{sample.substrate.name}",
                                 section=sample.substrate.reference,
                             )
                         )
                         if sample.substrate.reference.substrate.reference is not None:
                             inputs.append(
                                 Link(
-                                    name=f"Starting Substrate: {sample.substrate.name}",
+                                    name=f"{sample.substrate.name}",
                                     section=sample.substrate.reference.substrate.reference,
                                 )
                             )
