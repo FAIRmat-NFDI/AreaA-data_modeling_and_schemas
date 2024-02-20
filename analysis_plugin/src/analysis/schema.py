@@ -302,6 +302,8 @@ class ELNJupyterAnalysis(JupyterAnalysis):
         for cell in cells:
             nb.cells.append(cell)
 
+        nb['metadata']['trusted'] = True
+
         with archive.m_context.raw_file(self.notebook, 'w') as nb_file:
             nbf.write(nb, nb_file)
         archive.m_context.process_updated_raw_file(self.notebook, allow_modify=True)
@@ -328,6 +330,8 @@ class ELNJupyterAnalysis(JupyterAnalysis):
             cells.append(cell)
 
         nb.cells = cells
+
+        nb['metadata']['trusted'] = True
 
         with archive.m_context.raw_file(self.notebook, 'w') as nb_file:
             nbf.write(nb, nb_file)
