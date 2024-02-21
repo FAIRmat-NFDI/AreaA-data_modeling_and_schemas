@@ -15,23 +15,23 @@ class IKZCategory(EntryDataCategory):
 
 
 class IKZMOVPECategory(EntryDataCategory):
-    m_def = Category(label='MOVPE', categories=[IKZCategory])
+    m_def = Category(label='MOVPE', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZMOVPE1Category(EntryDataCategory):
-    m_def = Category(label='MOVPE 1', categories=[IKZCategory])
+    m_def = Category(label='MOVPE 1', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZMOVPE2Category(EntryDataCategory):
-    m_def = Category(label='MOVPE 2', categories=[IKZCategory])
+    m_def = Category(label='MOVPE 2', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZDSCategory(EntryDataCategory):
-    m_def = Category(label='Directional Solidification', categories=[IKZCategory])
+    m_def = Category(label='Directional Solidification', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZHallCategory(EntryDataCategory):
-    m_def = Category(label='Hall', categories=[IKZCategory])
+    m_def = Category(label='Hall', categories=[EntryDataCategory, IKZCategory])
 
 
 # class CollectionOfSystems(Entity, EntryData):
