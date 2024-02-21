@@ -37,7 +37,7 @@ from nomad.datamodel.data import (
 )
 from nomad.search import search
 from nomad_material_processing.utils import create_archive as create_archive_ref
-from movpe_IKZ import (
+from movpe import (
     ExperimentMovpe1IKZ,
     GrowthMovpe1IKZConstantParameters,
     ThinFilmStackMovpe
@@ -46,7 +46,7 @@ from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
-from basesections_IKZ import IKZMOVPE1Category
+from basesections import IKZMOVPE1Category
 
 class RawFileConstantParameters(EntryData):
     m_def = Section(

@@ -11,7 +11,7 @@ from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.eln import PublicationReference
 from nomad.datamodel.metainfo.eln import Entity, Activity, SampleID
 from nomad.datamodel.util import parse_path
-from basesections_IKZ import SampleCut
+from basesections import SampleCut
 
 m_package = Package(name='mbe_IKZ')
 
