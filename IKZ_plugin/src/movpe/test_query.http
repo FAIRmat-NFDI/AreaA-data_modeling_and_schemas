@@ -1,0 +1,35 @@
+# POST {
+#   "owner": "all",
+#   "query": {
+#     "and": [
+#       {
+#         "results.eln.sections:any": [
+#           "GrowthRun"
+#         ],
+#         "upload_id:any": [
+#           "nSUfFYOCTrWmC4m456Ejuw"
+#         ]
+#       },
+#       {
+#         "quantities:all": [
+#           "data"
+#         ]
+#       }
+#     ]
+#   },
+#   "aggregations": {},
+#   "pagination": {
+#     "order_by": "upload_create_time",
+#     "order": "desc",
+#     "page_size": 20
+#   },
+#   "required": {
+#     "exclude": [
+#       "quantities",
+#       "sections",
+#       "files"
+#     ]
+#   }
+# }
+
+GET https://nomad-lab.eu/prod/v1/staging/gui/search/eln?results.eln.sections=BasicEln&upload_id=G8uSKbM3Q5igi7A4WZjK5w&visibility=all

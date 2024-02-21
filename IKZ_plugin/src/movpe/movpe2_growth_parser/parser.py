@@ -39,7 +39,7 @@ from nomad.datamodel.metainfo.basesections import (
     PubChemPureSubstanceSection,
 )
 
-from basesections_IKZ import IKZMOVPE2Category
+from basesections import IKZMOVPE2Category
 from nomad.search import search
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
@@ -47,7 +47,7 @@ from nomad_material_processing import (
     SubstrateReference,
     ThinFilmReference,
 )
-from movpe_IKZ import (
+from movpe import (
     ExperimentMovpe2IKZ,
     GrowthStepMovpe2IKZ,
     GrowthMovpe2IKZ,

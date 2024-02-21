@@ -18,6 +18,7 @@
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
+    Section,
     MSection,
     Quantity,
 )
@@ -30,23 +31,31 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from cz_IKZ import MeltCzochralskiExperiment, Sensors
+from movpe import SubstrateInventory
+from basesections import (
+    IKZMOVPECategory
+)
 
-class CSVFile(EntryData):
+class RawFileSubstrateInventory(EntryData):
+    m_def = Section(
+        a_eln=None,
+        categories=[IKZMOVPECategory],
+        label = 'Raw File Substrate Inventory'
+    )
     measurement = Quantity(
-        type=Sensors,
+        type=SubstrateInventory,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         )
     )
 
 
-class CzParser(MatchingParser):
+class MovpeSubstrateParser(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='Czochralski IKZ',
-            code_name= 'Czochralski IKZ',
+            name='MOVPE Substrate IKZ',
+            code_name= 'MOVPE Substrate IKZ',
             code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
             supported_compressions=['gz', 'bz2', 'xz']
         )
@@ -54,9 +63,9 @@ class CzParser(MatchingParser):
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        entry = Sensors()
-        entry.data_file = data_file_with_path
-        file_name = f'{data_file[:-12]}.archive.json'
+        entry = SubstrateInventory()
+        entry.substrate_data_file = data_file_with_path
+        file_name = f'{data_file[:-5]}.archive.json'
         #entry.normalize(archive, logger)
-        archive.data = CSVFile(measurement=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' measurement file'
+        archive.data = RawFileSubstrateInventory(measurement=create_archive(entry,archive,file_name))
+        archive.metadata.entry_name = data_file + ' substrates file'

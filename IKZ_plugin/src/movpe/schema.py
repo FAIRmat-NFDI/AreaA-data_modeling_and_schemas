@@ -39,7 +39,7 @@ from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
 from laytec_epitt import LayTecEpiTTMeasurement
 from hall import HallMeasurement
-from basesections_IKZ import IKZMOVPECategory, IKZMOVPE1Category, IKZMOVPE2Category
+from basesections import IKZMOVPECategory, IKZMOVPE1Category, IKZMOVPE2Category
 from nomad_material_processing import (
     SubstrateReference,
     CrystallineSubstrate,

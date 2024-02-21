@@ -14,18 +14,18 @@ The directory tree:
 IKZ_plugin/
 ├── nomad.yaml
 ├── src
-│   ├── basesections_IKZ
-│   ├── cz_IKZ
-│   ├── ds_IKZ
-│   ├── mbe_IKZ
-│   └── movpe_IKZ
+│   ├── basesections
+│   ├── czochralski
+│   ├── directional_solidification
+│   ├── mbe
+│   └── movpe
 └── tests
     └── data
-        ├── basesections_IKZ
-        ├── cz_IKZ
-        ├── ds_IKZ
-        ├── mbe_IKZ
-        └── movpe_IKZ
+        ├── basesections
+        ├── czochralski
+        ├── directional_solidification
+        ├── mbe
+        └── movpe
 ```
 
 - `src/`: contains the source code for the plugins.
@@ -49,14 +49,14 @@ To make this path persistent, write into the .pyenv/bin/activate file of your vi
 ```yaml
 plugins:
   include:
-    - 'parsers/movpe_growth_IKZ'
+    - 'parsers/movpe_2'
 ```
 The name after the `/` is user defined.
 Then, specify the Python package for the plugin in the options section:
 ```yaml
 options:
   parsers/movpe_growth_IKZ:
-    python_package: movpe_IKZ.binaryoxides_growth_parser
+    python_package: movpe.movpe2_growth_parser
 ```
 
 This plugin requires to clone in your local machines other plugin repositories:
@@ -88,13 +88,13 @@ plugins:
     - 'parsers/hall_lakeshore_measurement'
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
-    - 'schemas/basesections_IKZ'
-    - 'parsers/cz_IKZ'
-    - 'parsers/movpe_2_IKZ'
-    - 'parsers/movpe_1_deposition_control_IKZ'
-    - 'parsers/movpe_1_IKZ'
-    - 'parsers/movpe_substrates_IKZ'
-    - 'parsers/ds_IKZ'
+    - 'schemas/basesections'
+    - 'parsers/czochralski'
+    - 'parsers/movpe_2'
+    - 'parsers/movpe_1_deposition_control'
+    - 'parsers/movpe_1'
+    - 'parsers/movpe_substrates'
+    - 'parsers/directional_solidification'
 
   options:
     schemas/nomad_measurements:
@@ -107,20 +107,20 @@ plugins:
       python_package: hall.instrument_parser
     parsers/laytec_epitt:
       python_package: laytec_epitt
-    schemas/basesections_IKZ:
-      python_package: basesections_IKZ
-    parsers/cz_IKZ:
-      python_package: cz_IKZ
-    parsers/movpe_2_IKZ:
-      python_package: movpe_IKZ.movpe2_growth_parser
-    parsers/movpe_1_deposition_control_IKZ:
-      python_package: movpe_IKZ.movpe1_growth_parser.deposition_control
-    parsers/movpe_1_IKZ:
-      python_package: movpe_IKZ.movpe1_growth_parser.constant_parameters
+    schemas/basesections:
+      python_package: basesections
+    parsers/czochralski:
+      python_package: czochralski
+    parsers/movpe_2:
+      python_package: movpe.movpe2_growth_parser
+    parsers/movpe_1_deposition_control:
+      python_package: movpe.movpe1_growth_parser.deposition_control
+    parsers/movpe_1:
+      python_package: movpe.movpe1_growth_parser.constant_parameters
     parsers/movpe_substrates_IKZ:
-     python_package: movpe_IKZ.substrate_parser
-    parsers/ds_IKZ:
-      python_package: ds_IKZ
+     python_package: movpe.substrate_parser
+    parsers/directional_solidification:
+      python_package: directional_solidification
 ```
 
 ## Usage
