@@ -125,23 +125,51 @@ To use the plugins in your NOMAD instance, include it in the `nomad.yaml` config
 ```yaml
 plugins:
   include:
-    - 'parsers/movpe_growth_IKZ'
-    - 'schemas/analysis'
     - 'schemas/nomad_material_processing'
     - 'schemas/nomad_measurements'
     - 'parsers/xrd'
+    - 'schemas/analysis'
+    - 'parsers/hall_lakeshore_measurement'
+    - 'parsers/hall_lakeshore_instrument'
+    - 'parsers/laytec_epitt'
+    - 'schemas/basesections_IKZ'
+    - 'parsers/cz_IKZ'
+    - 'parsers/movpe_2_IKZ'
+    - 'parsers/movpe_1_deposition_control_IKZ'
+    - 'parsers/movpe_1_IKZ'
+    - 'parsers/movpe_substrates_IKZ'
+    - 'parsers/ds_IKZ'
+  options:
+    schemas/nomad_material_processing:
+      python_package: nomad_material_processing
+    schemas/nomad_measurements:
+      python_package: nomad_measurements
+    parsers/xrd:
+      python_package: xrd
+    schemas/analysis:
+      python_package: analysis
+    parsers/hall_lakeshore_measurement:
+      python_package: hall.measurement_parser
+    parsers/hall_lakeshore_instrument:
+      python_package: hall.instrument_parser
+    parsers/laytec_epitt:
+      python_package: laytec_epitt
+    schemas/basesections_IKZ:
+      python_package: basesections_IKZ
+    parsers/cz_IKZ:
+      python_package: cz_IKZ
+    parsers/movpe_2_IKZ:
+      python_package: movpe_IKZ.movpe2_growth_parser
+    parsers/movpe_1_deposition_control_IKZ:
+      python_package: movpe_IKZ.movpe1_growth_parser.deposition_control
+    parsers/movpe_1_IKZ:
+      python_package: movpe_IKZ.movpe1_growth_parser.constant_parameters
+    parsers/movpe_substrates_IKZ:
+     python_package: movpe_IKZ.substrate_parser
+    parsers/ds_IKZ:
+      python_package: ds_IKZ
 
-options:
-  parsers/movpe_growth_IKZ:
-    python_package: movpe_IKZ.binaryoxides_growth_parser
-  schemas/analysis:
-    python_package: analysis
-  schemas/nomad_material_processing:
-    python_package: nomad_material_processing
-  schemas/nomad_measurements:
-    python_package: nomad_measurements
-  parsers/xrd:
-    python_package: xrd
+
 ```
 
 The name after the `/` in `include` section is user defined. However, same name should be used as key when specifying the python package in `options` section.
