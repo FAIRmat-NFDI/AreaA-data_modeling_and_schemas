@@ -7,8 +7,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nomad-material-processing"
-dynamic = ["version"]
-description = "A plugin for NOMAD containing base sections for material processing."
+version = "0.0.1"
+description = "A plugin for NOMAD containing Lakeshore hall measurements."
 readme = "README.md"
 authors = [
     { name = "Hampus Näsström", email = 'hampus.naesstroem@physik.hu-berlin.de' },
@@ -44,4 +44,3 @@ where = [
     "src",
 ]
 
-[tool.setuptools_scm]
