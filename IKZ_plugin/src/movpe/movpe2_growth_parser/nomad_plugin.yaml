@@ -4,5 +4,5 @@ description: |
   This is a schema and parser for movpe IKZ
 mainfile_name_re: ^.+\.growth.movpe.ikz.xlsx$
 mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-parser_class_name: movpe_IKZ.movpe2_growth_parser.ParserMovpe2IKZ
+parser_class_name: movpe.movpe2_growth_parser.ParserMovpe2IKZ
 code_name: MOVPE 2 IKZ

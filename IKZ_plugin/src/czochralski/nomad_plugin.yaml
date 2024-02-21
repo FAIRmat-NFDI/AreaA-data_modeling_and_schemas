@@ -4,5 +4,5 @@ description: |
   This is a schema and parser for Cz IKZ
 mainfile_name_re: ^.+\.multilog.csv$ # added
 mainfile_mime_re: 'text/csv'
-parser_class_name: cz_IKZ.CzParser # added
+parser_class_name: czochralski.CzParser # added
 code_name: Czochralski IKZ
