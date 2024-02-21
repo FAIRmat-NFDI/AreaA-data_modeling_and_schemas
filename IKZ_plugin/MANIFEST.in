@@ -1,5 +1,5 @@
-recursive-include src/basesections_IKZ nomad_plugin.yaml
-recursive-include src/movpe_IKZ nomad_plugin.yaml
-recursive-include src/cz_IKZ nomad_plugin.yaml
-recursive-include src/mbe_IKZ nomad_plugin.yaml
-recursive-include src/ds_IKZ nomad_plugin.yaml
+recursive-include src/basesections nomad_plugin.yaml
+recursive-include src/movpe nomad_plugin.yaml
+recursive-include src/czochralski nomad_plugin.yaml
+recursive-include src/mbe nomad_plugin.yaml
+recursive-include src/directional_solidification nomad_plugin.yaml

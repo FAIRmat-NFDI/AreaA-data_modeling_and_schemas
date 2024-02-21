@@ -6,7 +6,7 @@ See also:
 
 [full IKZ_plugin README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin)
 
-[movpe_IKZ README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin/src/movpe_IKZ)
+[movpe README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin/src/movpe)
 
 ## Structure
 
@@ -109,21 +109,26 @@ To load the full functionality, use the following `plugins` section:
 plugins:
   include:
     - 'schemas/nomad_measurements'
+    - 'parsers/xrd'
+    - 'schemas/analysis'
     - 'schemas/nomad_material_processing'
     - 'parsers/hall_lakeshore_measurement'
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
-    - 'schemas/basesections_IKZ'
-    - 'parsers/cz_IKZ'
-    - 'parsers/movpe_2_IKZ'
-    - 'parsers/movpe_1_deposition_control_IKZ'
-    - 'parsers/movpe_1_IKZ'
-    - 'parsers/movpe_substrates_IKZ'
-    - 'parsers/ds_IKZ'
-
+    - 'schemas/basesections'
+    - 'parsers/czochralski'
+    - 'parsers/movpe_2'
+    - 'parsers/movpe_1_deposition_control'
+    - 'parsers/movpe_1'
+    - 'parsers/movpe_substrates'
+    - 'parsers/directional_solidification'
   options:
     schemas/nomad_measurements:
       python_package: nomad_measurements
+    parsers/xrd:
+      python_package: xrd
+    schemas/analysis:
+      python_package: analysis
     schemas/nomad_material_processing:
       python_package: nomad_material_processing
     parsers/hall_lakeshore_measurement:
@@ -132,20 +137,20 @@ plugins:
       python_package: hall.instrument_parser
     parsers/laytec_epitt:
       python_package: laytec_epitt
-    schemas/basesections_IKZ:
-      python_package: basesections_IKZ
-    parsers/cz_IKZ:
-      python_package: cz_IKZ
-    parsers/movpe_2_IKZ:
-      python_package: movpe_IKZ.movpe2_growth_parser
-    parsers/movpe_1_deposition_control_IKZ:
-      python_package: movpe_IKZ.movpe1_growth_parser.deposition_control
-    parsers/movpe_1_IKZ:
-      python_package: movpe_IKZ.movpe1_growth_parser.constant_parameters
-    parsers/movpe_substrates_IKZ:
-     python_package: movpe_IKZ.substrate_parser
-    parsers/ds_IKZ:
-      python_package: ds_IKZ
+    schemas/basesections:
+      python_package: basesections
+    parsers/czochralski:
+      python_package: czochralski
+    parsers/movpe_2:
+      python_package: movpe.movpe2_growth_parser
+    parsers/movpe_1_deposition_control:
+      python_package: movpe.movpe1_growth_parser.deposition_control
+    parsers/movpe_1:
+      python_package: movpe.movpe1_growth_parser.constant_parameters
+    parsers/movpe_substrates:
+     python_package: movpe.substrate_parser
+    parsers/directional_solidification:
+      python_package: directional_solidification
 ```
 
 ## Usage
