@@ -5,5 +5,5 @@ description: |
 mainfile_name_re: ^.+\.substrates.movpe.ikz.xlsx$
 mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 mainfile_contents_dict: {'Substrate': {'__has_all_keys': ['Substrates', 'Crystal', 'Orientation', 'Elements']}}
-parser_class_name: movpe_IKZ.substrate_parser.MovpeSubstrateParser
+parser_class_name: movpe.substrate_parser.MovpeSubstrateParser
 code_name: MOVPE Substrate IKZ

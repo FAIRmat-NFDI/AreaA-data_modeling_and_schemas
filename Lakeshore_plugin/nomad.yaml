@@ -4,7 +4,10 @@ normalize:
       - MetainfoNormalizer
 plugins:
   include:
-    - 'schemas/hall_IKZ'
+    - 'parsers/hall_lakeshore_measurement'
+    - 'parsers/hall_lakeshore_instrument'
   options:
-    schemas/hall_IKZ:
-      python_package: lakeshore
+    parsers/hall_lakeshore_measurement:
+      python_package: hall.measurement_parser
+    parsers/hall_lakeshore_instrument:
+      python_package: hall.instrument_parser

@@ -10,24 +10,28 @@ from nomad.datamodel.util import parse_path
 
 m_package = Package(name='basesections_IKZ')
 
+class IKZCategory(EntryDataCategory):
+    m_def = Category(label='IKZ', categories=[EntryDataCategory])
+
+
 class IKZMOVPECategory(EntryDataCategory):
-    m_def = Category(label='IKZ MOVPE', categories=[EntryDataCategory])
+    m_def = Category(label='MOVPE', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZMOVPE1Category(EntryDataCategory):
-    m_def = Category(label='IKZ MOVPE 1', categories=[EntryDataCategory])
+    m_def = Category(label='MOVPE 1', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZMOVPE2Category(EntryDataCategory):
-    m_def = Category(label='IKZ MOVPE 2', categories=[EntryDataCategory])
+    m_def = Category(label='MOVPE 2', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZDSCategory(EntryDataCategory):
-    m_def = Category(label='IKZ Directional Solidification', categories=[EntryDataCategory])
+    m_def = Category(label='Directional Solidification', categories=[EntryDataCategory, IKZCategory])
 
 
 class IKZHallCategory(EntryDataCategory):
-    m_def = Category(label='IKZ Hall', categories=[EntryDataCategory])
+    m_def = Category(label='Hall', categories=[EntryDataCategory, IKZCategory])
 
 
 # class CollectionOfSystems(Entity, EntryData):

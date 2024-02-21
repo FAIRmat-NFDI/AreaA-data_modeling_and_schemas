@@ -45,7 +45,7 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
 
-from basesections_IKZ import IKZHallCategory
+from basesections import IKZHallCategory
 
 m_package = Package(name="hall_lakeshore")
 

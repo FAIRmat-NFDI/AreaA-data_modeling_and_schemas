@@ -51,7 +51,7 @@ m_package = Package(name="LayTec EpiTT Schema")
 
 
 class IKZLayTecEpiTTCategory(EntryDataCategory):
-    m_def = Category(label="IKZ LayTec EpiTT", categories=[EntryDataCategory])
+    m_def = Category(label="LayTec EpiTT", categories=[EntryDataCategory])
 
 
 class ReflectanceWavelengthTransient(PlotSection, ArchiveSection):

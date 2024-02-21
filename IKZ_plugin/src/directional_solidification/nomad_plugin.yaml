@@ -10,5 +10,5 @@ mainfile_mime_re: "application/vnd.openxmlformats-officedocument.spreadsheetml.s
 #     "Substrate": { "__has_all_keys": ["Substrates", "Orientation"] },
 #     "GrowthRun": { "__has_all_keys": ["Name", "Flow Metal Carrier", "Flow Oxydant Carrier"] },
 #   }
-parser_class_name: ds_IKZ.DSParserIKZ
+parser_class_name: directional_solidification.DSParserIKZ
 code_name: Directional Solidification IKZ

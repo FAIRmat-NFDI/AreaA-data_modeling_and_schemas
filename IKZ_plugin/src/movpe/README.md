@@ -121,7 +121,7 @@ The name after the `/` is user defined.
 Then, specify the Python package for the plugin in the options section:
 ```yaml
 options:
-  parsers/movpe_growth_IKZ:
+  parsers/movpe_2:
     python_package: movpe.movpe2_growth_parser
 ```
 
@@ -185,7 +185,7 @@ plugins:
       python_package: movpe.movpe1_growth_parser.deposition_control
     parsers/movpe_1:
       python_package: movpe.movpe1_growth_parser.constant_parameters
-    parsers/movpe_substrates_IKZ:
+    parsers/movpe_substrates:
      python_package: movpe.substrate_parser
     parsers/directional_solidification:
       python_package: directional_solidification
