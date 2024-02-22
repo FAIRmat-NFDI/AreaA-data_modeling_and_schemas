@@ -115,23 +115,6 @@ class SubstrateIKZ(CrystallineSubstrate, EntryData):
         label_quantity="lab_id", categories=[IKZCategory], label="Substrate"
     )
 
-    datetime = Quantity(
-        type=Datetime,
-        description="Delivery Date of the Substrate",
-        a_eln=ELNAnnotation(
-            component="DateTimeEditQuantity",
-            label="Delivery Date",
-        ),
-        a_tabular={"name": "Substrate/Delivery Date"},
-    )
-    lab_id = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Substrate ID",
-        ),
-        a_tabular={"name": "Substrate/Substrates"},
-    )
     supplier = Quantity(
         type=str,
         a_eln=ELNAnnotation(
@@ -147,71 +130,6 @@ class SubstrateIKZ(CrystallineSubstrate, EntryData):
             label="Polishing ID",
         ),
         a_tabular={"name": "Substrate/Polishing Number"},
-    )
-    tags = Quantity(
-        type=str,
-        description="FILL",
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Box ID",
-        ),
-        a_tabular={"name": "Substrate/Substrate Box"},
-    )
-    as_received = Quantity(
-        type=bool,
-        description="Is the sample annealed?",
-        a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/As Received"},
-    )
-    etching = Quantity(
-        type=bool,
-        description="Usable Sample",
-        a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Etching"},
-    )
-    annealing = Quantity(
-        type=bool,
-        description="Usable Sample",
-        a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Annealing"},
-    )
-    re_etching = Quantity(
-        type=bool,
-        description="Usable Sample",
-        a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Re-Etching"},
-    )
-    re_annealing = Quantity(
-        type=bool,
-        description="Usable Sample",
-        a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Re-Annealing"},
-    )
-    epi_ready = Quantity(
-        type=bool,
-        description="Sample ready for epitaxy",
-        a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Epi Ready"},
-    )
-    quality = Quantity(
-        type=str,
-        description="Defective Sample",
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Quality"},
     )
     documentation = Quantity(
         type=str,
@@ -233,11 +151,6 @@ class SubstrateIKZ(CrystallineSubstrate, EntryData):
         section_def=Parallelepiped,
     )
     crystal_properties = SubSection(section_def=SubstrateCrystalPropertiesIKZ)
-    elemental_composition = SubSection(
-        section_def=ElementalComposition,
-        repeats=True,
-    )
-    dopants = SubSection(section_def=Dopant, repeats=True)
 
 
 class SubstratePreparationStepReference(ActivityReference):
