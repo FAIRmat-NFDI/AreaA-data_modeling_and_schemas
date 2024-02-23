@@ -21,6 +21,8 @@ import pandas as pd
 from typing import Dict, List
 import yaml
 import json
+import math
+
 from nomad.datamodel.context import ClientContext
 
 from nomad.datamodel import EntryArchive
@@ -80,6 +82,44 @@ def get_entry_id_from_file_name(filename, upload_id):
     return hash(upload_id, filename)
 
 
+def nan_equal(a, b):
+    """
+    Compare two values with NaN values.
+    """
+    if isinstance(a, float) and isinstance(b, float):
+        return a == b or (math.isnan(a) and math.isnan(b))
+    elif isinstance(a, dict) and isinstance(b, dict):
+        return dict_nan_equal(a, b)
+    elif isinstance(a, list) and isinstance(b, list):
+        return list_nan_equal(a, b)
+    else:
+        return a == b
+
+
+def list_nan_equal(list1, list2):
+    """
+    Compare two lists with NaN values.
+    """
+    if len(list1) != len(list2):
+        return False
+    for a, b in zip(list1, list2):
+        if not nan_equal(a, b):
+            return False
+    return True
+
+
+def dict_nan_equal(dict1, dict2):
+    """
+    Compare two dictionaries with NaN values.
+    """
+    if set(dict1.keys()) != set(dict2.keys()):
+        return False
+    for key in dict1:
+        if not nan_equal(dict1[key], dict2[key]):
+            return False
+    return True
+
+
 def create_archive(
     entry_dict, context, filename, file_type, logger, *, overwrite: bool = False
 ):
@@ -88,13 +128,19 @@ def create_archive(
     if context.raw_path_exists(filename):
         with context.raw_file(filename, "r") as file:
             existing_dict = yaml.safe_load(file)
-    if context.raw_path_exists(filename) and existing_dict != entry_dict:
+    if context.raw_path_exists(filename) and not dict_nan_equal(
+        existing_dict, entry_dict
+    ):
         logger.error(
             f"{filename} archive file already exists. "
             f"You are trying to overwrite it with a different content. "
             f"To do so, remove the existing archive and click reprocess again."
         )
-    if not context.raw_path_exists(filename) or existing_dict == entry_dict or overwrite:
+    if (
+        not context.raw_path_exists(filename)
+        or existing_dict == entry_dict
+        or overwrite
+    ):
         with context.raw_file(filename, "w") as newfile:
             if file_type == "json":
                 json.dump(entry_dict, newfile)
@@ -103,21 +149,20 @@ def create_archive(
         context.upload.process_updated_raw_file(filename, allow_modify=True)
 
     return get_reference(
-        context.upload_id,
-        get_entry_id_from_file_name(filename, context.upload_id)
+        context.upload_id, get_entry_id_from_file_name(filename, context.upload_id)
     )
 
-        # !! useful to fetch the upload_id from another upload.
-        # experiment_context = ServerContext(
-                #         get_upload_with_read_access(
-                #             matches["upload_id"][0],
-                #             User(
-                #                 is_admin=True,
-                #                 user_id=current_parse_archive.metadata.main_author.user_id,
-                #             ),
-                #             include_others=True,
-                #         )
-                #     )  # Upload(upload_id=matches["upload_id"][0]))
+    # !! useful to fetch the upload_id from another upload.
+    # experiment_context = ServerContext(
+    #         get_upload_with_read_access(
+    #             matches["upload_id"][0],
+    #             User(
+    #                 is_admin=True,
+    #                 user_id=current_parse_archive.metadata.main_author.user_id,
+    #             ),
+    #             include_others=True,
+    #         )
+    #     )  # Upload(upload_id=matches["upload_id"][0]))
 
 
 # def create_archive(
