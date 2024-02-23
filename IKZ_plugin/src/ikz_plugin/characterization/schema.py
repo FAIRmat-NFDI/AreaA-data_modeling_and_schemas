@@ -6,7 +6,7 @@ from nomad.datamodel.metainfo.basesections import (
 from nomad.metainfo import Package, Quantity, SubSection, MEnum, Datetime, Section
 from nomad.datamodel.data import EntryData
 
-from IKZ_plugin.src.ikz_plugin import (
+from ikz_plugin import (
     IKZCategory,
     SubstratePreparationStep,
 )
