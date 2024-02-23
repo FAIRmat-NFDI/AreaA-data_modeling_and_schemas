@@ -8,8 +8,21 @@ version = "0.0.1"
 description = "A NOMAD plugin for RTG SIMS data"
 readme = "README.md"
 requires-python = ">=3.9"
-classifiers = [ "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.9",]
-dependencies = [ "nomad-lab>=1.2.1.dev", "pytest", "typing-extensions==4.4.0", "nomad-material-processing>=0.0.1"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+    "nomad-lab>=1.2.1.dev",
+    "nomad-material-processing>=0.0.1",
+    "nomad-measurements>=0.0.1",
+]
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "structlog==22.3.0",
+]
 
 [project.license]
 file = "LICENSE"
