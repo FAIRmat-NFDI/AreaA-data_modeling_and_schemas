@@ -64,7 +64,7 @@ from nomad.parsing.tabular import (
 )
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
-from basesections import IKZDSCategory
+from ikz_plugin import IKZDSCategory
 
 m_package = Package(name='Directional Solidification Experiment')
 
