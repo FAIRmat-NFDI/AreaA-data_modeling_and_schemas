@@ -14,5 +14,5 @@ dependencies = [ "nomad-lab>=1.2.1.dev", "pytest", "typing-extensions==4.4.0", "
 [project.license]
 file = "LICENSE"
 
-[tool.setuptools.packages.find]
-where = [ "nomadschemartgsims",]
+[tool.setuptools]
+packages = ["nomadschemartgsims"]
