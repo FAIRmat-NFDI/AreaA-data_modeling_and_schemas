@@ -32,7 +32,7 @@ from nomad.datamodel.data import (
 
 from nomad_material_processing.utils import create_archive
 from movpe import SubstrateInventory
-from basesections import (
+from IKZ_plugin.src.ikz_plugin import (
     IKZMOVPECategory
 )
 

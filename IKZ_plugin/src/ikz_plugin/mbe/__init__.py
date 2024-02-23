@@ -1,2 +1,2 @@
 from .schema import *
-from basesections import *
+from IKZ_plugin.src.ikz_plugin import *
