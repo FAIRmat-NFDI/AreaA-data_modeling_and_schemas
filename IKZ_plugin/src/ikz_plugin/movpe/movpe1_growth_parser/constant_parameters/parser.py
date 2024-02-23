@@ -46,7 +46,7 @@ from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
-from basesections import IKZMOVPE1Category
+from IKZ_plugin.src.ikz_plugin import IKZMOVPE1Category
 
 class RawFileConstantParameters(EntryData):
     m_def = Section(

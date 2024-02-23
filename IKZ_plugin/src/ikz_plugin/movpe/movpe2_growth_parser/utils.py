@@ -42,7 +42,7 @@ from nomad.datamodel.metainfo.basesections import (
     CompositeSystemReference,
 )
 
-from basesections import IKZMOVPE2Category
+from IKZ_plugin.src.ikz_plugin import IKZMOVPE2Category
 from nomad.search import search
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
