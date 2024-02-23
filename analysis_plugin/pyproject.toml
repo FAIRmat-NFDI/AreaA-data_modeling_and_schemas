@@ -20,9 +20,12 @@ classifiers = [
 ]
 dependencies = [
     "nomad-lab>=1.2.1",
+    "nbformat>=5.9.2",
+]
+[project.optional-dependencies]
+dev = [
     "pytest",
     "structlog==22.3.0",
-    "nbformat>=5.9.2",
 ]
 
 [project.license]
