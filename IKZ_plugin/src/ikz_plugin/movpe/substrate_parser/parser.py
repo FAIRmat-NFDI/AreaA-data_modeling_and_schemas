@@ -32,22 +32,19 @@ from nomad.datamodel.data import (
 
 from nomad_material_processing.utils import create_archive
 
-from ikz_plugin import (
-    IKZMOVPECategory
-)
+from ikz_plugin import IKZMOVPECategory
 from ikz_plugin.movpe import SubstrateInventory
+
 
 class RawFileSubstrateInventory(EntryData):
     m_def = Section(
-        a_eln=None,
-        categories=[IKZMOVPECategory],
-        label = 'Raw File Substrate Inventory'
+        a_eln=None, categories=[IKZMOVPECategory], label="Raw File Substrate Inventory"
     )
     measurement = Quantity(
         type=SubstrateInventory,
         a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        )
+            component="ReferenceEditQuantity",
+        ),
     )
 
 
@@ -55,18 +52,20 @@ class MovpeSubstrateParser(MatchingParser):
 
     def __init__(self):
         super().__init__(
-            name='MOVPE Substrate IKZ',
-            code_name= 'MOVPE Substrate IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz']
+            name="MOVPE Substrate IKZ",
+            code_name="MOVPE Substrate IKZ",
+            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
+            supported_compressions=["gz", "bz2", "xz"],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        data_file = mainfile.split('/')[-1]
+        data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
         entry = SubstrateInventory()
         entry.substrate_data_file = data_file_with_path
-        file_name = f'{data_file[:-5]}.archive.json'
-        #entry.normalize(archive, logger)
-        archive.data = RawFileSubstrateInventory(measurement=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' substrates file'
+        file_name = f"{data_file[:-5]}.archive.json"
+        # entry.normalize(archive, logger)
+        archive.data = RawFileSubstrateInventory(
+            measurement=create_archive(entry, archive, file_name)
+        )
+        archive.metadata.entry_name = data_file + " substrates file"

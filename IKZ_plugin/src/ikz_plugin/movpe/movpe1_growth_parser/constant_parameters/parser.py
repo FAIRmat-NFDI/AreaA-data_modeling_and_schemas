@@ -16,10 +16,7 @@
 # limitations under the License.
 #
 
-from time import (
-    sleep,
-    perf_counter
-)
+from time import sleep, perf_counter
 import pandas as pd
 
 from nomad.datamodel import EntryArchive
@@ -45,21 +42,20 @@ from ikz_plugin import IKZMOVPE1Category
 from ikz_plugin.movpe import (
     ExperimentMovpe1IKZ,
     GrowthMovpe1IKZConstantParameters,
-    ThinFilmStackMovpe
+    ThinFilmStackMovpe,
 )
+
 
 class RawFileConstantParameters(EntryData):
     m_def = Section(
-        a_eln=None,
-        categories=[IKZMOVPE1Category],
-        label = 'Raw File Constant Parameters'
+        a_eln=None, categories=[IKZMOVPE1Category], label="Raw File Constant Parameters"
     )
     constant_parameters_file = Quantity(
         type=GrowthMovpe1IKZConstantParameters,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
-        #shape=['*']
+        # shape=['*']
     )
 
 
@@ -74,19 +70,23 @@ class ParserMovpe1IKZ(MatchingParser):
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         xlsx = pd.ExcelFile(mainfile)
-        data_file = mainfile.split('/')[-1]
+        data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        sheet = pd.read_excel(xlsx, 'Overview', comment="#", converters={'Overview':str})
+        sheet = pd.read_excel(
+            xlsx, "Overview", comment="#", converters={"Overview": str}
+        )
         overview = sheet.rename(columns=lambda x: x.strip())
         if len(overview["Constant Parameters ID"]) > 1:
-            logger.warning(f"Only one line expected in the Overview sheet of {data_file_with_path}")
+            logger.warning(
+                f"Only one line expected in the Overview sheet of {data_file_with_path}"
+            )
         filetype = "yaml"
         filename = f"{overview['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
             data=GrowthMovpe1IKZConstantParameters(
                 lab_id=overview["Constant Parameters ID"][0],
-                data_file=data_file_with_path
-                ),
+                data_file=data_file_with_path,
+            ),
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
@@ -100,5 +100,6 @@ class ParserMovpe1IKZ(MatchingParser):
         archive.data = RawFileConstantParameters(
             constant_parameters_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
         )
-        archive.metadata.entry_name = overview["Constant Parameters ID"][0] + "constant parameters file"
-
+        archive.metadata.entry_name = (
+            overview["Constant Parameters ID"][0] + "constant parameters file"
+        )

@@ -66,7 +66,6 @@ from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.utils import hash
 
 
-
 def create_archive(
     entry_dict, context, file_name, file_type, logger, *, bypass_check: bool = False
 ):
@@ -182,7 +181,9 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     continue
             elif search_experiments.pagination.total == 0:
                 # create grown sample archive
-                sample_filename = f"{dep_control_run}.ThinFilmStackMovpe.archive.{filetype}"
+                sample_filename = (
+                    f"{dep_control_run}.ThinFilmStackMovpe.archive.{filetype}"
+                )
                 sample_archive = EntryArchive(
                     data=ThinFilmStackMovpe(lab_id=dep_control_run),
                     m_context=current_parse_archive.m_context,
