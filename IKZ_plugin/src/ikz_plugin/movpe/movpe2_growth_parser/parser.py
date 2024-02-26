@@ -24,7 +24,8 @@ from typing import Dict, List
 
 from nomad.units import ureg
 
-from nomad.datamodel import EntryArchive
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+from nomad.utils import hash
 from nomad.metainfo import MSection, Quantity, Section
 from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
@@ -62,8 +63,6 @@ from ikz_plugin.movpe import (
     CVDPressure,
     CVDGasFlow,
 )
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.utils import hash
 
 from .utils import (
     create_archive,
