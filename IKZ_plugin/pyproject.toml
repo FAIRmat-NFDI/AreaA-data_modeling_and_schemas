@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "nomad-lab>=1.2.1",
+    "nomad-material-processing>=0.0.7",
 ]
 [project.optional-dependencies]
 dev = [
