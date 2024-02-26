@@ -23,6 +23,8 @@ import pint
 
 from nomad.units import ureg
 
+import importlib
+
 import nomad.datamodel as nodm
 
 from nomad.datamodel.metainfo.eln.labfolder import LabfolderProject
@@ -36,6 +38,7 @@ from nomad.datamodel.data import (
 
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
+    BrowserAnnotation,
     SectionProperties,
 )
 
@@ -47,42 +50,11 @@ from nomad_material_processing.utils import (
     create_archive,
 )
 
-from cpfs_bridgman.bridgman import (
-    CPFSBridgmanTechnique,
-    CPFSBridgmanTechniqueStep,
-)
-
-from cpfs_cvt.cvt import (
-    CPFSChemicalVapourTransport,
-    CPFSChemicalVapourTransportStep,
-)
-
-from cpfs_basesections.cpfs_schemes import (
-    CPFSFurnace,
-    CPFSCrystalGrowthTube,
-    CPFSCrystal,
-    CPFSCrucible,
-    CPFSCrystalGrowthTube,
-    CPFSInitialSynthesisComponent,
-)
 from nomad.datamodel.metainfo.eln import (
     Ensemble,
 )
 
 m_package = Package(name='cpfs_labfolder_general')
-
-_schema_selection_mapping = {
-    'CVT': CPFSChemicalVapourTransport,
-    'Bridgman': CPFSBridgmanTechnique,
-}
-
-_section_selection_mapping = {
-    'CPFSFurnace': CPFSFurnace,
-    'CPFSTube': CPFSCrystalGrowthTube,
-    'CPFSCVTStep': CPFSChemicalVapourTransportStep,
-    'CCry': CPFSCrystal,
-    'CPFSInitialSynthesisComponent': CPFSInitialSynthesisComponent,
-}
 
 def clean_attribute(input_key: str) -> str:
     output_key = (
@@ -98,10 +70,39 @@ def clean_attribute(input_key: str) -> str:
 
 class CPFSGenLabfolderProject(LabfolderProject,EntryData):
 
+    m_def = Section(
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'project_url',
+                    'import_entry_id',
+                    'labfolder_email',
+                    'password',
+                    'mapping_file',
+                ],
+            ),
+            lane_width='800px',
+        ),
+    )
+
+
     import_entry_id = Quantity(
         type=str,
         a_eln=ELNAnnotation(
             component='StringEditQuantity',
+        ),
+    )
+
+    mapping_file = Quantity(
+        type=str,
+        description='''
+        The file with the schema mapping (optional). (.dat file).
+        ''',
+        a_browser=BrowserAnnotation(
+            adaptor='RawFileAdaptor'
+        ),
+        a_eln=ELNAnnotation(
+            component='FileEditQuantity'
         ),
     )
 
@@ -113,18 +114,44 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
 
         TAG_RE=re.compile(r'<[^>]+>')
 
+        _selection_mapping = dict()
+
+        if self.mapping_file:
+            with archive.m_context.raw_file(self.mapping_file, 'r') as mapping:
+                inp=mapping.readlines()
+            for line in inp:
+                if line.startswith("#") or line=="\n":
+                    continue
+                if len(line.split())!=3:
+                    logger.warning("Found line in mapping file with wrong input. Has top be three parts.")
+                    continue
+                try:
+                    _selection_mapping[line.split()[0]]
+                    logger.warning("The key "+line.split()[0]+" is duplicate in the mapping: "+str(_selection_mapping[line.split()[0]])+" , "+line.split()[1]+"."+line.split()[2])
+                    continue
+                except KeyError:
+                    try:
+                        _selection_mapping[line.split()[0]]=getattr(importlib.import_module(line.split()[1]),line.split()[2])
+                    except AttributeError:
+                        logger.warning("The module "+line.split()[1]+" has no class "+line.split()[2]+".")
+                        continue
+                    except ModuleNotFoundError:
+                        logger.warning("The module "+line.split()[1]+" was not found.")
+                        continue
+
+
         if self.import_entry_id:
             for entry in self.entries:
                 if str(entry.id)==str(self.import_entry_id):
                     #More general way possible?
-                    possible_classes=list(set(_schema_selection_mapping)&set(entry.tags))
+                    possible_classes=list(set(_selection_mapping)&set(entry.tags))
                     if len(possible_classes)==0:
-                        logger.warning("No suitable class found in the LabFolderEntry tags. Use one of the following: "+list(_schema_selection_mapping))
+                        logger.warning("No suitable class found in the LabFolderEntry tags. Use one of the following: "+str(list(_selection_mapping)))
                         break
                     if len(possible_classes)>1:
-                        logger.warning("Too many suitable class found in the LabFolderEntry tags. Use only one of the following: "+list(_schema_selection_mapping))
+                        logger.warning("Too many suitable class found in the LabFolderEntry tags. Use only one of the following: "+str(list(_selection_mapping)))
                         break
-                    labfolder_section=_schema_selection_mapping[possible_classes[0]]()
+                    labfolder_section=_selection_mapping[possible_classes[0]]()
                     logger.info(possible_classes[0]+" template found.")
                     data_content=dict()
                     for element in entry.elements:
@@ -201,7 +228,7 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                     logger.info("Creating Subsection "+section.split(" ")[1])
                                 if section.startswith("Arch"):
                                     logger.info("Creating Archive "+section.split(" ")[1])
-                                section_object=_section_selection_mapping[section.split(" ")[1]]()
+                                section_object=_selection_mapping[section.split(" ")[1]]()
                                 for key in data_content.keys():
                                     if data_content[key]==None or data_content[key]=="":
                                         continue
