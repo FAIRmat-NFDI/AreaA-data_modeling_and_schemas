@@ -11,10 +11,14 @@ Read the [NOMAD plugin documentation](https://nomad-lab.eu/prod/v1/staging/docs/
 Steps:
 1. Clone the repo
 
-    ```git clone git@github.com:FAIRmat-NFDI/AreaA-data_modeling_and_schemas.git```
+    ```bash
+    git clone git@github.com:FAIRmat-NFDI/AreaA-data_modeling_and_schemas.git
+    ```
 2. Add the path of the plugin package inside the cloned repo to the `PYTHONPATH`
 
-    ```export PYTHONPATH=$PYTHONPATH:{REPOSITORY PATH}/AreaA-data_modeling_and_schemas/analysis_plugin/src```
+    ```sh
+    export PYTHONPATH="$PYTHONPATH:{local path to root of AreaA-data_modeling_and_schemas}/AreaA-data_modeling_and_schemas/analysis_plugin/src"
+    ```
 3. Modify the ```nomad.yaml``` configuration file of your NOMAD instance.
 
     ```yaml

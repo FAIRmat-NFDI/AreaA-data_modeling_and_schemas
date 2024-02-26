@@ -112,7 +112,6 @@ export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/Lakeshore_plugin/src"
 export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/LayTec_EpiTT/laytec_epitt_plugin/src"
 export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/analysis_plugin/src"
 export PYTHONPATH="$PYTHONPATH:$NOMAD_MEASUREMENTS_REPO_PATH/src"
-export PYTHONPATH="$PYTHONPATH:$NOMAD_MEASUREMENTS_REPO_PATH/src/nomad_measurements"
 export PYTHONPATH="$PYTHONPATH:$NOMAD_MATERIAL_PROCESSING_REPO_PATH/src/nomad_material_processing"
 ```
 
@@ -125,8 +124,7 @@ To use the plugins in your NOMAD instance, include it in the `nomad.yaml` config
 ```yaml
 plugins:
   include:
-    - 'schemas/nomad_measurements'
-    - 'parsers/xrd'
+    - 'parsers/nomad_measurements/xrd'
     - 'schemas/analysis'
     - 'schemas/nomad_material_processing'
     - 'parsers/hall_lakeshore_measurement'
@@ -140,10 +138,8 @@ plugins:
     - 'parsers/movpe_substrates'
     - 'parsers/directional_solidification'
   options:
-    schemas/nomad_measurements:
-      python_package: nomad_measurements
-    parsers/xrd:
-      python_package: xrd
+    parsers/nomad_measurements/xrd:
+      python_package: nomad_measurements.xrd.parser
     schemas/analysis:
       python_package: analysis
     schemas/nomad_material_processing:
