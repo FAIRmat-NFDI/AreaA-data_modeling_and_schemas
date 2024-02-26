@@ -39,6 +39,7 @@ from nomad.processing.data import Upload
 from nomad.app.v1.models.models import User
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.search import search, MetadataPagination
+from ikz_plugin import IKZMOVPE1Category
 from ikz_plugin.movpe import (
     ExperimentMovpe1IKZ,
     GrowthMovpe1IKZConstantParametersReference,
@@ -64,7 +65,6 @@ from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 # from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
-from ikz_plugin import IKZMOVPE1Category
 
 
 def create_archive(

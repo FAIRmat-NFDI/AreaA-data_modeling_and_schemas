@@ -15,5 +15,5 @@
 # limitations under the License.
 #
 
-from movpe.schema import *
+from ikz_plugin.movpe.schema import *
 from .parser import *

@@ -31,10 +31,11 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from movpe import SubstrateInventory
+
 from ikz_plugin import (
     IKZMOVPECategory
 )
+from ikz_plugin.movpe import SubstrateInventory
 
 class RawFileSubstrateInventory(EntryData):
     m_def = Section(
