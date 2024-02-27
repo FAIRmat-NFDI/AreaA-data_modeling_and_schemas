@@ -64,8 +64,9 @@ from ikz_plugin.movpe import (
     CVDGasFlow,
 )
 
+from ikz_plugin.utils import create_archive
+
 from .utils import (
-    create_archive,
     fetch_substrate,
     populate_sources,
     populate_gas_source,
@@ -73,9 +74,7 @@ from .utils import (
 
 
 class RawFileGrowthRun(EntryData):
-    m_def = Section(
-        a_eln=None, categories=[IKZMOVPE2Category], label="Raw File Growth Run"
-    )
+    m_def = Section(a_eln=None, label="Raw File Growth Run")
     growth_runs = Quantity(
         type=ExperimentMovpe2IKZ,
         # a_eln=ELNAnnotation(

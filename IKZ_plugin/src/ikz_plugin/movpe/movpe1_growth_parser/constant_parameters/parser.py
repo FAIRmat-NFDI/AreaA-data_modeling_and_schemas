@@ -47,9 +47,7 @@ from ikz_plugin.movpe import (
 
 
 class RawFileConstantParameters(EntryData):
-    m_def = Section(
-        a_eln=None, categories=[IKZMOVPE1Category], label="Raw File Constant Parameters"
-    )
+    m_def = Section(a_eln=None, label="Raw File Constant Parameters")
     constant_parameters_file = Quantity(
         type=GrowthMovpe1IKZConstantParameters,
         # a_eln=ELNAnnotation(
