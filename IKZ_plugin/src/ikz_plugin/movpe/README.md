@@ -65,11 +65,12 @@ IKZ_plugin/
 
 ## Usage
 
-* You need to copy and fill the excel files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
+- You need to copy and fill the excel files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
 
-* Follow the raw file matching rules in `nomad_plugin.yaml` of each parser. In general, a file must:
+- Follow the raw file matching rules in `nomad_plugin.yaml` of each parser. In general, a file must:
   - have specific extension.
   - contain specific column headers.
+
 > [!CAUTION]
 > The parser is built to match specific template files. If files extension is changed or they are missing regex matching in the column headers, they might not be recognized by the parsers.
 
@@ -77,14 +78,14 @@ IKZ_plugin/
 
 This folder contains two files with custom filename and `.xlsx` extension. Download these file if you use the "MOVPE 1" machine at IKZ.
 
-* Upload in your NOMAD Oasis `constant_parameters.xlsx` BEFORE `deposition_control.xlsx` to reference automatically the generated samples in each activity.
+- Upload in your NOMAD Oasis `constant_parameters.xlsx` BEFORE `deposition_control.xlsx` to reference automatically the generated samples in each activity.
 Each row is used to record one experiment.
 
 > [!NOTE]
 > `deposition_control.xlsx` contains two sheets: "Deposition Control" and "Precursors". Some column header must be present for the file to be parsed: `Constant Parameters ID`, `Sample ID`, `Date`, `number` in "Deposition Control" and `Sample ID` in "Precursors".
 
-* Fill the `Constant Parameters ID` with the same ID you write into the `constant_parameters.xlsx` file, in this way the parameters that remain constant across several experiments will be correctly referenced.
-* Generate one row in "Deposition Control" sheet and in "Precursors" sheet for each growth experiment. They refer to the same sample and hence must contain the same unique `Sample ID`. An error will be thrown if the rows in the two sheets contain different `Sample ID` fields.
+- Fill the `Constant Parameters ID` with the same ID you write into the `constant_parameters.xlsx` file, in this way the parameters that remain constant across several experiments will be correctly referenced.
+- Generate one row in "Deposition Control" sheet and in "Precursors" sheet for each growth experiment. They refer to the same sample and hence must contain the same unique `Sample ID`. An error will be thrown if the rows in the two sheets contain different `Sample ID` fields.
 
 > [!NOTE]
 > After uploading `constant_parameters.xlsx` and `deposition_control.xlsx`, please open `RawFileConstantParameters` and `RawFileDepositionControl` generated entries in NOMAD to check if there is some processing error. Carefully analize any warning or error and upload the file again if needed.
@@ -97,28 +98,31 @@ This folder contains one file with custom filename and `.growth.movpe.ikz.xlsx` 
 
 This folder contains one file with custom filename and `.substrates.movpe.ikz.xlsx` extension. Download these files to record info on Substrate used for both "MOVPE 1" and "MOVPE 2" machines at IKZ.
 
-
-
 ## Installation
 
 To use these packages, you need to:
 
-* add the `src/` directory to your `PYTHONPATH`. You can do this by running the following command in the terminal where you run NOMAD (`nomad admin run appworker`):
+- add the `src/` directory to your `PYTHONPATH`. You can do this by running the following command in the terminal where you run NOMAD (`nomad admin run appworker`):
+
 ```sh
 export PYTHONPATH="$PYTHONPATH:/your/path/IKZ_plugin/src"
 ```
+
 Export this system variable in the same terminal where you run NOMAD (`nomad admin run appworker`).
 
 To make this path persistent, write into the .pyenv/bin/activate file of your virtual environment. Use the path of your local OS where you cloned this repository.
 
-* include it in your `nomad.yaml` configuration file and specify the Python package for the plugin in the options section.
+- include it in your `nomad.yaml` configuration file and specify the Python package for the plugin in the options section.
+
 ```yaml
 plugins:
   include:
     - 'parsers/movpe_2'
 ```
+
 The name after the `/` is user defined.
 Then, specify the Python package for the plugin in the options section:
+
 ```yaml
 options:
   parsers/movpe_2:
@@ -141,7 +145,7 @@ export MYPATH=/your/path
 export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src
 export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src/nomad_measurements
 export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/IKZ_plugin/src
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/IKZ_plugin/ikz_plugin/src
 export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT/laytec_epitt_plugin/src
 ( export PYTHONPATH=$PYTHONPATH:$MYPATH/laytec_epitt_nomad_plugin/src )
 ```
@@ -151,22 +155,23 @@ To load the full functionality, use the following `plugins` section:
 ```yaml
 plugins:
   include:
-    - 'schemas/nomad_measurements'
+    - 'parsers/nomad_measurements/xrd'
+    - 'schemas/analysis'
     - 'schemas/nomad_material_processing'
     - 'parsers/hall_lakeshore_measurement'
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
-    - 'schemas/basesections'
     - 'parsers/czochralski'
     - 'parsers/movpe_2'
     - 'parsers/movpe_1_deposition_control'
-    - 'parsers/movpe_1'
+    - 'parsers/movpe_1_constant_parameters'
     - 'parsers/movpe_substrates'
     - 'parsers/directional_solidification'
-
   options:
-    schemas/nomad_measurements:
-      python_package: nomad_measurements
+    parsers/nomad_measurements/xrd:
+      python_package: nomad_measurements.xrd.parser
+    schemas/analysis:
+      python_package: analysis
     schemas/nomad_material_processing:
       python_package: nomad_material_processing
     parsers/hall_lakeshore_measurement:
@@ -175,18 +180,16 @@ plugins:
       python_package: hall.instrument_parser
     parsers/laytec_epitt:
       python_package: laytec_epitt
-    schemas/basesections:
-      python_package: basesections
     parsers/czochralski:
-      python_package: czochralski
+      python_package: ikz_plugin.czochralski
     parsers/movpe_2:
-      python_package: movpe.movpe2_growth_parser
+      python_package: ikz_plugin.movpe.movpe2_growth_parser
     parsers/movpe_1_deposition_control:
-      python_package: movpe.movpe1_growth_parser.deposition_control
-    parsers/movpe_1:
-      python_package: movpe.movpe1_growth_parser.constant_parameters
-    parsers/movpe_substrates:
-     python_package: movpe.substrate_parser
+      python_package: ikz_plugin.movpe.movpe1_growth_parser.deposition_control
+    parsers/movpe_1_constant_parameters:
+      python_package: ikz_plugin.movpe.movpe1_growth_parser.constant_parameters
+    parsers/movpe_substrates_IKZ:
+     python_package: ikz_plugin.movpe.substrate_parser
     parsers/directional_solidification:
-      python_package: directional_solidification
+      python_package: ikz_plugin.directional_solidification
 ```
