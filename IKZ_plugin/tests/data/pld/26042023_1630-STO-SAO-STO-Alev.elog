@@ -1,0 +1,26 @@
+0:0:14	Starting Evacuation Recipe
+0:10:31	Starting Process with Recipe :heatSAO500
+0:35:46	0 Laser-pulse fired on target
+0:35:46	Event completed
+0:36:2	Starting Process with Recipe :heatSAO700
+0:57:14	0 Laser-pulse fired on target
+0:57:14	Event completed
+0:57:30	Starting Process with Recipe :dwellSAO700
+1:7:30	0 Laser-pulse fired on target
+1:7:30	Event completed
+1:7:48	Starting Process with Recipe :depoSAO700
+1:10:42	330 Laser-pulse fired on target
+1:10:42	Event completed
+1:11:0	Starting Process with Recipe :dwellSTO700
+1:16:0	0 Laser-pulse fired on target
+1:16:0	Event completed
+1:16:18	Starting Process with Recipe :depoSTO700
+1:18:57	300 Laser-pulse fired on target
+1:18:57	Event completed
+1:19:18	Starting Process with Recipe :coolSTO500
+1:43:57	0 Laser-pulse fired on target
+1:43:57	Event completed
+1:44:13	Starting Process with Recipe :coolSTO20
+4:29:21	0 Laser-pulse fired on target
+4:29:21	Event completed
+4:29:21	Shutting down system

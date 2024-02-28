@@ -1,0 +1,15 @@
+data:
+  m_def: ikz_pld.IKZPLDSubstrateBatch
+  supplier_batch: 3202/0522/22
+  material: Strontium Titanate
+  orientation: '100'
+  miscut_orientation: '010'
+  sub_batches:
+    - m_def: ikz_pld.IKZPLDSubstrateSubBatch
+      minimum_miscut_angle: 0.07
+      maximum_miscut_angle: 0.1
+      amount: 5
+    - m_def: ikz_pld.IKZPLDSubstrateSubBatch
+      minimum_miscut_angle: 0.1
+      maximum_miscut_angle: 0.15
+      amount: 4

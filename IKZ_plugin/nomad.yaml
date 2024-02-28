@@ -11,7 +11,9 @@ plugins:
     - 'parsers/hall_lakeshore_measurement'
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
-    - 'schemas/basesections'
+    - 'schemas/basesections_IKZ'
+    - 'schemas/characterization_IKZ'
+    - 'schemas/substrate_IKZ'
     - 'parsers/czochralski'
     - 'parsers/movpe_2'
     - 'parsers/movpe_1_deposition_control'
@@ -33,8 +35,12 @@ plugins:
       python_package: hall.instrument_parser
     parsers/laytec_epitt:
       python_package: laytec_epitt
-    schemas/basesections:
+    schemas/basesections_IKZ:
       python_package: basesections
+    schemas/characterization_IKZ:
+      python_package: characterization
+    schemas/substrate_IKZ:
+      python_package: substrate
     parsers/czochralski:
       python_package: czochralski
     parsers/movpe_2:

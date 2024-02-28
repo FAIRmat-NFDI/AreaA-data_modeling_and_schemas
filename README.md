@@ -1,13 +1,6 @@
 # Area A: materials synthesis and processing
 
-## Keywords:
-
-- Electronic Lab Notebook (ELN)
-- Data Structures
-- Custom YAML Schemas
-- NOMAD Uploads
-
-## About this repo:
+## About this repo
 
 It is a collection of example custom schemas shaped on the needs of different users.
 
@@ -20,63 +13,53 @@ Further explanations on NOMAD are availbale in the [official documentation page]
 Each folder contains several kind of files, the user can try to drag and drop all of them in the upload page in [Nomad](https://nomad-lab.eu/), they will be automatically parsed to create "Entries" containing the experimental data in a structured fashion:
 
 * schema file: it is a NOMAD archive file (**.archive.yaml** extension) containing only one section called "definitions". It defines the structure that will host your data.
-
   Sections, subsections and quantities are the elements that compose the hierarchical structure of data.
+* test datasets: depending on the experiment, the user will have one or more files where the logged parameters and metadata are stored. The data set files have **.png**, **.tif**, **.txt.**, **.dat**, **.csv** or **.xlsx** extension.
 
-  An important part in the schema is the **annotations** section, enabling the available ELN features such as:
+Some folders contain Python packages that are referred as PLUGINS.
 
-  * [editability of quantities](https://nomad-lab.eu/prod/v1/staging/gui/dev/editquantity)
-  * [automatic plot of quantities](https://nomad-lab.eu/prod/v1/staging/gui/dev/plot)
-  * inheritance from specific Nomad base classes (ReferenceEditQuantity, AuthorEditQuantity)
-  * drag and drop features for file upload (RawFileAdaptor)
-  * more (overview: True, repeats: True, hide: ['..', '..'], template)
-* data set: depending on the experiment, the user will have one or more files where the logged parameters and metadata are stored. The data set files have **.png**, **.tif**, **.txt.**, **.dat**, **.csv** or **.xlsx** extension.
+**Check the README in each subdirectory for more info**.
 
-## Base Sections Hierarchy:
+## Basesections Hierarchy
 
-The tree visualization shows the inheritance structure of our data model.
+The [tree visualizations](https://nomad-lab.eu/prod/v1/staging/docs/howto/customization/base_sections.html) represent the inheritance structure of our data model.
 This structure is in continuous development and may quickly change from week to week.
 
 For suggestions and contributes please refer to the issues opened in this repo.
 
-See the NOMAD source code containing these classes at [this link](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-FAIR/-/blob/develop/nomad/datamodel/metainfo/basesections.py).
+See the NOMAD source code contains the [set of base sections](https://github.com/nomad-coe/nomad/blob/develop/nomad/datamodel/metainfo/basesections.py) developed so far.
+Few more repo are used to collect general classes shared among different use cases: [nomad-measurements](https://github.com/FAIRmat-NFDI/nomad-measurements), [nomad-material-processing](https://github.com/FAIRmat-NFDI/nomad-material-processing).
 
-We are developing a more verbose documentation to describe the Base Section contained in each of the examples in this repo.
-
----
-
-### In the subfolders, a dedicated README documents the file set for each use case.
-
-The folders contain either YAML schemas or Plugins available for installation in your own NOMAD Oasis
+We are developing a more verbose documentation to describe the basesections contained in each of the examples in this repo.
 
 ---
 
-## The Structured Use Cases:
+## Use Cases Summary
 
-| category                              | experiment                                                                              | folder name                    |
-| ------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------ |
-| Crystal Growth                        | Float Zone                                                                              | float_zone_IKZ                 |
-| Crystal Growth                        | Float Zone                                                                              | float_zone_CPFS-Dresden        |
-| Crystal Growth                        | Flux growth                                                                             | flux_growth_CPFS-Dresden       |
-| Crystal Growth                        | Melt Czochralski                                                                        | melt_czochralski_Dadzis        |
-| Crystal Growth                        | Melt Czochralski                                                                        | melt_czochralski_Dropka        |
-| Sinterization (Precursor Preparation) | Oxide Powder                                                                            | oxide_powder_preparation       |
-| Epitaxial Growth                      | Metalorganic vapour-phase epitaxy Strontium Lantanium Oxide (MOVPE-SrTiO)               | movpe_STO                      |
-| Epitaxial Growth                      | Metalorganic vapour-phase epitaxy Gallium Oxide (MOVPE-Ga2O3)                           | movpe_Ga2O3                    |
-| Epitaxial Growth                      | Metalorganic vapour-phase epitaxy (MOVPE)                                               | movpe_CNR                      |
-| Crystal Growth                        | Directional Solidification                                                              | directional_solidification_IKZ |
-| Epitaxial Growth                      | Molecular Beam Epitaxy (MBE)                                                            | mbe_epitaxy                    |
-| Epitaxial Growth                      | Molecular Beam Epitaxy (MBE)                                                            | mbe_SiGe                       |
-| Sol-Gel Synthesis                     | Aerogels                                                                                | aerogel_synthesis              |
-| Database                              | Material_db from IKZ                                                                    | material_db_IKZ                |
-| Surface Coating                       | Spin-coating                                                                            | surface_coating_methods        |
-| Surface Coating                       | Dip-coating                                                                             | surface_coating_methods        |
-| Surface Coating                       | Sputtering                                                                              | surface_coating_methods        |
-| Surface Coating                       | Evaporation                                                                             | surface_coating_methods        |
-| Electric properties (Measurement)     | Hall Measurements                                                                       | hall                           |
-| Transmission (Measurement)            | Transmission measurements                                                               | transmission                   |
-| AFM (Measurement)                     | Atomic Force Microscopy                                                                 | AFM                            |
-| Various                               | Experiments permormed in Max Planck Institute for Chemical Physics of Solids in Dresden | CPFS-Dresden                   |
+| Category              | Use Case                  |Institute| Code Type       | folder path                                                                 |
+| --------------------- | ------------------------- |---------| --------------- | --------------------------------------------------------------------------- |
+| Crystal Growth        | Float Zone                |   IKZ   |YAML Schema     | [float_zone_IKZ](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/float_zone_IKZ) |
+| Crystal Growth        | Float Zone                |         |                 | float_zone_CPFS-Dresden                                                     |
+| Crystal Growth        | Flux growth               |         |                 | flux_growth_CPFS-Dresden                                                    |
+| Crystal Growth        | Melt Czochralski          |   IKZ   |  Plugin      | [czochralski](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/czochralski)|
+| Crystal Growth        | Melt Czochralski          |         |                 | melt_czochralski_Dropka                                                     |
+| Sinterization         | Oxide Powder              |  IKZ    |                 | oxide_powder_preparation                                                    |
+| Epitaxial Growth      | MOVPE-SrTiO               |  IKZ    |   Plugin         | [movpe_1](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/movpe/movpe1_growth_parser)|
+| Epitaxial Growth      | MOVPE-Ga2O3               |  IKZ    |   Plugin      | [movpe_2](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/movpe/movpe2_growth_parser)|
+| Epitaxial Growth      | MOVPE                     | IMEM-CNR|  Plugin        | [movpe](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IMEM-CNR_plugin)|
+| Crystal Growth        | Directional Solidification|  IKZ    |   Plugin       | [directional_solidification](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/directional_solidification)|
+| Epitaxial Growth      | MBE                       |  PDI   |                 | mbe_epitaxy                                                                 |
+| Epitaxial Growth      | MBE                       |  IKZ    |                 | mbe_SiGe                                                                    |
+| Sol-Gel Synthesis     | Aerogels                  |         |                 | aerogel_synthesis                                                           |
+| Database              | Material_db from IKZ      |  IKZ    |                 | material_db_IKZ                                                             |
+| Surface Coating       | Spin-coating              |         |                 | surface_coating_methods                                                     |
+| Surface Coating       | Dip-coating               |         |                 | surface_coating_methods                                                     |
+| Surface Coating       | Sputtering                |         |                 | surface_coating_methods                                                     |
+| Surface Coating       | Evaporation               |         |                 | surface_coating_methods                                                     |
+| Electric properties   | Hall Measurements         |  IKZ    |    Plugin      | [Lakeshore_plugin](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/Lakeshore_plugin)|
+| Transmission          | Transmission measurements |         |                 | transmission                                                                |
+| AFM                   | Atomic Force Microscopy   |         |                 | AFM                                                                         |
+| Various               |                           |         |                 | CPFS-Dresden                                                                |
 
 ---
 
@@ -107,7 +90,7 @@ To add the `src/` directory of the plugins to your `PYTHONPATH`, you can use the
 export AREA_A_REPO_PATH="{local path to root of AreaA-data_modeling_and_schemas}"
 export NOMAD_MEASUREMENTS_REPO_PATH="{local path to root of nomad-measurements}"
 export NOMAD_MATERIAL_PROCESSING_REPO_PATH="{local path to root of nomad-material-processing}"
-export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/IKZ_plugin/src"
+export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/IKZ_plugin/ikz_plugin/src"
 export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/Lakeshore_plugin/src"
 export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/LayTec_EpiTT/laytec_epitt_plugin/src"
 export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/analysis_plugin/src"
@@ -130,11 +113,10 @@ plugins:
     - 'parsers/hall_lakeshore_measurement'
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
-    - 'schemas/basesections'
     - 'parsers/czochralski'
     - 'parsers/movpe_2'
     - 'parsers/movpe_1_deposition_control'
-    - 'parsers/movpe_1'
+    - 'parsers/movpe_1_constant_parameters'
     - 'parsers/movpe_substrates'
     - 'parsers/directional_solidification'
   options:
@@ -150,20 +132,18 @@ plugins:
       python_package: hall.instrument_parser
     parsers/laytec_epitt:
       python_package: laytec_epitt
-    schemas/basesections:
-      python_package: basesections
     parsers/czochralski:
-      python_package: czochralski
+      python_package: ikz_plugin.czochralski
     parsers/movpe_2:
-      python_package: movpe.movpe2_growth_parser
+      python_package: ikz_plugin.movpe.movpe2_growth_parser
     parsers/movpe_1_deposition_control:
-      python_package: movpe.movpe1_growth_parser.deposition_control
-    parsers/movpe_1:
-      python_package: movpe.movpe1_growth_parser.constant_parameters
+      python_package: ikz_plugin.movpe.movpe1_growth_parser.deposition_control
+    parsers/movpe_1_constant_parameters:
+      python_package: ikz_plugin.movpe.movpe1_growth_parser.constant_parameters
     parsers/movpe_substrates_IKZ:
-     python_package: movpe.substrate_parser
+     python_package: ikz_plugin.movpe.substrate_parser
     parsers/directional_solidification:
-      python_package: directional_solidification
+      python_package: ikz_plugin.directional_solidification
 
 ```
 

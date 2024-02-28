@@ -66,7 +66,7 @@ class RawFileLayTecEpiTT(EntryData):
     Contains the raw file from LayTecEpiTT in situ monitoring
     """
 
-    m_def = Section(categories=[IKZLayTecEpiTTCategory])
+    m_def = Section()
     measurement = Quantity(
         type=LayTecEpiTTMeasurement,
         a_eln=ELNAnnotation(
