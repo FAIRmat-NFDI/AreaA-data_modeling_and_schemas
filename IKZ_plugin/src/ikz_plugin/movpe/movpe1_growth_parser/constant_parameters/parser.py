@@ -40,7 +40,7 @@ from nomad.utils import hash
 
 from ikz_plugin import IKZMOVPE1Category
 from ikz_plugin.movpe import (
-    ExperimentMovpe1IKZ,
+    ExperimentMovpeIKZ,
     GrowthMovpe1IKZConstantParameters,
     ThinFilmStackMovpe,
 )

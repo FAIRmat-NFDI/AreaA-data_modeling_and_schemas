@@ -49,10 +49,10 @@ from nomad_material_processing import (
     ThinFilmReference,
 )
 from ikz_plugin.movpe import (
-    ExperimentMovpe2IKZ,
+    ExperimentMovpeIKZ,
     GrowthStepMovpe2IKZ,
-    GrowthMovpe2IKZ,
-    GrowthMovpe2IKZReference,
+    GrowthMovpeIKZ,
+    GrowthMovpeIKZReference,
     ThinFilmMovpe,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
@@ -76,7 +76,7 @@ from .utils import (
 class RawFileGrowthRun(EntryData):
     m_def = Section(a_eln=None, label="Raw File Growth Run")
     growth_runs = Quantity(
-        type=ExperimentMovpe2IKZ,
+        type=ExperimentMovpeIKZ,
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
@@ -105,7 +105,7 @@ class ParserMovpe2IKZ(MatchingParser):
         recipe_ids = list(set(growth_run_file["Recipe Name"]))
 
         # initializing experiments dict
-        growth_processes: Dict[str, GrowthMovpe2IKZ] = {}
+        growth_processes: Dict[str, GrowthMovpeIKZ] = {}
         # initializing steps dict
         process_steps_lists: Dict[str, Dict[str, GrowthStepMovpe2IKZ]] = {}
         # initializing samples dict
@@ -232,7 +232,7 @@ class ParserMovpe2IKZ(MatchingParser):
 
             # creating growth process objects
             if recipe_id not in growth_processes:
-                growth_processes[recipe_id] = GrowthMovpe2IKZ(
+                growth_processes[recipe_id] = GrowthMovpeIKZ(
                     name=f"{sample_id} growth run",
                     recipe_id=recipe_id,
                     lab_id=f"{sample_id} growth run",
@@ -257,11 +257,11 @@ class ParserMovpe2IKZ(MatchingParser):
                     growth_processes[recipe_id].steps.append(process_list)
             else:
                 logger.error(
-                    f"The GrowthMovpe2IKZ object with lab_id '{recipe_id}' was not found."
+                    f"The GrowthMovpeIKZ object with lab_id '{recipe_id}' was not found."
                 )
         # creating growth process archives
         for recipe_id, growth_process_object in growth_processes.items():
-            growth_process_filename = f"{recipe_id}.GrowthMovpe2IKZ.archive.{filetype}"
+            growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
             growth_process_archive = EntryArchive(
                 data=growth_process_object,
                 m_context=archive.m_context,
@@ -278,10 +278,10 @@ class ParserMovpe2IKZ(MatchingParser):
         experiment_reference = []
         for recipe_id in recipe_ids:
             experiment_filename = f"{recipe_id}.archive.{filetype}"
-            growth_process_filename = f"{recipe_id}.GrowthMovpe2IKZ.archive.{filetype}"
-            experiment_data = ExperimentMovpe2IKZ(
+            growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
+            experiment_data = ExperimentMovpeIKZ(
                 lab_id=recipe_id,
-                growth_run=GrowthMovpe2IKZReference(
+                growth_run=GrowthMovpeIKZReference(
                     name="Growth process",
                     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data",
                 ),
