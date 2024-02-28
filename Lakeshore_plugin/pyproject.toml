@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nomad-material-processing"
+name = "lakeshore_hall"
 version = "0.0.1"
 description = "A plugin for NOMAD containing Lakeshore hall measurements."
 readme = "README.md"
