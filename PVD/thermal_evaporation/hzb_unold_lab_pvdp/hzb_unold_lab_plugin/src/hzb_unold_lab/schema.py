@@ -107,7 +107,7 @@ class Unold_Library(LibrarySample, EntryData):
             msg = f'{self.lab_id}#'
             img = qrcode.make(msg)
             Im = ImageDraw.Draw(img)
-            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeSans.ttf", 30)
+            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeSans.ttf", 18)
 
             # Add Text to an image
             Im.text((15, 15), f"{self.lab_id}", font=fnt)
