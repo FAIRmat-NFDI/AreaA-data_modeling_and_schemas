@@ -15,7 +15,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 
+from baseclasses.solar_energy import (
+    PLMeasurement,
+    UVvisMeasurementLibrary, UVvisDataSimple, UVvisSingleLibraryMeasurement, UVvisProperties,
+    ConductivityMeasurementLibrary, ConductivitySingleLibraryMeasurement  # , UVvisProperties
+)
+from baseclasses.characterizations import (
+    XRFLibrary, XRFSingleLibraryMeasurement, XRFProperties, XRFComposition, XRFData)
+from baseclasses.helper.utilities import convert_datetime
+from baseclasses import (
+    LibrarySample
+)
+from nomad.datamodel.data import EntryData
 import datetime
 
 from nomad_material_processing.physical_vapor_deposition import (
@@ -41,9 +54,7 @@ from nomad.metainfo import (
     Section,
     Quantity,
 )
-from nomad.datamodel.data import (
-    EntryData,
-)
+
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     BrowserAnnotation,
@@ -68,20 +79,345 @@ substance_translation = {
 }
 
 
-class HZBUnoldLabCategory(EntryDataCategory):
+class Unold_Lab_Category(EntryDataCategory):
     m_def = Category(label='HZB Unold Lab', categories=[EntryDataCategory])
 
 
-class HZBUnoldLabSubstance(Substance, EntryData):
+class Unold_Library(LibrarySample, EntryData):
+    m_def = Section(
+        categories=[Unold_Lab_Category],
+        a_eln=dict(
+            hide=["users", "elemental_composition", "components"]))
+
+    qr_code = Quantity(
+        type=str,
+        a_eln=dict(component='FileEditQuantity'),
+        a_browser=dict(adaptor='RawFileAdaptor'))
+
+    def normalize(self, archive, logger):
+        super(Unold_Library,
+              self).normalize(archive, logger)
+
+        with archive.m_context.raw_file(archive.metadata.mainfile) as f:
+            path = os.path.dirname(f.name)
+
+        if self.lab_id:
+            import qrcode
+            from PIL import ImageDraw, ImageFont
+            msg = f'{self.lab_id}#'
+            img = qrcode.make(msg)
+            Im = ImageDraw.Draw(img)
+            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeSans.ttf", 18)
+
+            # Add Text to an image
+            Im.text((15, 15), f"{self.lab_id}", font=fnt)
+            qr_file_name = f"{self.lab_id}.png"
+            img.save(os.path.join(path, qr_file_name), dpi=(2000, 2000))
+            self.qr_code = qr_file_name
+
+
+class Unold_XRF_Measurement_Library(XRFLibrary, EntryData):
+    m_def = Section(
+        categories=[Unold_Lab_Category],
+        a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
+                   properties=dict(
+            order=[
+                "name",
+            ]))
+    )
+
+    def normalize(self, archive, logger):
+
+        with archive.m_context.raw_file(archive.metadata.mainfile) as f:
+            path = os.path.dirname(f.name)
+
+        if self.samples and self.samples[0].lab_id:
+            search_key = self.samples[0].lab_id
+            # find data
+            for item in os.listdir(path):
+                if not os.path.isdir(os.path.join(path, item)):
+                    continue
+                if not item.startswith(f"{search_key}#"):
+                    continue
+                self.data_folder = item
+            # find images
+            images = []
+            for item in os.listdir(path):
+                if not os.path.isfile(os.path.join(path, item)):
+                    continue
+                if not item.startswith(f"{search_key}#") and item.endswith(".bmp"):
+                    continue
+                images.append(item)
+            self.images = images
+
+        if self.composition_file:
+            measurements = []
+
+            data_folder = os.path.join(path, self.data_folder)
+
+            from baseclasses.helper.file_parser.xrf_spx_parser import read as xrf_read
+            import pandas as pd
+            files = [os.path.join(data_folder, file) for file in os.listdir(data_folder) if file.endswith(".spx")]
+            files.sort()
+
+            spectra, energy, measurement_rows, positions_array, position_axes, (len_x, len_y, order_letter) = xrf_read(
+                files)
+            self.datetime = convert_datetime(
+                measurement_rows[0]["DateTime"], datetime_format="%Y-%m-%dT%H:%M:%S.%f", utc=False)
+            self.energy = energy
+            composition_data = pd.read_excel(os.path.join(path, self.composition_file))
+            for i, spectrum in enumerate(spectra):
+
+                # data = XRFData(intensity=spectrum)
+                composition = [XRFComposition(name=col, amount=composition_data[col].iloc[i])
+                               for col in composition_data.columns[1:]]
+                measurements.append(XRFSingleLibraryMeasurement(
+                    data_file=os.path.basename(os.path.join(self.data_folder, files[i])),
+                    position_x=position_axes[0][i % len_x],  # positions_array[0, i],
+                    position_y=position_axes[1][i // len_x],  # positions_array[1, i],
+                    # position_index=i,
+                    # position_x_relative=position_axes[0][i % len_x],
+                    # position_y_relative=position_axes[1][i // len_x],
+                    thickness=composition_data[composition_data.columns[0]].iloc[i],
+                    # data=data,
+                    composition=composition,
+                    name=f"{position_axes[0][i % len_x]},{position_axes[1][i // len_x]}"),
+                )
+            self.measurements = measurements
+        super(Unold_XRF_Measurement_Library,
+              self).normalize(archive, logger)
+
+
+class Unold_UVvis_Reflection_Measurement_Library(UVvisMeasurementLibrary, EntryData):
+    m_def = Section(
+        categories=[Unold_Lab_Category],
+        a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
+                   properties=dict(
+            order=[
+                "name",
+            ])),
+        a_plot=[
+            {
+                'x': 'wavelength', 'y': 'measurements/:/data/intensity', 'layout': {
+                    'yaxis': {
+                        "fixedrange": False}, 'xaxis': {
+                        "fixedrange": False}}, "config": {
+                            "scrollZoom": True, 'staticPlot': False, }}]
+    )
+
+    def normalize(self, archive, logger):
+
+        spec_key = "reflection_spec.csv"
+        reference_key = "reflection_reference.csv"
+        prefix = 'refl'
+        with archive.m_context.raw_file(archive.metadata.mainfile) as f:
+            path = os.path.dirname(f.name)
+
+        if not self.reference_file:
+
+            for file in os.listdir(path):
+                if not file.endswith(reference_key):
+                    continue
+                self.reference_file = file
+
+        if self.data_file and self.reference_file:
+            measurements = []
+
+            from baseclasses.helper.file_parser.uvvis_parser import read_uvvis
+            reflectance, wavelength, x_pos, y_pos, md = read_uvvis(
+                [os.path.join(path, file) for file in [self.data_file, self.reference_file]], spec_key, reference_key, prefix)
+
+            if self.properties is None:
+                self.properties = UVvisProperties(integration_time=md['integration_time'].split("s")[0].strip(),
+                                                  number_of_averages=md['no. averages'])
+
+            self.wavelength = wavelength
+            for ix in range(len(x_pos)):
+                for iy in range(len(y_pos)):
+
+                    data = UVvisDataSimple(intensity=reflectance[ix, iy, :])
+
+                    measurements.append(UVvisSingleLibraryMeasurement(
+                        position_x=x_pos[ix],
+                        position_y=y_pos[iy],
+                        data=data,
+                        name=f"{x_pos[ix]},{y_pos[iy]}"),
+                    )
+            self.measurements = measurements
+        super(Unold_UVvis_Reflection_Measurement_Library,
+              self).normalize(archive, logger)
+
+
+class Unold_UVvis_Transmission_Measurement_Library(UVvisMeasurementLibrary, EntryData):
+    m_def = Section(
+        categories=[Unold_Lab_Category],
+        a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
+                   properties=dict(
+            order=[
+                "name",
+            ])),
+        a_plot=[
+            {
+                'x': 'wavelength', 'y': 'measurements/:/data/intensity', 'layout': {
+                    'yaxis': {
+                        "fixedrange": False}, 'xaxis': {
+                        "fixedrange": False}}, "config": {
+                            "scrollZoom": True, 'staticPlot': False, }}]
+    )
+
+    def normalize(self, archive, logger):
+
+        spec_key = "transmission_spec.csv"
+        reference_key = "transmission_reference.csv"
+        prefix = 'trans'
+
+        with archive.m_context.raw_file(archive.metadata.mainfile) as f:
+            path = os.path.dirname(f.name)
+
+        if not self.reference_file:
+
+            for file in os.listdir(path):
+                if not file.endswith(reference_key):
+                    continue
+                self.reference_file = file
+
+        if self.data_file and self.reference_file:
+            measurements = []
+
+            from baseclasses.helper.file_parser.uvvis_parser import read_uvvis
+            transmission, wavelength, x_pos, y_pos, md = read_uvvis(
+                [os.path.join(path, file) for file in [self.data_file, self.reference_file]], spec_key, reference_key, prefix)
+
+            # self.datetime = convert_datetime(os.path.getctime(os.path.join(
+            #     path, self.data_file)), utc=False, seconds=True)
+
+            if self.properties is None:
+                self.properties = UVvisProperties(integration_time=md['integration_time'].split("s")[0].strip(),
+                                                  number_of_averages=md['no. averages'])
+
+            self.wavelength = wavelength
+            for ix in range(len(x_pos)):
+                for iy in range(len(y_pos)):
+
+                    data = UVvisDataSimple(intensity=transmission[ix, iy, :])
+
+                    measurements.append(UVvisSingleLibraryMeasurement(
+                        position_x=x_pos[ix],
+                        position_y=y_pos[iy],
+                        data=data,
+                        name=f"{x_pos[ix]},{y_pos[iy]}"),
+                    )
+            self.measurements = measurements
+        super(Unold_UVvis_Transmission_Measurement_Library,
+              self).normalize(archive, logger)
+
+
+class Unold_PL_Measurement_Library(UVvisMeasurementLibrary, EntryData):
+    m_def = Section(
+        categories=[Unold_Lab_Category],
+        a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
+                   properties=dict(
+            order=[
+                "name",
+            ])),
+        a_plot=[
+            {
+                'x': 'wavelength', 'y': 'measurements/:/data/intensity', 'layout': {
+                    'yaxis': {
+                        "fixedrange": False}, 'xaxis': {
+                        "fixedrange": False}}, "config": {
+                            "scrollZoom": True, 'staticPlot': False, }}]
+    )
+
+    def normalize(self, archive, logger):
+
+        # spec_key = "transmission_spec.csv"
+        # reference_key = "transmission_reference.csv"
+        # prefix = 'trans'
+
+        # with archive.m_context.raw_file(archive.metadata.mainfile) as f:
+        #     path = os.path.dirname(f.name)
+
+        # if not self.reference_file:
+
+        #     for file in os.listdir(path):
+        #         if not file.endswith(reference_key):
+        #             continue
+        #         self.reference_file = file
+
+        # if self.data_file and self.reference_file:
+        #     measurements = []
+
+        #     from baseclasses.helper.file_parser.uvvis_parser import read_uvvis
+        #     transmission, wavelength, x_pos, y_pos, md = read_uvvis(
+        #         [os.path.join(path, file) for file in [self.data_file, self.reference_file]], spec_key, reference_key, prefix)
+
+        #     if self.properties is None:
+        #         self.properties = UVvisProperties(integration_time=md['integration_time'].split("s")[0].strip(),
+        #                                           number_of_averages=md['no. averages'])
+
+        #     self.wavelength = wavelength
+        #     for ix in range(len(x_pos)):
+        #         for iy in range(len(y_pos)):
+
+        #             data = UVvisDataSimple(intensity=transmission[ix, iy, :])
+
+        #             measurements.append(UVvisSingleLibraryMeasurement(
+        #                 position_x=x_pos[ix],
+        #                 position_y=y_pos[iy],
+        #                 data=data,
+        #                 name=f"{x_pos[ix]},{y_pos[iy]}"),
+        #             )
+        #     self.measurements = measurements
+        super(Unold_PL_Measurement_Library,
+              self).normalize(archive, logger)
+
+
+class Unold_Conductivity_Measurement_Library(ConductivityMeasurementLibrary, EntryData):
+    m_def = Section(
+        categories=[Unold_Lab_Category],
+        a_eln=dict(hide=['instruments', 'steps', 'results', 'lab_id'],
+                   properties=dict(
+            order=[
+                "name",
+            ])),
+    )
+
+    def normalize(self, archive, logger):
+
+        with archive.m_context.raw_file(archive.metadata.mainfile) as f:
+            path = os.path.dirname(f.name)
+
+        if self.data_file:
+            measurements = []
+
+            from baseclasses.helper.file_parser.conductivity_parser import read_conductivity
+            conductivity, x_pos, y_pos, md = read_conductivity(os.path.join(path, self.data_file))
+            self.datetime = convert_datetime(md.loc["Date:"][1], datetime_format="%Y-%m-%d %H:%M:%S", utc=False)
+            for ix in range(len(x_pos)):
+                for iy in range(len(y_pos)):
+
+                    measurements.append(ConductivitySingleLibraryMeasurement(
+                        position_x=x_pos[ix],
+                        position_y=y_pos[iy],
+                        conductivity=conductivity[ix, iy],
+                        name=f"{x_pos[ix]},{y_pos[iy]}"),
+                    )
+            self.measurements = measurements
+        super(Unold_Conductivity_Measurement_Library,
+              self).normalize(archive, logger)
+
+
+class Unold_Lab_Substance(Substance, EntryData):
     pass
 
 
-class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
+class Unold_Thermal_Evaporation(ThermalEvaporation, EntryData):
     '''
     Class autogenerated from yaml schema.
     '''
     m_def = Section(
-        categories=[HZBUnoldLabCategory],
+        categories=[Unold_Lab_Category],
         label='Thermal Evaporation Process',
         links=["http://purl.obolibrary.org/obo/CHMO_0001360"],
         a_plot=[
@@ -112,7 +448,7 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
         a_browser=BrowserAnnotation(
             adaptor='RawFileAdaptor'
         ),
-        a_eln = ELNAnnotation(
+        a_eln=ELNAnnotation(
             component='FileEditQuantity'
         ),
     )
@@ -148,7 +484,7 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
                 f'{metadata["Date"]}T{df["Time"].values[-1]}',
                 r'%Y/%m/%dT%H:%M:%S',
             )
-            self.name =  f'PVD-{metadata["process ID"]}'
+            self.name = f'PVD-{metadata["process ID"]}'
             self.location = 'Berlin, Germany'
             self.lab_id = f'HZB_{metadata["operator"]}_{self.datetime.strftime(r"%Y%m%d")}_PVD-{metadata["process ID"]}'
 
@@ -167,10 +503,10 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
                 for time in switch_times:
                     if not any(abs(t - time) < 5 for t in start_times):
                         start_times.append(time)
-            start_times.append(df.iloc[-1,1])
+            start_times.append(df.iloc[-1, 1])
             substances = {
                 source_nr: create_archive(
-                    entity=HZBUnoldLabSubstance(
+                    entity=Unold_Lab_Substance(
                         name=substance_translation.get(
                             source_materials[source_nr],
                             source_materials[source_nr]
@@ -250,8 +586,7 @@ class HZBUnoldLabThermalEvaporation(ThermalEvaporation, EntryData):
                 steps.append(step)
             self.steps = steps
 
-
-        super(HZBUnoldLabThermalEvaporation, self).normalize(archive, logger)
+        super(Unold_Thermal_Evaporation, self).normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
