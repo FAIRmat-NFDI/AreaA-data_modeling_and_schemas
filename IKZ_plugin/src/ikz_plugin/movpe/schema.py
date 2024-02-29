@@ -5,6 +5,8 @@ from ase.data import chemical_symbols
 from nomad.datamodel.metainfo.basesections import (
     ElementalComposition,
     Activity,
+    System,
+    SystemComponent,
     PureSubstance,
     ProcessStep,
     CompositeSystem,
@@ -31,7 +33,15 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
 )
-from nomad.metainfo import Package, Quantity, SubSection, MEnum, Datetime, Section
+from nomad.metainfo import (
+    Package,
+    Quantity,
+    SubSection,
+    MEnum,
+    Datetime,
+    Section,
+    Reference,
+)
 from nomad.datamodel.data import EntryData, ArchiveSection, Author
 from nomad.search import search, MetadataPagination
 
@@ -274,56 +284,13 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
     m_def = Section(
         label_quantity="lab_id", categories=[IKZMOVPECategory], label="Substrate"
     )
-
-    datetime = Quantity(
-        type=Datetime,
-        description="Delivery Date of the Substrate",
-        a_eln=ELNAnnotation(
-            component="DateTimeEditQuantity",
-            label="Delivery Date",
-        ),
-        a_tabular={"name": "Substrate/Delivery Date"},
-    )
-    lab_id = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Substrate ID",
-        ),
-        a_tabular={"name": "Substrate/Substrates"},
-    )
-    supplier = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-        ),
-        a_tabular={"name": "Substrate/Supplier"},
-    )
-    supplier_id = Quantity(
-        type=str,
-        description="""An ID string that is unique from the supplier.""",
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Polishing ID",
-        ),
-        a_tabular={"name": "Substrate/Polishing Number"},
-    )
-    tags = Quantity(
-        type=str,
-        description="FILL",
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Box ID",
-        ),
-        a_tabular={"name": "Substrate/Substrate Box"},
-    )
     as_received = Quantity(
         type=bool,
         description="Is the sample annealed?",
         a_eln=ELNAnnotation(
             component="BoolEditQuantity",
         ),
-        a_tabular={"name": "Substrate/As Received"},
+        # a_tabular={"name": "Substrate/As Received"},
     )
     etching = Quantity(
         type=bool,
@@ -331,7 +298,7 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
         a_eln=ELNAnnotation(
             component="BoolEditQuantity",
         ),
-        a_tabular={"name": "Substrate/Etching"},
+        # a_tabular={"name": "Substrate/Etching"},
     )
     annealing = Quantity(
         type=bool,
@@ -339,7 +306,7 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
         a_eln=ELNAnnotation(
             component="BoolEditQuantity",
         ),
-        a_tabular={"name": "Substrate/Annealing"},
+        # a_tabular={"name": "Substrate/Annealing"},
     )
     # annealing_temperature = Quantity(
     #     type=np.float64,
@@ -353,6 +320,15 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
     #     },
     #     unit="celsius",
     # )
+    tags = Quantity(
+        type=str,
+        description="FILL",
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+            label="Box ID",
+        ),
+        a_tabular={"name": "Substrate/Substrate Box"},
+    )
     re_etching = Quantity(
         type=bool,
         description="Usable Sample",
@@ -401,15 +377,6 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
             label="Notes",
         ),
     )
-    geometry = SubSection(
-        section_def=Parallelepiped,
-    )
-    crystal_properties = SubSection(section_def=SubstrateCrystalProperties)
-    elemental_composition = SubSection(
-        section_def=ElementalComposition,
-        repeats=True,
-    )
-    dopants = SubSection(section_def=Dopant, repeats=True)
 
 
 class ThinFilmMovpe(ThinFilm, EntryData):
@@ -826,6 +793,54 @@ class Rotation(ArchiveSection):
     )
 
 
+class LiquidComponent(PureSubstanceComponent):
+    """
+    A section for describing a substance component and its role in a composite system.
+    """
+
+    substance_name = Quantity(
+        type=str,
+        description="""
+        The name of the substance within the section where this component is contained.
+        """,
+        a_eln=dict(component="StringEditQuantity"),
+    )
+    volume = Quantity(
+        type=np.float64,
+        description="The solvent for the current substance.",
+        unit="milliliter",
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="milliliter"),
+    )
+    pure_substance = SubSection(
+        section_def=PureSubstanceSection,
+        description="""
+        Section describing the pure substance that is the component.
+        """,
+    )
+
+
+class SystemComponentIKZ(SystemComponent):
+    """
+    A section for describing a system component and its role in a composite system.
+    """
+
+    molar_concentration = Quantity(
+        type=np.float64,
+        description="The solvent for the current substance.",
+        unit="mol/liter",
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="mol/liter"),
+        a_tabular={
+            "name": "Precursors/Molar conc",
+            # "unit": "gram"
+        },
+    )
+    system = Quantity(
+        type=Reference(System.m_def),
+        description="A reference to the component system.",
+        a_eln=dict(component="ReferenceEditQuantity"),
+    )
+
+
 class PrecursorsPreparationIKZ(Process, EntryData):
     """
     Class autogenerated from yaml schema.
@@ -867,34 +882,6 @@ class PrecursorsPreparationIKZ(Process, EntryData):
         type=str,
         a_eln={"component": "StringEditQuantity"},
     )
-    solvent = Quantity(
-        type=str,
-        description="The solvent for the current substance.",
-        a_eln=dict(component="StringEditQuantity"),
-        a_tabular={
-            "name": "Precursors/Solvent",
-        },
-    )
-    volume = Quantity(
-        type=np.float64,
-        description="The solvent for the current substance.",
-        unit="milliliter",
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="milliliter"),
-        a_tabular={
-            "name": "Precursors/Volume",
-            # "unit": "gram"
-        },
-    )
-    molar_concentration = Quantity(
-        type=np.float64,
-        description="The solvent for the current substance.",
-        unit="mol/liter",
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="mol/liter"),
-        a_tabular={
-            "name": "Precursors/Molar conc",
-            # "unit": "gram"
-        },
-    )
     flow_titanium = Quantity(  # TODO make this a single flow
         type=np.float64,
         description="FILL THE DESCRIPTION",
@@ -910,9 +897,9 @@ class PrecursorsPreparationIKZ(Process, EntryData):
         unit="ml / minute",
     )
     precursors = SubSection(
-        section_def=PureSubstanceComponent,
+        section_def=SystemComponent,
         description="""
-        The samples as that have undergone the process.
+        A precursor used in MOVPE. It can be a solution, a gas, or a solid.
         """,
         repeats=True,
     )
@@ -998,19 +985,19 @@ class SubstrateInventory(EntryData, TableData):
         categories=[IKZMOVPECategory],
         label="SubstrateInventory",
     )
-    substrate_data_file = Quantity(
+    data_file = Quantity(
         type=str,
         description="Upload here the spreadsheet file containing the substrates data",
-        a_tabular_parser={
-            "parsing_options": {"comment": "#"},
-            "mapping_options": [
-                {
-                    "mapping_mode": "row",
-                    "file_mode": "multiple_new_entries",
-                    "sections": ["substrates"],
-                }
-            ],
-        },
+        # a_tabular_parser={
+        #     "parsing_options": {"comment": "#"},
+        #     "mapping_options": [
+        #         {
+        #             "mapping_mode": "row",
+        #             "file_mode": "multiple_new_entries",
+        #             "sections": ["substrates"],
+        #         }
+        #     ],
+        # },
         a_browser={"adaptor": "RawFileAdaptor"},
         a_eln={"component": "FileEditQuantity"},
     )
@@ -1317,7 +1304,7 @@ class CVDChamberEnvironment(ChamberEnvironment):
     )
 
 
-class GrowthStepMovpeIKZ(VaporDepositionStep):
+class GrowthStepMovpeIKZ(VaporDepositionStep, PlotSection):
     """
     Growth step for MOVPE IKZ
     """
@@ -1514,7 +1501,7 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
     )
 
     def normalize(self, archive, logger):
-        super(GrowthMovpe1IKZ, self).normalize(archive, logger)
+        super(GrowthStepMovpe1IKZ, self).normalize(archive, logger)
 
         max_rows = 4
         max_cols = 2
@@ -1630,7 +1617,7 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
     )
 
 
-class GrowthMovpeIKZ(VaporDeposition, PlotSection, EntryData):
+class GrowthMovpeIKZ(VaporDeposition, EntryData):
     """
     Class autogenerated from yaml schema.
     """
@@ -1647,18 +1634,18 @@ class GrowthMovpeIKZ(VaporDeposition, PlotSection, EntryData):
                     "duration",
                 ],
             ),
-            hide=[
-                "instruments",
-                "steps",
-                "samples",
-                "description",
-                "location",
-                "lab_id",
-            ],
+            # hide=[
+            #     "instruments",
+            #     "steps",
+            #     "samples",
+            #     "description",
+            #     "location",
+            #     "lab_id",
+            # ],
         ),
         label_quantity="lab_id",
         categories=[IKZMOVPECategory],
-        label="GrowthProcess",
+        label="Growth Process",
     )
 
     # datetime
@@ -1673,16 +1660,16 @@ class GrowthMovpeIKZ(VaporDeposition, PlotSection, EntryData):
     data_file = Quantity(
         type=str,
         description="Upload here the spreadsheet file containing the deposition control data",
-        a_tabular_parser={
-            "parsing_options": {"comment": "#"},
-            "mapping_options": [
-                {
-                    "mapping_mode": "row",
-                    "file_mode": "multiple_new_entries",
-                    "sections": ["#root"],
-                }
-            ],
-        },
+        # a_tabular_parser={
+        #     "parsing_options": {"comment": "#"},
+        #     "mapping_options": [
+        #         {
+        #             "mapping_mode": "row",
+        #             "file_mode": "multiple_new_entries",
+        #             "sections": ["#root"],
+        #         }
+        #     ],
+        # },
         a_browser={"adaptor": "RawFileAdaptor"},
         a_eln={"component": "FileEditQuantity"},
     )
@@ -1769,7 +1756,7 @@ class GrowthMovpe1IKZConstantParameters(Process, EntryData, TableData):
         # a_eln={"hide": ["samples"]},
         label_quantity="lab_id",  # "growth_id",
         categories=[IKZMOVPE1Category],
-        label="GrowthProcess",
+        label="Growth Process Constant parameters",
     )
     data_file = Quantity(
         type=str,
@@ -1878,18 +1865,20 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
             label="Notes",
         ),
     )
-    # # substrate_temperature = Quantity(
-    # #     type=np.float64,
-    # #     description="FILL THE DESCRIPTION",
-    # #     a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-    # #     unit="celsius",
-    # # )
-    oxygen_argon_ratio = Quantity(
-        type=float,
-        unit="",
+    substrate_temperature = Quantity(
+        type=np.float64,
         description="FILL THE DESCRIPTION",
         a_eln=ELNAnnotation(
             component="NumberEditQuantity",
+            defaultDisplayUnit="celsius",
+        ),
+        unit="kelvin",
+    )
+    oxygen_argon_ratio = Quantity(
+        type=str,
+        description="FILL THE DESCRIPTION",
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
         ),
     )
     composition = Quantity(
@@ -1904,7 +1893,6 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
     )
     growth_run = SubSection(
         section_def=GrowthMovpeIKZReference,
-        # repeats=True
     )
     characterization = SubSection(section_def=CharacterizationMovpe)
 

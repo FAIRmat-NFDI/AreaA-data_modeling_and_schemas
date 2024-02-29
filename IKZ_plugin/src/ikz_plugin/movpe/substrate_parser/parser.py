@@ -67,7 +67,6 @@ class RawFileSubstrateInventory(EntryData):
 
 
 class MovpeSubstrateParser(MatchingParser):
-
     def __init__(self):
         super().__init__(
             name="MOVPE Substrate IKZ",
@@ -89,9 +88,10 @@ class MovpeSubstrateParser(MatchingParser):
         substrates_file.columns = substrates_file.columns.str.strip()
         substrate_list = []
         for index, substrate_id in enumerate(substrates_file["Substrates"]):
-
             # creating Substrate archives
-            substrate_filename = f"{substrate_id}_{index}.ThinFilm.archive.{filetype}"
+            substrate_filename = (
+                f"{substrate_id}_{index}.SubstrateIKZ.archive.{filetype}"
+            )
             substrate_data = SubstrateMovpe(
                 lab_id=substrate_id,
                 supplier=substrates_file["Supplier"][index],
@@ -143,6 +143,7 @@ class MovpeSubstrateParser(MatchingParser):
                 )
             )
         invenroty_data = SubstrateInventory(
+            data_file=data_file_with_path,
             substrates=substrate_list,
         )
         inventory_archive = EntryArchive(

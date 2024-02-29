@@ -19,6 +19,7 @@
 import yaml
 import json
 import math
+import pandas as pd
 
 
 def get_reference(upload_id, entry_id):
@@ -102,3 +103,29 @@ def create_archive(
     return get_reference(
         context.upload_id, get_entry_id_from_file_name(filename, context.upload_id)
     )
+
+
+def create_timeseries_objects(
+    dataframe: pd.DataFrame, quantities, MetainfoClass, index
+):
+    objects = []
+    i = 0
+    while True:
+        if all(
+            f"{key}{'' if i == 0 else '.' + str(i)}" in dataframe.columns
+            for key in quantities
+        ):
+            objects.append(
+                MetainfoClass(
+                    time=dataframe.get(
+                        f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ""
+                    )[index],
+                    value=dataframe.get(
+                        f"{quantities[1]}{'' if i == 0 else '.' + str(i)}", 0
+                    )[index],
+                )
+            )
+            i += 1
+        else:
+            break
+    return objects

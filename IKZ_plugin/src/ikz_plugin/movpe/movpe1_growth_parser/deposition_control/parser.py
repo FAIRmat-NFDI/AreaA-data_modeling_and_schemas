@@ -39,17 +39,30 @@ from nomad.processing.data import Upload
 from nomad.app.v1.models.models import User
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.search import search, MetadataPagination
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+from nomad.utils import hash
+
+from nomad.datamodel.metainfo.basesections import (
+    CompositeSystem,
+    PureSubstanceComponent,
+    PureSubstanceSection,
+)
 from ikz_plugin import IKZMOVPE1Category
+from ikz_plugin.utils import (
+    create_archive,
+    create_timeseries_objects,
+)
 from ikz_plugin.movpe import (
     ExperimentMovpeIKZ,
-    GrowthMovpe1IKZConstantParametersReference,
-    GrowthMovpe1IKZ,
+    GrowthMovpeIKZReference,
+    GrowthMovpeIKZ,
+    GrowthStepMovpe1IKZ,
     PrecursorsPreparationIKZ,
     PrecursorsPreparationIKZReference,
-    PureSubstanceComponentMovpe1IKZ,
-    PubChemPureSubstanceSectionMovpe1,
     ThinFilmStackMovpeReference,
     ThinFilmStackMovpe,
+    LiquidComponent,
+    SystemComponentIKZ,
     ChamberPressure,
     Rotation,
     FilamentTemperature,
@@ -60,27 +73,6 @@ from ikz_plugin.movpe import (
     ThrottleValve,
     RawFileMovpeDepositionControl,
 )
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-
-# from nomad.parsing.tabular import create_archive
-from nomad.utils import hash
-
-
-def create_archive(
-    entry_dict, context, file_name, file_type, logger, *, bypass_check: bool = False
-):
-    if not context.raw_path_exists(file_name) or bypass_check:
-        with context.raw_file(file_name, "w") as outfile:
-            if file_type == "json":
-                json.dump(entry_dict, outfile)
-            elif file_type == "yaml":
-                yaml.dump(entry_dict, outfile)
-        context.upload.process_updated_raw_file(file_name, allow_modify=True)
-    else:
-        logger.error(
-            f"{file_name} archive file already exists."
-            f"If you intend to reprocess the older archive file, remove the existing one and run reprocessing again."
-        )
 
 
 class ParserMovpe1DepositionControlIKZ(MatchingParser):
@@ -92,7 +84,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
             supported_compressions=["gz", "bz2", "xz"],
         )
 
-    def parse(self, mainfile: str, current_parse_archive: EntryArchive, logger) -> None:
+    def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         filetype = "yaml"
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
@@ -112,29 +104,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 "Number of rows in 'deposition control' and 'precursors' Excel sheets are not equal. Please check the files and try again."
             )
 
-        def create_objects(dataframe: pd.DataFrame, quantities, MetainfoClass, index):
-            objects = []
-            i = 0
-            while True:
-                if all(
-                    f"{key}{'' if i == 0 else '.' + str(i)}" in dataframe.columns
-                    for key in quantities
-                ):
-                    objects.append(
-                        MetainfoClass(
-                            time=dataframe.get(
-                                f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ""
-                            )[index],
-                            value=dataframe.get(
-                                f"{quantities[1]}{'' if i == 0 else '.' + str(i)}", 0
-                            )[index],
-                        )
-                    )
-                    i += 1
-                else:
-                    break
-            return objects
-
         for index, dep_control_run in enumerate(dep_control["Sample ID"]):
             assert dep_control_run == precursors["Sample ID"][index], (
                 f"Not matching Sample ID at line {index} in "
@@ -150,7 +119,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     "results.eln.sections:any": ["ExperimentMovpeIKZ"],
                 },
                 pagination=MetadataPagination(page_size=10000),
-                user_id=current_parse_archive.metadata.main_author.user_id,
+                user_id=archive.metadata.main_author.user_id,
             )
             # check if experiment entries are already indexed
             matches = {
@@ -186,74 +155,90 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 )
                 sample_archive = EntryArchive(
                     data=ThinFilmStackMovpe(lab_id=dep_control_run),
-                    m_context=current_parse_archive.m_context,
-                    metadata=EntryMetadata(
-                        upload_id=current_parse_archive.m_context.upload_id
-                    ),
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
                 )
                 create_archive(
                     sample_archive.m_to_dict(),
-                    current_parse_archive.m_context,
+                    archive.m_context,
                     sample_filename,
                     filetype,
                     logger,
                 )
                 # create deposition control objects
-                chamber_pressures = create_objects(
+                chamber_pressures = create_timeseries_objects(
                     dep_control,
                     ["reactor time", "Pressure"],
                     ChamberPressure,
                     index,
                 )
-                rotations = create_objects(
+                rotations = create_timeseries_objects(
                     dep_control, ["rot time", "rotation"], Rotation, index
                 )
-                filament_temperatures = create_objects(
+                filament_temperatures = create_timeseries_objects(
                     dep_control, ["Fil time", "Fil T"], FilamentTemperature, index
                 )
-                flash_evaporator1_pressures = create_objects(
+                flash_evaporator1_pressures = create_timeseries_objects(
                     dep_control,
                     ["BP FE1 time", "BP FE1"],
                     FlashEvaporator1Pressure,
                     index,
                 )
-                flash_evaporator2_pressures = create_objects(
+                flash_evaporator2_pressures = create_timeseries_objects(
                     dep_control,
                     ["BP FE2 time", "BP FE2"],
                     FlashEvaporator2Pressure,
                     index,
                 )
-                oxygen_temperatures = create_objects(
+                oxygen_temperatures = create_timeseries_objects(
                     dep_control,
                     ["Oxygen time", "Oxygen T"],
                     OxygenTemperature,
                     index,
                 )
-                shaft_temperatures = create_objects(
+                shaft_temperatures = create_timeseries_objects(
                     dep_control,
                     ["Oxygen time", "Oxygen T"],
                     ShaftTemperature,
                     index,
                 )
-                throttle_valves = create_objects(
+                throttle_valves = create_timeseries_objects(
                     dep_control, ["Oxygen time", "Oxygen T"], ThrottleValve, index
                 )
-                # creating deposition control object
-                dep_control_data = GrowthMovpe1IKZ(
+
+                # creating GrowthMovpeIKZ archive
+                growth_data = GrowthMovpeIKZ(
                     data_file=data_file_with_path,
                     description=f"{dep_control['Weekday'][index]}. Sequential number: {dep_control['number'][index]}. {dep_control['Comment'][index]}",
                     datetime=dep_control["Date"][index],
-                    # lab_id=f"{dep_control['Sample ID'][index]} growth run deposition control",
-                    duration=dep_control["Duration"][index],
-                    chamber_pressure=chamber_pressures,
-                    filament_temperature=filament_temperatures,
-                    flash_evaporator1_pressure=flash_evaporator1_pressures,
-                    flash_evaporator2_pressure=flash_evaporator2_pressures,
-                    oxygen_temperature=oxygen_temperatures,
-                    rotation=rotations,
-                    shaft_temperature=shaft_temperatures,
-                    throttle_valve=throttle_valves,
+                    steps=[
+                        GrowthStepMovpe1IKZ(
+                            duration=dep_control["Duration"][index],
+                            chamber_pressure=chamber_pressures,
+                            filament_temperature=filament_temperatures,
+                            flash_evaporator1_pressure=flash_evaporator1_pressures,
+                            flash_evaporator2_pressure=flash_evaporator2_pressures,
+                            oxygen_temperature=oxygen_temperatures,
+                            rotation=rotations,
+                            shaft_temperature=shaft_temperatures,
+                            throttle_valve=throttle_valves,
+                        )
+                    ],
                 )
+                growth_filename = f"{dep_control_run}.GrowthMovpeIKZ.archive.{filetype}"
+                growth_archive = EntryArchive(
+                    data=growth_data,
+                    # m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+                )
+                create_archive(
+                    growth_archive.m_to_dict(),
+                    archive.m_context,
+                    growth_filename,
+                    filetype,
+                    logger,
+                )
+
                 # creating precursor objects
                 precursor_objects = []
                 precursor_quantities = [
@@ -271,53 +256,66 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         for key in precursor_quantities
                     ):
                         precursor_objects.append(
-                            PureSubstanceComponentMovpe1IKZ(
-                                name=precursors.get(
-                                    f"MO Precursor{'' if i == 0 else '.' + str(i)}",
-                                    "",
-                                )[index],
-                                mass=precursors.get(
-                                    f"Weight{'' if i == 0 else '.' + str(i)}", 0
-                                )[index],
-                                solvent=precursors.get(
-                                    f"Solvent{'' if i == 0 else '.' + str(i)}", 0
-                                )[index],
-                                volume=precursors.get(
-                                    f"Volume{'' if i == 0 else '.' + str(i)}", 0
-                                )[index],
+                            SystemComponentIKZ(
+                                system=CompositeSystem(
+                                    components=[
+                                        PureSubstanceComponent(
+                                            mass=precursors.get(
+                                                f"Weight{'' if i == 0 else '.' + str(i)}",
+                                                0,
+                                            )[index],
+                                            name=precursors.get(
+                                                f"MO Precursor{'' if i == 0 else '.' + str(i)}",
+                                                "",
+                                            )[index],
+                                            pure_substance=PureSubstanceSection(
+                                                cas_number=precursors.get(
+                                                    f"CAS{'' if i == 0 else '.' + str(i)}",
+                                                    0,
+                                                )[index],
+                                            ),
+                                        ),
+                                        LiquidComponent(
+                                            name=precursors.get(
+                                                f"Solvent{'' if i == 0 else '.' + str(i)}",
+                                                0,
+                                            )[index],
+                                            volume=precursors.get(
+                                                f"Volume{'' if i == 0 else '.' + str(i)}",
+                                                0,
+                                            )[index],
+                                        ),
+                                    ],
+                                ),
                                 molar_concentration=precursors.get(
                                     f"Molar conc{'' if i == 0 else '.' + str(i)}", 0
                                 )[index],
-                                pure_substance=PubChemPureSubstanceSectionMovpe1(
-                                    cas_number=precursors.get(
-                                        f"CAS{'' if i == 0 else '.' + str(i)}", 0
-                                    )[index],
-                                ),
-                            )
+                            ),
                         )
                         i += 1
                     else:
                         break
+
                 # create precursors preparation archive
+                precursors_data = PrecursorsPreparationIKZ(
+                    data_file=data_file_with_path,
+                    lab_id=f"{precursors['Sample ID'][index]} precursor preparation",
+                    name=f"{precursors['Sample ID'][index]} precursors preparation ",
+                    description=f"{precursors['Weekday'][index]}. Sequential number: {precursors['number'][index]}.",
+                    flow_titanium=precursors["Set flow Ti"][index],
+                    flow_calcium=precursors["Set flow Ca"][index],
+                    precursors=precursor_objects,
+                )
+
                 precursors_filename = f"{precursors['Sample ID'][index]}.PrecursorsPreparationIKZ.archive.{filetype}"
                 precursors_archive = EntryArchive(
-                    data=PrecursorsPreparationIKZ(
-                        data_file=data_file_with_path,
-                        lab_id=f"{precursors['Sample ID'][index]} precursor preparation",
-                        name=f"{precursors['Sample ID'][index]} precursors preparation ",
-                        description=f"{precursors['Weekday'][index]}. Sequential number: {precursors['number'][index]}.",
-                        flow_titanium=precursors["Set flow Ti"][index],
-                        flow_calcium=precursors["Set flow Ca"][index],
-                        precursors=precursor_objects,
-                    ),
-                    m_context=current_parse_archive.m_context,
-                    metadata=EntryMetadata(
-                        upload_id=current_parse_archive.m_context.upload_id
-                    ),
+                    data=precursors_data,
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
                 )
                 create_archive(
                     precursors_archive.m_to_dict(),
-                    current_parse_archive.m_context,
+                    archive.m_context,
                     precursors_filename,
                     filetype,
                     logger,
@@ -331,24 +329,28 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         lab_id=f"{dep_control_run} experiment",
                         datetime=dep_control["Date"][index],
                         precursors_preparation=PrecursorsPreparationIKZReference(
-                            reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, precursors_filename)}#data",
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, precursors_filename)}#data",
                         ),
-                        growth_run_constant_parameters=GrowthMovpe1IKZConstantParametersReference(
-                            lab_id=dep_control["Constant Parameters ID"][index],
+                        # growth_run_constant_parameters=GrowthMovpe1IKZConstantParametersReference(
+                        #     lab_id=dep_control["Constant Parameters ID"][index],
+                        # ),
+                        growth_run=GrowthMovpeIKZReference(
+                            name="Growth process",
+                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_filename)}#data",
                         ),
-                        growth_run_deposition_control=dep_control_data,
-                        grown_sample=ThinFilmStackMovpeReference(
-                            reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, sample_filename)}#data",
-                        ),
+                        # grown_sample=ThinFilmStackMovpeReference(
+                        #     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, sample_filename)}#data",
+                        # ), # TODO to be LINKED INSIDE THE GROWTH STEP
+                        # TODO to be LINKED INSIDE THE GROWTH STEP
+                        # TODO to be LINKED INSIDE THE GROWTH STEP
+                        # TODO to be LINKED INSIDE THE GROWTH STEP
                     ),
-                    m_context=current_parse_archive.m_context,
-                    metadata=EntryMetadata(
-                        upload_id=current_parse_archive.m_context.upload_id
-                    ),
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
                 )
                 create_archive(
                     experiment_archive.m_to_dict(),
-                    current_parse_archive.m_context,
+                    archive.m_context,
                     experiment_filename,
                     filetype,
                     logger,
@@ -362,24 +364,24 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #             lab_id=f"{dep_control_run} experiment",
                 #             datetime=dep_control["Date"][index],
                 #             precursors_preparation=PrecursorsPreparationIKZReference(
-                #                 reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, precursors_filename)}#data",
+                #                 reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, precursors_filename)}#data",
                 #             ),
                 #             growth_run_constant_parameters=GrowthMovpe1IKZConstantParametersReference(
                 #                 lab_id=dep_control["Constant Parameters ID"][index],
                 #             ),
-                #             growth_run_deposition_control=dep_control_data,
+                #             growth_run_deposition_control=growth_data,
                 #             grown_sample=ThinFilmStackMovpeReference(
-                #                 reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, sample_filename)}#data",
+                #                 reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, sample_filename)}#data",
                 #             ),
                 #         ),
-                #         m_context=current_parse_archive.m_context,
+                #         m_context=archive.m_context,
                 #         metadata=EntryMetadata(
-                #             upload_id=current_parse_archive.m_context.upload_id
+                #             upload_id=archive.m_context.upload_id
                 #         ),
                 #     )
                 #     create_archive(
                 #         experiment_archive.m_to_dict(),
-                #         current_parse_archive.m_context,
+                #         archive.m_context,
                 #         experiment_filename,
                 #         filetype,
                 #         logger,
@@ -399,7 +401,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #             matches["upload_id"][0],
                 #             User(
                 #                 is_admin=True,
-                #                 user_id=current_parse_archive.metadata.main_author.user_id,
+                #                 user_id=archive.metadata.main_author.user_id,
                 #             ),
                 #             include_others=True,
                 #         )
@@ -413,13 +415,13 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #         updated_experiment["data"][
                 #             "precursors_preparation"
                 #         ] = PrecursorsPreparationIKZReference(
-                #             reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, precursors_filename)}#data",
+                #             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, precursors_filename)}#data",
                 #         ).m_to_dict()
                 #         updated_experiment["data"][
                 #             "growth_run_deposition_control"
-                #         ] = dep_control_data.m_to_dict()
+                #         ] = growth_data.m_to_dict()
                 #         updated_experiment["data"]["grown_sample"] = ThinFilmStackMovpeReference(
-                #             reference=f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.m_context.upload_id, sample_filename)}#data",
+                #             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, sample_filename)}#data",
                 #         ).m_to_dict()
 
                 #     create_archive(
@@ -432,10 +434,10 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #     )
 
                 deposition_control_list.append(
-                    f"../uploads/{current_parse_archive.m_context.upload_id}/archive/{hash(current_parse_archive.metadata.upload_id, experiment_filename)}#data"
+                    f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, experiment_filename)}#data"
                 )
 
         # populate the raw file archive
-        current_parse_archive.data = RawFileMovpeDepositionControl(
+        archive.data = RawFileMovpeDepositionControl(
             growth_run_deposition_control=deposition_control_list
         )
