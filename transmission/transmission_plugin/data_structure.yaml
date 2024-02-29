@@ -1,0 +1,76 @@
+metainfo:
+  upload datetime: # upload datetime (datetime)
+  measurement datetime: # measurement datetime from header in ascii
+  name: # uploaded by ... (str)
+  # and other basic metainfo from base class
+  analyst name: # analyst name from header in ascii
+sample:
+  sample id: # sample id
+  sample name: # sample name in spectrometer, taken from header in ascii
+  chemical composition: # would be great if this schema can benefit nomad build-in feature
+  length: # length (or thickness) of the sample in mm
+  orientation: # crystallographic orientation of sample (rich text)
+  description: # free rich text to describe details such as orientation
+accessory:
+  polarizer: # used -> true (checkbox)
+  aperture: # physical aperture diameter in mm (0 if not applied *better solution? checkbox?)
+instrument:
+  deviceinfo:
+    instrument name: # (str)
+    instrument serial number: # (str)
+    software/firmware version: # (str)
+  settings:
+    ordinate type: # (str) "%T" or "A"
+    monochromator:
+      slit width:
+        range 1:
+          wavelength:
+          value:
+        range 2:
+          wavelength:
+          value:
+        range 3:
+          wavelength:
+          value:
+        # number of ranges needs to be flexible.
+        # for example, when line 36 is "3350/8 1800.8/2.1 860.8/1.95 750/1.75", this means there are four ranges
+      monochromator change point: # monochromator change point in nm
+    lamp:
+      D2 lamp: # used -> true (bool)
+      tungsten lamp: # used -> true (bool)
+      lamp change point: # lamp change point in nm (float)
+    detector:
+      module: # if line 25 includes "uv/vis/nir detector" -> "three detector module", if includes "150mm sphere" -> "150-mm integrating sphere"
+      NIR gain:
+        range 1:
+          wavelength:
+          value:
+        range 2:
+          wavelength:
+          value:
+        range 3:
+          wavelength:
+          value:
+        # number of ranges needs to be flexible.
+        # for example, when line 36 is 3350/1.00 1800.8/1.00, this means there are two ranges
+      integration time:
+        range 1:
+          wavelength:
+          value:
+        range 2:
+          wavelength:
+          value:
+        range 3:
+          wavelength:
+          value:
+        # number of ranges needs to be flexible.
+        # for example, when line 33 is "3350/0.2 1800.8/0.2 860.8/0.4", this means there are three ranges
+      detector change point: # detector change point in nm (float)
+    sample beam position: # "Front" or "Rear" (str)
+    common beam mask: # (int) 0 to 100
+    common beam depolarizer: # used -> true (bool)
+    attenuator:
+      sample: # (int) 100, 1, or 0.1 in %
+      reference: # (int) 100, 1, or 0.1 in %
+    polarizer angle: # polarizer angle in ° (float)
+comment: # rich text to describe the measurement
