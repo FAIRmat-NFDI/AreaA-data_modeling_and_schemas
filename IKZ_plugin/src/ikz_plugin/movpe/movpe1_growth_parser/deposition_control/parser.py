@@ -47,10 +47,26 @@ from nomad.datamodel.metainfo.basesections import (
     PureSubstanceComponent,
     PureSubstanceSection,
 )
+
+from nomad_material_processing import (
+    SubstrateReference,
+    ThinFilmReference,
+)
+
+# from nomad_material_processing.vapor_deposition import (
+#     ,
+# )
+
+from nomad_material_processing.chemical_vapor_deposition import (
+    CVDPressure,
+)
+
+
 from ikz_plugin import IKZMOVPE1Category
 from ikz_plugin.utils import (
     create_archive,
     create_timeseries_objects,
+    row_to_array,
 )
 from ikz_plugin.movpe import (
     ExperimentMovpeIKZ,
@@ -64,6 +80,7 @@ from ikz_plugin.movpe import (
     LiquidComponent,
     SystemComponentIKZ,
     ChamberPressure,
+    CVDChamberEnvironment,
     Rotation,
     FilamentTemperature,
     FlashEvaporator1Pressure,
@@ -101,7 +118,10 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
 
         if not len(dep_control["Sample ID"]) == len(precursors["Sample ID"]):
             logger.error(
-                "Number of rows in 'deposition control' and 'precursors' Excel sheets are not equal. Please check the files and try again."
+                f"Excel sheets mismatch: "
+                f"'Deposition Control' has {len(dep_control['Sample ID'])} rows "
+                f"and 'Precursors' has {len(precursors['Sample ID'])} rows. "
+                f"Please check the file and try again."
             )
 
         for index, dep_control_run in enumerate(dep_control["Sample ID"]):
@@ -140,7 +160,8 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         matches["upload_id"].append(match["upload_id"])
                 if len(matches["entry_id"]) == 1:
                     logger.warning(
-                        f"One entry with lab_id {set(matches['lab_id'])} and entry_id {set(matches['entry_id'])} already exists. Please check it."
+                        f"One entry with lab_id {set(matches['lab_id'])} and entry_id {set(matches['entry_id'])} already exists. "
+                        f"Please check the upload with upload id {set(matches['upload_id'])}."
                     )
                     continue
                 elif len(matches["entry_id"]) > 1:
@@ -154,7 +175,12 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     f"{dep_control_run}.ThinFilmStackMovpe.archive.{filetype}"
                 )
                 sample_archive = EntryArchive(
-                    data=ThinFilmStackMovpe(lab_id=dep_control_run),
+                    data=ThinFilmStackMovpe(
+                        lab_id=dep_control_run,
+                        substrate=SubstrateReference(
+                            lab_id=dep_control["Substrate ID"][index],
+                        ),
+                    ),
                     m_context=archive.m_context,
                     metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
                 )
@@ -209,10 +235,12 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 # creating GrowthMovpeIKZ archive
                 growth_data = GrowthMovpeIKZ(
                     data_file=data_file_with_path,
+                    lab_id=dep_control_run,
                     description=f"{dep_control['Weekday'][index]}. Sequential number: {dep_control['number'][index]}. {dep_control['Comment'][index]}",
                     datetime=dep_control["Date"][index],
                     steps=[
                         GrowthStepMovpe1IKZ(
+                            name="Deposition",
                             duration=dep_control["Duration"][index],
                             chamber_pressure=chamber_pressures,
                             filament_temperature=filament_temperatures,
@@ -222,6 +250,21 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                             rotation=rotations,
                             shaft_temperature=shaft_temperatures,
                             throttle_valve=throttle_valves,
+                            environment=CVDChamberEnvironment(
+                                pressure=CVDPressure(
+                                    set_value=dep_control["Set Chamber P"][index],
+                                    value=row_to_array(
+                                        dep_control,
+                                        ["Read Chamber Pressure"],
+                                        index,
+                                    ),
+                                    time=row_to_array(
+                                        dep_control,
+                                        ["Chamber pressure time"],
+                                        index,
+                                    ),
+                                ),
+                            ),
                         )
                     ],
                 )
@@ -255,38 +298,62 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         f"{key}{'' if i == 0 else '.' + str(i)}" in precursors.columns
                         for key in precursor_quantities
                     ):
+                        solute_name = precursors.get(
+                            f"MO Precursor{'' if i == 0 else '.' + str(i)}", ""
+                        )[index]
+                        solvent_name = (
+                            precursors.get(
+                                f"Solvent{'' if i == 0 else '.' + str(i)}",
+                                0,
+                            )[index]
+                            if not None
+                            else "unknown"
+                        )
+                        solution_filename = (
+                            f"{solute_name}_{solvent_name}.Solution.archive.{filetype}"
+                        )
+                        solution_data = CompositeSystem(
+                            components=[
+                                PureSubstanceComponent(
+                                    mass=precursors.get(
+                                        f"Weight{'' if i == 0 else '.' + str(i)}",
+                                        0,
+                                    )[index],
+                                    name=solute_name,
+                                    pure_substance=PureSubstanceSection(
+                                        cas_number=precursors.get(
+                                            f"CAS{'' if i == 0 else '.' + str(i)}",
+                                            0,
+                                        )[index],
+                                    ),
+                                ),
+                                LiquidComponent(
+                                    name=solvent_name,
+                                    volume=precursors.get(
+                                        f"Volume{'' if i == 0 else '.' + str(i)}",
+                                        0,
+                                    )[index],
+                                ),
+                            ],
+                        )
+                        solution_archive = EntryArchive(
+                            data=solution_data,
+                            m_context=archive.m_context,
+                            metadata=EntryMetadata(
+                                upload_id=archive.m_context.upload_id
+                            ),
+                        )
+                        create_archive(
+                            solution_archive.m_to_dict(),
+                            archive.m_context,
+                            solution_filename,
+                            filetype,
+                            logger,
+                        )
                         precursor_objects.append(
                             SystemComponentIKZ(
-                                system=CompositeSystem(
-                                    components=[
-                                        PureSubstanceComponent(
-                                            mass=precursors.get(
-                                                f"Weight{'' if i == 0 else '.' + str(i)}",
-                                                0,
-                                            )[index],
-                                            name=precursors.get(
-                                                f"MO Precursor{'' if i == 0 else '.' + str(i)}",
-                                                "",
-                                            )[index],
-                                            pure_substance=PureSubstanceSection(
-                                                cas_number=precursors.get(
-                                                    f"CAS{'' if i == 0 else '.' + str(i)}",
-                                                    0,
-                                                )[index],
-                                            ),
-                                        ),
-                                        LiquidComponent(
-                                            name=precursors.get(
-                                                f"Solvent{'' if i == 0 else '.' + str(i)}",
-                                                0,
-                                            )[index],
-                                            volume=precursors.get(
-                                                f"Volume{'' if i == 0 else '.' + str(i)}",
-                                                0,
-                                            )[index],
-                                        ),
-                                    ],
-                                ),
+                                name=str(solute_name) + " in " + str(solvent_name),
+                                system=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, solution_filename)}#data",
                                 molar_concentration=precursors.get(
                                     f"Molar conc{'' if i == 0 else '.' + str(i)}", 0
                                 )[index],

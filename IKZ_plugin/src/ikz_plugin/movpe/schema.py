@@ -33,6 +33,7 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
 )
+
 from nomad.metainfo import (
     Package,
     Quantity,
@@ -79,6 +80,7 @@ from nomad_material_processing.chemical_vapor_deposition import (
     CVDBubbler,
     CVDVaporRate,
     CVDSource,
+    CVDPressure,
 )
 
 from nomad_measurements import (
@@ -1226,25 +1228,25 @@ class SampleParametersMovpe(SampleParameters):
     )
 
 
-class CVDPressure(Pressure):
-    m_def = Section(
-        a_plot=dict(
-            x="process_time",
-            y="pressure",
-        ),
-    )
-    pressure = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mbar"},
-        unit="pascal",
-        shape=[1],
-    )
-    process_time = Quantity(
-        type=float,
-        unit="second",
-        shape=[1],
-    )
+# class CVDPressure(Pressure):
+#     m_def = Section(
+#         a_plot=dict(
+#             x="process_time",
+#             y="pressure",
+#         ),
+#     )
+#     pressure = Quantity(
+#         type=np.float64,
+#         description="FILL THE DESCRIPTION",
+#         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mbar"},
+#         unit="pascal",
+#         shape=[1],
+#     )
+#     process_time = Quantity(
+#         type=float,
+#         unit="second",
+#         shape=[1],
+#     )
 
 
 class CVDGasFlow(GasFlow):
@@ -1337,6 +1339,12 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_eln=None,
         label="GrowthStep",
         categories=[IKZMOVPE1Category],
+    )
+    description = Quantity(
+        type=str,
+        description="description",
+        a_eln={"component": "StringEditQuantity"},
+        label="Notes",
     )
     temperature_shaft = Quantity(
         type=np.float64,
@@ -1904,16 +1912,27 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
         archive.workflow2 = None
         super(ExperimentMovpeIKZ, self).normalize(archive, logger)
         archive.workflow2.tasks = []
-        if self.growth_run:
-            archive.workflow2.tasks.append(self.growth_run)
-        if hasattr(self.characterization, "in_situ_reflectance"):
-            archive.workflow2.tasks.extend(self.characterization.in_situ_reflectance)
-        if hasattr(self.characterization, "hall"):
-            archive.workflow2.tasks.extend(self.characterization.hall)
-        if hasattr(self.characterization, "afm"):
-            archive.workflow2.tasks.extend(self.characterization.afm)
-        if hasattr(self.characterization, "light_microscopy"):
-            archive.workflow2.tasks.extend(self.characterization.light_microscopy)
+
+        if hasattr(hasattr(self, "growth_run"), "reference"):
+            archive.workflow2.tasks.append(Task(name=self.growth_run.reference))
+        if hasattr(hasattr(self, "precursors_preparation"), "reference"):
+            archive.workflow2.tasks.extend(
+                Task(name=self.precursors_preparation.reference)
+            )
+        if hasattr(hasattr(self.characterization, "in_situ_reflectance"), "reference"):
+            archive.workflow2.tasks.extend(
+                Task(name=self.characterization.in_situ_reflectance)
+            )
+        if hasattr(hasattr(self.characterization, "hall"), "reference"):
+            archive.workflow2.tasks.extend(Task(name=self.characterization.hall))
+        if hasattr(hasattr(self.characterization, "afm"), "reference"):
+            archive.workflow2.tasks.extend(
+                Task(name=self.characterization.afm.reference)
+            )
+        if hasattr(hasattr(self.characterization, "light_microscopy"), "reference"):
+            archive.workflow2.tasks.extend(
+                Task(name=self.characterization.light_microscopy.reference)
+            )
 
         search_result = search(
             owner="user",

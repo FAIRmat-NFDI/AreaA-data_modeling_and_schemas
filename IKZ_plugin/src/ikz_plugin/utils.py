@@ -129,3 +129,26 @@ def create_timeseries_objects(
         else:
             break
     return objects
+
+
+def row_to_array(dataframe: pd.DataFrame, quantities, row_index):
+    array = pd.Series([])
+    i = 0
+    while True:
+        if all(
+            f"{key}{'' if i == 0 else '.' + str(i)}" in dataframe.columns
+            for key in quantities
+        ):
+            array = array.append(
+                pd.Series(
+                    [
+                        dataframe.get(
+                            f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ""
+                        )[row_index]
+                    ]
+                )
+            )
+            i += 1
+        else:
+            break
+    return array

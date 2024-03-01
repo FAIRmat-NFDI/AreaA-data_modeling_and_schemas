@@ -200,10 +200,8 @@ class ParserMovpe2IKZ(MatchingParser):
                 + populate_gas_source(index, growth_run_file),
                 environment=CVDChamberEnvironment(
                     pressure=CVDPressure(
-                        pressure=[
-                            (growth_run_file["Pressure"][index])
-                            * ureg("mbar").to("pascal").magnitude
-                        ],
+                        set_value=(growth_run_file["Pressure"][index])
+                        * ureg("mbar").to("pascal").magnitude,
                     ),
                     gas_flow=[
                         CVDGasFlow(
