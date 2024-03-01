@@ -15,7 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    Any,
+    Callable,
+)
 from nomad.datamodel.data import EntryData
 from nomad.datamodel.metainfo.basesections import CompositeSystem
 from nomad.datamodel.metainfo.basesections import Instrument
@@ -36,6 +41,14 @@ from nomad.datamodel.data import (
     EntryData,
     ArchiveSection,
 )
+
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+    ELNComponentEnum,
+)
+
+from uv_vis_nir_transmission import readers
+from nomad_measurements.utils import merge_sections
 
 m_package = Package(name="uv-vis-nir-transmission")
 
@@ -105,13 +118,13 @@ class SlitWidth(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description="wavelength",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
     value = Quantity(
         type=np.float64,
         description="slit width",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity" }, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
 
@@ -125,7 +138,7 @@ class Monochromator(ArchiveSection):
     monochromator_change_point = Quantity(
         type=np.float64,
         description="monochromator change point in nm",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
     slit_width = SubSection(
@@ -153,7 +166,7 @@ class Lamp(ArchiveSection):
     lamp_change_point = Quantity(
         type=np.float64,
         description="lamp change point in nm",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
 
@@ -167,7 +180,7 @@ class NirGain(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description="wavelength",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
     value = Quantity(
@@ -186,13 +199,13 @@ class IntegrationTime(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description="wavelength",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
     value = Quantity(
         type=np.float64,
         description="value",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "s"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "s"},
         unit="s",
     )
 
@@ -211,7 +224,7 @@ class Detector(ArchiveSection):
     detector_change_point = Quantity(
         type=np.float64,
         description="detector change point in nm",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "nm"},
         unit="nm",
     )
     nir_gain = SubSection(
@@ -302,6 +315,13 @@ class UVVisTransmission(Measurement, EntryData, ArchiveSection):
         description="analyst name from header in ascii",
         a_eln={"component": "StringEditQuantity"},
     )
+    data_file = Quantity(
+        type=str,
+        description='*.asc Data file containing the UV-Vis-NIR transmission spectrum',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.FileEditQuantity,
+        ),
+    )
     results = SubSection(
         section_def=UVVisNirTransmissionResult,
         repeats=True,
@@ -310,16 +330,153 @@ class UVVisTransmission(Measurement, EntryData, ArchiveSection):
         section_def=InstrumentSettings,
     )
 
-    def normalize(self, archive, logger: BoundLogger) -> None:
-        """
-        The normalizer for the `UVVisTransmission` class.
+
+    def get_read_write_functions(self) -> tuple[Callable, Callable]:
+        '''
+        Method for getting the correct read and write functions for the current data file.
+
+        Returns:
+            tuple[Callable, Callable]: The read, write functions.
+        '''
+        if self.data_file.endswith('.asc'):
+            return readers.read_nexus_asc, self.write_nx_xrd #self.write_xrd_data
+        return None, None
+
+    # def write_xrd_data(
+    #         self,
+    #         xrd_dict: Dict[str, Any],
+    #         archive: 'EntryArchive',
+    #         logger: 'BoundLogger',
+    #     ) -> None:
+    #     '''
+    #     Write method for populating the `ELNXRayDiffraction` section from a dict.
+
+    #     Args:
+    #         xrd_dict (Dict[str, Any]): A dictionary with the XRD data.
+    #         archive (EntryArchive): The archive containing the section.
+    #         logger (BoundLogger): A structlog logger.
+    #     '''
+    #     metadata_dict: dict = xrd_dict.get('metadata', {})
+    #     source_dict: dict = metadata_dict.get('source', {})
+
+    #     result = XRDResult(
+    #         intensity=xrd_dict.get('detector', None),
+    #         two_theta=xrd_dict.get('2Theta', None),
+    #         omega=xrd_dict.get('Omega',None),
+    #         chi=xrd_dict.get('Chi', None),
+    #         phi=xrd_dict.get('Phi', None),
+    #         scan_axis=metadata_dict.get('scan_axis', None),
+    #         integration_time=xrd_dict.get('countTime',None),
+    #     )
+    #     result.normalize(archive, logger)
+
+    #     source = XRayTubeSource(
+    #         xray_tube_material=source_dict.get('anode_material', None),
+    #         kalpha_one=source_dict.get('kAlpha1', None),
+    #         kalpha_two=source_dict.get('kAlpha2', None),
+    #         ratio_kalphatwo_kalphaone=source_dict.get('ratioKAlpha2KAlpha1', None),
+    #         kbeta=source_dict.get('kBeta', None),
+    #         xray_tube_voltage=source_dict.get('voltage', None),
+    #         xray_tube_current=source_dict.get('current', None),
+    #     )
+    #     source.normalize(archive, logger)
+
+    #     xrd_settings = XRDSettings(
+    #         source=source
+    #     )
+    #     xrd_settings.normalize(archive, logger)
+
+    #     sample = CompositeSystemReference(
+    #         lab_id=metadata_dict.get('sample_id', None),
+    #     )
+    #     sample.normalize(archive, logger)
+
+    #     xrd = ELNXRayDiffraction(
+    #         results = [result],
+    #         xrd_settings = xrd_settings,
+    #         samples = [sample],
+    #     )
+    #     merge_sections(self, xrd, logger)
+
+    def write_nx_xrd(
+            self,
+            xrd_dict: 'Template',
+            archive: 'EntryArchive',
+            logger: 'BoundLogger',
+        ) -> None:
+        '''
+        Populate `ELNXRayDiffraction` section from a NeXus Template.
+
+        Args:
+            xrd_dict (Dict[str, Any]): A dictionary with the XRD data.
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+        '''
+        result = UVVisNirTransmissionResult(
+            transmission=xrd_dict.get(
+                '/ENTRY[entry]/data/transmission',
+                None,
+            ),
+            wavelength=xrd_dict.get(
+                '/ENTRY[entry]/data/wavelength',
+                None,
+            ),
+
+        )
+        result.normalize(archive, logger)
+
+        xrd = UVVisTransmission(
+            results = [result],
+        )
+        merge_sections(self, xrd, logger)
+
+        nexus_output = None
+        # if self.generate_nexus_file:
+        #     archive_name = archive.metadata.mainfile.split('.')[0]
+        #     nexus_output = f'{archive_name}_output.nxs'
+        # handle_nexus_subsection(
+        #     xrd_dict,
+        #     nexus_output,
+        #     archive,
+        #     logger,
+        #)
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
+        '''
+        The normalize function of the `ELNXRayDiffraction` section.
 
         Args:
             archive (EntryArchive): The archive containing the section that is being
             normalized.
             logger (BoundLogger): A structlog logger.
-        """
-        super(UVVisTransmission, self).normalize(archive, logger)
+        '''
+        if self.data_file is not None:
+            read_function, write_function = self.get_read_write_functions()
+            if read_function is None or write_function is None:
+                logger.warn(
+                    f'No compatible reader found for the file: "{self.data_file}".'
+                )
+            else:
+                with archive.m_context.raw_file(self.data_file) as file:
+                    xrd_dict = read_function(file.name, logger)
+                write_function(xrd_dict, archive, logger)
+        super().normalize(archive, logger)
+
+        if not self.results:
+            return
+
+
+
+    # def normalize(self, archive, logger: BoundLogger) -> None:
+    #     """
+    #     The normalizer for the `UVVisTransmission` class.
+
+    #     Args:
+    #         archive (EntryArchive): The archive containing the section that is being
+    #         normalized.
+    #         logger (BoundLogger): A structlog logger.
+    #     """
+    #     super(UVVisTransmission, self).normalize(archive, logger)
 
 
 class PerkinElmerLambda1050(Instrument, EntryData, ArchiveSection):
@@ -380,7 +537,7 @@ class TransmissionSample(CompositeSystem, EntryData, ArchiveSection):
     length = Quantity(
         type=np.float64,
         description="length (or thickness) of the sample in mm",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mm"},
+        a_eln={"component": "NumberEditQuantity"}, # "defaultDisplayUnit": "mm"},
         unit="mm",
     )
     orientation = Quantity(
