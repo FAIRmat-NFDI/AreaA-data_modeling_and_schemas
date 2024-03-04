@@ -275,7 +275,7 @@ class ParserMovpe2IKZ(MatchingParser):
 
         experiment_reference = []
         for recipe_id in recipe_ids:
-            experiment_filename = f"{recipe_id}.archive.{filetype}"
+            experiment_filename = f"{recipe_id}.ExperimentMovpeIKZ.archive.{filetype}"
             growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
             experiment_data = ExperimentMovpeIKZ(
                 lab_id=recipe_id,

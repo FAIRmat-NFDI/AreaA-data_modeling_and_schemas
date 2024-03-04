@@ -53,13 +53,10 @@ from nomad_material_processing import (
     ThinFilmReference,
 )
 
-# from nomad_material_processing.vapor_deposition import (
-#     ,
-# )
 
-from nomad_material_processing.chemical_vapor_deposition import (
-    CVDPressure,
-)
+# from nomad_material_processing.chemical_vapor_deposition import (
+#     CVDPressure,
+# )
 
 
 from ikz_plugin import IKZMOVPE1Category
@@ -89,6 +86,7 @@ from ikz_plugin.movpe import (
     ShaftTemperature,
     ThrottleValve,
     RawFileMovpeDepositionControl,
+    CVDPressure,
 )
 
 
