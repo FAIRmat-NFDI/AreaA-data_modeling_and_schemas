@@ -4,6 +4,7 @@ from plotly.subplots import make_subplots
 from nomad.datamodel.metainfo.basesections import (
     Activity,
     System,
+    Component,
     SystemComponent,
     PureSubstance,
     Process,
@@ -79,7 +80,7 @@ from nomad_material_processing.chemical_vapor_deposition import (
     CVDBubbler,
     CVDVaporRate,
     CVDSource,
-    # CVDPressure, commit in nomad-material-processing!
+    CVDPressure,
 )
 
 from nomad_measurements import (
@@ -897,11 +898,19 @@ class PrecursorsPreparationIKZ(Process, ExperimentStep, EntryData):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "ml / minute"},
         unit="ml / minute",
     )
-    precursors = SubSection(
-        section_def=SystemComponent,
+    # precursors = SubSection(
+    #     section_def=SystemComponent,
+    #     description="""
+    #     A precursor used in MOVPE. It can be a solution, a gas, or a solid.
+    #     """,
+    #     repeats=True,
+    # )
+    components = SubSection(
         description="""
-        A precursor used in MOVPE. It can be a solution, a gas, or a solid.
+        A list of all the components of the composite system containing a name, reference
+        to the system section and mass of that component.
         """,
+        section_def=Component,
         repeats=True,
     )
 
@@ -1224,31 +1233,6 @@ class SampleParametersMovpe(SampleParameters):
 
     temperature = SubSection(
         section_def=SubstrateTemperatureMovpe,
-    )
-
-
-class CVDPressure(Pressure):
-    m_def = Section(
-        a_plot=dict(
-            x="process_time",
-            y="pressure",
-        ),
-    )
-    set_value = Quantity(
-        type=np.float64,
-        unit="pascal",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mbar"},
-        unit="pascal",
-        shape=["*"],
-    )
-    time = Quantity(
-        type=float,
-        unit="second",
-        shape=[""],
     )
 
 
@@ -1916,52 +1900,47 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
 
         # archive.workflow2.tasks = []
 
-        if getattr(self.growth_run.reference, "name", None):
-            logger.info("YO")
-            archive.workflow2.tasks.append(self.growth_run.reference.name)
-
-        if getattr(self.growth_run.reference.m_parent, "workflow2", None):
-            logger.info("YO222")
-            archive.workflow2.tasks.append(self.growth_run.reference.m_parent.workflow2)
-
-        # if hasattr(self, "precursors_preparation") and hasattr(
-        #     self.precursors_preparation, "reference"
-        # ):
-        #     archive.workflow2.tasks.append(
-        #         self.precursors_preparation.reference.m_parent.workflow2
-        #     )
-        # if (
-        #     hasattr(self, "characterization")
-        #     and hasattr(self.characterization, "in_situ_reflectance")
-        #     and hasattr(self.characterization.in_situ_reflectance, "reference")
-        # ):
-        #     archive.workflow2.tasks.extend(
-        #         self.characterization.in_situ_reflectance.reference.m_parent.workflow2
-        #     )
-        # if (
-        #     hasattr(self, "characterization")
-        #     and hasattr(self.characterization, "hall")
-        #     and hasattr(self.characterization.hall, "reference")
-        # ):
-        #     archive.workflow2.tasks.extend(
-        #         self.characterization.hall.reference.m_parent.workflow2
-        #     )
-        # if (
-        #     hasattr(self, "characterization")
-        #     and hasattr(self.characterization, "afm")
-        #     and hasattr(self.characterization.afm, "reference")
-        # ):
-        #     archive.workflow2.tasks.extend(
-        #         self.characterization.afm.reference.m_parent.workflow2
-        #     )
-        # if (
-        #     hasattr(self, "characterization")
-        #     and hasattr(self.characterization, "light_microscopy")
-        #     and hasattr(self.characterization.light_microscopy, "reference")
-        # ):
-        #     archive.workflow2.tasks.extend(
-        #         self.characterization.light_microscopy.reference.m_parent.workflow2
-        #     )
+        if hasattr(self, "growth_run"):
+            if getattr(self.growth_run.reference.m_parent, "workflow2", None):
+                archive.workflow2.tasks.append(
+                    self.growth_run.reference.m_parent.workflow2
+                )
+        if hasattr(self, "precursors_preparation"):
+            if getattr(
+                self.precursors_preparation.reference.m_parent, "workflow2", None
+            ):
+                archive.workflow2.tasks.append(
+                    self.precursors_preparation.reference.m_parent.workflow2
+                )
+        if hasattr(self, "characterization"):
+            if hasattr(self.characterization, "in_situ_reflectance") and getattr(
+                self.characterization.in_situ_reflectance.reference.m_parent,
+                "workflow2",
+                None,
+            ):
+                archive.workflow2.tasks.append(
+                    self.characterization.in_situ_reflectance.reference.m_parent.workflow2
+                )
+            if hasattr(self.characterization, "hall") and getattr(
+                self.characterization.hall.reference.m_parent, "workflow2", None
+            ):
+                archive.workflow2.tasks.append(
+                    self.characterization.hall.reference.m_parent.workflow2
+                )
+            if hasattr(self.characterization, "afm") and getattr(
+                self.characterization.afm.reference.m_parent, "workflow2", None
+            ):
+                archive.workflow2.tasks.append(
+                    self.characterization.afm.reference.m_parent.workflow2
+                )
+            if hasattr(self.characterization, "light_microscopy") and getattr(
+                self.characterization.light_microscopy.reference.m_parent,
+                "workflow2",
+                None,
+            ):
+                archive.workflow2.tasks.append(
+                    self.characterization.light_microscopy.reference.m_parent.workflow2
+                )
 
         search_result = search(
             owner="user",

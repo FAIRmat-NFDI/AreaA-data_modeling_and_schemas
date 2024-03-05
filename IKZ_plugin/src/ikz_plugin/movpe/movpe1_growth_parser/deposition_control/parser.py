@@ -59,7 +59,7 @@ from nomad_material_processing import (
 # )
 
 
-from ikz_plugin import IKZMOVPE1Category
+from ikz_plugin import IKZMOVPE1Category, Solution
 from ikz_plugin.utils import (
     create_archive,
     create_timeseries_objects,
@@ -281,7 +281,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 )
 
                 # creating precursor objects
-                precursor_objects = []
+                component_objects = []
                 precursor_quantities = [
                     "MO Precursor",
                     "Weight",
@@ -310,8 +310,8 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         solution_filename = (
                             f"{solute_name}_{solvent_name}.Solution.archive.{filetype}"
                         )
-                        solution_data = CompositeSystem(
-                            components=[
+                        solution_data = Solution(
+                            solute=[
                                 PureSubstanceComponent(
                                     mass=precursors.get(
                                         f"Weight{'' if i == 0 else '.' + str(i)}",
@@ -325,12 +325,20 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                         )[index],
                                     ),
                                 ),
+                            ],
+                            solvent=[
                                 LiquidComponent(
                                     name=solvent_name,
                                     volume=precursors.get(
                                         f"Volume{'' if i == 0 else '.' + str(i)}",
                                         0,
                                     )[index],
+                                    pure_substance=PureSubstanceSection(
+                                        cas_number=precursors.get(
+                                            f"Solvent CAS{'' if i == 0 else '.' + str(i)}",
+                                            0,
+                                        )[index],
+                                    ),
                                 ),
                             ],
                         )
@@ -348,7 +356,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                             filetype,
                             logger,
                         )
-                        precursor_objects.append(
+                        component_objects.append(
                             SystemComponentIKZ(
                                 name=str(solute_name) + " in " + str(solvent_name),
                                 system=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, solution_filename)}#data",
@@ -369,7 +377,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     description=f"{precursors['Weekday'][index]}. Sequential number: {precursors['number'][index]}.",
                     flow_titanium=precursors["Set flow Ti"][index],
                     flow_calcium=precursors["Set flow Ca"][index],
-                    precursors=precursor_objects,
+                    components=component_objects,
                 )
 
                 precursors_filename = f"{precursors['Sample ID'][index]}.PrecursorsPreparationIKZ.archive.{filetype}"

@@ -3,12 +3,21 @@ import yaml
 import json
 import math
 
-from nomad.datamodel.data import EntryData, EntryDataCategory
+from nomad.datamodel.data import EntryData, EntryDataCategory, ArchiveSection
 
-from nomad.metainfo import Package, Quantity, SubSection, Datetime, Section, Category
+from nomad.metainfo import (
+    Package,
+    Quantity,
+    SubSection,
+    Datetime,
+    Section,
+    Category,
+    MEnum,
+)
 
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
+    Component,
     System,
     Activity,
     ActivityStep,
@@ -71,7 +80,137 @@ class SolutionPreparationStep(Activity):
     m_def = Section()
 
 
-class QuantifyMaterial(Process, EntryData):  #### TODO it overlaps with Component class
+class SolutionProperties(ArchiveSection):
+    ph_value = Quantity(
+        type=np.dtype(np.float64), a_eln=dict(component="NumberEditQuantity")
+    )
+
+    final_volume = Quantity(
+        type=np.dtype(np.float64),
+        unit=("ml"),
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="ml"),
+    )
+
+    final_concentration = Quantity(
+        type=np.dtype(np.float64),
+        unit=("mg/ml"),
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="mg/ml"),
+    )
+
+
+class SolutionStorage(ArchiveSection):
+    start_date = Quantity(type=Datetime, a_eln=dict(component="DateTimeEditQuantity"))
+
+    end_date = Quantity(type=Datetime, a_eln=dict(component="DateTimeEditQuantity"))
+
+    storage_condition = Quantity(
+        type=str,
+        a_eln=dict(component="StringEditQuantity"),
+    )
+    temperature = Quantity(
+        type=np.dtype(np.float64),
+        unit=("°C"),
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="°C"),
+    )
+
+    atmosphere = Quantity(
+        type=str,
+        a_eln=dict(
+            component="EnumEditQuantity", props=dict(suggestions=["Ar", "N2", "Air"])
+        ),
+    )
+
+    comments = Quantity(
+        type=str,
+        a_eln=dict(component="RichTextEditQuantity"),
+    )
+
+
+class Solution(CompositeSystem, EntryData):
+    """Base class for a solution"""
+
+    method = Quantity(
+        type=MEnum("Shaker", "Ultrasoncic", "Waiting", "Stirring"),
+        shape=[],
+        a_eln=dict(
+            component="EnumEditQuantity",
+        ),
+    )
+
+    solvent_ratio = Quantity(type=str, a_eln=dict(component="StringEditQuantity"))
+
+    temperature = Quantity(
+        type=np.dtype(np.float64),
+        unit=("°C"),
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="°C"),
+    )
+
+    time = Quantity(
+        type=np.dtype(np.float64),
+        unit=("minute"),
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="minute"),
+    )
+
+    speed = Quantity(
+        type=np.dtype(np.float64),
+        unit=("Hz"),
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="rpm"),
+    )
+
+    # components = SubSection(
+    #     description="""
+    #     A list of all the components of the composite system containing a name, reference
+    #     to the system section and mass of that component.
+    #     """,
+    #     section_def=Component,
+    #     repeats=True,
+    # )
+    solute = SubSection(
+        description="""
+        A list of all the components of the composite system containing a name, reference
+        to the system section and mass of that component.
+        """,
+        section_def=Component,
+        repeats=True,
+    )
+    additive = SubSection(
+        description="""
+        A list of all the components of the composite system containing a name, reference
+        to the system section and mass of that component.
+        """,
+        section_def=Component,
+        repeats=True,
+    )
+    solvent = SubSection(
+        description="""
+        A list of all the components of the composite system containing a name, reference
+        to the system section and mass of that component.
+        """,
+        section_def=Component,
+        repeats=True,
+    )
+    # solute = SubSection(section_def=SolutionChemical, repeats=True)
+    # additive = SubSection(section_def=SolutionChemical, repeats=True)
+    # solvent = SubSection(section_def=SolutionChemical, repeats=True)
+    # other_solution = SubSection(section_def=OtherSolution, repeats=True)
+    # preparation = SubSection(section_def=SolutionPreparation)
+    properties = SubSection(section_def=SolutionProperties)
+    # storage = SubSection(section_def=SolutionStorage, repeats=True)
+    # solution_id = SubSection(section_def=ReadableIdentifiersCustom)
+
+    def normalize(self, archive, logger) -> None:
+        super(Solution, self).normalize(archive, logger)
+
+        self.components = []
+        if self.solute:
+            self.components.extend(self.solute)
+        if self.solvent:
+            self.components.extend(self.solvent)
+
+
+class QuantifyMaterial(
+    Process, EntryData
+):  #### TODO it overlaps someohow with Component class
     """
     Weigh or pipette a material.
     """
@@ -109,6 +248,10 @@ class QuantifyMaterial(Process, EntryData):  #### TODO it overlaps with Componen
 
 
 # Weighing
+
+#### TODO it overlaps someohow with Component class
+
+
 class QuantifySolidMaterial(QuantifyMaterial, SolutionPreparationStep, EntryData):
     """
     Class autogenerated from yaml schema.
@@ -122,6 +265,9 @@ class QuantifySolidMaterial(QuantifyMaterial, SolutionPreparationStep, EntryData
 
 
 # Pipetting
+
+
+#### TODO it overlaps someohow with Component class
 class QuantifyLiquidMaterial(QuantifyMaterial, SolutionPreparationStep, EntryData):
     """
     Class autogenerated from yaml schema.
@@ -146,51 +292,51 @@ class QuantifyLiquidMaterial(QuantifyMaterial, SolutionPreparationStep, EntryDat
     # molecular_weight
 
 
-class MixMaterial(Process, SolutionPreparationStep, EntryData):
-    """
-    Mix the quantified materials.
-    """
+# class MixMaterial(Process, SolutionPreparationStep, EntryData):
+#     """
+#     Mix the quantified materials.
+#     """
 
-    m_def = Section(
-        a_eln=None,
-        categories=[IKZCategory],
-    )
-    alias = Quantity(
-        type=str,
-        a_eln={"component": "StringEditQuantity"},
-    )
-    mixed_aliases = Quantity(
-        type=str,
-        a_eln={"component": "StringEditQuantity"},
-    )
-    mixing_time = Quantity(
-        type=float,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "second"},
-        unit="second",
-    )
-    temperature = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
-    container_type = Quantity(
-        type=str,
-        a_eln={"component": "StringEditQuantity"},
-    )
-    rotation_speed = Quantity(
-        type=float,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
-        unit="rpm",
-    )
-    mixed_material = SubSection(
-        description="""
-        The mixed material.
-        """,
-        section_def=CompositeSystem,
-    )
+#     m_def = Section(
+#         a_eln=None,
+#         categories=[IKZCategory],
+#     )
+#     alias = Quantity(
+#         type=str,
+#         a_eln={"component": "StringEditQuantity"},
+#     )
+#     mixed_aliases = Quantity(
+#         type=str,
+#         a_eln={"component": "StringEditQuantity"},
+#     )
+#     mixing_time = Quantity(
+#         type=float,
+#         description="FILL THE DESCRIPTION",
+#         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "second"},
+#         unit="second",
+#     )
+#     temperature = Quantity(
+#         type=np.float64,
+#         description="FILL THE DESCRIPTION",
+#         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
+#         unit="celsius",
+#     )
+#     container_type = Quantity(
+#         type=str,
+#         a_eln={"component": "StringEditQuantity"},
+#     )
+#     rotation_speed = Quantity(
+#         type=float,
+#         description="FILL THE DESCRIPTION",
+#         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
+#         unit="rpm",
+#     )
+#     mixed_material = SubSection(
+#         description="""
+#         The mixed material.
+#         """,
+#         section_def=CompositeSystem,
+#     )
 
 
 class SolutionPreparationIKZ(Process, EntryData):
@@ -230,8 +376,46 @@ class SolutionPreparationIKZ(Process, EntryData):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
         unit="mol / liter",
     )
-    steps = SubSection(
-        section_def=SolutionPreparationStep,
+    mixing_time = Quantity(
+        type=float,
+        description="FILL THE DESCRIPTION",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "second"},
+        unit="second",
+    )
+    temperature = Quantity(
+        type=np.float64,
+        description="FILL THE DESCRIPTION",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
+        unit="celsius",
+    )
+    container_type = Quantity(
+        type=str,
+        a_eln={"component": "StringEditQuantity"},
+    )
+    rotation_speed = Quantity(
+        type=float,
+        description="FILL THE DESCRIPTION",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
+        unit="rpm",
+    )
+    mixed_material = SubSection(
+        description="""
+        The mixed material.
+        """,
+        section_def=CompositeSystem,
+    )
+    ## TODO steps or components ???
+    # steps = SubSection(
+    #     section_def=SolutionPreparationStep,
+    #     repeats=True,
+    # )
+
+    components = SubSection(
+        description="""
+        A list of all the components of the composite system containing a name, reference
+        to the system section and mass of that component.
+        """,
+        section_def=Component,
         repeats=True,
     )
 
