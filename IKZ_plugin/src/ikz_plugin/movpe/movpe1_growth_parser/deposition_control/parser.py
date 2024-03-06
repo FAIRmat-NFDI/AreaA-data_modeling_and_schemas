@@ -233,6 +233,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 # creating GrowthMovpeIKZ archive
                 growth_data = GrowthMovpeIKZ(
                     data_file=data_file_with_path,
+                    name="Growth MOVPE 1",
                     lab_id=dep_control_run,
                     description=f"{dep_control['Weekday'][index]}. Sequential number: {dep_control['number'][index]}. {dep_control['Comment'][index]}",
                     datetime=dep_control["Date"][index],
@@ -373,7 +374,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 precursors_data = PrecursorsPreparationIKZ(
                     data_file=data_file_with_path,
                     lab_id=f"{precursors['Sample ID'][index]} precursor preparation",
-                    name=f"{precursors['Sample ID'][index]} precursors preparation ",
+                    name="Precursors",
                     description=f"{precursors['Weekday'][index]}. Sequential number: {precursors['number'][index]}.",
                     flow_titanium=precursors["Set flow Ti"][index],
                     flow_calcium=precursors["Set flow Ca"][index],
@@ -408,7 +409,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         #     lab_id=dep_control["Constant Parameters ID"][index],
                         # ),
                         growth_run=GrowthMovpeIKZReference(
-                            name="Growth process",
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_filename)}#data",
                         ),
                         # grown_sample=ThinFilmStackMovpeReference(

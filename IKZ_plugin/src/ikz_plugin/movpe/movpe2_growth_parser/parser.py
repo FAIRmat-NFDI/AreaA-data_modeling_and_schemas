@@ -231,9 +231,9 @@ class ParserMovpe2IKZ(MatchingParser):
             # creating growth process objects
             if recipe_id not in growth_processes:
                 growth_processes[recipe_id] = GrowthMovpeIKZ(
-                    name=f"{sample_id} growth run",
+                    name="Growth MOVPE 2",
                     recipe_id=recipe_id,
-                    lab_id=f"{sample_id} growth run",
+                    lab_id=sample_id,
                 )
             # else:
             #     ### IMPLEMENT THE CHECK OF STEP PARAMETERS
@@ -280,7 +280,6 @@ class ParserMovpe2IKZ(MatchingParser):
             experiment_data = ExperimentMovpeIKZ(
                 lab_id=recipe_id,
                 growth_run=GrowthMovpeIKZReference(
-                    name="Growth process",
                     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data",
                 ),
             )
