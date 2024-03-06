@@ -76,8 +76,8 @@ Consequentlty, other paths must be appended to `PYTHONPATH` system variable:
 export MYPATH=/your/path
 export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src
 export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src/nomad_measurements
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT/laytec_epitt_plugin/src
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/Lakeshore_plugin/src
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT_plugin/src
 export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/IKZ_plugin/src
 ```
 

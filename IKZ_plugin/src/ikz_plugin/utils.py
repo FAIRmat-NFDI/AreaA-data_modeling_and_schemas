@@ -20,6 +20,7 @@ import yaml
 import json
 import math
 import pandas as pd
+from typing import List
 
 
 def get_reference(upload_id, entry_id):
@@ -105,33 +106,19 @@ def create_archive(
     )
 
 
-def create_timeseries_objects(
-    dataframe: pd.DataFrame, quantities, MetainfoClass, index
-):
-    objects = []
-    i = 0
-    while True:
-        if all(
-            f"{key}{'' if i == 0 else '.' + str(i)}" in dataframe.columns
-            for key in quantities
-        ):
-            objects.append(
-                MetainfoClass(
-                    time=dataframe.get(
-                        f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ""
-                    )[index],
-                    value=dataframe.get(
-                        f"{quantities[1]}{'' if i == 0 else '.' + str(i)}", 0
-                    )[index],
-                )
-            )
-            i += 1
-        else:
-            break
-    return objects
+def row_to_array(
+    dataframe: pd.DataFrame, quantities: List[str], row_index: int
+) -> pd.Series:
+    """take same name headers in a dataframe and return them as an array
 
+    Args:
+        dataframe (pd.DataFrame): data to be parsed
+        quantities (List[str]): the repeating header names in the dataframe
+        row_index (int): the index of the row to be parsed
 
-def row_to_array(dataframe: pd.DataFrame, quantities, row_index):
+    Returns:
+        pd.Series: an array containing all the values of the same name headers repeated along one row
+    """
     array = pd.Series([])
     i = 0
     while True:

@@ -13,6 +13,7 @@ from nomad.metainfo import (
     Section,
     Category,
     MEnum,
+    Reference,
 )
 
 from nomad.datamodel.metainfo.basesections import (
@@ -143,13 +144,13 @@ class Solution(CompositeSystem, EntryData):
 
     temperature = Quantity(
         type=np.dtype(np.float64),
-        unit=("°C"),
+        unit=("kelvin"),
         a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="°C"),
     )
 
     time = Quantity(
         type=np.dtype(np.float64),
-        unit=("minute"),
+        unit=("second"),
         a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="minute"),
     )
 
@@ -197,11 +198,31 @@ class Solution(CompositeSystem, EntryData):
             self.components.extend(self.solvent)
 
 
+class SolutionReference(CompositeSystemReference):
+    """
+    A section used for referencing a CompositeSystem.
+    """
+
+    reference = Quantity(
+        type=Solution,
+        description="A reference to a NOMAD `Solution` entry.",
+        a_eln=ELNAnnotation(
+            component="ReferenceEditQuantity",
+            label="Solution Reference",
+        ),
+    )
+
+
 class QuantifyMaterial(Process):
     """
     Weigh or pipette a material.
     """
 
+    alias = Quantity(
+        type=str,
+        description="The alias given to this material, will be used in the mixing.",
+        a_eln={"component": "StringEditQuantity"},
+    )
     container_mass = Quantity(
         type=float,
         description="The mass of the container.",
@@ -258,6 +279,37 @@ class QuantifyLiquidMaterial(QuantifyMaterial, SolutionPreparationStep):
     )
 
 
+class ComponentConcentration(ArchiveSection):
+    """
+    The concentration of a component in a mixed material.
+    """
+
+    alias = Quantity(
+        type=str,
+        description="The alias given to this material, will be used to fill the system reference.",
+        a_eln={"component": "StringEditQuantity"},
+    )
+    intended_concentration = Quantity(
+        type=np.float64,
+        description="The concentration planned for the mixed material.",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
+        unit="mol / liter",
+        label="Intended Concentration",
+    )
+    obtained_concentration = Quantity(
+        type=np.float64,
+        description="The concentration calculated from the mixed material weights and volumes.",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
+        unit="mol / liter",
+        label="Obtained Concentration",
+    )
+    system = Quantity(
+        type=Reference(System.m_def),
+        description="A reference to the component system.",
+        a_eln=dict(component="ReferenceEditQuantity"),
+    )
+
+
 class MixMaterial(Process, SolutionPreparationStep):
     """
     Mix the quantified materials.
@@ -266,6 +318,17 @@ class MixMaterial(Process, SolutionPreparationStep):
     m_def = Section(
         a_eln=None,
         categories=[IKZCategory],
+    )
+    aliases = Quantity(
+        type=str,
+        description="The aliases of materials that will be used in the mixing.",
+        a_eln={"component": "StringEditQuantity"},
+        shape=["*"],
+    )
+    mixed_alias = Quantity(
+        type=str,
+        description="The alias given to the mixed material, used to mix with other components afterwards.",
+        a_eln={"component": "StringEditQuantity"},
     )
     mixing_time = Quantity(
         type=float,
@@ -277,7 +340,7 @@ class MixMaterial(Process, SolutionPreparationStep):
         type=np.float64,
         description="FILL THE DESCRIPTION",
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
+        unit="kelvin",
     )
     container_type = Quantity(
         type=str,
@@ -289,11 +352,9 @@ class MixMaterial(Process, SolutionPreparationStep):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
         unit="rpm",
     )
-    mixed_material = SubSection(
-        description="""
-        The mixed material.
-        """,
-        section_def=CompositeSystem,
+    components_concentration = SubSection(
+        section_def=ComponentConcentration,
+        repeats=True,
     )
 
 
@@ -317,31 +378,24 @@ class SolutionPreparationIKZ(Process, EntryData):
         type=str,
         a_eln={"component": "StringEditQuantity"},
     )
-    intended_sample_conc = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
-        unit="mol / liter",
-    )
-    obtained_conc = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
-        unit="mol / liter",
-    )
     intended_tot_volume = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
-        unit="mol / liter",
+        type=float,
+        description="The planned total volume of the solution.",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "liter"},
+        unit="liter",
     )
     obtained_tot_volume = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
-        unit="mol / liter",
+        type=float,
+        description="The obtained total volume of the solution.",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "liter"},
+        unit=" liter",
     )
-
+    solution = SubSection(
+        section_def=SolutionReference,
+        description="""
+        The obtained solution, composed by the sum of each mixing step.
+        """,
+    )
     steps = SubSection(
         section_def=SolutionPreparationStep,
         repeats=True,
@@ -361,7 +415,7 @@ class EtchingStep(ActivityStep):
     )
     temperature = Quantity(
         type=np.float64,
-        description="FILL THE DESCRIPTION",
+        description="The temperature of the etching process.",
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
         unit="celsius",
     )
@@ -383,7 +437,6 @@ class Etching(Process, SubstratePreparationStep, EntryData):
     )
     datetime = Quantity(
         type=Datetime,
-        description="FILL",
         a_eln={"component": "DateTimeEditQuantity", "label": "deposition_date"},
     )
     steps = SubSection(

@@ -48,6 +48,12 @@ from nomad_material_processing import (
     SubstrateReference,
     ThinFilmReference,
 )
+
+from nomad_material_processing.chemical_vapor_deposition import (
+    Pressure,
+    Rotation,
+)
+
 from ikz_plugin.movpe import (
     ExperimentMovpeIKZ,
     GrowthStepMovpe2IKZ,
@@ -56,17 +62,15 @@ from ikz_plugin.movpe import (
     ThinFilmMovpe,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
-    # SubstrateReference,
     SubstrateTemperatureMovpe,
     SampleParametersMovpe,
-    CVDChamberEnvironment,
-    CVDPressure,
+    ChamberEnvironmentMovpe,
     CVDGasFlow,
 )
 
 from ikz_plugin.utils import create_archive
 
-from .utils import (
+from ..utils import (
     fetch_substrate,
     populate_sources,
     populate_gas_source,
@@ -194,14 +198,17 @@ class ParserMovpe2IKZ(MatchingParser):
                 step_index=step_id,
                 duration=growth_run_file["Duration"][index]
                 * ureg("minute").to("second").magnitude,
-                rotation=growth_run_file["Rotation"][index],
                 comment=growth_run_file["Comments"][index],
                 sources=populate_sources(index, growth_run_file)
                 + populate_gas_source(index, growth_run_file),
-                environment=CVDChamberEnvironment(
-                    pressure=CVDPressure(
+                environment=ChamberEnvironmentMovpe(
+                    pressure=Pressure(
                         set_value=(growth_run_file["Pressure"][index])
                         * ureg("mbar").to("pascal").magnitude,
+                    ),
+                    rotation=Rotation(
+                        set_value=(growth_run_file["Rotation"][index])
+                        * ureg("rpm").to("rpm").magnitude,
                     ),
                     gas_flow=[
                         CVDGasFlow(

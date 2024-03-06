@@ -43,6 +43,11 @@ from nomad.datamodel.data import EntryData, ArchiveSection, Author
 from nomad.search import search, MetadataPagination
 
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
+from nomad.datamodel.metainfo.workflow import (
+    Link,
+    Task,
+    Workflow,
+)
 
 from nomad_material_processing import (
     SubstrateReference,
@@ -65,23 +70,15 @@ from nomad_material_processing.vapor_deposition import (
     SubstrateTemperature,
     ChamberEnvironment,
     GasFlow,
-    Pressure,
     SubstrateHeater,
 )
 
-from nomad.datamodel.metainfo.workflow import (
-    Link,
-    Task,
-    Workflow,
-)
-from nomad_material_processing.vapor_deposition import (
-    Pressure,
-)
 from nomad_material_processing.chemical_vapor_deposition import (
     CVDBubbler,
     CVDVaporRate,
     CVDSource,
-    CVDPressure,
+    Pressure,
+    Rotation,
 )
 
 from nomad_measurements import (
@@ -90,7 +87,12 @@ from nomad_measurements import (
 
 from laytec_epitt import LayTecEpiTTMeasurement
 from hall import HallMeasurement
-from ikz_plugin import IKZMOVPECategory, IKZMOVPE1Category, IKZMOVPE2Category
+from ikz_plugin import (
+    IKZMOVPECategory,
+    IKZMOVPE1Category,
+    IKZMOVPE2Category,
+    SubstratePreparationStep,
+)
 from ikz_plugin.characterization import AFMmeasurement, LightMicroscope
 
 m_package = Package(name="movpe_IKZ")
@@ -711,7 +713,8 @@ class ThrottleValve(ArchiveSection):
     Throttle Valve that controls chamber pressure
     """
 
-    m_def = Section(label_quantity="time")
+    m_def = Section(label_quantity="set_value")
+
     time = Quantity(
         type=np.float64,
         description="FILL THE DESCRIPTION",
@@ -733,66 +736,6 @@ class ThrottleValve(ArchiveSection):
             label="Throttle Valve",
         ),
         unit="mbar",
-    )
-
-
-class ChamberPressure(ArchiveSection):
-    """
-    Throttle Valve that controls chamber pressure
-    """
-
-    m_def = Section(label_quantity="time")
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/reactor time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Pressure"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="mbar",
-            label="Chamber Pressure",
-        ),
-        unit="mbar",
-    )
-
-
-class Rotation(ArchiveSection):
-    """
-    Throttle Valve that controls chamber pressure
-    """
-
-    m_def = Section(label_quantity="time")
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/rot time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/rotation"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="rpm",
-            label="Rotation",
-        ),
-        unit="rpm",
     )
 
 
@@ -1014,6 +957,10 @@ class SubstrateInventory(EntryData, TableData):
     )
     substrates = SubSection(
         section_def=SubstrateMovpeReference,
+        repeats=True,
+    )
+    steps = SubSection(
+        section_def=SubstratePreparationStep,
         repeats=True,
     )
 
@@ -1281,13 +1228,16 @@ class CVDGasFlow(GasFlow):
     )
 
 
-class CVDChamberEnvironment(ChamberEnvironment):
+class ChamberEnvironmentMovpe(ChamberEnvironment):
     gas_flow = SubSection(
         section_def=CVDGasFlow,
         repeats=True,
     )
     pressure = SubSection(
-        section_def=CVDPressure,
+        section_def=Pressure,
+    )
+    rotation = SubSection(
+        section_def=Rotation,
     )
     heater = SubSection(
         section_def=SubstrateHeater,
@@ -1349,23 +1299,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_tabular={"name": "Constant Parameters/Substrate temperature"},
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
         unit="celsius",
-    )
-    pressure = Quantity(
-        type=np.float64,
-        description="chamber pressure",
-        a_tabular={
-            "name": "Constant Parameters/Chamber pressure",
-            # "unit": "mbar",
-        },
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mbar"},
-        unit="mbar",
-    )
-    rotation = Quantity(
-        type=np.float64,
-        description="carrier rotation",
-        a_tabular={"name": "Constant Parameters/Carrier rotation"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
-        unit="rpm",
     )
     argon_flow = Quantity(
         type=np.float64,
@@ -1462,10 +1395,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
         unit="minute",
     )
-    chamber_pressure = SubSection(
-        section_def=ChamberPressure,
-        repeats=True,
-    )
     filament_temperature = SubSection(
         section_def=FilamentTemperature,
         repeats=True,
@@ -1482,10 +1411,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         section_def=OxygenTemperature,
         repeats=True,
     )
-    rotation = SubSection(
-        section_def=Rotation,
-        repeats=True,
-    )
     shaft_temperature = SubSection(
         section_def=ShaftTemperature,
         repeats=True,
@@ -1494,65 +1419,68 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         section_def=ThrottleValve,
         repeats=True,
     )
+    environment = SubSection(
+        section_def=ChamberEnvironmentMovpe,
+    )
 
-    def normalize(self, archive, logger):
-        super(GrowthStepMovpe1IKZ, self).normalize(archive, logger)
+    # def normalize(self, archive, logger):
+    #     super(GrowthStepMovpe1IKZ, self).normalize(archive, logger)
 
-        max_rows = 4
-        max_cols = 2
-        figure1 = make_subplots(
-            rows=max_rows,
-            cols=max_cols,
-            subplot_titles=[
-                "Chamber Pressure",
-                "Filament T",
-                "FE1 Back Pressure",
-                "FE2 Back Pressure",
-                "Oxygen T",
-                "Rotation",
-                "Shaft T",
-                "Throttle Valve",
-            ],
-        )  # , shared_yaxes=True)
-        arrays = {
-            "chamber_pressure": {"obj": self.chamber_pressure, "x": [], "y": []},
-            "filament_temp": {"obj": self.filament_temperature, "x": [], "y": []},
-            "flash_evap1": {"obj": self.flash_evaporator1_pressure, "x": [], "y": []},
-            "flash_evap2": {"obj": self.flash_evaporator2_pressure, "x": [], "y": []},
-            "oxy_temp": {"obj": self.oxygen_temperature, "x": [], "y": []},
-            "rotation": {"obj": self.rotation, "x": [], "y": []},
-            "shaft_temp": {"obj": self.shaft_temperature, "x": [], "y": []},
-            "throttle_valve": {"obj": self.throttle_valve, "x": [], "y": []},
-        }
-        row = 1
-        col = 0
-        for logged_par in sorted(arrays):
-            for logged_par_instance in arrays[logged_par]["obj"]:
-                if (
-                    logged_par_instance.value is not None
-                    and logged_par_instance.time is not None
-                ):
-                    arrays[logged_par]["x"].append(logged_par_instance.time.m)
-                    arrays[logged_par]["y"].append(logged_par_instance.value.m)
-                # else:
-                #     logger.warning(f"{str(logged_par_instance)} was empty, check the cells or the column headers in your excel file.")
-            if arrays[logged_par]["x"] and arrays[logged_par]["y"]:
-                scatter = px.scatter(
-                    x=arrays[logged_par]["x"], y=arrays[logged_par]["y"]
-                )
-                if col == max_cols:
-                    row += 1
-                    col = 0
-                if col < max_cols:
-                    col += 1
-                figure1.add_trace(scatter.data[0], row=row, col=col)
+    #     max_rows = 4
+    #     max_cols = 2
+    #     figure1 = make_subplots(
+    #         rows=max_rows,
+    #         cols=max_cols,
+    #         subplot_titles=[
+    #             "Chamber Pressure",
+    #             "Filament T",
+    #             "FE1 Back Pressure",
+    #             "FE2 Back Pressure",
+    #             "Oxygen T",
+    #             "Rotation",
+    #             "Shaft T",
+    #             "Throttle Valve",
+    #         ],
+    #     )  # , shared_yaxes=True)
+    #     arrays = {
+    #         "chamber_pressure": {"obj": self.chamber_pressure, "x": [], "y": []},
+    #         "filament_temp": {"obj": self.filament_temperature, "x": [], "y": []},
+    #         "flash_evap1": {"obj": self.flash_evaporator1_pressure, "x": [], "y": []},
+    #         "flash_evap2": {"obj": self.flash_evaporator2_pressure, "x": [], "y": []},
+    #         "oxy_temp": {"obj": self.oxygen_temperature, "x": [], "y": []},
+    #         "rotation": {"obj": self.rotation, "x": [], "y": []},
+    #         "shaft_temp": {"obj": self.shaft_temperature, "x": [], "y": []},
+    #         "throttle_valve": {"obj": self.throttle_valve, "x": [], "y": []},
+    #     }
+    #     row = 1
+    #     col = 0
+    #     for logged_par in sorted(arrays):
+    #         for logged_par_instance in arrays[logged_par]["obj"]:
+    #             if (
+    #                 logged_par_instance.value is not None
+    #                 and logged_par_instance.time is not None
+    #             ):
+    #                 arrays[logged_par]["x"].append(logged_par_instance.time.m)
+    #                 arrays[logged_par]["y"].append(logged_par_instance.value.m)
+    #             # else:
+    #             #     logger.warning(f"{str(logged_par_instance)} was empty, check the cells or the column headers in your excel file.")
+    #         if arrays[logged_par]["x"] and arrays[logged_par]["y"]:
+    #             scatter = px.scatter(
+    #                 x=arrays[logged_par]["x"], y=arrays[logged_par]["y"]
+    #             )
+    #             if col == max_cols:
+    #                 row += 1
+    #                 col = 0
+    #             if col < max_cols:
+    #                 col += 1
+    #             figure1.add_trace(scatter.data[0], row=row, col=col)
 
-        figure1.update_layout(
-            height=800, width=300, title_text="Creating Subplots in Plotly"
-        )
-        self.figures = [
-            PlotlyFigure(label="figure 1", figure=figure1.to_plotly_json())
-        ]  # .append(PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json()))
+    #     figure1.update_layout(
+    #         height=800, width=300, title_text="Creating Subplots in Plotly"
+    #     )
+    #     self.figures = [
+    #         PlotlyFigure(label="figure 1", figure=figure1.to_plotly_json())
+    #     ]  # .append(PlotlyFigure(label='figure 1', figure=figure1.to_plotly_json()))
 
 
 class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
@@ -1589,13 +1517,6 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
         unit="second",
     )
-    rotation = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Rotation"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "rpm"},
-        unit="rpm",
-    )
     comment = Quantity(
         type=str,
         description="description",
@@ -1609,6 +1530,9 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
     sources = SubSection(
         section_def=CVDSource,
         repeats=True,
+    )
+    environment = SubSection(
+        section_def=ChamberEnvironmentMovpe,
     )
 
 
@@ -1726,7 +1650,7 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
 
 class GrowthMovpeIKZReference(SectionReference):
     """
-    A section used for referencing a GrowthMovpe2.
+    A section used for referencing a GrowthMovpeIKZ.
     """
 
     m_def = Section(
@@ -1734,10 +1658,9 @@ class GrowthMovpeIKZReference(SectionReference):
     )
     reference = Quantity(
         type=GrowthMovpeIKZ,
-        description="A reference to a NOMAD `GrowthMovpe2` entry.",
+        description="A reference to a NOMAD `GrowthMovpeIKZ` entry.",
         a_eln=ELNAnnotation(
             component="ReferenceEditQuantity",
-            label="GrowthMovpe2 Reference",
         ),
     )
 

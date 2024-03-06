@@ -28,6 +28,7 @@ from nomad.metainfo import (
     SubSection,
     Quantity,
 )
+from nomad.units import ureg
 
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
@@ -53,16 +54,14 @@ from nomad_material_processing import (
     ThinFilmReference,
 )
 
-
-# from nomad_material_processing.chemical_vapor_deposition import (
-#     CVDPressure,
-# )
-
+from nomad_material_processing.chemical_vapor_deposition import (
+    Pressure,
+    Rotation,
+)
 
 from ikz_plugin import IKZMOVPE1Category, Solution
 from ikz_plugin.utils import (
     create_archive,
-    create_timeseries_objects,
     row_to_array,
 )
 from ikz_plugin.movpe import (
@@ -76,9 +75,7 @@ from ikz_plugin.movpe import (
     ThinFilmStackMovpe,
     LiquidComponent,
     SystemComponentIKZ,
-    ChamberPressure,
-    CVDChamberEnvironment,
-    Rotation,
+    ChamberEnvironmentMovpe,
     FilamentTemperature,
     FlashEvaporator1Pressure,
     FlashEvaporator2Pressure,
@@ -86,8 +83,9 @@ from ikz_plugin.movpe import (
     ShaftTemperature,
     ThrottleValve,
     RawFileMovpeDepositionControl,
-    CVDPressure,
 )
+
+from ikz_plugin.movpe.movpe1.utils import create_timeseries_objects
 
 
 class ParserMovpe1DepositionControlIKZ(MatchingParser):
@@ -189,16 +187,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     filetype,
                     logger,
                 )
-                # create deposition control objects
-                chamber_pressures = create_timeseries_objects(
-                    dep_control,
-                    ["reactor time", "Pressure"],
-                    ChamberPressure,
-                    index,
-                )
-                rotations = create_timeseries_objects(
-                    dep_control, ["rot time", "rotation"], Rotation, index
-                )
+
                 filament_temperatures = create_timeseries_objects(
                     dep_control, ["Fil time", "Fil T"], FilamentTemperature, index
                 )
@@ -241,16 +230,27 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         GrowthStepMovpe1IKZ(
                             name="Deposition",
                             duration=dep_control["Duration"][index],
-                            chamber_pressure=chamber_pressures,
                             filament_temperature=filament_temperatures,
                             flash_evaporator1_pressure=flash_evaporator1_pressures,
                             flash_evaporator2_pressure=flash_evaporator2_pressures,
                             oxygen_temperature=oxygen_temperatures,
-                            rotation=rotations,
                             shaft_temperature=shaft_temperatures,
                             throttle_valve=throttle_valves,
-                            environment=CVDChamberEnvironment(
-                                pressure=CVDPressure(
+                            environment=ChamberEnvironmentMovpe(
+                                pressure=Pressure(
+                                    set_value=dep_control["Set Chamber P"][index],
+                                    value=row_to_array(
+                                        dep_control,
+                                        ["Read Chamber Pressure"],
+                                        index,
+                                    ),
+                                    time=row_to_array(
+                                        dep_control,
+                                        ["Chamber pressure time"],
+                                        index,
+                                    ),
+                                ),
+                                rotation=Rotation(
                                     set_value=dep_control["Set Chamber P"][index],
                                     value=row_to_array(
                                         dep_control,

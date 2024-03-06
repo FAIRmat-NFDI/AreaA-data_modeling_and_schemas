@@ -144,9 +144,9 @@ Consequentlty, other paths must be appended to `PYTHONPATH` system variable:
 export MYPATH=/your/path
 export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src
 export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src/nomad_measurements
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/hall/Lakeshore_plugin
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/Lakeshore_plugin/src
 export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/IKZ_plugin/ikz_plugin/src
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT/laytec_epitt_plugin/src
+export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT_plugin/src
 ( export PYTHONPATH=$PYTHONPATH:$MYPATH/laytec_epitt_nomad_plugin/src )
 ```
 
@@ -162,10 +162,10 @@ plugins:
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
     - 'parsers/czochralski'
-    - 'parsers/movpe_2'
-    - 'parsers/movpe_1_deposition_control'
+    - 'parsers/movpe_2_growth_excel'
+    - 'parsers/movpe_1_growth_excel'
     - 'parsers/movpe_1_constant_parameters'
-    - 'parsers/movpe_substrates'
+    - 'parsers/movpe_substrates_IKZ'
     - 'parsers/directional_solidification'
   options:
     parsers/nomad_measurements/xrd:
@@ -182,14 +182,14 @@ plugins:
       python_package: laytec_epitt
     parsers/czochralski:
       python_package: ikz_plugin.czochralski
-    parsers/movpe_2:
-      python_package: ikz_plugin.movpe.movpe2_growth_parser
-    parsers/movpe_1_deposition_control:
-      python_package: ikz_plugin.movpe.movpe1_growth_parser.deposition_control
+    parsers/movpe_2_growth_excel:
+      python_package: ikz_plugin.movpe.movpe2.growth_excel
+    parsers/movpe_1_growth_excel:
+      python_package: ikz_plugin.movpe.movpe1.growth_excel
     parsers/movpe_1_constant_parameters:
-      python_package: ikz_plugin.movpe.movpe1_growth_parser.constant_parameters
+      python_package: ikz_plugin.movpe.movpe1.constant_parameters
     parsers/movpe_substrates_IKZ:
-     python_package: ikz_plugin.movpe.substrate_parser
+     python_package: ikz_plugin.movpe.substrate
     parsers/directional_solidification:
       python_package: ikz_plugin.directional_solidification
 ```
