@@ -55,6 +55,7 @@ from nomad_material_processing import (
     ThinFilm,
     ThinFilmStack,
     ThinFilmStackReference,
+    TimeSeries,
 )
 from nomad_material_processing.vapor_deposition import (
     VaporDeposition,
