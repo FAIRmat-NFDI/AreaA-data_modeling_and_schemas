@@ -22,36 +22,50 @@ The directory tree:
 IKZ_plugin/
 ├── nomad.yaml
 ├── src
-│   └── movpe
-│       ├── nomad_plugin.yaml
-│       ├── schema.py
-│       ├── movpe1_growth_parser
-│       │   ├── constant_parameters
-│       │   │   ├── nomad_plugin.yaml
-│       │   │   └── parser.py
-│       │   ├── deposition_control
-│       │   │   ├── nomad_plugin.yaml
-│       │   │   └── parser.py
-│       │   └── parser.py
-│       ├── movpe2_growth_parser
-│       │   ├── nomad_plugin.yaml
-│       │   └── parser.py
-│       └── substrate_parser
+│   └── ikz_plugin
+│       └── characterization
 │           ├── nomad_plugin.yaml
-│           └── parser.py
+│           ├── schema.py
+│           ├── movpe1
+│           │   ├── constant_parameters
+│           │   │   ├── nomad_plugin.yaml
+│           │   │   └── parser.py
+│           │   ├── growth_excel
+│           │   │   ├── nomad_plugin.yaml
+│           │   │   └── parser.py
+│           │   └── utils.py
+│           ├── movpe2
+│           │   ├── growth_excel
+│           │   │   ├── nomad_plugin.yaml
+│           │   │   └── parser.py
+│           │   └── utils.py
+│           └── substrate
+│               ├── nomad_plugin.yaml
+│               ├── parser.py
+│               └── utils.py
 └── tests
     └── data
-        └── movpe
-            ├── movpe1_growth_parser
-            │   ├── constant_parameters
-            │   │   └── constant_parameters.xlsx  <--- template file
-            │   └── deposition_control
-            │       └── deposition_control.xlsx  <---- template file
-            ├── movpe2_growth_parser
-            │   └── GaO.growth.movpe.ikz.xlsx  <------ template file
-            └── substrate_parser
-                ├── GaO.substrates.movpe.ikz.xlsx  <-- template file
-                └── Substrates-for-MOVPE1.xlsx
+        ├── directional_solidification
+        │   ├── G1_IKZ_NSI_23.ds.manualprotocol.xlsx <--- template file
+        │   ├── G1_IKZ_NSI_23.ds.recipe.xlsx <--- template file
+        │   └── G1_IKZ_NSI_23.ds.yaml <--- template file
+        ├── movpe
+        │   ├── movpe1
+        │   │   ├── constant_parameters
+        │   │   │   └── constant_parameters.xlsx <--- template file
+        │   │   └── growth_excel
+        │   │       └── Growth_Control_movpe1.xlsx <--- template file
+        │   ├── movpe2
+        │   │   └── GaO.growth.movpe.ikz.xlsx <--- template file
+        │   └── substrate_parser
+        │       └── GaO.substrates.movpe.ikz.xlsx <--- template file
+        └── pld
+            ├── 26042023_1630-STO-SAO-STO-Alev.dlog <--- template file
+            ├── 26042023_1630-STO-SAO-STO-Alev.elog <--- template file
+            ├── sao_1.archive.json <--- template file
+            ├── sto_1.archive.json <--- template file
+            ├── test_ikz_pld_substrate_batch.archive.yaml <--- template file
+            └── test_ikz_pulsed_laser_deposition.archive.yaml <--- template file
 ```
 
 - `src/`: contains the source code of the plugin.
