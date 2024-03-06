@@ -93,10 +93,10 @@ plugins:
     - 'parsers/hall_lakeshore_instrument'
     - 'parsers/laytec_epitt'
     - 'parsers/czochralski'
-    - 'parsers/movpe_2'
-    - 'parsers/movpe_1_deposition_control'
+    - 'parsers/movpe_2_growth_excel'
+    - 'parsers/movpe_1_growth_excel'
     - 'parsers/movpe_1_constant_parameters'
-    - 'parsers/movpe_substrates'
+    - 'parsers/movpe_substrates_IKZ'
     - 'parsers/directional_solidification'
   options:
     parsers/nomad_measurements/xrd:
@@ -113,14 +113,14 @@ plugins:
       python_package: laytec_epitt
     parsers/czochralski:
       python_package: ikz_plugin.czochralski
-    parsers/movpe_2:
-      python_package: ikz_plugin.movpe.movpe2_growth_parser
-    parsers/movpe_1_deposition_control:
-      python_package: ikz_plugin.movpe.movpe1_growth_parser.deposition_control
+    parsers/movpe_2_growth_excel:
+      python_package: ikz_plugin.movpe.movpe2.growth_excel
+    parsers/movpe_1_growth_excel:
+      python_package: ikz_plugin.movpe.movpe1.growth_excel
     parsers/movpe_1_constant_parameters:
-      python_package: ikz_plugin.movpe.movpe1_growth_parser.constant_parameters
+      python_package: ikz_plugin.movpe.movpe1.constant_parameters
     parsers/movpe_substrates_IKZ:
-     python_package: ikz_plugin.movpe.substrate_parser
+     python_package: ikz_plugin.movpe.substrate
     parsers/directional_solidification:
       python_package: ikz_plugin.directional_solidification
 ```
