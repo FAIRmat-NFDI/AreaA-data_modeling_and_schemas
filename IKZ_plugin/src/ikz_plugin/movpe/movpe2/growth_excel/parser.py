@@ -79,6 +79,12 @@ from ..utils import (
 
 class RawFileGrowthRun(EntryData):
     m_def = Section(a_eln=None, label="Raw File Growth Run")
+    name = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+        ),
+    )
     growth_runs = Quantity(
         type=ExperimentMovpeIKZ,
         # a_eln=ELNAnnotation(
@@ -122,22 +128,9 @@ class ParserMovpe2IKZ(MatchingParser):
 
             # creating ThinFiln and ThinFilmStack archives
             layer_filename = f"{sample_id}_{index}.ThinFilm.archive.{filetype}"
-            grown_sample_filename = (
-                f"{sample_id}_{index}.ThinFilmStack.archive.{filetype}"
-            )
-            substrate_ref = fetch_substrate(archive, sample_id, substrate_id, logger)
-            if substrate_ref is not None:
-                grown_sample_data = ThinFilmStackMovpe(
-                    lab_id=sample_id,  ### problem: ThinFilm would have the same lab_id than ThinFilmStack, ask Ta-Shun
-                    substrate=SubstrateReference(reference=substrate_ref),
-                )
-            else:
-                grown_sample_data = ThinFilmStackMovpe(
-                    lab_id=sample_id,  ### problem: ThinFilm would have the same lab_id than ThinFilmStack, ask Ta-Shun
-                    substrate=SubstrateReference(lab_id=substrate_id),
-                )
             layer_archive = EntryArchive(
                 data=ThinFilmMovpe(
+                    name=sample_id + " layer",
                     lab_id=sample_id + "layer",
                 ),
                 m_context=archive.m_context,
@@ -149,6 +142,25 @@ class ParserMovpe2IKZ(MatchingParser):
                 layer_filename,
                 filetype,
                 logger,
+            )
+            grown_sample_data = ThinFilmStackMovpe(
+                name=sample_id + " stack",
+                lab_id=sample_id,
+                layers=[
+                    ThinFilmReference(
+                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data"
+                    )
+                ],
+            )
+            substrate_ref = fetch_substrate(archive, sample_id, substrate_id, logger)
+            if substrate_ref is not None:
+                grown_sample_data.substrate = SubstrateReference(
+                    reference=substrate_ref
+                )
+            else:
+                grown_sample_data.substrate = SubstrateReference(lab_id=substrate_id)
+            grown_sample_filename = (
+                f"{sample_id}_{index}.ThinFilmStack.archive.{filetype}"
             )
             grown_sample_archive = EntryArchive(
                 data=grown_sample_data,
@@ -285,6 +297,7 @@ class ParserMovpe2IKZ(MatchingParser):
             experiment_filename = f"{recipe_id}.ExperimentMovpeIKZ.archive.{filetype}"
             growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
             experiment_data = ExperimentMovpeIKZ(
+                name=f"{recipe_id} experiment",
                 lab_id=recipe_id,
                 growth_run=GrowthMovpeIKZReference(
                     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data",
@@ -306,5 +319,7 @@ class ParserMovpe2IKZ(MatchingParser):
                 f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, experiment_filename)}#data"
             )
 
-        archive.data = RawFileGrowthRun(growth_runs=experiment_reference)
+        archive.data = RawFileGrowthRun(
+            name=data_file, growth_runs=experiment_reference
+        )
         archive.metadata.entry_name = data_file + "raw file"

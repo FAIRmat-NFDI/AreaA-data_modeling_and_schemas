@@ -739,32 +739,6 @@ class ThrottleValve(ArchiveSection):
     )
 
 
-class LiquidComponent(PureSubstanceComponent):
-    """
-    A section for describing a substance component and its role in a composite system.
-    """
-
-    substance_name = Quantity(
-        type=str,
-        description="""
-        The name of the substance within the section where this component is contained.
-        """,
-        a_eln=dict(component="StringEditQuantity"),
-    )
-    volume = Quantity(
-        type=np.float64,
-        description="The solvent for the current substance.",
-        unit="milliliter",
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="milliliter"),
-    )
-    pure_substance = SubSection(
-        section_def=PureSubstanceSection,
-        description="""
-        Section describing the pure substance that is the component.
-        """,
-    )
-
-
 class SystemComponentIKZ(SystemComponent):
     """
     A section for describing a system component and its role in a composite system.
@@ -1277,7 +1251,7 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_eln=None,
         label="Growth Step Movpe 1",
     )
-    description = Quantity(
+    comment = Quantity(
         type=str,
         description="description",
         a_eln={"component": "StringEditQuantity"},
@@ -1822,8 +1796,6 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
         archive.workflow2 = None
         super(ExperimentMovpeIKZ, self).normalize(archive, logger)
 
-        # archive.workflow2.tasks = []
-
         for process in ["growth_run", "precursors_preparation"]:
             try:
                 workflow2 = getattr(self, process).reference.m_parent.workflow2
@@ -1832,6 +1804,10 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
             if workflow2:
                 archive.workflow2.tasks.append(
                     getattr(self, process).reference.m_parent.workflow2
+                )
+            if getattr(self, process).reference:
+                self.steps.append(
+                    ExperimentStep(activity=getattr(self, process).reference)
                 )
 
         for technique in ["in_situ_reflectance", "hall", "afm", "light_microscopy"]:
@@ -1846,6 +1822,12 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
                     getattr(
                         self.characterization, technique
                     ).reference.m_parent.workflow2
+                )
+            if getattr(self.characterization, technique).reference:
+                self.steps.append(
+                    ExperimentStep(
+                        activity=getattr(self.characterization, technique).reference
+                    )
                 )
 
         # search_result = search(
@@ -1923,6 +1905,12 @@ class RawFileMovpeDepositionControl(EntryData):
     m_def = Section(
         a_eln=None,
         label="Raw File Growth Run Deposition Control",
+    )
+    name = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+        ),
     )
     growth_run_deposition_control = Quantity(
         type=ExperimentMovpeIKZ,

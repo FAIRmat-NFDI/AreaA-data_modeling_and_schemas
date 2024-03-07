@@ -59,7 +59,11 @@ from nomad_material_processing.chemical_vapor_deposition import (
     Rotation,
 )
 
-from ikz_plugin import IKZMOVPE1Category, Solution
+from ikz_plugin import (
+    IKZMOVPE1Category,
+    Solution,
+    LiquidComponent,
+)
 from ikz_plugin.utils import (
     create_archive,
     row_to_array,
@@ -73,8 +77,9 @@ from ikz_plugin.movpe import (
     PrecursorsPreparationIKZReference,
     ThinFilmStackMovpeReference,
     ThinFilmStackMovpe,
-    LiquidComponent,
+    ThinFilmMovpe,
     SystemComponentIKZ,
+    SampleParametersMovpe,
     ChamberEnvironmentMovpe,
     FilamentTemperature,
     FlashEvaporator1Pressure,
@@ -166,28 +171,51 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     )
                     continue
             elif search_experiments.pagination.total == 0:
-                # create grown sample archive
-                sample_filename = (
-                    f"{dep_control_run}.ThinFilmStackMovpe.archive.{filetype}"
+                # creating ThinFiln and ThinFilmStack archives
+                layer_filename = (
+                    f"{dep_control_run}_{index}.ThinFilm.archive.{filetype}"
                 )
-                sample_archive = EntryArchive(
-                    data=ThinFilmStackMovpe(
-                        lab_id=dep_control_run,
-                        substrate=SubstrateReference(
-                            lab_id=dep_control["Substrate ID"][index],
-                        ),
+                layer_archive = EntryArchive(
+                    data=ThinFilmMovpe(
+                        name=dep_control_run + "layer",
+                        lab_id=dep_control_run + "layer",
                     ),
                     m_context=archive.m_context,
                     metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
                 )
                 create_archive(
-                    sample_archive.m_to_dict(),
+                    layer_archive.m_to_dict(),
                     archive.m_context,
-                    sample_filename,
+                    layer_filename,
                     filetype,
                     logger,
                 )
-
+                grown_sample_filename = (
+                    f"{dep_control_run}.ThinFilmStackMovpe.archive.{filetype}"
+                )
+                grown_sample_archive = EntryArchive(
+                    data=ThinFilmStackMovpe(
+                        name=dep_control_run + "stack",
+                        lab_id=dep_control_run,
+                        substrate=SubstrateReference(
+                            lab_id=dep_control["Substrate ID"][index],
+                        ),
+                        layers=[
+                            ThinFilmReference(
+                                reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data"
+                            )
+                        ],
+                    ),
+                    m_context=archive.m_context,
+                    metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
+                )
+                create_archive(
+                    grown_sample_archive.m_to_dict(),
+                    archive.m_context,
+                    grown_sample_filename,
+                    filetype,
+                    logger,
+                )
                 filament_temperatures = create_timeseries_objects(
                     dep_control, ["Fil time", "Fil T"], FilamentTemperature, index
                 )
@@ -264,6 +292,38 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                     ),
                                 ),
                             ),
+                            sample_parameters=[
+                                SampleParametersMovpe(
+                                    layer=ThinFilmReference(
+                                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data",
+                                    ),
+                                    substrate=ThinFilmStackMovpeReference(
+                                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                                    ),
+                                    # distance_to_source=[
+                                    #     (
+                                    #         growth_run_file["Distance of Showerhead"][
+                                    #             index
+                                    #         ]
+                                    #     )
+                                    #     * ureg("millimeter").to("meter").magnitude
+                                    # ],
+                                    # temperature=SubstrateTemperatureMovpe(
+                                    #     temperature=[
+                                    #         growth_run_file["T LayTec"][index]
+                                    #     ],
+                                    #     process_time=[
+                                    #         0
+                                    #     ],  # [growth_run_file["Duration"][index]],
+                                    #     temperature_shaft=growth_run_file["T Shaft"][
+                                    #         index
+                                    #     ],
+                                    #     temperature_filament=growth_run_file[
+                                    #         "T Filament"
+                                    #     ][index],
+                                    # ),
+                                )
+                            ],
                         )
                     ],
                 )
@@ -308,16 +368,20 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                             if not None
                             else "unknown"
                         )
-                        solution_filename = (
-                            f"{solute_name}_{solvent_name}.Solution.archive.{filetype}"
-                        )
+                        solute_mass = precursors.get(
+                            f"Weight{'' if i == 0 else '.' + str(i)}",
+                            0,
+                        )[index]
+                        solvent_volume = precursors.get(
+                            f"Volume{'' if i == 0 else '.' + str(i)}",
+                            0,
+                        )[index]
+                        solution_filename = f"{solute_name}-mass{solute_mass}_{solvent_name}-vol{solvent_volume}.Solution.archive.{filetype}"
                         solution_data = Solution(
+                            name=f"{solute_name} in {solvent_name}",
                             solute=[
                                 PureSubstanceComponent(
-                                    mass=precursors.get(
-                                        f"Weight{'' if i == 0 else '.' + str(i)}",
-                                        0,
-                                    )[index],
+                                    mass=solute_mass,
                                     name=solute_name,
                                     pure_substance=PureSubstanceSection(
                                         cas_number=precursors.get(
@@ -330,10 +394,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                             solvent=[
                                 LiquidComponent(
                                     name=solvent_name,
-                                    volume=precursors.get(
-                                        f"Volume{'' if i == 0 else '.' + str(i)}",
-                                        0,
-                                    )[index],
+                                    volume=solvent_volume,
                                     pure_substance=PureSubstanceSection(
                                         cas_number=precursors.get(
                                             f"Solvent CAS{'' if i == 0 else '.' + str(i)}",
@@ -400,6 +461,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 )
                 experiment_archive = EntryArchive(
                     data=ExperimentMovpeIKZ(
+                        name=f"{dep_control_run} experiment",
                         lab_id=f"{dep_control_run} experiment",
                         datetime=dep_control["Date"][index],
                         precursors_preparation=PrecursorsPreparationIKZReference(
@@ -411,12 +473,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         growth_run=GrowthMovpeIKZReference(
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_filename)}#data",
                         ),
-                        # grown_sample=ThinFilmStackMovpeReference(
-                        #     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, sample_filename)}#data",
-                        # ), # TODO to be LINKED INSIDE THE GROWTH STEP
-                        # TODO to be LINKED INSIDE THE GROWTH STEP
-                        # TODO to be LINKED INSIDE THE GROWTH STEP
-                        # TODO to be LINKED INSIDE THE GROWTH STEP
                     ),
                     m_context=archive.m_context,
                     metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
@@ -512,5 +568,5 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
 
         # populate the raw file archive
         archive.data = RawFileMovpeDepositionControl(
-            growth_run_deposition_control=deposition_control_list
+            name=data_file, growth_run_deposition_control=deposition_control_list
         )
