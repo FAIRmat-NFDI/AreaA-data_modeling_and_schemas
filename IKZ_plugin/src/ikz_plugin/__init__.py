@@ -25,6 +25,7 @@ from nomad.datamodel.metainfo.basesections import (
     Process,
     CompositeSystemReference,
     PureSubstanceSection,
+    PureSubstanceComponent,
 )
 
 from nomad.datamodel.metainfo.annotations import (
@@ -81,6 +82,37 @@ class SolutionPreparationStep(Activity):
     m_def = Section()
 
 
+class ComponentConcentration(ArchiveSection):
+    """
+    The concentration of a component in a mixed material.
+    """
+
+    alias = Quantity(
+        type=str,
+        description="The alias given to this material, will be used to fill the system reference.",
+        a_eln={"component": "StringEditQuantity"},
+    )
+    intended_concentration = Quantity(
+        type=np.float64,
+        description="The concentration planned for the mixed material.",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
+        unit="mol / liter",
+        label="Intended Concentration",
+    )
+    obtained_concentration = Quantity(
+        type=np.float64,
+        description="The concentration calculated from the mixed material weights and volumes.",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
+        unit="mol / liter",
+        label="Obtained Concentration",
+    )
+    system = Quantity(
+        type=Reference(System.m_def),
+        description="A reference to the component system.",
+        a_eln=dict(component="ReferenceEditQuantity"),
+    )
+
+
 class SolutionProperties(ArchiveSection):
     """
     Solution preparation class
@@ -95,11 +127,9 @@ class SolutionProperties(ArchiveSection):
         unit=("ml"),
         a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="ml"),
     )
-
-    final_concentration = Quantity(
-        type=np.dtype(np.float64),
-        unit=("mg/ml"),
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="mg/ml"),
+    components_concentration = SubSection(
+        section_def=ComponentConcentration,
+        repeats=True,
     )
 
 
@@ -135,6 +165,32 @@ class SolutionStorage(ArchiveSection):
     )
 
 
+class LiquidComponent(PureSubstanceComponent):
+    """
+    A section for describing a substance component and its role in a composite system.
+    """
+
+    substance_name = Quantity(
+        type=str,
+        description="""
+        The name of the substance within the section where this component is contained.
+        """,
+        a_eln=dict(component="StringEditQuantity"),
+    )
+    volume = Quantity(
+        type=np.float64,
+        description="The solvent for the current substance.",
+        unit="milliliter",
+        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="milliliter"),
+    )
+    pure_substance = SubSection(
+        section_def=PureSubstanceSection,
+        description="""
+        Section describing the pure substance that is the component.
+        """,
+    )
+
+
 class Solution(CompositeSystem, EntryData):
     """
     Base class for a solution
@@ -142,32 +198,7 @@ class Solution(CompositeSystem, EntryData):
 
     solvent_ratio = Quantity(type=str, a_eln=dict(component="StringEditQuantity"))
 
-    temperature = Quantity(
-        type=np.dtype(np.float64),
-        unit=("kelvin"),
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="°C"),
-    )
-
-    time = Quantity(
-        type=np.dtype(np.float64),
-        unit=("second"),
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="minute"),
-    )
-
-    speed = Quantity(
-        type=np.dtype(np.float64),
-        unit=("Hz"),
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="rpm"),
-    )
     solute = SubSection(
-        description="""
-        A list of all the components of the composite system containing a name, reference
-        to the system section and mass of that component.
-        """,
-        section_def=Component,
-        repeats=True,
-    )
-    additive = SubSection(
         description="""
         A list of all the components of the composite system containing a name, reference
         to the system section and mass of that component.
@@ -276,37 +307,6 @@ class QuantifyLiquidMaterial(QuantifyMaterial, SolutionPreparationStep):
         description="FILL THE DESCRIPTION",
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "gram / liter"},
         unit="gram / liter",
-    )
-
-
-class ComponentConcentration(ArchiveSection):
-    """
-    The concentration of a component in a mixed material.
-    """
-
-    alias = Quantity(
-        type=str,
-        description="The alias given to this material, will be used to fill the system reference.",
-        a_eln={"component": "StringEditQuantity"},
-    )
-    intended_concentration = Quantity(
-        type=np.float64,
-        description="The concentration planned for the mixed material.",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
-        unit="mol / liter",
-        label="Intended Concentration",
-    )
-    obtained_concentration = Quantity(
-        type=np.float64,
-        description="The concentration calculated from the mixed material weights and volumes.",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "mol / liter"},
-        unit="mol / liter",
-        label="Obtained Concentration",
-    )
-    system = Quantity(
-        type=Reference(System.m_def),
-        description="A reference to the component system.",
-        a_eln=dict(component="ReferenceEditQuantity"),
     )
 
 
