@@ -88,6 +88,30 @@ class CPFSSample(Sample):
             component='ReferenceEditQuantity',
         )
     )
+    width = Quantity(
+        type=np.float64,
+        unit='meter',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter'
+        ),
+    )
+    length = Quantity(
+        type=np.float64,
+        unit='meter',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter'
+        ),
+    )
+    depth = Quantity(
+        type=np.float64,
+        unit='meter',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter'
+        ),
+    )
 
 class CPFSETOAnalyzedData(PPMSData):
     field = Quantity(
@@ -97,12 +121,12 @@ class CPFSETOAnalyzedData(PPMSData):
         description='FILL')
     rho_xx_up = Quantity(
         type=np.dtype(np.float64),
-        unit='ohm',
+        unit='ohm*meter',
         shape=['*'],
         description='FILL')
     rho_xx_down = Quantity(
         type=np.dtype(np.float64),
-        unit='ohm',
+        unit='ohm*meter',
         shape=['*'],
         description='FILL')
     mr_up = Quantity(
@@ -117,12 +141,12 @@ class CPFSETOAnalyzedData(PPMSData):
         description='FILL')
     rho_xy_up = Quantity(
         type=np.dtype(np.float64),
-        unit='ohm',
+        unit='ohm*meter',
         shape=['*'],
         description='FILL')
     rho_xy_down = Quantity(
         type=np.dtype(np.float64),
-        unit='ohm',
+        unit='ohm*meter',
         shape=['*'],
         description='FILL')
 
@@ -183,56 +207,81 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
         header_section = header_match.group(1).strip()
         header_lines = header_section.split('\n')
 
-        sample1_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE1_' in line]
-        if sample1_headers:
-            sample_1 = CPFSSample()
-            for line in sample1_headers:
-                parts = re.split(r',\s*', line)
-                key = parts[-1].lower().replace('sample1_','')
-                if key=="sample_id":
-                    search_result = search(
-                        owner="user",
-                        query={
-                            "results.eln.sections:any": ["CPFSCrystal"],
-                            "results.eln.names:any": [parts[1]+r'*']
-                        },
-                        user_id=archive.metadata.main_author.user_id,
-                        )
-                    if len(search_result.data)>0:
-                        sample_1.sample_id=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
-                        sample_1.name=search_result.data[0]['search_quantities'][0]['str_value']
-                    else:
-                        logger.warning("The sample given in the header could not be found and couldn't be referenced.")
-                elif hasattr(sample_1, key):
-                    setattr(sample_1, key, ", ".join(parts[1:-1]))
-
-        sample2_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE2_' in line]
-        if sample2_headers:
-            sample_2 = CPFSSample()
-            for line in sample2_headers:
-                parts = re.split(r',\s*', line)
-                key = parts[-1].lower().replace('sample2_','')
-                if key=="sample_id":
-                    search_result = search(
-                        owner="user",
-                        query={
-                            "results.eln.sections:any": ["CPFSCrystal"],
-                            "results.eln.names:any": [parts[1]+r'*']
-                        },
-                        user_id=archive.metadata.main_author.user_id,
-                        )
-                    if len(search_result.data)>0:
-                        sample_2.sample_id=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
-                        sample_2.name=search_result.data[0]['search_quantities'][0]['str_value']
-                    else:
-                        logger.warning("The sample given in the header could not be found and couldn't be referenced.")
-                elif hasattr(sample_2, key):
-                    setattr(sample_2, key, ", ".join(parts[1:-1]))
-
         while self.samples:
             self.m_remove_sub_section(CPFSPPMSMeasurement.samples, 0)
-        self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_1)
-        self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_2)
+
+        for i in ["1","2"]:
+
+            sample_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE'+i+'_' in line]
+            if sample_headers:
+                sample = CPFSSample()
+                for line in sample_headers:
+                    parts = re.split(r',\s*', line)
+                    key = parts[-1].lower().replace('sample'+i+'_','')
+                    if key=="material":
+                        for line in parts[1:-1]:
+                            if line.startswith("l="):
+                                setattr(sample,"length",float(line.strip("l=").strip("mm"))/1000.)
+                            if line.startswith("w="):
+                                setattr(sample,"width",float(line.strip("w=").strip("mm"))/1000.)
+                            if line.startswith("t="):
+                                setattr(sample,"depth",float(line.strip("t=").strip("mm"))/1000.)
+                    if key=="comment":
+                        setattr(sample, key, ", ".join(parts[1:-1]))
+                        #ids="_".join(parts[1].split("_")[1:3])
+                        ids=parts[1].split("_")[1]
+                        logger.info(ids)
+                        search_result = search(
+                            owner="user",
+                            query={
+                                "results.eln.sections:any": ["CPFSCrystal"],
+                                "results.eln.names:any": [ids+r'*']
+                            },
+                            user_id=archive.metadata.main_author.user_id,
+                            )
+                        if len(search_result.data)>0:
+                            sample.sample_id=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
+                            sample.name=search_result.data[0]['search_quantities'][0]['str_value']
+                        else:
+                            logger.warning("The sample given in the header could not be found and couldn't be referenced.")
+                    elif hasattr(sample, key):
+                        setattr(sample, key, ", ".join(parts[1:-1]))
+                if not sample.length:
+                    logger.info("Length for sample "+str(i)+" not found, set to 1. Value of resistivity will be wrong.")
+                    setattr(sample,"length",1.)
+                if not sample.width:
+                    logger.info("Width for sample "+str(i)+" not found, set to 1. Value of resistivity will be wrong.")
+                    setattr(sample,"width",1.)
+                if not sample.depth:
+                    logger.info("Depth for sample "+str(i)+" not found, set to 1. Value of resistivity will be wrong.")
+                    setattr(sample,"depth",1.)
+                self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample)
+
+        # sample2_headers = [line for line in header_lines if line.startswith("INFO") and 'SAMPLE2_' in line]
+        # if sample2_headers:
+        #     sample_2 = CPFSSample()
+        #     for line in sample2_headers:
+        #         parts = re.split(r',\s*', line)
+        #         key = parts[-1].lower().replace('sample2_','')
+        #         if key=="sample_id":
+        #             search_result = search(
+        #                 owner="user",
+        #                 query={
+        #                     "results.eln.sections:any": ["CPFSCrystal"],
+        #                     "results.eln.names:any": [parts[1]+r'*']
+        #                 },
+        #                 user_id=archive.metadata.main_author.user_id,
+        #                 )
+        #             if len(search_result.data)>0:
+        #                 sample_2.sample_id=f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
+        #                 sample_2.name=search_result.data[0]['search_quantities'][0]['str_value']
+        #             else:
+        #                 logger.warning("The sample given in the header could not be found and couldn't be referenced.")
+        #         elif hasattr(sample_2, key):
+        #             setattr(sample_2, key, ", ".join(parts[1:-1]))
+
+        # self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_1)
+        # self.m_add_sub_section(CPFSPPMSMeasurement.samples, sample_2)
 
         #find measurement modes, for now coming from sample.comment
         modelist=[]
@@ -281,16 +330,16 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                     if len(upsweep)!=2 or len(downsweep)!=2:
                         logger.warning("Measurement "+mdata.name+" did not contain up- and downsweep in field.")
                         continue
-                    downfit=np.interp(fitfield,field[downsweep[0]:downsweep[1]],res[downsweep[0]:downsweep[1]])
+                    downfit=np.interp(fitfield,np.flip(field[downsweep[0]:downsweep[1]]),np.flip(res[downsweep[0]:downsweep[1]]))
                     upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
                     if self.channel_measurement_type[channel]=="Hall":
                         intermediate=(upfit+np.flip(downfit))/2.
-                        ana_data.rho_xy_down=downfit-intermediate
-                        ana_data.rho_xy_up=upfit-intermediate
+                        ana_data.rho_xy_down=(downfit-intermediate)*self.samples[channel].depth
+                        ana_data.rho_xy_up=(upfit-intermediate)*self.samples[channel].depth
                     if self.channel_measurement_type[channel]=="TMR":
                         intermediate=(np.flip(downfit)-upfit)/2.
-                        ana_data.rho_xx_down=downfit+intermediate
-                        ana_data.rho_xx_up=upfit-intermediate
+                        ana_data.rho_xx_down=(downfit+intermediate)*self.samples[channel].depth*self.samples[channel].width/self.samples[channel].length
+                        ana_data.rho_xx_up=(upfit-intermediate)*self.samples[channel].depth*self.samples[channel].width/self.samples[channel].length
                         ana_data.mr_down=(ana_data.rho_xx_down-ana_data.rho_xx_down[int(fitlength/2)])/ana_data.rho_xx_down[int(fitlength/2)]
                         ana_data.mr_up=(ana_data.rho_xx_up-ana_data.rho_xx_up[int(fitlength/2)])/ana_data.rho_xx_up[int(fitlength/2)]
                 data_analyzed.append(ana_data)
@@ -300,24 +349,36 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             import plotly.express as px
             import plotly.graph_objs as go
             from plotly.subplots import make_subplots
-            self.figures=[]
-            figure1 = make_subplots(rows=3, cols=1, subplot_titles=(["TMR","MR","Hall"]), shared_xaxes=True)
+            #self.figures=[]
+            figure1 = make_subplots(rows=1, cols=1, subplot_titles=(["TMR"]))
+            figure2 = make_subplots(rows=1, cols=1, subplot_titles=(["MR"]))
+            figure3 = make_subplots(rows=1, cols=1, subplot_titles=(["Hall"]))
             for data in self.analyzed_data:
                 color=int(255./len(self.analyzed_data)*self.analyzed_data.index(data))
-                resistivity_tmr_up=go.Scatter(x=data.field,y=data.rho_xx_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
-                resistivity_tmr_down=go.Scatter(x=data.field,y=data.rho_xx_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                resistivity_mr_up=go.Scatter(x=data.field,y=data.mr_up, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                resistivity_mr_down=go.Scatter(x=data.field,y=data.mr_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                resistivity_hall_up=go.Scatter(x=data.field,y=data.rho_xy_up, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                resistivity_hall_down=go.Scatter(x=data.field,y=data.rho_xy_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                figure1.add_trace(resistivity_tmr_up, row=1, col=1)
-                figure1.add_trace(resistivity_tmr_down, row=1, col=1)
-                figure1.add_trace(resistivity_mr_up, row=2, col=1)
-                figure1.add_trace(resistivity_mr_down, row=2, col=1)
-                figure1.add_trace(resistivity_hall_up, row=3, col=1)
-                figure1.add_trace(resistivity_hall_down, row=3, col=1)
+                if data.rho_xx_up is not None:
+                    resistivity_tmr_up=go.Scatter(x=data.field,y=data.rho_xx_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    figure1.add_trace(resistivity_tmr_up, row=1, col=1)
+                if data.rho_xx_down is not None:
+                    resistivity_tmr_down=go.Scatter(x=data.field,y=data.rho_xx_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                    figure1.add_trace(resistivity_tmr_down, row=1, col=1)
+                if data.mr_up is not None:
+                    resistivity_mr_up=go.Scatter(x=data.field,y=data.mr_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    figure2.add_trace(resistivity_mr_up, row=1, col=1)
+                if data.mr_down is not None:
+                    resistivity_mr_down=go.Scatter(x=data.field,y=data.mr_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                    figure2.add_trace(resistivity_mr_down, row=1, col=1)
+                if data.rho_xy_up is not None:
+                    resistivity_hall_up=go.Scatter(x=data.field,y=data.rho_xy_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    figure3.add_trace(resistivity_hall_up, row=1, col=1)
+                if data.rho_xy_down is not None:
+                    resistivity_hall_down=go.Scatter(x=data.field,y=data.rho_xy_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
+                    figure3.add_trace(resistivity_hall_down, row=1, col=1)
             figure1.update_layout(height=400, width=716,showlegend=True)
-            self.figures.append(PlotlyFigure(label="Analyzed data", figure=figure1.to_plotly_json()))
+            figure2.update_layout(height=400, width=716,showlegend=True)
+            figure3.update_layout(height=400, width=716,showlegend=True)
+            self.figures.append(PlotlyFigure(label="TMR", figure=figure1.to_plotly_json()))
+            self.figures.append(PlotlyFigure(label="MR", figure=figure2.to_plotly_json()))
+            self.figures.append(PlotlyFigure(label="Hall", figure=figure3.to_plotly_json()))
 
 
 

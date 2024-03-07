@@ -111,6 +111,7 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
         super(CPFSGenLabfolderProject, self).normalize(archive, logger)
 
         import re
+        import json
 
         TAG_RE=re.compile(r'<[^>]+>')
 
@@ -118,27 +119,16 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
 
         if self.mapping_file:
             with archive.m_context.raw_file(self.mapping_file, 'r') as mapping:
-                inp=mapping.readlines()
-            for line in inp:
-                if line.startswith("#") or line=="\n":
-                    continue
-                if len(line.split())!=3:
-                    logger.warning("Found line in mapping file with wrong input. Has top be three parts.")
-                    continue
+                inp=json.load(mapping)
+            for cl in inp["Classes"].keys():
                 try:
-                    _selection_mapping[line.split()[0]]
-                    logger.warning("The key "+line.split()[0]+" is duplicate in the mapping: "+str(_selection_mapping[line.split()[0]])+" , "+line.split()[1]+"."+line.split()[2])
+                    _selection_mapping[cl]=getattr(importlib.import_module(".".join(inp["Classes"][cl]["class"].split(".")[:-1])),inp["Classes"][cl]["class"].split(".")[-1])
+                except AttributeError:
+                    logger.warning("The module "+".".join(inp["Classes"][cl]["class"].split(".")[:-1])+" has no class "+inp["Classes"][cl]["class"].split(".")[-1]+".")
                     continue
-                except KeyError:
-                    try:
-                        _selection_mapping[line.split()[0]]=getattr(importlib.import_module(line.split()[1]),line.split()[2])
-                    except AttributeError:
-                        logger.warning("The module "+line.split()[1]+" has no class "+line.split()[2]+".")
-                        continue
-                    except ModuleNotFoundError:
-                        logger.warning("The module "+line.split()[1]+" was not found.")
-                        continue
-
+                except ModuleNotFoundError:
+                    logger.warning("The module "+".".join(inp["Classes"][cl]["class"].split(".")[:-1])+" was not found.")
+                    continue
 
         if self.import_entry_id:
             for entry in self.entries:
@@ -154,126 +144,161 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                     labfolder_section=_selection_mapping[possible_classes[0]]()
                     logger.info(possible_classes[0]+" template found.")
                     data_content=dict()
+                    table_content=[]
+                    text_content=dict()
                     for element in entry.elements:
                         if element.element_type=="DATA":
-                            data_content=data_content|pd.json_normalize(element.labfolder_data,sep=";;;").to_dict(orient="records")[0]
+                            data_content=data_content|element.labfolder_data
                         if element.element_type=="TEXT":
-                            line=TAG_RE.sub("",element.content)
-                            data_content=data_content|dict({line.split("\n")[0]+";;;description":";".join(line.split("\n")[1:])})
+                            text_content=text_content|dict({TAG_RE.sub("",element.content.split("</p>")[0]):TAG_RE.sub("",";".join(element.content.split("</p>")[1:]))})
                         if element.element_type=="TABLE":
                             for key in element.content["sheets"]:
-                                name=element.content["sheets"][key]["name"].replace("NOMAD- ","NOMAD: ")
-                                if "NOMAD: " in name:
-                                    table=element.content["sheets"][key]["data"]["dataTable"]
-                                    df=pd.DataFrame.from_dict({(i): {(j): table[i][j]["value"]  for j in table[i].keys()} for i in table.keys()},orient="index")
-                                    df.columns=df.iloc[0]
-                                    df=df.iloc[1:].reset_index(drop=True)
-                                    for i in range(len(df)):
-                                        for key in df:
-                                            if "rep per line" in name:
-                                                #figure out unit
-                                                unit=re.findall(r'\(.*?\)',key)
-                                                if len(unit)==1:
-                                                    try:
-                                                        a=ureg(unit[0].strip("(").strip(")"))
-                                                        data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key.replace(unit[0],"")+";;;unit":unit[0].strip("(").strip(")")})
-                                                        data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key.replace(unit[0],"")+";;;value":df[key][i]})
-                                                    except pint.errors.UndefinedUnitError:
-                                                        data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key.replace(unit[0],"")+";;;description":df[key][i]})
-                                                elif len(unit)==0:
-                                                    data_content=data_content|dict({name.replace("per line",str(i))+";;;"+key+";;;description":df[key][i]})
-                                                else:
-                                                    logger.warning("Could not match table entry "+key+". Too many parenthesis.")
-                    subsection_list=[]
-                    for key in data_content.keys():
-                        if data_content[key]==None or data_content[key]=="":
-                            continue
-                        if "NOMAD:" in key:
-                            line=key.split("NOMAD: ")[1].split(";;;")[0].strip()
-                            if " rep " in line:
-                                line=line.split(" rep ")[0]+" rep "
-                            if not line in subsection_list:
-                                subsection_list.append(line)
-                        else:
-                            if key.split(";;;")[-1]=="unit":
-                                continue
-                            attrib=clean_attribute(key.split(";;;")[-2])
-                            if hasattr(labfolder_section,attrib):
-                                if key.split(";;;")[-1]=="value":
-                                    try:
-                                        setattr(labfolder_section,attrib,ureg.Quantity(float(data_content[key]),data_content[key.strip("value")+"unit"]))
-                                    except TypeError:
-                                        try:
-                                            setattr(labfolder_section,attrib,ureg.Quantity(int(data_content[key]),data_content[key.strip("value")+"unit"]))
-                                        except TypeError as error:
-                                            logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
-                                if key.split(";;;")[-1]=="description":
-                                    try:
-                                        setattr(labfolder_section,attrib,data_content[key])
-                                    except Exception as error:
-                                        logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
+                                table=element.content["sheets"][key]["data"]["dataTable"]
+                                df=pd.DataFrame.from_dict({(i): {(j): table[i][j]["value"]  for j in table[i].keys()} for i in table.keys()},orient="index")
+                                df.columns=df.iloc[0]
+                                df=df.iloc[1:].reset_index(drop=True)
+                                df=df.to_dict(orient="index")
+                                df["name"]=element.title
+                                table_content.append(df)
 
-                    for section in subsection_list:
-                        repcount=0
+
+                    for section in inp["Classes"].keys():
+                        logger.info(section)
                         replist=[]
-                        for repcount in range(1000):
-                            if " rep " in section:
-                                section=section.split(" rep ")[0]+" rep "+str(repcount)
-                                found=False
-                            if section.startswith("Subs") or section.startswith("Arch"):
-                                if not hasattr(labfolder_section,section.split(" ")[2]):
-                                    logger.warning("The schema does not have a Subsection "+section.split(" ")[1])
+                        for repcount in range(10):
+                            found=True
+                            if (inp["Classes"][section]["repeats"]=="false" or inp["Classes"][section]["repeats"]=="true") and repcount>0:
+                                continue
+                            if inp["Classes"][section]["type"]=="SubSection" or inp["Classes"][section]["type"]=="Archive" or inp["Classes"][section]["type"]=="main":
+                                if not hasattr(labfolder_section,inp["Classes"][section]["attribute"]) and not inp["Classes"][section]["type"]=="main":
+                                    logger.warning("The schema does not have an attribute "+inp["Classes"][section]["attribute"])
                                     break
-                                if section.startswith("Subs"):
-                                    logger.info("Creating Subsection "+section.split(" ")[1])
-                                if section.startswith("Arch"):
-                                    logger.info("Creating Archive "+section.split(" ")[1])
-                                section_object=_selection_mapping[section.split(" ")[1]]()
-                                for key in data_content.keys():
-                                    if data_content[key]==None or data_content[key]=="":
-                                        continue
-                                    if "NOMAD: " in key and section in key:
-                                        found=True
-                                        if key.split(";;;")[-1]=="unit":
-                                            continue
-                                        attrib=clean_attribute(key.split(";;;")[-2])
-                                        if hasattr(section_object,attrib):
-                                            if key.split(";;;")[-1]=="value":
-                                                try:
-                                                    setattr(section_object,attrib,ureg.Quantity(float(data_content[key]),data_content[key.strip("value")+"unit"]))
-                                                except TypeError:
-                                                    try:
-                                                        setattr(section_object,attrib,ureg.Quantity(int(data_content[key]),data_content[key.strip("value")+"unit"]))
-                                                    except TypeError as error:
-                                                        logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
-                                            if key.split(";;;")[-1]=="description":
-                                                try:
-                                                    setattr(section_object,attrib,data_content[key])
-                                                except Exception as error:
-                                                    logger.warning("JSON entry with key "+key+" could not be parsed with error: "+str(error))
+                                if inp["Classes"][section]["type"]=="SubSection":
+                                    logger.info("Creating Subsection "+section)
+                                if inp["Classes"][section]["type"]=="Archive":
+                                    logger.info("Creating Archive "+section)
+                                if inp["Classes"][section]["type"]=="main":
+                                    section_object=labfolder_section
+                                else:
+                                    section_object=getattr(importlib.import_module(".".join(inp["Classes"][section]["class"].split(".")[:-1])),inp["Classes"][section]["class"].split(".")[-1])()
 
-                                if section.startswith("Arch"):
+                                #TODO: find better way of interating through a json
+                                maps=inp["Mapping"]["Data elements"]
+                                for key1 in maps:
+                                    if "object" in maps[key1]:
+                                        if maps[key1]["object"]==section:
+                                            try:
+                                                setattr(section_object,maps[key1]["key"],ureg.Quantity(float(data_content[key1]["value"]),data_content[key1]["unit"]))
+                                            except Exception:
+                                                try:
+                                                    setattr(section_object,maps[key1]["key"],data_content[key1]["description"])
+                                                except Exception as error:
+                                                    logger.warning("JSON entry with key "+key1+" could not be parsed with error: "+str(error))
+                                                    continue
+                                            continue
+                                    maps1=maps[key1]
+                                    for key2 in maps1:
+                                        if "object" in maps1[key2]:
+                                            if maps1[key2]["object"]==section:
+                                                try:
+                                                    setattr(section_object,maps1[key2]["key"],ureg.Quantity(float(data_content[key1][key2]["value"]),data_content[key1][key2]["unit"]))
+                                                except Exception:
+                                                    try:
+                                                        setattr(section_object,maps1[key2]["key"],data_content[key1][key2]["description"])
+                                                    except Exception as error:
+                                                        logger.warning("JSON entry with key "+key1+key2+" could not be parsed with error: "+str(error))
+                                                        continue
+                                                continue
+                                        maps2=maps1[key2]
+                                        for key3 in maps2:
+                                            if "object" in maps2[key3]:
+                                                if maps2[key3]["object"]==section:
+                                                    try:
+                                                        setattr(section_object,maps2[key3]["key"],ureg.Quantity(float(data_content[key1][key2][key3]["value"]),data_content[key1][key2][key3]["unit"]))
+                                                    except Exception:
+                                                        try:
+                                                            setattr(section_object,maps2[key3]["key"],data_content[key1][key2][key3]["description"])
+                                                        except Exception as error:
+                                                            logger.warning("JSON entry with key "+key1+key2+key3+" could not be parsed with error: "+str(error))
+                                                            continue
+                                                    continue
+
+                                maps=inp["Mapping"]["Text elements"]
+                                for key1 in maps:
+                                    if maps[key1]["object"]==section:
+                                        try:
+                                            setattr(section_object,maps[key1]["key"],text_content[key1])
+                                        except Exception as error:
+                                            logger.warning("Text entry with key "+key1+" could not be parsed with error: "+str(error))
+
+                                maps=inp["Mapping"]["Table elements"]
+                                for key1 in maps:
+                                    for table in table_content:
+                                        if table["name"]==key1:
+                                            try:
+                                                line=table[repcount]
+                                                for key2 in maps[key1]:
+                                                    try:
+                                                        setattr(section_object,maps[key1][key2]["key"],line[key2])
+                                                    except Exception as error:
+                                                        logger.warning("Text entry with key "+key1+key2+" could not be parsed with error: "+str(error))
+
+                                            except KeyError:
+                                                found=False
+
+                                if inp["Classes"][section]["name"]!="":
+                                    temp=inp["Classes"][section]["name"]
+                                    name=""
+                                    for line in temp.split("+"):
+                                        if line.startswith("LF"):
+                                            if line.startswith("LF.data"):
+                                                add=data_content
+                                                for i in range(len(line.split("."))-2):
+                                                    add=add[line.split(".")[i+2]]
+                                                name=name+add["description"]
+                                        else:
+                                            name=name+line
+
+                                    section_object.name=name
+
+                                if inp["Classes"][section]["type"]=="Archive":
+
                                     section_object = create_archive(
                                             section_object,
                                             archive,
-                                            entry.title + "_" + entry.id + "_"+section.split(" ")[1]+".archive.json"
+                                            name
                                         )
 
-                            if found==True:
-                                replist.append(section_object)
-                            if found==False or not " rep " in section:
-                                break
+                                if found or repcount==0:
+                                    replist.append(section_object)
+                                logger.info(section,repcount,replist)
 
-                        if not " rep " in section:
-                            setattr(labfolder_section,section.split(" ")[2],replist[0])
+                        if not inp["Classes"][section]["type"]=="main":
+                            if inp["Classes"][section]["repeats"]=="false":
+                                setattr(labfolder_section,inp["Classes"][section]["attribute"],replist[0])
+                            else:
+                                setattr(labfolder_section,inp["Classes"][section]["attribute"],replist)
+
+
+
+                    temp=inp["Classes"][possible_classes[0]]["name"]
+                    name=""
+                    for line in temp.split("+"):
+                        if line.startswith("LF"):
+                            if line.startswith("LF.data"):
+                                add=data_content
+                                for i in range(len(line.split("."))-2):
+                                    add=add[line.split(".")[i+2]]
+                                name=name+add["description"]
                         else:
-                            setattr(labfolder_section,section.split(" ")[2],replist)
+                            name=name+line
 
+                    labfolder_section.name=name
 
                     create_archive(
                             labfolder_section,
                             archive,
-                            entry.title + "_" + entry.id + "_"+possible_classes[0]+".archive.json"
+                            name
                         )
 
 

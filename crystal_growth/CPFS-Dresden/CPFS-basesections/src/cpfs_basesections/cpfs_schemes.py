@@ -250,13 +250,10 @@ class CPFSCrystal(Crystal,EntryData):
         ),
     )
     single_poly = Quantity(
-        type=MEnum(
-            'Single crystal',
-            'Polycrystal',
-        ),
+        type=str,
         a_eln=ELNAnnotation(
-            component='EnumEditQuantity',
-        ),
+            component='StringEditQuantity',
+        )
     )
     crystal_shape = Quantity(
         type=str,

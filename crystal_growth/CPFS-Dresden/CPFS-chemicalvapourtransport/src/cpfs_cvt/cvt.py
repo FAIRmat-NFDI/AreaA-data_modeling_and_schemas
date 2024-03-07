@@ -76,10 +76,26 @@ class CPFSChemicalVapourTransport(ChemicalVapourTransport, EntryData):
                 order=[
                     'name',
                     'datetime',
-                    'end_time',
+                    'furnace',
+                    'tube',
+                    'initial_materials',
+                    'steps',
+                    'resulting_crystal',
                 ],
             ),
             lane_width='600px',
+        ),
+    )
+    grower = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
+        ),
+    )
+    target_material = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component='StringEditQuantity',
         ),
     )
     furnace = SubSection(

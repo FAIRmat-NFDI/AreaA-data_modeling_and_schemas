@@ -459,134 +459,136 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
             other_data = [key for key in data_df.keys() if 'ch1' not in key and 'ch2' not in key and 'map' not in key.lower()]
             all_data=[]
 
-            if archive.data.sequence_file:
-                logger.info('Parsing PPMS measurement file using the sequence file.')
-                indexlist=[]
-                typelist=[]
-                templist=[]
-                fieldlist=[]
-                #identify separate measurements by following the steps structure
-                temp=float(data_df["Temperature (K)"].iloc[0])*self.temperature_tolerance.units
-                field=float(data_df["Magnetic Field (Oe)"].iloc[0])*self.field_tolerance.units
-                startval=0
-                index=0
-                measurement_type="undefined"
-                measurement_active=False
-                for step in self.steps:
-                    measurement_ends=False
-                    if isinstance(step,PPMSMeasurementSetTemperatureStep):
-                        if measurement_active:
-                            if measurement_type!="undefined" and measurement_type!="temperature":
-                                logger.error("Mixed measurement type found. Are sequence and data matching?")
-                            measurement_type="temperature"
-                            for i in range(index,len(data_df)):
-                                if (abs(float(data_df["Temperature (K)"].iloc[i])*step.temperature_set.units-step.temperature_set)<self.temperature_tolerance and
-                                    abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)<self.field_tolerance):
-                                    index=i
-                                    break
-                            else:
-                                logger.error("Set temperature not found. Are sequence and data matching?")
-                            for i in range(index,len(data_df)):
-                                if (abs(float(data_df["Temperature (K)"].iloc[i])*step.temperature_set.units-step.temperature_set)>self.temperature_tolerance or
-                                    abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)>self.field_tolerance):
-                                    index=i
-                                    break
-                            else:
-                                index=i
-                        temp=step.temperature_set
-                    if isinstance(step,PPMSMeasurementSetMagneticFieldStep):
-                        if measurement_active:
-                            if measurement_type!="undefined" and measurement_type!="field":
-                                logger.error("Mixed measurement type found. Are sequence and data matching?")
-                            measurement_type="field"
-                            for i in range(index,len(data_df)):
-                                if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.field_set.units-step.field_set)<self.field_tolerance and
-                                    abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)<self.temperature_tolerance):
-                                    index=i
-                                    break
-                            else:
-                                logger.error("Set field not found. Are sequence and data matching?")
-                            for i in range(index,len(data_df)):
-                                if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.field_set.units-step.field_set)>self.field_tolerance or
-                                    abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)>self.temperature_tolerance):
-                                    index=i
-                                    break
-                            else:
-                                index=i
-                        field=step.field_set
-                    if isinstance(step,PPMSMeasurementScanTempStep):
-                        if measurement_active:
-                            logger.error("Measurement already active when approaching scan step. Is this sequence valid?")
-                        measurement_active=True
-                        measurement_type="temperature"
-                        if abs(float(data_df["Temperature (K)"].iloc[index])*step.initial_temp.units-step.initial_temp)>self.temperature_tolerance:
-                            logger.error("Initial temperature not found in scan step. Are sequence and data matching?")
-                        for i in range(index,len(data_df)):
-                            if (abs(float(data_df["Temperature (K)"].iloc[i])*step.initial_temp.units-step.final_temp)<self.temperature_tolerance and
-                                abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)<self.field_tolerance):
-                                index=i
-                                break
-                        else:
-                            logger.error("Set temperature not found. Are sequence and data matching?")
-                        for i in range(index,len(data_df)):
-                            if (abs(float(data_df["Temperature (K)"].iloc[i])*step.initial_temp.units-step.final_temp)>self.temperature_tolerance or
-                                abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)>self.field_tolerance):
-                                index=i
-                                break
-                        else:
-                            index=i
-                        temp=step.final_temp
-                    if isinstance(step,PPMSMeasurementScanFieldStep):
-                        if measurement_active:
-                            logger.error("Measurement already active when approaching scan step. Is this sequence valid?")
-                        measurement_active=True
-                        measurement_type="field"
-                        if abs(float(data_df["Magnetic Field (Oe)"].iloc[index])*step.initial_field.units-step.initial_field)>self.field_tolerance:
-                            logger.error("Initial field not found in scan step. Are sequence and data matching?")
-                        for i in range(index,len(data_df)):
-                            if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.initial_field.units-step.final_field)<self.field_tolerance and
-                                abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)<self.temperature_tolerance):
-                                index=i
-                                break
-                        else:
-                            logger.error("Set field not found. Are sequence and data matching?")
-                        for i in range(index,len(data_df)):
-                            if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.initial_field.units-step.final_field)>self.field_tolerance or
-                                abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)>self.temperature_tolerance):
-                                index=i
-                                break
-                        else:
-                            index=i
-                        field=step.final_field
-                    if isinstance(step,PPMSMeasurementETOResistanceStep):
-                        if "Stop Measurement" in step.mode:
-                            measurement_ends=False
-                        if "Start Continuous Measure" in step.mode or "Perform N Measurements" in step.mode:
-                            measurement_active=True
-                    if isinstance(step,PPMSMeasurementScanTempEndStep):
-                        if not measurement_active:
-                            logger.error("Measurement not running when approaching scan end step. Is this sequence valid?")
-                        if measurement_active:
-                            if measurement_type!="undefined" and measurement_type!="temperature":
-                                logger.error("Mixed measurement type found. Are sequence and data matching?")
-                        measurement_ends=True
-                    if isinstance(step,PPMSMeasurementScanFieldEndStep):
-                        if not measurement_active:
-                            logger.error("Measurement not running when approaching scan end step. Is this sequence valid?")
-                        if measurement_active:
-                            if measurement_type!="undefined" and measurement_type!="field":
-                                logger.error("Mixed measurement type found. Are sequence and data matching?")
-                        measurement_ends=True
-                    if measurement_ends:
-                        measurement_active=False
-                        indexlist.append([startval,index])
-                        typelist.append(measurement_type)
-                        templist.append(temp)
-                        fieldlist.append(field)
-                        startval=index
+            # if archive.data.sequence_file:
+            #     logger.info('Parsing PPMS measurement file using the sequence file.')
+            #     indexlist=[]
+            #     typelist=[]
+            #     templist=[]
+            #     fieldlist=[]
+            #     #identify separate measurements by following the steps structure
+            #     temp=float(data_df["Temperature (K)"].iloc[0])*self.temperature_tolerance.units
+            #     field=float(data_df["Magnetic Field (Oe)"].iloc[0])*self.field_tolerance.units
+            #     startval=0
+            #     index=0
+            #     measurement_type="undefined"
+            #     measurement_active=False
+            #     for step in self.steps:
+            #         measurement_ends=False
+            #         if isinstance(step,PPMSMeasurementSetTemperatureStep):
+            #             if measurement_active:
+            #                 if measurement_type!="undefined" and measurement_type!="temperature":
+            #                     logger.error("Mixed measurement type found. Are sequence and data matching?")
+            #                 measurement_type="temperature"
+            #                 for i in range(index,len(data_df)):
+            #                     if (abs(float(data_df["Temperature (K)"].iloc[i])*step.temperature_set.units-step.temperature_set)<self.temperature_tolerance and
+            #                         abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)<self.field_tolerance):
+            #                         index=i
+            #                         break
+            #                 else:
+            #                     logger.error("Set temperature not found. Are sequence and data matching?")
+            #                 for i in range(index,len(data_df)):
+            #                     if (abs(float(data_df["Temperature (K)"].iloc[i])*step.temperature_set.units-step.temperature_set)>self.temperature_tolerance or
+            #                         abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)>self.field_tolerance):
+            #                         index=i
+            #                         break
+            #                 else:
+            #                     index=i
+            #             temp=step.temperature_set
+            #         if isinstance(step,PPMSMeasurementSetMagneticFieldStep):
+            #             if measurement_active:
+            #                 if measurement_type!="undefined" and measurement_type!="field":
+            #                     logger.error("Mixed measurement type found. Are sequence and data matching?")
+            #                 measurement_type="field"
+            #                 for i in range(index,len(data_df)):
+            #                     if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.field_set.units-step.field_set)<self.field_tolerance and
+            #                         abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)<self.temperature_tolerance):
+            #                         index=i
+            #                         break
+            #                 else:
+            #                     logger.error("Set field not found. Are sequence and data matching?")
+            #                 for i in range(index,len(data_df)):
+            #                     if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.field_set.units-step.field_set)>self.field_tolerance or
+            #                         abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)>self.temperature_tolerance):
+            #                         index=i
+            #                         break
+            #                 else:
+            #                     index=i
+            #             field=step.field_set
+            #         if isinstance(step,PPMSMeasurementScanTempStep):
+            #             if measurement_active:
+            #                 logger.error("Measurement already active when approaching scan step. Is this sequence valid?")
+            #             measurement_active=True
+            #             measurement_type="temperature"
+            #             if abs(float(data_df["Temperature (K)"].iloc[index])*step.initial_temp.units-step.initial_temp)>self.temperature_tolerance:
+            #                 logger.error("Initial temperature not found in scan step. Are sequence and data matching?")
+            #             for i in range(index,len(data_df)):
+            #                 if (abs(float(data_df["Temperature (K)"].iloc[i])*step.initial_temp.units-step.final_temp)<self.temperature_tolerance and
+            #                     abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)<self.field_tolerance):
+            #                     index=i
+            #                     break
+            #             else:
+            #                 logger.error("Set temperature not found. Are sequence and data matching?")
+            #             for i in range(index,len(data_df)):
+            #                 if (abs(float(data_df["Temperature (K)"].iloc[i])*step.initial_temp.units-step.final_temp)>self.temperature_tolerance or
+            #                     abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*self.field_tolerance.units-field)>self.field_tolerance):
+            #                     index=i
+            #                     break
+            #             else:
+            #                 index=i
+            #             temp=step.final_temp
+            #         if isinstance(step,PPMSMeasurementScanFieldStep):
+            #             if measurement_active:
+            #                 logger.error("Measurement already active when approaching scan step. Is this sequence valid?")
+            #             measurement_active=True
+            #             measurement_type="field"
+            #             if abs(float(data_df["Magnetic Field (Oe)"].iloc[index])*step.initial_field.units-step.initial_field)>self.field_tolerance:
+            #                 logger.error("Initial field not found in scan step. Are sequence and data matching?")
+            #             for i in range(index,len(data_df)):
+            #                 if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.initial_field.units-step.final_field)<self.field_tolerance and
+            #                     abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)<self.temperature_tolerance):
+            #                     index=i
+            #                     break
+            #             else:
+            #                 logger.error("Set field not found. Are sequence and data matching?")
+            #             for i in range(index,len(data_df)):
+            #                 if (abs(float(data_df["Magnetic Field (Oe)"].iloc[i])*step.initial_field.units-step.final_field)>self.field_tolerance or
+            #                     abs(float(data_df["Temperature (K)"].iloc[i])*self.temperature_tolerance.units-temp)>self.temperature_tolerance):
+            #                     index=i
+            #                     break
+            #             else:
+            #                 index=i
+            #             field=step.final_field
+            #         if isinstance(step,PPMSMeasurementETOResistanceStep):
+            #             if "Stop Measurement" in step.mode:
+            #                 measurement_ends=False
+            #             if "Start Continuous Measure" in step.mode or "Perform N Measurements" in step.mode:
+            #                 measurement_active=True
+            #         if isinstance(step,PPMSMeasurementScanTempEndStep):
+            #             if not measurement_active:
+            #                 logger.error("Measurement not running when approaching scan end step. Is this sequence valid?")
+            #             if measurement_active:
+            #                 if measurement_type!="undefined" and measurement_type!="temperature":
+            #                     logger.error("Mixed measurement type found. Are sequence and data matching?")
+            #             measurement_ends=True
+            #         if isinstance(step,PPMSMeasurementScanFieldEndStep):
+            #             if not measurement_active:
+            #                 logger.error("Measurement not running when approaching scan end step. Is this sequence valid?")
+            #             if measurement_active:
+            #                 if measurement_type!="undefined" and measurement_type!="field":
+            #                     logger.error("Mixed measurement type found. Are sequence and data matching?")
+            #             measurement_ends=True
+            #         if measurement_ends:
+            #             measurement_active=False
+            #             indexlist.append([startval,index])
+            #             typelist.append(measurement_type)
+            #             templist.append(temp)
+            #             fieldlist.append(field)
+            #             startval=index
 
-            else:
-                logger.info('Parsing PPMS measurement file without using the sequence file.')
+            #Just for demo
+            #else:
+            #    logger.info('Parsing PPMS measurement file without using the sequence file.')
+            if True:
                 all_steps=[]
                 indexlist=[]
                 typelist=[]
@@ -635,7 +637,7 @@ class PPMSMeasurement(Measurement,PlotSection,EntryData):
                         if measurement_type=="field":
                             all_steps.append(PPMSMeasurementStep(name="Field sweep at "+str(templist[-1])+" K."))
                         measurement_type="undefined"
-                self.steps=all_steps
+                #self.steps=all_steps
 
             if self.software.startswith("ACTRANSPORT"):
                 logger.info("Parsing AC Transport measurement.")
