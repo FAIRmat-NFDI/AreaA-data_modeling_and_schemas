@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# import xml.etree.ElementTree as ET
+
 from typing import (
     Dict,
     Any,
@@ -24,33 +24,29 @@ from typing import (
 import numpy as np
 from nomad.units import ureg
 from pynxtools.dataconverter.convert import transfer_data_into_template
-# from nomad_measurements.utils import to_pint_quantity
-# from nomad_measurements.xrd.IKZ import RASXfile, BRMLfile
 
 if TYPE_CHECKING:
     from structlog.stdlib import (
         BoundLogger,
     )
-
-
 #def transfer_data_into_template(**kwargs):
 #    raise NotImplementedError
 
 def read_nexus_asc(file_path: str, logger: 'BoundLogger'=None) -> Dict[str, Any]:
     '''
-    Function for reading the X-ray diffraction data in a Nexus file.
+    Function for reading the UV-Vis-NIR transmission data from Perkin-ELmer *.asc in a Nexus file.
 
     Args:
-        file_path (str): The path to the X-ray diffraction data file.
+        file_path (str): The path to the transmission data file.
         logger (BoundLogger, optional): A structlog logger. Defaults to None.
 
     Returns:
-        Dict[str, Any]: The X-ray diffraction data in a Python dictionary.
+        Dict[str, Any]: The transmission data in a Python dictionary.
     '''
-    nxdl_name = 'NXxrd_pan'
-    xrd_template = transfer_data_into_template(
+    #nxdl_name = 'NXxrd_pan'
+    transmission_template = transfer_data_into_template(
         nxdl_name='NXtransmission',
         input_file=file_path,
         reader='transmission',
     )
-    return xrd_template
+    return transmission_template

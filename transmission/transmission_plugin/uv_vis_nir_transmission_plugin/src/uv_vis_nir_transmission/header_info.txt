@@ -1,0 +1,25 @@
+Line 3: sample name, e.g. [sample name].Probe.Raw.asc -> take the string before the first period (str)
+Line 4: date, format yy/mm/dd (dt)
+Line 5: time, format hh/dd/ss.00 (dt)
+Line 8: analyst name (str)
+Line 12: instrument name (str)
+Line 13: instrument serial number (str)
+Line 14: software/firmware version (str)
+Line 22: D2 Lamp used (bool), 0: False, 1: True
+Line 23: tungsten lamp used (bool), 0: False, 1: True
+Line 32: slit width, space-separeted array of [wavelength]/[value] pairs (float / float)
+Line 33: integration time, space-separeted array of [wavelength]/[value] pairs (float / float)
+Line 36: NIR gain, space-separeted array of [wavelength]/[value] pairs (float / float)
+Line 42: monochromator change at (float)
+Line 43: lamp change at (float)
+Line 44: detector change at (float)
+Line 45: sample beam position (str), "Front" or "Rear"
+Line 46: common beam mask (int), [0, 100]
+Line 47: common beam depolarizer (bool), "on" or "off"
+Line 48: attenuators for sample (S) and reference (R) (str)
+Line 49: polarizer angle (float)
+Line 81: ordinate type (str), "%T" or "A" # need to add
+
+data column from Line 91.
+first column: "wavelength" in nm
+second column: "transmittance" in % if ordinate type is "%T". "absorbance" if ordinate type is "A"
