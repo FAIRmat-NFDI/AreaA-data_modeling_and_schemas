@@ -62,10 +62,12 @@ from ikz_plugin.movpe import (
     ThinFilmMovpe,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
-    SubstrateTemperatureMovpe,
     SampleParametersMovpe,
     ChamberEnvironmentMovpe,
     CVDGasFlow,
+    ShaftTemperature,
+    FilamentTemperature,
+    LayTecTemperature,
 )
 
 from ikz_plugin.utils import create_archive
@@ -191,11 +193,14 @@ class ParserMovpe2IKZ(MatchingParser):
                         (growth_run_file["Distance of Showerhead"][index])
                         * ureg("millimeter").to("meter").magnitude
                     ],
-                    temperature=SubstrateTemperatureMovpe(
-                        temperature=[growth_run_file["T LayTec"][index]],
-                        process_time=[0],  # [growth_run_file["Duration"][index]],
-                        temperature_shaft=growth_run_file["T Shaft"][index],
-                        temperature_filament=growth_run_file["T Filament"][index],
+                    shaft_temperature=ShaftTemperature(
+                        set_value=growth_run_file["T Shaft"][index],
+                    ),
+                    filament_temperature=FilamentTemperature(
+                        set_value=growth_run_file["T Filament"][index],
+                    ),
+                    laytec_temperature=LayTecTemperature(
+                        set_value=growth_run_file["T LayTec"][index],
                     ),
                 )
             )
@@ -298,6 +303,7 @@ class ParserMovpe2IKZ(MatchingParser):
             growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
             experiment_data = ExperimentMovpeIKZ(
                 name=f"{recipe_id} experiment",
+                method="MOVPE 2 experiment",
                 lab_id=recipe_id,
                 growth_run=GrowthMovpeIKZReference(
                     reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data",

@@ -67,10 +67,11 @@ from nomad_material_processing.vapor_deposition import (
     VaporDepositionSource,
     VaporDepositionStep,
     SampleParameters,
-    SubstrateTemperature,
+    Temperature,
     ChamberEnvironment,
     GasFlow,
     SubstrateHeater,
+    Temperature,
 )
 
 from nomad_material_processing.chemical_vapor_deposition import (
@@ -556,68 +557,6 @@ class BubblerMovpeIKZ(CVDSource):
     )
 
 
-class FilamentTemperature(ArchiveSection):
-    """
-    Filament Tempearture vs. Time
-    """
-
-    m_def = Section(label_quantity="time")
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Fil time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Fil T"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
-            label="Filament Temperature",
-        ),
-        unit="celsius",
-    )
-
-
-class ShaftTemperature(ArchiveSection):
-    """
-    Shaft Tempearture vs. Time
-    """
-
-    m_def = Section(
-        label_quantity="time",
-    )
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Shaft time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Shaft T"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
-            label="Shaft Temperature",
-        ),
-        unit="celsius",
-    )
-
-
 class OxygenTemperature(ArchiveSection):
     """
     Oxygen Tempearture vs. Time
@@ -1047,117 +986,6 @@ class CharacterizationMovpe(ArchiveSection):
     )
 
 
-class SubstrateTemperatureMovpe(SubstrateTemperature):
-    m_def = Section(
-        # a_plot=dict(
-        #     x="process_time",
-        #     y="temperature",
-        # ),
-    )
-    temperature = Quantity(
-        type=float,
-        unit="celsius",
-        shape=["*"],
-        # a_eln=ELNAnnotation(
-        #     defaultDisplayUnit="celsius",
-        #     component="NumberEditQuantity",
-        # ),
-        description="""
-        The measured temperature by Pyrometer (Laytec GmbH),
-        which is supposed to be the real temperature during the thin-film growth,
-        excluding the heat-up and the cooling-down steps.
-        """,
-    )
-    temperature_shaft = Quantity(
-        type=np.float64,
-        description="""The input value of central shaft temperature (to hold the susceptor)
-        on MOVPE UI exclusively represents during the thin-film growth,
-        excluding the heat-up and the cooling-down steps.""",
-        a_tabular={"name": "GrowthRun/T Shaft"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
-    temperature_filament = Quantity(
-        type=np.float64,
-        description="""The input value of heating filament temperature
-        on MOVPE UI exclusively represents during the thin-film growth,
-        excluding the heat-up and the cooling-down steps.""",
-        a_tabular={"name": "GrowthRun/T Filament"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
-    process_time = Quantity(
-        type=float,
-        unit="second",
-        shape=["*"],
-    )
-
-
-class SampleParametersMovpe(SampleParameters):
-    m_def = Section(
-        # label_quantity="layer/lab_id",
-        a_plotly_graph_object={
-            "label": "Measured Temperatures",
-            "index": 1,
-            "dragmode": "pan",
-            "data": {
-                "type": "scattergl",
-                "line": {"width": 2},
-                "marker": {"size": 2},
-                "mode": "lines+markers",
-                "name": "Temperature",
-                "x": "#temperature/process_time",
-                "y": "#temperature/temperature",
-            },
-            "layout": {
-                "title": {"text": "Measured Temperature"},
-                "xaxis": {
-                    "showticklabels": True,
-                    "fixedrange": True,
-                    "ticks": "",
-                    "title": {"text": "Process time [s]"},
-                    "showline": True,
-                    "linewidth": 1,
-                    "linecolor": "black",
-                    "mirror": True,
-                },
-                "yaxis": {
-                    "showticklabels": True,
-                    "fixedrange": True,
-                    "ticks": "",
-                    "title": {"text": "Temperature [°C]"},
-                    "showline": True,
-                    "linewidth": 1,
-                    "linecolor": "black",
-                    "mirror": True,
-                },
-                "showlegend": False,
-            },
-            "config": {
-                "displayModeBar": False,
-                "scrollZoom": False,
-                "responsive": False,
-                "displaylogo": False,
-                "dragmode": False,
-            },
-        },
-    )
-    distance_to_source = Quantity(
-        type=float,
-        unit="meter",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "millimeter"},
-        description="""
-        The distance between the substrate and the source.
-        It is an array because multiple sources can be used.
-        """,
-        shape=[1],
-    )
-
-    temperature = SubSection(
-        section_def=SubstrateTemperatureMovpe,
-    )
-
-
 class CVDGasFlow(GasFlow):
     m_def = Section(
         a_plot=dict(
@@ -1202,6 +1030,30 @@ class CVDGasFlow(GasFlow):
     )
 
 
+class ShaftTemperature(Temperature):
+    """
+    Central shaft temperature (to hold the susceptor)
+    """
+
+    pass
+
+
+class FilamentTemperature(Temperature):
+    """
+    heating filament temperature
+    """
+
+    pass
+
+
+class LayTecTemperature(Temperature):
+    """
+    Central shaft temperature (to hold the susceptor)
+    """
+
+    pass
+
+
 class ChamberEnvironmentMovpe(ChamberEnvironment):
     gas_flow = SubSection(
         section_def=CVDGasFlow,
@@ -1215,6 +1067,75 @@ class ChamberEnvironmentMovpe(ChamberEnvironment):
     )
     heater = SubSection(
         section_def=SubstrateHeater,
+    )
+
+
+class SampleParametersMovpe(SampleParameters):
+    m_def = Section(
+        a_plotly_graph_object={
+            "label": "Measured Temperatures",
+            "index": 1,
+            "dragmode": "pan",
+            "data": {
+                "type": "scattergl",
+                "line": {"width": 2},
+                "marker": {"size": 2},
+                "mode": "lines+markers",
+                "name": "Temperature",
+                "x": "#substrate_temperature/time",
+                "y": "#substrate_temperature/value",
+            },
+            "layout": {
+                "title": {"text": "Measured Temperature"},
+                "xaxis": {
+                    "showticklabels": True,
+                    "fixedrange": True,
+                    "ticks": "",
+                    "title": {"text": "Process time [s]"},
+                    "showline": True,
+                    "linewidth": 1,
+                    "linecolor": "black",
+                    "mirror": True,
+                },
+                "yaxis": {
+                    "showticklabels": True,
+                    "fixedrange": True,
+                    "ticks": "",
+                    "title": {"text": "Temperature [°C]"},
+                    "showline": True,
+                    "linewidth": 1,
+                    "linecolor": "black",
+                    "mirror": True,
+                },
+                "showlegend": False,
+            },
+            "config": {
+                "displayModeBar": False,
+                "scrollZoom": False,
+                "responsive": False,
+                "displaylogo": False,
+                "dragmode": False,
+            },
+        },
+    )
+    distance_to_source = Quantity(
+        type=float,
+        unit="meter",
+        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "millimeter"},
+        description="""
+        The distance between the substrate and the source.
+        It is an array because multiple sources can be used.
+        """,
+        shape=[1],
+    )
+    shaft_temperature = SubSection(
+        section_def=ShaftTemperature,
+    )
+    filament_temperature = SubSection(
+        section_def=FilamentTemperature,
+    )
+    laytec_temperature = SubSection(
+        section_def=LayTecTemperature,
     )
 
 
@@ -1256,16 +1177,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         description="description",
         a_eln={"component": "StringEditQuantity"},
         label="Notes",
-    )
-    temperature_shaft = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={
-            "name": "Constant Parameters/Set Shaft T",
-            # "unit": "celsius"
-        },
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
     )
     temperature_substrate = Quantity(
         type=np.float64,
@@ -1369,10 +1280,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
         unit="minute",
     )
-    filament_temperature = SubSection(
-        section_def=FilamentTemperature,
-        repeats=True,
-    )
     flash_evaporator1_pressure = SubSection(
         section_def=FlashEvaporator1Pressure,
         repeats=True,
@@ -1385,12 +1292,12 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         section_def=OxygenTemperature,
         repeats=True,
     )
-    shaft_temperature = SubSection(
-        section_def=ShaftTemperature,
-        repeats=True,
-    )
     throttle_valve = SubSection(
         section_def=ThrottleValve,
+        repeats=True,
+    )
+    sample_parameters = SubSection(
+        section_def=SampleParametersMovpe,
         repeats=True,
     )
     environment = SubSection(
@@ -1548,7 +1455,7 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
     # method
     method = Quantity(
         type=str,
-        default="Growth (MOVPE IKZ)",
+        default="MOVPE IKZ",
     )
     data_file = Quantity(
         type=str,
@@ -1622,7 +1529,7 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
             archive.workflow2.inputs.extend(set(inputs))
 
 
-class GrowthMovpeIKZReference(SectionReference):
+class GrowthMovpeIKZReference(ActivityReference):
     """
     A section used for referencing a GrowthMovpeIKZ.
     """
@@ -1741,7 +1648,6 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
     # lab_id
     method = Quantity(
         type=str,
-        default="Experiment (MOVPE IKZ)",
     )
     data_file = Quantity(
         type=str,
@@ -1788,47 +1694,60 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
     )
     characterization = SubSection(section_def=CharacterizationMovpe)
 
+    steps = SubSection(
+        section_def=ActivityReference,
+        repeats=True,
+    )
     # growth_run_constant_parameters = SubSection(
     #     section_def=GrowthMovpe1IKZConstantParametersReference
     # )
 
     def normalize(self, archive, logger):
         archive.workflow2 = None
-        super(ExperimentMovpeIKZ, self).normalize(archive, logger)
 
-        for process in ["growth_run", "precursors_preparation"]:
+        # Workflow(
+        #     tasks=[],
+        # )
+
+        self.steps = []
+        # super(ExperimentMovpeIKZ, self).normalize(archive, logger)
+        for process in ["precursors_preparation", "growth_run"]:
+            # try:
+            #     workflow2 = getattr(self, process).reference.m_parent.workflow2
+            # except AttributeError:
+            #     workflow2 = None
             try:
-                workflow2 = getattr(self, process).reference.m_parent.workflow2
+                reference = getattr(self, process).reference
             except AttributeError:
-                workflow2 = None
-            if workflow2:
-                archive.workflow2.tasks.append(
-                    getattr(self, process).reference.m_parent.workflow2
-                )
-            if getattr(self, process).reference:
+                reference = None
+            # if workflow2:
+            #     archive.workflow2.tasks.append(workflow2)
+            if reference:
                 self.steps.append(
-                    ExperimentStep(activity=getattr(self, process).reference)
+                    ExperimentStep(activity=reference, name=reference.name)
                 )
 
         for technique in ["in_situ_reflectance", "hall", "afm", "light_microscopy"]:
-            try:
-                workflow2 = getattr(
-                    self.characterization, technique
-                ).reference.m_parent.workflow2
-            except AttributeError:
-                workflow2 = None
-            if workflow2:
-                archive.workflow2.tasks.append(
-                    getattr(
-                        self.characterization, technique
-                    ).reference.m_parent.workflow2
-                )
-            if getattr(self.characterization, technique).reference:
-                self.steps.append(
-                    ExperimentStep(
-                        activity=getattr(self.characterization, technique).reference
-                    )
-                )
+            # try:
+            #     workflow2 = getattr(
+            #         self.characterization, technique
+            #     ).reference.m_parent.workflow2
+            # except AttributeError:
+            #     workflow2 = None
+            technique_list = getattr(self.characterization, technique, None)
+            if technique_list:
+                for technique_run in technique_list:
+                    try:
+                        reference = technique_run.reference
+                    except AttributeError:
+                        reference = None
+                    # if workflow2:
+                    #     archive.workflow2.tasks.append(workflow2)
+                    if reference:
+                        self.steps.append(
+                            ExperimentStep(activity=reference, name=reference.name)
+                        )
+        super(ExperimentMovpeIKZ, self).normalize(archive, logger)
 
         # search_result = search(
         #     owner="user",

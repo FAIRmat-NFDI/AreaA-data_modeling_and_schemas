@@ -129,9 +129,9 @@ def row_to_array(
             array = array.append(
                 pd.Series(
                     [
-                        dataframe.get(
-                            f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ""
-                        )[row_index]
+                        dataframe[
+                            f"{quantities[0]}{'' if i == 0 else '.' + str(i)}"
+                        ].loc[row_index],
                     ]
                 )
             )

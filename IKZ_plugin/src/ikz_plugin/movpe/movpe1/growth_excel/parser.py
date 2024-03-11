@@ -86,6 +86,7 @@ from ikz_plugin.movpe import (
     FlashEvaporator2Pressure,
     OxygenTemperature,
     ShaftTemperature,
+    FilamentTemperature,
     ThrottleValve,
     RawFileMovpeDepositionControl,
 )
@@ -107,14 +108,71 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
-        dep_control = pd.read_excel(xlsx, "Deposition Control", comment="#")
-        precursors = pd.read_excel(xlsx, "Precursors", comment="#")
-        dep_control.columns = [
-            re.sub(r"\s+", " ", col.strip()) for col in dep_control.columns
-        ]
-        precursors.columns = [
-            re.sub(r"\s+", " ", col.strip()) for col in precursors.columns
-        ]
+        # Read the file without headers
+        dep_control = pd.read_excel(
+            xlsx, "Deposition Control", comment="#", header=None
+        )
+        precursors = pd.read_excel(xlsx, "Precursors", comment="#", header=None)
+
+        # # Strip and rename the columns
+        # dep_control.columns = [
+        #     re.sub(r"\s+", " ", str(col).strip()) for col in dep_control.iloc[0]
+        # ]
+        # precursors.columns = [
+        #     re.sub(r"\s+", " ", str(col).strip()) for col in precursors.iloc[0]
+        # ]
+
+        # Create a dictionary to keep track of the count of each column name
+        column_counts = {}
+        # Create a list to store the new column names
+        new_columns = []
+        # Iterate over the columns
+        for col in dep_control.iloc[0]:
+            # Clean up the column name
+            col = re.sub(r"\s+", " ", str(col).strip())
+            # If the column name is in the dictionary, increment the count
+            if col in column_counts:
+                column_counts[col] += 1
+            # Otherwise, add the column name to the dictionary with a count of 1
+            else:
+                column_counts[col] = 1
+            # If the count is greater than 1, append it to the column name
+            if column_counts[col] > 1:
+                col = f"{col}.{column_counts[col] - 1}"
+            # Add the column name to the list of new column names
+            new_columns.append(col)
+        # Assign the new column names to the DataFrame
+        dep_control.columns = new_columns
+
+        # Create a dictionary to keep track of the count of each column name
+        column_counts = {}
+        # Create a list to store the new column names
+        new_columns = []
+        # Iterate over the columns
+        for col in precursors.iloc[0]:
+            # Clean up the column name
+            col = re.sub(r"\s+", " ", str(col).strip())
+            # If the column name is in the dictionary, increment the count
+            if col in column_counts:
+                column_counts[col] += 1
+            # Otherwise, add the column name to the dictionary with a count of 1
+            else:
+                column_counts[col] = 1
+            # If the count is greater than 1, append it to the column name
+            if column_counts[col] > 1:
+                col = f"{col}.{column_counts[col] - 1}"
+            # Add the column name to the list of new column names
+            new_columns.append(col)
+        # Assign the new column names to the DataFrame
+        precursors.columns = new_columns
+
+        # Remove the first row (which contains the original headers)
+        dep_control = dep_control.iloc[1:]
+        precursors = precursors.iloc[1:]
+        # Reset the index
+        dep_control = dep_control.reset_index(drop=True)
+        precursors = precursors.reset_index(drop=True)
+
         deposition_control_list = []
 
         if not len(dep_control["Sample ID"]) == len(precursors["Sample ID"]):
@@ -126,10 +184,10 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
             )
 
         for index, dep_control_run in enumerate(dep_control["Sample ID"]):
-            assert dep_control_run == precursors["Sample ID"][index], (
+            assert dep_control_run == precursors["Sample ID"].loc[index], (
                 f"Not matching Sample ID at line {index} in "
                 f"'deposition control' [{dep_control_run}] "
-                f"and 'precursors' [{precursors['Sample ID'][index]}] sheets."
+                f"and 'precursors' [{precursors['Sample ID'].loc[index]}] sheets."
                 f"Please check the files and try again."
             )
 
@@ -138,6 +196,8 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 owner="user",
                 query={
                     "results.eln.sections:any": ["ExperimentMovpeIKZ"],
+                    "results.eln.methods:any": ["MOVPE 1 experiment"],
+                    "upload_id:any": [archive.m_context.upload_id],
                 },
                 pagination=MetadataPagination(page_size=10000),
                 user_id=archive.metadata.main_author.user_id,
@@ -198,7 +258,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         name=dep_control_run + "stack",
                         lab_id=dep_control_run,
                         substrate=SubstrateReference(
-                            lab_id=dep_control["Substrate ID"][index],
+                            lab_id=dep_control["Substrate ID"].loc[index],
                         ),
                         layers=[
                             ThinFilmReference(
@@ -215,9 +275,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     grown_sample_filename,
                     filetype,
                     logger,
-                )
-                filament_temperatures = create_timeseries_objects(
-                    dep_control, ["Fil time", "Fil T"], FilamentTemperature, index
                 )
                 flash_evaporator1_pressures = create_timeseries_objects(
                     dep_control,
@@ -237,12 +294,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     OxygenTemperature,
                     index,
                 )
-                shaft_temperatures = create_timeseries_objects(
-                    dep_control,
-                    ["Oxygen time", "Oxygen T"],
-                    ShaftTemperature,
-                    index,
-                )
                 throttle_valves = create_timeseries_objects(
                     dep_control, ["Oxygen time", "Oxygen T"], ThrottleValve, index
                 )
@@ -252,21 +303,19 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     data_file=data_file_with_path,
                     name="Growth MOVPE 1",
                     lab_id=dep_control_run,
-                    description=f"{dep_control['Weekday'][index]}. Sequential number: {dep_control['number'][index]}. {dep_control['Comment'][index]}",
-                    datetime=dep_control["Date"][index],
+                    description=f"{dep_control['Weekday'].loc[index]}. Sequential number: {dep_control['number'].loc[index]}. {dep_control['Comment'].loc[index]}",
+                    datetime=dep_control["Date"].loc[index],
                     steps=[
                         GrowthStepMovpe1IKZ(
                             name="Deposition",
-                            duration=dep_control["Duration"][index],
-                            filament_temperature=filament_temperatures,
+                            duration=dep_control["Duration"].loc[index],
                             flash_evaporator1_pressure=flash_evaporator1_pressures,
                             flash_evaporator2_pressure=flash_evaporator2_pressures,
                             oxygen_temperature=oxygen_temperatures,
-                            shaft_temperature=shaft_temperatures,
                             throttle_valve=throttle_valves,
                             environment=ChamberEnvironmentMovpe(
                                 pressure=Pressure(
-                                    set_value=dep_control["Set Chamber P"][index],
+                                    set_value=dep_control["Set Chamber P"].loc[index],
                                     value=row_to_array(
                                         dep_control,
                                         ["Read Chamber Pressure"],
@@ -279,7 +328,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                     ),
                                 ),
                                 rotation=Rotation(
-                                    set_value=dep_control["Set Chamber P"][index],
+                                    set_value=dep_control["Set Chamber P"].loc[index],
                                     value=row_to_array(
                                         dep_control,
                                         ["Read Chamber Pressure"],
@@ -300,6 +349,32 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                     substrate=ThinFilmStackMovpeReference(
                                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
                                     ),
+                                    shaft_temperature=ShaftTemperature(
+                                        set_value=dep_control["Set Shaft T"].loc[index],
+                                        value=row_to_array(
+                                            dep_control,
+                                            ["Read Shaft T"],
+                                            index,
+                                        ),
+                                        time=row_to_array(
+                                            dep_control,
+                                            ["Shaft time"],
+                                            index,
+                                        ),
+                                    ),
+                                    filament_temperature=FilamentTemperature(
+                                        set_value=dep_control["Set Fil T"].loc[index],
+                                        value=row_to_array(
+                                            dep_control,
+                                            ["Read Fil T"],
+                                            index,
+                                        ),
+                                        time=row_to_array(
+                                            dep_control,
+                                            ["Fil time"],
+                                            index,
+                                        ),
+                                    ),
                                     # distance_to_source=[
                                     #     (
                                     #         growth_run_file["Distance of Showerhead"][
@@ -310,17 +385,17 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                     # ],
                                     # temperature=SubstrateTemperatureMovpe(
                                     #     temperature=[
-                                    #         growth_run_file["T LayTec"][index]
+                                    #         growth_run_file["T LayTec"].loc[index]
                                     #     ],
                                     #     process_time=[
                                     #         0
-                                    #     ],  # [growth_run_file["Duration"][index]],
+                                    #     ],  # [growth_run_file["Duration"].loc[index]],
                                     #     temperature_shaft=growth_run_file["T Shaft"][
                                     #         index
                                     #     ],
                                     #     temperature_filament=growth_run_file[
                                     #         "T Filament"
-                                    #     ][index],
+                                    #     ].loc[index],
                                     # ),
                                 )
                             ],
@@ -359,23 +434,23 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     ):
                         solute_name = precursors.get(
                             f"MO Precursor{'' if i == 0 else '.' + str(i)}", ""
-                        )[index]
+                        ).loc[index]
                         solvent_name = (
                             precursors.get(
                                 f"Solvent{'' if i == 0 else '.' + str(i)}",
                                 0,
-                            )[index]
+                            ).loc[index]
                             if not None
                             else "unknown"
                         )
                         solute_mass = precursors.get(
                             f"Weight{'' if i == 0 else '.' + str(i)}",
                             0,
-                        )[index]
+                        ).loc[index]
                         solvent_volume = precursors.get(
                             f"Volume{'' if i == 0 else '.' + str(i)}",
                             0,
-                        )[index]
+                        ).loc[index]
                         solution_filename = f"{solute_name}-mass{solute_mass}_{solvent_name}-vol{solvent_volume}.Solution.archive.{filetype}"
                         solution_data = Solution(
                             name=f"{solute_name} in {solvent_name}",
@@ -387,7 +462,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                         cas_number=precursors.get(
                                             f"CAS{'' if i == 0 else '.' + str(i)}",
                                             0,
-                                        )[index],
+                                        ).loc[index],
                                     ),
                                 ),
                             ],
@@ -399,7 +474,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                         cas_number=precursors.get(
                                             f"Solvent CAS{'' if i == 0 else '.' + str(i)}",
                                             0,
-                                        )[index],
+                                        ).loc[index],
                                     ),
                                 ),
                             ],
@@ -424,7 +499,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                 system=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, solution_filename)}#data",
                                 molar_concentration=precursors.get(
                                     f"Molar conc{'' if i == 0 else '.' + str(i)}", 0
-                                )[index],
+                                ).loc[index],
                             ),
                         )
                         i += 1
@@ -434,15 +509,15 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 # create precursors preparation archive
                 precursors_data = PrecursorsPreparationIKZ(
                     data_file=data_file_with_path,
-                    lab_id=f"{precursors['Sample ID'][index]} precursor preparation",
+                    lab_id=f"{precursors['Sample ID'].loc[index]} precursor preparation",
                     name="Precursors",
-                    description=f"{precursors['Weekday'][index]}. Sequential number: {precursors['number'][index]}.",
-                    flow_titanium=precursors["Set flow Ti"][index],
-                    flow_calcium=precursors["Set flow Ca"][index],
+                    description=f"{precursors['Weekday'].loc[index]}. Sequential number: {precursors['number'].loc[index]}.",
+                    flow_titanium=precursors["Set flow Ti"].loc[index],
+                    flow_calcium=precursors["Set flow Ca"].loc[index],
                     components=component_objects,
                 )
 
-                precursors_filename = f"{precursors['Sample ID'][index]}.PrecursorsPreparationIKZ.archive.{filetype}"
+                precursors_filename = f"{precursors['Sample ID'].loc[index]}.PrecursorsPreparationIKZ.archive.{filetype}"
                 precursors_archive = EntryArchive(
                     data=precursors_data,
                     m_context=archive.m_context,
@@ -462,13 +537,14 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 experiment_archive = EntryArchive(
                     data=ExperimentMovpeIKZ(
                         name=f"{dep_control_run} experiment",
+                        method="MOVPE 1 experiment",
                         lab_id=f"{dep_control_run} experiment",
-                        datetime=dep_control["Date"][index],
+                        datetime=dep_control["Date"].loc[index],
                         precursors_preparation=PrecursorsPreparationIKZReference(
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, precursors_filename)}#data",
                         ),
                         # growth_run_constant_parameters=GrowthMovpe1IKZConstantParametersReference(
-                        #     lab_id=dep_control["Constant Parameters ID"][index],
+                        #     lab_id=dep_control["Constant Parameters ID"].loc[index],
                         # ),
                         growth_run=GrowthMovpeIKZReference(
                             reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_filename)}#data",
@@ -491,7 +567,7 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                 #     experiment_archive = EntryArchive(
                 #         data=ExperimentMovpeIKZ(
                 #             lab_id=f"{dep_control_run} experiment",
-                #             datetime=dep_control["Date"][index],
+                #             datetime=dep_control["Date"].loc[index],
                 #             precursors_preparation=PrecursorsPreparationIKZReference(
                 #                 reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, precursors_filename)}#data",
                 #             ),
