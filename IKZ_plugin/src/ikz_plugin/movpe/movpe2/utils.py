@@ -50,13 +50,13 @@ from nomad_material_processing import (
     SubstrateReference,
 )
 from nomad_material_processing.chemical_vapor_deposition import (
-    CVDBubbler,
+    BubblerEvaporator,
     CVDSource,
 )
 
 from ikz_plugin.movpe import (
-    BubblerMovpeIKZ,
-    GasSourceMovpeIKZ,
+    BubblerSourceIKZ,
+    GasSourceIKZ,
     CVDVaporRateMovpeIKZ,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -224,7 +224,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
             for key in bubbler_quantities
         ):
             sources.append(
-                BubblerMovpeIKZ(
+                BubblerSourceIKZ(
                     name=growth_run_file.get(
                         f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
@@ -233,7 +233,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
                         )[line_number],
                     ),
-                    vapor_source=CVDBubbler(
+                    vapor_source=BubblerEvaporator(
                         temperature=growth_run_file.get(
                             f"Bubbler Temp{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
@@ -293,7 +293,7 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
             for key in gas_source_quantities
         ):
             gas_sources.append(
-                GasSourceMovpeIKZ(
+                GasSourceIKZ(
                     name=growth_run_file.get(
                         f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],

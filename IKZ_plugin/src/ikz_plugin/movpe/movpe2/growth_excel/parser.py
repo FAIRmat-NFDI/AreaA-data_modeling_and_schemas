@@ -227,25 +227,17 @@ class ParserMovpe2IKZ(MatchingParser):
                         set_value=(growth_run_file["Rotation"][index])
                         * ureg("rpm").to("rpm").magnitude,
                     ),
-                    gas_flow=[
-                        CVDGasFlow(
-                            gas=PubChemPureSubstanceSection(
-                                name=growth_run_file["Carrier Gas"][index],
-                            ),
-                            push_gas_valve=[
-                                growth_run_file["Pushgas Valve"][index]
-                                * ureg("cm ** 3 / minute")
-                                .to("meter ** 3 / second")
-                                .magnitude
-                            ],
-                            uniform_valve=[
-                                growth_run_file["Uniform Valve"][index]
-                                * ureg("cm ** 3 / minute")
-                                .to("meter ** 3 / second")
-                                .magnitude
-                            ],
-                        )
-                    ],
+                    carrier_gas=PubChemPureSubstanceSection(
+                        name=growth_run_file["Carrier Gas"][index],
+                    ),
+                    carrier_push_valve=CVDGasFlow(
+                        set_value=growth_run_file["Pushgas Valve"][index]
+                        * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
+                    ),
+                    uniform_valve=CVDGasFlow(
+                        set_value=growth_run_file["Uniform Valve"][index]
+                        * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
+                    ),
                 ),
             )
             # else:
@@ -284,11 +276,13 @@ class ParserMovpe2IKZ(MatchingParser):
         # creating growth process archives
         for recipe_id, growth_process_object in growth_processes.items():
             growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
+            # Activity.normalize(growth_process_object, archive, logger)
             growth_process_archive = EntryArchive(
                 data=growth_process_object,
                 m_context=archive.m_context,
                 metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
             )
+
             create_archive(
                 growth_process_archive.m_to_dict(),
                 archive.m_context,

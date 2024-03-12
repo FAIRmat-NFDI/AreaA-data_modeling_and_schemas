@@ -67,7 +67,6 @@ from nomad_material_processing.vapor_deposition import (
     VaporDepositionSource,
     VaporDepositionStep,
     SampleParameters,
-    Temperature,
     ChamberEnvironment,
     GasFlow,
     SubstrateHeater,
@@ -75,11 +74,14 @@ from nomad_material_processing.vapor_deposition import (
 )
 
 from nomad_material_processing.chemical_vapor_deposition import (
-    CVDBubbler,
+    BubblerEvaporator,
+    FlashEvaporator,
     CVDVaporRate,
     CVDSource,
     Pressure,
     Rotation,
+    Temperature,
+    CVDGasFlow,
 )
 
 from nomad_measurements import (
@@ -471,6 +473,7 @@ class ThinFilmStackMovpeReference(ThinFilmStackReference):
         super(ThinFilmStackMovpeReference, self).normalize(archive, logger)
 
 
+# !!!! TODO
 class CVDVaporRateMovpeIKZ(CVDVaporRate):
     m_def = Section(
         a_plot=dict(
@@ -506,175 +509,6 @@ class CVDVaporRateMovpeIKZ(CVDVaporRate):
         ),
         unit="second",
         shape=[1],
-    )
-
-
-class GasSourceMovpeIKZ(CVDSource):
-    m_def = Section(
-        a_plot=dict(
-            x="vapor_rate/process_time",
-            y="vapor_rate/rate",
-        ),
-    )
-    name = Quantity(
-        type=str,
-        description="""
-        A short and descriptive name for this source.
-        """,
-    )
-    vapor_rate = SubSection(
-        section_def=CVDVaporRateMovpeIKZ,
-        description="""
-        The rate of the material being evaporated (mol/time).
-        """,
-    )
-
-
-class BubblerMovpeIKZ(CVDSource):
-    m_def = Section(
-        a_plot=dict(
-            x="vapor_rate/process_time",
-            y="vapor_rate/rate",
-        ),
-    )
-    name = Quantity(
-        type=str,
-        description="""
-        A short and descriptive name for this source.
-        """,
-    )
-    vapor_source = SubSection(
-        section_def=CVDBubbler,
-        description="""
-        Example: A heater, a filament, a laser, a bubbler, etc.
-        """,
-    )
-    vapor_rate = SubSection(
-        section_def=CVDVaporRateMovpeIKZ,
-        description="""
-        The rate of the material being evaporated (mol/time).
-        """,
-    )
-
-
-class OxygenTemperature(ArchiveSection):
-    """
-    Oxygen Tempearture vs. Time
-    """
-
-    m_def = Section(label_quantity="time")
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Oxygen time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Oxygen T"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
-            label="Oxygen Temperature",
-        ),
-        unit="celsius",
-    )
-
-
-class FlashEvaporator1Pressure(ArchiveSection):
-    """
-    Flash Evaporator 1 vs. Time
-    """
-
-    m_def = Section(label_quantity="time")
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/BP FE1 time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/BP FE1"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
-            label="Flash Evaporator 1 Back Pressure",
-        ),
-        unit="celsius",
-    )
-
-
-class FlashEvaporator2Pressure(ArchiveSection):
-    """
-    Flash Evaporator 2 vs. Time
-    """
-
-    m_def = Section(label_quantity="time")
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/BP FE2 time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/BP FE2"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
-            label="Flash Evaporator 2 Back Pressure",
-        ),
-        unit="celsius",
-    )
-
-
-class ThrottleValve(ArchiveSection):
-    """
-    Throttle Valve that controls chamber pressure
-    """
-
-    m_def = Section(label_quantity="set_value")
-
-    time = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/TV time"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="minute",
-            label="Time (sec)",
-        ),
-        unit="minute",
-    )
-    value = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/throttle valve"},
-        a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="mbar",
-            label="Throttle Valve",
-        ),
-        unit="mbar",
     )
 
 
@@ -986,50 +820,6 @@ class CharacterizationMovpe(ArchiveSection):
     )
 
 
-class CVDGasFlow(GasFlow):
-    m_def = Section(
-        a_plot=dict(
-            x="process_time",
-            y="flow",
-        ),
-    )
-    gas = SubSection(
-        section_def=PubChemPureSubstanceSection,
-    )
-    flow = Quantity(
-        type=float,
-        unit="meter ** 3 / second",
-        shape=[1],
-    )
-    push_gas_valve = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Pushgas Valve"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="meter ** 3 / second",
-        shape=[1],
-    )
-    uniform_valve = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "GrowthRun/Uniform Valve"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="meter ** 3 / second",
-        shape=[1],
-    )
-    process_time = Quantity(
-        type=float,
-        unit="second",
-        shape=[1],
-    )
-
-
 class ShaftTemperature(Temperature):
     """
     Central shaft temperature (to hold the susceptor)
@@ -1046,6 +836,14 @@ class FilamentTemperature(Temperature):
     pass
 
 
+class GasTemperature(Temperature):
+    """
+    the temperature of a gas in a gas source
+    """
+
+    pass
+
+
 class LayTecTemperature(Temperature):
     """
     Central shaft temperature (to hold the susceptor)
@@ -1054,12 +852,92 @@ class LayTecTemperature(Temperature):
     pass
 
 
+class BubblerSourceIKZ(CVDSource):
+    m_def = Section(
+        a_plot=dict(
+            x="vapor_rate/process_time",
+            y="vapor_rate/rate",
+        ),
+    )
+    name = Quantity(
+        type=str,
+        description="""
+        A short and descriptive name for this source.
+        """,
+    )
+    vapor_source = SubSection(
+        section_def=BubblerEvaporator,
+        description="""
+        Example: A heater, a filament, a laser, a bubbler, etc.
+        """,
+    )
+    vapor_rate = SubSection(
+        section_def=CVDVaporRateMovpeIKZ,
+        description="""
+        The rate of the material being evaporated (mol/time).
+        """,
+    )
+
+
+class FlashSourceIKZ(CVDSource):
+    m_def = Section(
+        a_plot=dict(
+            x="vapor_rate/process_time",
+            y="vapor_rate/rate",
+        ),
+    )
+    name = Quantity(
+        type=str,
+        description="""
+        A short and descriptive name for this source.
+        """,
+    )
+    vapor_source = SubSection(
+        section_def=FlashEvaporator,
+        description="""
+        Example: A heater, a filament, a laser, a bubbler, etc.
+        """,
+    )
+    vapor_rate = SubSection(
+        section_def=CVDVaporRateMovpeIKZ,
+        description="""
+        The rate of the material being evaporated (mol/time).
+        """,
+    )
+
+
+class GasSourceIKZ(CVDSource):
+    m_def = Section(
+        a_plot=dict(
+            x="vapor_rate/process_time",
+            y="vapor_rate/rate",
+        ),
+    )
+    gas_temperature = SubSection(
+        section_def=GasTemperature,
+    )
+    vapor_rate = SubSection(
+        section_def=CVDVaporRateMovpeIKZ,
+        description="""
+        The rate of the material being evaporated (mol/time).
+        """,
+    )
+
+
 class ChamberEnvironmentMovpe(ChamberEnvironment):
-    gas_flow = SubSection(
+    carrier_gas = SubSection(
+        section_def=PubChemPureSubstanceSection,
+    )
+    carrier_push_valve = SubSection(
         section_def=CVDGasFlow,
-        repeats=True,
+    )
+    uniform_valve = SubSection(
+        section_def=CVDGasFlow,
     )
     pressure = SubSection(
+        section_def=Pressure,
+    )
+    throttle_valve = SubSection(
         section_def=Pressure,
     )
     rotation = SubSection(
@@ -1279,22 +1157,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_tabular={"name": "Deposition Control/Growth time"},
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
         unit="minute",
-    )
-    flash_evaporator1_pressure = SubSection(
-        section_def=FlashEvaporator1Pressure,
-        repeats=True,
-    )
-    flash_evaporator2_pressure = SubSection(
-        section_def=FlashEvaporator2Pressure,
-        repeats=True,
-    )
-    oxygen_temperature = SubSection(
-        section_def=OxygenTemperature,
-        repeats=True,
-    )
-    throttle_valve = SubSection(
-        section_def=ThrottleValve,
-        repeats=True,
     )
     sample_parameters = SubSection(
         section_def=SampleParametersMovpe,

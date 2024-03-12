@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+import re
 import yaml
 import json
 import math
@@ -139,3 +140,53 @@ def row_to_array(
         else:
             break
     return array
+
+
+def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Picks first row of a DataFrame and makes it as new headers.
+
+    This function takes a DataFrame (without headers) as input and uses the first row as the new column names.
+    It modifies these column names by removing trailing spaces and handling duplicate column names.
+    Duplicate column names are handled by appending a count to the end of the column name.
+    This functionality also a built-in in pandas, but it is not used here because it does not handle
+    duplicate column names as expected.
+
+    After setting the new column names, the function removes the first row (which has been used as headers)
+    and resets the index.
+
+    Args:
+        dataframe (pd.DataFrame): The input DataFrame (without headers) whose first row is to be used as
+        the new column names and then cleaned.
+
+    Returns:
+        pd.DataFrame: The modified DataFrame with cleaned column names, removed first row, and reset index.
+    """
+
+    # Create a dictionary to keep track of the count of each column name
+    column_counts = {}
+    # Create a list to store the new column names
+    new_columns = []
+    # Iterate over the columns
+    for col in dataframe.iloc[0]:
+        # Clean up the column name
+        col = re.sub(r"\s+", " ", str(col).strip())
+        # If the column name is in the dictionary, increment the count
+        if col in column_counts:
+            column_counts[col] += 1
+        # Otherwise, add the column name to the dictionary with a count of 1
+        else:
+            column_counts[col] = 1
+        # If the count is greater than 1, append it to the column name
+        if column_counts[col] > 1:
+            col = f"{col}.{column_counts[col] - 1}"
+        # Add the column name to the list of new column names
+        new_columns.append(col)
+    # Assign the new column names to the DataFrame
+    dataframe.columns = new_columns
+    # Remove the first row (which contains the original headers)
+    dataframe = dataframe.iloc[1:]
+    # Reset the index
+    dataframe = dataframe.reset_index(drop=True)
+
+    return dataframe

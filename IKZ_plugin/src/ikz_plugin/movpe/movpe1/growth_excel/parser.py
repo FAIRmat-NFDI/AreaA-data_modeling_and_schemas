@@ -46,6 +46,7 @@ from nomad.utils import hash
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
     PureSubstanceComponent,
+    PubChemPureSubstanceSection,
     PureSubstanceSection,
 )
 
@@ -57,6 +58,8 @@ from nomad_material_processing import (
 from nomad_material_processing.chemical_vapor_deposition import (
     Pressure,
     Rotation,
+    FlashEvaporator,
+    CVDGasFlow,
 )
 
 from ikz_plugin import (
@@ -67,6 +70,7 @@ from ikz_plugin import (
 from ikz_plugin.utils import (
     create_archive,
     row_to_array,
+    clean_dataframe_headers,
 )
 from ikz_plugin.movpe import (
     ExperimentMovpeIKZ,
@@ -81,20 +85,18 @@ from ikz_plugin.movpe import (
     SystemComponentIKZ,
     SampleParametersMovpe,
     ChamberEnvironmentMovpe,
-    FilamentTemperature,
-    FlashEvaporator1Pressure,
-    FlashEvaporator2Pressure,
-    OxygenTemperature,
+    FlashSourceIKZ,
+    GasSourceIKZ,
+    GasTemperature,
     ShaftTemperature,
     FilamentTemperature,
-    ThrottleValve,
     RawFileMovpeDepositionControl,
 )
 
 from ikz_plugin.movpe.movpe1.utils import create_timeseries_objects
 
 
-class ParserMovpe1DepositionControlIKZ(MatchingParser):
+class ParserMovpe1IKZ(MatchingParser):
     def __init__(self):
         super().__init__(
             name="MOVPE 1 Deposition Control IKZ",
@@ -122,56 +124,9 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
         #     re.sub(r"\s+", " ", str(col).strip()) for col in precursors.iloc[0]
         # ]
 
-        # Create a dictionary to keep track of the count of each column name
-        column_counts = {}
-        # Create a list to store the new column names
-        new_columns = []
-        # Iterate over the columns
-        for col in dep_control.iloc[0]:
-            # Clean up the column name
-            col = re.sub(r"\s+", " ", str(col).strip())
-            # If the column name is in the dictionary, increment the count
-            if col in column_counts:
-                column_counts[col] += 1
-            # Otherwise, add the column name to the dictionary with a count of 1
-            else:
-                column_counts[col] = 1
-            # If the count is greater than 1, append it to the column name
-            if column_counts[col] > 1:
-                col = f"{col}.{column_counts[col] - 1}"
-            # Add the column name to the list of new column names
-            new_columns.append(col)
-        # Assign the new column names to the DataFrame
-        dep_control.columns = new_columns
+        dep_control = clean_dataframe_headers(dep_control)
 
-        # Create a dictionary to keep track of the count of each column name
-        column_counts = {}
-        # Create a list to store the new column names
-        new_columns = []
-        # Iterate over the columns
-        for col in precursors.iloc[0]:
-            # Clean up the column name
-            col = re.sub(r"\s+", " ", str(col).strip())
-            # If the column name is in the dictionary, increment the count
-            if col in column_counts:
-                column_counts[col] += 1
-            # Otherwise, add the column name to the dictionary with a count of 1
-            else:
-                column_counts[col] = 1
-            # If the count is greater than 1, append it to the column name
-            if column_counts[col] > 1:
-                col = f"{col}.{column_counts[col] - 1}"
-            # Add the column name to the list of new column names
-            new_columns.append(col)
-        # Assign the new column names to the DataFrame
-        precursors.columns = new_columns
-
-        # Remove the first row (which contains the original headers)
-        dep_control = dep_control.iloc[1:]
-        precursors = precursors.iloc[1:]
-        # Reset the index
-        dep_control = dep_control.reset_index(drop=True)
-        precursors = precursors.reset_index(drop=True)
+        precursors = clean_dataframe_headers(precursors)
 
         deposition_control_list = []
 
@@ -276,27 +231,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                     filetype,
                     logger,
                 )
-                flash_evaporator1_pressures = create_timeseries_objects(
-                    dep_control,
-                    ["BP FE1 time", "BP FE1"],
-                    FlashEvaporator1Pressure,
-                    index,
-                )
-                flash_evaporator2_pressures = create_timeseries_objects(
-                    dep_control,
-                    ["BP FE2 time", "BP FE2"],
-                    FlashEvaporator2Pressure,
-                    index,
-                )
-                oxygen_temperatures = create_timeseries_objects(
-                    dep_control,
-                    ["Oxygen time", "Oxygen T"],
-                    OxygenTemperature,
-                    index,
-                )
-                throttle_valves = create_timeseries_objects(
-                    dep_control, ["Oxygen time", "Oxygen T"], ThrottleValve, index
-                )
 
                 # creating GrowthMovpeIKZ archive
                 growth_data = GrowthMovpeIKZ(
@@ -309,10 +243,6 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                         GrowthStepMovpe1IKZ(
                             name="Deposition",
                             duration=dep_control["Duration"].loc[index],
-                            flash_evaporator1_pressure=flash_evaporator1_pressures,
-                            flash_evaporator2_pressure=flash_evaporator2_pressures,
-                            oxygen_temperature=oxygen_temperatures,
-                            throttle_valve=throttle_valves,
                             environment=ChamberEnvironmentMovpe(
                                 pressure=Pressure(
                                     set_value=dep_control["Set Chamber P"].loc[index],
@@ -324,6 +254,18 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                     time=row_to_array(
                                         dep_control,
                                         ["Chamber pressure time"],
+                                        index,
+                                    ),
+                                ),
+                                throttle_valve=Pressure(
+                                    value=row_to_array(
+                                        dep_control,
+                                        ["Read throttle valve"],
+                                        index,
+                                    ),
+                                    time=row_to_array(
+                                        dep_control,
+                                        ["TV time"],
                                         index,
                                     ),
                                 ),
@@ -375,29 +317,84 @@ class ParserMovpe1DepositionControlIKZ(MatchingParser):
                                             index,
                                         ),
                                     ),
-                                    # distance_to_source=[
-                                    #     (
-                                    #         growth_run_file["Distance of Showerhead"][
-                                    #             index
-                                    #         ]
-                                    #     )
-                                    #     * ureg("millimeter").to("meter").magnitude
-                                    # ],
-                                    # temperature=SubstrateTemperatureMovpe(
-                                    #     temperature=[
-                                    #         growth_run_file["T LayTec"].loc[index]
-                                    #     ],
-                                    #     process_time=[
-                                    #         0
-                                    #     ],  # [growth_run_file["Duration"].loc[index]],
-                                    #     temperature_shaft=growth_run_file["T Shaft"][
-                                    #         index
-                                    #     ],
-                                    #     temperature_filament=growth_run_file[
-                                    #         "T Filament"
-                                    #     ].loc[index],
-                                    # ),
                                 )
+                            ],
+                            sources=[
+                                FlashSourceIKZ(
+                                    name="Flash Evaporator 1",
+                                    vapor_source=FlashEvaporator(
+                                        pressure=Pressure(
+                                            value=row_to_array(
+                                                dep_control,
+                                                ["BP FE1"],
+                                                index,
+                                            ),
+                                            time=row_to_array(
+                                                dep_control,
+                                                ["BP FE1 time"],
+                                                index,
+                                            ),
+                                        ),
+                                    ),
+                                    carrier_gas=PubChemPureSubstanceSection(
+                                        name="Argon",
+                                    ),
+                                    carrier_push_valve=CVDGasFlow(
+                                        set_value=dep_control["Set Ar Push 1"].loc[
+                                            index
+                                        ],
+                                    ),
+                                    carrier_purge_valve=CVDGasFlow(
+                                        set_value=dep_control["Set Ar Purge 1"].loc[
+                                            index
+                                        ],
+                                    ),
+                                ),
+                                FlashSourceIKZ(
+                                    name="Flash Evaporator 2",
+                                    vapor_source=FlashEvaporator(
+                                        pressure=Pressure(
+                                            value=row_to_array(
+                                                dep_control,
+                                                ["BP FE2"],
+                                                index,
+                                            ),
+                                            time=row_to_array(
+                                                dep_control,
+                                                ["BP FE2 time"],
+                                                index,
+                                            ),
+                                        ),
+                                    ),
+                                    carrier_gas=PubChemPureSubstanceSection(
+                                        name="Argon",
+                                    ),
+                                    carrier_push_valve=CVDGasFlow(
+                                        set_value=dep_control["Set Ar Push 2"].loc[
+                                            index
+                                        ],
+                                    ),
+                                    carrier_purge_valve=CVDGasFlow(
+                                        set_value=dep_control["Set Ar Purge 2"].loc[
+                                            index
+                                        ],
+                                    ),
+                                ),
+                                GasSourceIKZ(
+                                    name="Oxygen uniform gas ",
+                                    gas_temperature=GasTemperature(
+                                        value=row_to_array(
+                                            dep_control,
+                                            ["Read Oxygen T"],
+                                            index,
+                                        ),
+                                        time=row_to_array(
+                                            dep_control,
+                                            ["Oxygen time"],
+                                            index,
+                                        ),
+                                    ),
+                                ),
                             ],
                         )
                     ],
