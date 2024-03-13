@@ -58,6 +58,7 @@ from nomad_material_processing import (
 from nomad_material_processing.chemical_vapor_deposition import (
     Pressure,
     Rotation,
+    Temperature,
     FlashEvaporator,
     CVDGasFlow,
 )
@@ -270,15 +271,15 @@ class ParserMovpe1IKZ(MatchingParser):
                                     ),
                                 ),
                                 rotation=Rotation(
-                                    set_value=dep_control["Set Chamber P"].loc[index],
+                                    set_value=dep_control["Set Rotation S"].loc[index],
                                     value=row_to_array(
                                         dep_control,
-                                        ["Read Chamber Pressure"],
+                                        ["Read rotation"],
                                         index,
                                     ),
                                     time=row_to_array(
                                         dep_control,
-                                        ["Chamber pressure time"],
+                                        ["rot time"],
                                         index,
                                     ),
                                 ),
@@ -335,6 +336,11 @@ class ParserMovpe1IKZ(MatchingParser):
                                                 index,
                                             ),
                                         ),
+                                        temperature=Temperature(
+                                            set_value=dep_control["Set FE1 Temp"].loc[
+                                                index
+                                            ],
+                                        ),
                                     ),
                                     carrier_gas=PubChemPureSubstanceSection(
                                         name="Argon",
@@ -364,6 +370,11 @@ class ParserMovpe1IKZ(MatchingParser):
                                                 ["BP FE2 time"],
                                                 index,
                                             ),
+                                        ),
+                                        temperature=Temperature(
+                                            set_value=dep_control["Set FE2 Temp"].loc[
+                                                index
+                                            ],
                                         ),
                                     ),
                                     carrier_gas=PubChemPureSubstanceSection(

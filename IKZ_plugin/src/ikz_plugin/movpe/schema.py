@@ -70,7 +70,6 @@ from nomad_material_processing.vapor_deposition import (
     ChamberEnvironment,
     GasFlow,
     SubstrateHeater,
-    Temperature,
 )
 
 from nomad_material_processing.chemical_vapor_deposition import (
