@@ -142,6 +142,20 @@ def row_to_array(
     return array
 
 
+def clean_timeseries(time_array: pd.Series, value_array: pd.Series) -> pd.Series:
+    """
+    clean time and value array pairs by removing NaNs
+    """
+    # for i in time_array.index:
+    #     if pd.isna(time_array.loc[i]).any() or pd.isna(value_array.loc[i]).any():
+    #         time_array = time_array.drop(i)
+    #         value_array = value_array.drop(i)
+    # return time_array, value_array
+    df = pd.concat([time_array, value_array], axis=1)
+    df = df.dropna()
+    return df.iloc[:, 1], df.iloc[:, 0]
+
+
 def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Picks first row of a DataFrame and makes it as new headers.

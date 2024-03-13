@@ -71,6 +71,7 @@ from ikz_plugin import (
 from ikz_plugin.utils import (
     create_archive,
     row_to_array,
+    clean_timeseries,
     clean_dataframe_headers,
 )
 from ikz_plugin.movpe import (
@@ -85,6 +86,7 @@ from ikz_plugin.movpe import (
     ThinFilmMovpe,
     SystemComponentIKZ,
     SampleParametersMovpe,
+    CVDVaporRateMovpeIKZ,
     ChamberEnvironmentMovpe,
     FlashSourceIKZ,
     GasSourceIKZ,
@@ -233,6 +235,56 @@ class ParserMovpe1IKZ(MatchingParser):
                     logger,
                 )
 
+                # parsing arrays from excel file
+                fil_temp_time, fil_temp_value = clean_timeseries(
+                    row_to_array(
+                        dep_control,
+                        ["Read Fil T"],
+                        index,
+                    ),
+                    row_to_array(
+                        dep_control,
+                        ["Fil time"],
+                        index,
+                    ),
+                )
+                shaft_temp_time, shaft_temp_value = clean_timeseries(
+                    row_to_array(
+                        dep_control,
+                        ["Read Shaft T"],
+                        index,
+                    ),
+                    row_to_array(
+                        dep_control,
+                        ["Shaft time"],
+                        index,
+                    ),
+                )
+                pressure_time, pressure_value = clean_timeseries(
+                    row_to_array(
+                        dep_control,
+                        ["Read Chamber Pressure"],
+                        index,
+                    ),
+                    row_to_array(
+                        dep_control,
+                        ["Chamber pressure time"],
+                        index,
+                    ),
+                )
+                throttle_time, throttle_value = clean_timeseries(
+                    row_to_array(
+                        dep_control,
+                        ["Read throttle valve"],
+                        index,
+                    ),
+                    row_to_array(
+                        dep_control,
+                        ["TV time"],
+                        index,
+                    ),
+                )
+
                 # creating GrowthMovpeIKZ archive
                 growth_data = GrowthMovpeIKZ(
                     data_file=data_file_with_path,
@@ -247,28 +299,12 @@ class ParserMovpe1IKZ(MatchingParser):
                             environment=ChamberEnvironmentMovpe(
                                 pressure=Pressure(
                                     set_value=dep_control["Set Chamber P"].loc[index],
-                                    value=row_to_array(
-                                        dep_control,
-                                        ["Read Chamber Pressure"],
-                                        index,
-                                    ),
-                                    time=row_to_array(
-                                        dep_control,
-                                        ["Chamber pressure time"],
-                                        index,
-                                    ),
+                                    value=pressure_value,
+                                    time=pressure_time,
                                 ),
                                 throttle_valve=Pressure(
-                                    value=row_to_array(
-                                        dep_control,
-                                        ["Read throttle valve"],
-                                        index,
-                                    ),
-                                    time=row_to_array(
-                                        dep_control,
-                                        ["TV time"],
-                                        index,
-                                    ),
+                                    value=throttle_value,
+                                    time=throttle_time,
                                 ),
                                 rotation=Rotation(
                                     set_value=dep_control["Set Rotation S"].loc[index],
@@ -283,6 +319,14 @@ class ParserMovpe1IKZ(MatchingParser):
                                         index,
                                     ),
                                 ),
+                                uniform_valve=CVDGasFlow(
+                                    set_value=dep_control[
+                                        "Set of argon uniform gas"
+                                    ].loc[index]
+                                    * ureg("cm ** 3 / minute")
+                                    .to("meter ** 3 / second")
+                                    .magnitude,
+                                ),
                             ),
                             sample_parameters=[
                                 SampleParametersMovpe(
@@ -294,29 +338,15 @@ class ParserMovpe1IKZ(MatchingParser):
                                     ),
                                     shaft_temperature=ShaftTemperature(
                                         set_value=dep_control["Set Shaft T"].loc[index],
-                                        value=row_to_array(
-                                            dep_control,
-                                            ["Read Shaft T"],
-                                            index,
-                                        ),
-                                        time=row_to_array(
-                                            dep_control,
-                                            ["Shaft time"],
-                                            index,
-                                        ),
+                                        value=shaft_temp_value,
+                                        time=shaft_temp_time
+                                        * ureg("minute").to("second").magnitude,
                                     ),
                                     filament_temperature=FilamentTemperature(
                                         set_value=dep_control["Set Fil T"].loc[index],
-                                        value=row_to_array(
-                                            dep_control,
-                                            ["Read Fil T"],
-                                            index,
-                                        ),
-                                        time=row_to_array(
-                                            dep_control,
-                                            ["Fil time"],
-                                            index,
-                                        ),
+                                        value=fil_temp_value,
+                                        time=fil_temp_time
+                                        * ureg("minute").to("second").magnitude,
                                     ),
                                 )
                             ],
@@ -404,6 +434,11 @@ class ParserMovpe1IKZ(MatchingParser):
                                             ["Oxygen time"],
                                             index,
                                         ),
+                                    ),
+                                    vapor_rate=CVDVaporRateMovpeIKZ(
+                                        mass_flow_controller=dep_control[
+                                            "Set of Oxygen uniform gas"
+                                        ].loc[index],
                                     ),
                                 ),
                             ],

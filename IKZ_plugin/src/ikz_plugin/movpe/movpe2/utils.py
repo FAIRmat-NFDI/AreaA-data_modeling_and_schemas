@@ -50,6 +50,8 @@ from nomad_material_processing import (
     SubstrateReference,
 )
 from nomad_material_processing.chemical_vapor_deposition import (
+    Temperature,
+    Pressure,
     BubblerEvaporator,
     CVDSource,
 )
@@ -234,16 +236,22 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                         )[line_number],
                     ),
                     vapor_source=BubblerEvaporator(
-                        temperature=growth_run_file.get(
-                            f"Bubbler Temp{'' if i == 0 else '.' + str(i)}", 0
-                        )[line_number],
-                        pressure=growth_run_file.get(
-                            f"Bubbler Pressure{'' if i == 0 else '.' + str(i)}", 0
-                        )[line_number],
-                        partial_pressure=growth_run_file.get(
-                            f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
-                            0,
-                        )[line_number],
+                        temperature=Temperature(
+                            set_value=growth_run_file.get(
+                                f"Bubbler Temp{'' if i == 0 else '.' + str(i)}", 0
+                            )[line_number],
+                        ),
+                        pressure=Pressure(
+                            set_value=growth_run_file.get(
+                                f"Bubbler Pressure{'' if i == 0 else '.' + str(i)}", 0
+                            )[line_number],
+                        ),
+                        partial_pressure=Pressure(
+                            set_value=growth_run_file.get(
+                                f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
+                                0,
+                            )[line_number],
+                        ),
                         dilution=growth_run_file.get(
                             f"Bubbler Dilution{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],

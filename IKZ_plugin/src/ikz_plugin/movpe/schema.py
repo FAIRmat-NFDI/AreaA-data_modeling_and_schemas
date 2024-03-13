@@ -949,51 +949,98 @@ class ChamberEnvironmentMovpe(ChamberEnvironment):
 
 class SampleParametersMovpe(SampleParameters):
     m_def = Section(
-        a_plotly_graph_object={
-            "label": "Measured Temperatures",
-            "index": 1,
-            "dragmode": "pan",
-            "data": {
-                "type": "scattergl",
-                "line": {"width": 2},
-                "marker": {"size": 2},
-                "mode": "lines+markers",
-                "name": "Temperature",
-                "x": "#substrate_temperature/time",
-                "y": "#substrate_temperature/value",
-            },
-            "layout": {
-                "title": {"text": "Measured Temperature"},
-                "xaxis": {
-                    "showticklabels": True,
-                    "fixedrange": True,
-                    "ticks": "",
-                    "title": {"text": "Process time [s]"},
-                    "showline": True,
-                    "linewidth": 1,
-                    "linecolor": "black",
-                    "mirror": True,
+        a_plotly_graph_object=[
+            {
+                "label": "shaft temperature",
+                "index": 0,
+                "dragmode": "pan",
+                "data": {
+                    "type": "scattergl",
+                    "line": {"width": 2},
+                    "marker": {"size": 2},
+                    "mode": "lines+markers",
+                    "name": "Temperature",
+                    "x": "#shaft_temperature/time",
+                    "y": "#shaft_temperature/value",
                 },
-                "yaxis": {
-                    "showticklabels": True,
-                    "fixedrange": True,
-                    "ticks": "",
-                    "title": {"text": "Temperature [°C]"},
-                    "showline": True,
-                    "linewidth": 1,
-                    "linecolor": "black",
-                    "mirror": True,
+                "layout": {
+                    "title": {"text": "Shaft Temperature"},
+                    "xaxis": {
+                        "showticklabels": True,
+                        "fixedrange": True,
+                        "ticks": "",
+                        "title": {"text": "Process time [min]"},
+                        "showline": True,
+                        "linewidth": 1,
+                        "linecolor": "black",
+                        "mirror": True,
+                    },
+                    "yaxis": {
+                        "showticklabels": True,
+                        "fixedrange": True,
+                        "ticks": "",
+                        "title": {"text": "Temperature [°C]"},
+                        "showline": True,
+                        "linewidth": 1,
+                        "linecolor": "black",
+                        "mirror": True,
+                    },
+                    "showlegend": False,
                 },
-                "showlegend": False,
+                "config": {
+                    "displayModeBar": False,
+                    "scrollZoom": False,
+                    "responsive": False,
+                    "displaylogo": False,
+                    "dragmode": False,
+                },
             },
-            "config": {
-                "displayModeBar": False,
-                "scrollZoom": False,
-                "responsive": False,
-                "displaylogo": False,
-                "dragmode": False,
+            {
+                "label": "filament temperature",
+                "index": 1,
+                "dragmode": "pan",
+                "data": {
+                    "type": "scattergl",
+                    "line": {"width": 2},
+                    "marker": {"size": 2},
+                    "mode": "lines+markers",
+                    "name": "Filament Temperature",
+                    "x": "#filament_temperature/time",
+                    "y": "#filament_temperature/value",
+                },
+                "layout": {
+                    "title": {"text": "Filament Temperature"},
+                    "xaxis": {
+                        "showticklabels": True,
+                        "fixedrange": True,
+                        "ticks": "",
+                        "title": {"text": "Process time [min]"},
+                        # "showline": True,
+                        "linewidth": 1,
+                        "linecolor": "black",
+                        "mirror": True,
+                    },
+                    "yaxis": {
+                        "showticklabels": True,
+                        "fixedrange": True,
+                        "ticks": "",
+                        "title": {"text": "Temperature [°C]"},
+                        # "showline": True,
+                        "linewidth": 1,
+                        "linecolor": "black",
+                        "mirror": True,
+                    },
+                    "showlegend": False,
+                },
+                "config": {
+                    "displayModeBar": False,
+                    "scrollZoom": False,
+                    "responsive": False,
+                    "displaylogo": False,
+                    "dragmode": False,
+                },
             },
-        },
+        ],
     )
     distance_to_source = Quantity(
         type=float,
@@ -1062,84 +1109,10 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
         unit="celsius",
     )
-    argon_flow = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Argon flow"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    oxygen_flow = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Oxygen flow"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    argon_push_titan = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Argon push Titan"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    argon_purge_titan = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Argon purge Titan"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    vaporization_T_titan = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Vaporization temperature Titan"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
     peristaltic_pump_rotation_titan = Quantity(
         type=np.float64,
         description="FILL THE DESCRIPTION",
         a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Titan"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
-    )
-    argon_push_Sr_La = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Argon push Sr La"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    argon_purge_Sr_La = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Argon purge Sr La"},
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    vaporization_T_Sr_La = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Vaporization temperature Sr La"},
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
         unit="celsius",
     )
