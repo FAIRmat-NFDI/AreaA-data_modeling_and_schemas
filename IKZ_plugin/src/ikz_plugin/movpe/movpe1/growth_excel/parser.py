@@ -61,6 +61,7 @@ from nomad_material_processing.chemical_vapor_deposition import (
     Temperature,
     FlashEvaporator,
     CVDGasFlow,
+    MassFlowController,
 )
 
 from ikz_plugin import (
@@ -69,9 +70,9 @@ from ikz_plugin import (
     LiquidComponent,
 )
 from ikz_plugin.utils import (
+    get_hash_ref,
     create_archive,
-    row_to_array,
-    clean_timeseries,
+    row_timeseries,
     clean_dataframe_headers,
 )
 from ikz_plugin.movpe import (
@@ -86,7 +87,6 @@ from ikz_plugin.movpe import (
     ThinFilmMovpe,
     SystemComponentIKZ,
     SampleParametersMovpe,
-    CVDVaporRateMovpeIKZ,
     ChamberEnvironmentMovpe,
     FlashSourceIKZ,
     GasSourceIKZ,
@@ -236,53 +236,84 @@ class ParserMovpe1IKZ(MatchingParser):
                 )
 
                 # parsing arrays from excel file
-                fil_temp_time, fil_temp_value = clean_timeseries(
-                    row_to_array(
-                        dep_control,
-                        ["Read Fil T"],
-                        index,
-                    ),
-                    row_to_array(
-                        dep_control,
-                        ["Fil time"],
-                        index,
-                    ),
+                uniform_setval = pd.Series(
+                    [
+                        dep_control["Set of argon uniform gas"].loc[index]
+                        * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude
+                    ]
                 )
-                shaft_temp_time, shaft_temp_value = clean_timeseries(
-                    row_to_array(
-                        dep_control,
-                        ["Read Shaft T"],
-                        index,
-                    ),
-                    row_to_array(
-                        dep_control,
-                        ["Shaft time"],
-                        index,
-                    ),
+
+                fil_temp_setval = pd.Series([dep_control["Set Fil T"].loc[index]])
+                fil_temp_time, fil_temp_val = row_timeseries(
+                    dep_control, "Fil time", "Read Fil T", index
                 )
-                pressure_time, pressure_value = clean_timeseries(
-                    row_to_array(
-                        dep_control,
-                        ["Read Chamber Pressure"],
-                        index,
-                    ),
-                    row_to_array(
-                        dep_control,
-                        ["Chamber pressure time"],
-                        index,
-                    ),
+                fil_temp_time = fil_temp_time * ureg("minute").to("second").magnitude
+
+                shaft_temp_setval = pd.Series([dep_control["Set Shaft T"].loc[index]])
+                shaft_temp_time, shaft_temp_val = row_timeseries(
+                    dep_control, "Shaft time", "Read Shaft T", index
                 )
-                throttle_time, throttle_value = clean_timeseries(
-                    row_to_array(
-                        dep_control,
-                        ["Read throttle valve"],
-                        index,
-                    ),
-                    row_to_array(
-                        dep_control,
-                        ["TV time"],
-                        index,
-                    ),
+                shaft_temp_time = (
+                    shaft_temp_time * ureg("minute").to("second").magnitude
+                )
+
+                pressure_setval = pd.Series([dep_control["Set Chamber P"].loc[index]])
+                pressure_time, pressure_val = row_timeseries(
+                    dep_control, "Chamber pressure time", "Read Chamber Pressure", index
+                )
+                pressure_time = pressure_time * ureg("minute").to("second").magnitude
+
+                throttle_time, throttle_val = row_timeseries(
+                    dep_control, "TV time", "Read throttle valve", index
+                )
+
+                rot_setval = pd.Series([dep_control["Set Rotation S"].loc[index]])
+                rot_time, rot_val = row_timeseries(
+                    dep_control, "rot time", "Read rotation", index
+                )
+                rot_time = rot_time * ureg("minute").to("second").magnitude
+
+                fe1_pressure_time, fe1_pressure_val = row_timeseries(
+                    dep_control, "BP FE1 time", "BP FE1", index
+                )
+                fe1_pressure_time = (
+                    fe1_pressure_time * ureg("minute").to("second").magnitude
+                )
+
+                fe1_temp_setval = pd.Series([dep_control["Set FE1 Temp"].loc[index]])
+
+                fe1_ar_push_setval = pd.Series(
+                    [dep_control["Set Ar Push 1"].loc[index]]
+                )
+
+                fe1_ar_purge_setval = pd.Series(
+                    [dep_control["Set Ar Purge 1"].loc[index]]
+                )
+
+                fe2_pressure_time, fe2_pressure_val = row_timeseries(
+                    dep_control, "BP FE2 time", "BP FE2", index
+                )
+                fe2_pressure_time = (
+                    fe2_pressure_time * ureg("minute").to("second").magnitude
+                )
+
+                fe2_temp_setval = pd.Series([dep_control["Set FE2 Temp"].loc[index]])
+
+                fe2_ar_push_setval = pd.Series(
+                    [dep_control["Set Ar Push 2"].loc[index]]
+                )
+
+                fe2_ar_purge_setval = pd.Series(
+                    [dep_control["Set Ar Purge 2"].loc[index]]
+                )
+
+                gas_temp_time, gas_temp_val = row_timeseries(
+                    dep_control, "Oxygen time", "Read Oxygen T", index
+                )
+                gas_temp_time = gas_temp_time * ureg("minute").to("second").magnitude
+
+                gas_mfc_setval = pd.Series(
+                    [dep_control["Set of Oxygen uniform gas"].loc[index]]
                 )
 
                 # creating GrowthMovpeIKZ archive
@@ -298,55 +329,40 @@ class ParserMovpe1IKZ(MatchingParser):
                             duration=dep_control["Duration"].loc[index],
                             environment=ChamberEnvironmentMovpe(
                                 pressure=Pressure(
-                                    set_value=dep_control["Set Chamber P"].loc[index],
-                                    value=pressure_value,
+                                    set_value=pressure_setval,
+                                    value=pressure_val,
                                     time=pressure_time,
                                 ),
                                 throttle_valve=Pressure(
-                                    value=throttle_value,
+                                    value=throttle_val,
                                     time=throttle_time,
                                 ),
                                 rotation=Rotation(
-                                    set_value=dep_control["Set Rotation S"].loc[index],
-                                    value=row_to_array(
-                                        dep_control,
-                                        ["Read rotation"],
-                                        index,
-                                    ),
-                                    time=row_to_array(
-                                        dep_control,
-                                        ["rot time"],
-                                        index,
-                                    ),
+                                    set_value=rot_setval,
+                                    value=rot_val,
+                                    time=rot_time,
                                 ),
                                 uniform_valve=CVDGasFlow(
-                                    set_value=dep_control[
-                                        "Set of argon uniform gas"
-                                    ].loc[index]
-                                    * ureg("cm ** 3 / minute")
-                                    .to("meter ** 3 / second")
-                                    .magnitude,
+                                    set_value=uniform_setval,
                                 ),
                             ),
                             sample_parameters=[
                                 SampleParametersMovpe(
                                     layer=ThinFilmReference(
-                                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data",
+                                        reference=f"{get_hash_ref(archive.m_context.upload_id, layer_filename)}",
                                     ),
                                     substrate=ThinFilmStackMovpeReference(
-                                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                                        reference=f"{get_hash_ref(archive.m_context.upload_id, grown_sample_filename)}",
                                     ),
                                     shaft_temperature=ShaftTemperature(
-                                        set_value=dep_control["Set Shaft T"].loc[index],
-                                        value=shaft_temp_value,
-                                        time=shaft_temp_time
-                                        * ureg("minute").to("second").magnitude,
+                                        set_value=shaft_temp_setval,
+                                        value=shaft_temp_val,
+                                        time=shaft_temp_time,
                                     ),
                                     filament_temperature=FilamentTemperature(
-                                        set_value=dep_control["Set Fil T"].loc[index],
-                                        value=fil_temp_value,
-                                        time=fil_temp_time
-                                        * ureg("minute").to("second").magnitude,
+                                        set_value=fil_temp_setval,
+                                        value=fil_temp_val,
+                                        time=fil_temp_time,
                                     ),
                                 )
                             ],
@@ -355,90 +371,52 @@ class ParserMovpe1IKZ(MatchingParser):
                                     name="Flash Evaporator 1",
                                     vapor_source=FlashEvaporator(
                                         pressure=Pressure(
-                                            value=row_to_array(
-                                                dep_control,
-                                                ["BP FE1"],
-                                                index,
-                                            ),
-                                            time=row_to_array(
-                                                dep_control,
-                                                ["BP FE1 time"],
-                                                index,
-                                            ),
+                                            value=fe1_pressure_val,
+                                            time=fe1_pressure_time,
                                         ),
                                         temperature=Temperature(
-                                            set_value=dep_control["Set FE1 Temp"].loc[
-                                                index
-                                            ],
+                                            set_value=fe1_temp_setval,
                                         ),
                                     ),
                                     carrier_gas=PubChemPureSubstanceSection(
                                         name="Argon",
                                     ),
                                     carrier_push_valve=CVDGasFlow(
-                                        set_value=dep_control["Set Ar Push 1"].loc[
-                                            index
-                                        ],
+                                        set_value=fe1_ar_push_setval,
                                     ),
                                     carrier_purge_valve=CVDGasFlow(
-                                        set_value=dep_control["Set Ar Purge 1"].loc[
-                                            index
-                                        ],
+                                        set_value=fe1_ar_purge_setval,
                                     ),
                                 ),
                                 FlashSourceIKZ(
                                     name="Flash Evaporator 2",
                                     vapor_source=FlashEvaporator(
                                         pressure=Pressure(
-                                            value=row_to_array(
-                                                dep_control,
-                                                ["BP FE2"],
-                                                index,
-                                            ),
-                                            time=row_to_array(
-                                                dep_control,
-                                                ["BP FE2 time"],
-                                                index,
-                                            ),
+                                            value=fe2_pressure_val,
+                                            time=fe2_pressure_time,
                                         ),
                                         temperature=Temperature(
-                                            set_value=dep_control["Set FE2 Temp"].loc[
-                                                index
-                                            ],
+                                            set_value=fe2_temp_setval,
                                         ),
                                     ),
                                     carrier_gas=PubChemPureSubstanceSection(
                                         name="Argon",
                                     ),
                                     carrier_push_valve=CVDGasFlow(
-                                        set_value=dep_control["Set Ar Push 2"].loc[
-                                            index
-                                        ],
+                                        set_value=fe2_ar_push_setval,
                                     ),
                                     carrier_purge_valve=CVDGasFlow(
-                                        set_value=dep_control["Set Ar Purge 2"].loc[
-                                            index
-                                        ],
+                                        set_value=fe2_ar_purge_setval,
                                     ),
                                 ),
                                 GasSourceIKZ(
                                     name="Oxygen uniform gas ",
                                     gas_temperature=GasTemperature(
-                                        value=row_to_array(
-                                            dep_control,
-                                            ["Read Oxygen T"],
-                                            index,
-                                        ),
-                                        time=row_to_array(
-                                            dep_control,
-                                            ["Oxygen time"],
-                                            index,
-                                        ),
+                                        value=gas_temp_val,
+                                        time=gas_temp_time,
                                     ),
-                                    vapor_rate=CVDVaporRateMovpeIKZ(
-                                        mass_flow_controller=dep_control[
-                                            "Set of Oxygen uniform gas"
-                                        ].loc[index],
+                                    mass_flow_controller=MassFlowController(
+                                        set_value=gas_mfc_setval,
                                     ),
                                 ),
                             ],
@@ -539,7 +517,9 @@ class ParserMovpe1IKZ(MatchingParser):
                         component_objects.append(
                             SystemComponentIKZ(
                                 name=str(solute_name) + " in " + str(solvent_name),
-                                system=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, solution_filename)}#data",
+                                system=get_hash_ref(
+                                    archive.m_context.upload_id, solution_filename
+                                ),
                                 molar_concentration=precursors.get(
                                     f"Molar conc{'' if i == 0 else '.' + str(i)}", 0
                                 ).loc[index],
@@ -584,13 +564,17 @@ class ParserMovpe1IKZ(MatchingParser):
                         lab_id=f"{dep_control_run} experiment",
                         datetime=dep_control["Date"].loc[index],
                         precursors_preparation=PrecursorsPreparationIKZReference(
-                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, precursors_filename)}#data",
+                            reference=get_hash_ref(
+                                archive.m_context.upload_id, precursors_filename
+                            ),
                         ),
                         # growth_run_constant_parameters=GrowthMovpe1IKZConstantParametersReference(
                         #     lab_id=dep_control["Constant Parameters ID"].loc[index],
                         # ),
                         growth_run=GrowthMovpeIKZReference(
-                            reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_filename)}#data",
+                            reference=get_hash_ref(
+                                archive.m_context.upload_id, growth_filename
+                            ),
                         ),
                     ),
                     m_context=archive.m_context,
@@ -682,7 +666,7 @@ class ParserMovpe1IKZ(MatchingParser):
                 #     )
 
                 deposition_control_list.append(
-                    f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, experiment_filename)}#data"
+                    get_hash_ref(archive.m_context.upload_id, experiment_filename)
                 )
 
         # populate the raw file archive

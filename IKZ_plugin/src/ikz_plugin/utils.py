@@ -28,10 +28,14 @@ def get_reference(upload_id, entry_id):
     return f"../uploads/{upload_id}/archive/{entry_id}"
 
 
-def get_entry_id_from_file_name(filename, upload_id):
+def get_entry_id(upload_id, filename):
     from nomad.utils import hash
 
     return hash(upload_id, filename)
+
+
+def get_hash_ref(upload_id, filename):
+    return f"{get_reference(upload_id, get_entry_id(upload_id, filename))}#data"
 
 
 def nan_equal(a, b):
@@ -102,23 +106,43 @@ def create_archive(
                 yaml.dump(entry_dict, newfile)
         context.upload.process_updated_raw_file(filename, allow_modify=True)
 
-    return get_reference(
-        context.upload_id, get_entry_id_from_file_name(filename, context.upload_id)
-    )
+    return get_hash_ref(context.upload_id, filename)
 
 
 def row_to_array(
     dataframe: pd.DataFrame, quantities: List[str], row_index: int
 ) -> pd.Series:
-    """take same name headers in a dataframe and return them as an array
+    """
+    Extracts values from a DataFrame row across multiple columns with similar names.
+
+    This function takes a DataFrame, a list of header names, and a row index. It extracts
+    the values from the specified row across all columns whose names start with any of the
+    specified header names. The column names are expected to follow a specific pattern:
+    the base header name, followed by a dot and an integer index (e.g., 'header.1', 'header.2', etc.).
+    The function returns a Series containing all the extracted values.
 
     Args:
-        dataframe (pd.DataFrame): data to be parsed
-        quantities (List[str]): the repeating header names in the dataframe
-        row_index (int): the index of the row to be parsed
+        dataframe (pd.DataFrame): The DataFrame containing the data.
+        quantities (List[str]): The base names of the headers. The DataFrame should contain
+                                 multiple columns with names that start with each base name.
+        row_index (int): The index of the row from which to extract the values.
 
     Returns:
-        pd.Series: an array containing all the values of the same name headers repeated along one row
+        pd.Series: A Series containing all the values extracted from the specified row across
+                   all columns with names that start with any of the specified header names.
+
+    Example:
+        >>> df = pd.DataFrame({
+        ...     'header': [1, 2, 3],
+        ...     'header.1': [4, 5, 6],
+        ...     'header.2': [7, 8, 9]
+        ... })
+        >>> array = row_to_array(df, ['header'], 0)
+        >>> print(array)
+        0    1
+        1    4
+        2    7
+        dtype: int64
     """
     array = pd.Series([])
     i = 0
@@ -154,6 +178,62 @@ def clean_timeseries(time_array: pd.Series, value_array: pd.Series) -> pd.Series
     df = pd.concat([time_array, value_array], axis=1)
     df = df.dropna()
     return df.iloc[:, 1], df.iloc[:, 0]
+
+
+def row_timeseries(
+    dataframe: pd.DataFrame, time_header: str, value_header: str, row_index: int
+) -> pd.Series:
+    """
+    Extracts and cleans a timeseries from a row of a DataFrame.
+
+    This function takes a DataFrame, two header names (one for time and one for values),
+    and a row index. It extracts the timeseries data from the specified row, where the
+    time and value data are stored in columns with the specified header names. The function
+    then cleans the extracted timeseries by removing any NaN values.
+
+    Args:
+        dataframe (pd.DataFrame): The DataFrame containing the timeseries data.
+        time_header (str): The header name for the time data. The DataFrame should contain
+                            multiple columns with this header name, each containing a time point.
+        value_header (str): The header name for the value data. The DataFrame should contain
+                             multiple columns with this header name, each containing a value
+                             corresponding to a time point.
+        row_index (int): The index of the row from which to extract the timeseries.
+
+    Returns:
+        tuple: A tuple containing two pd.Series objects. The first Series contains the time
+               points of the timeseries, and the second Series contains the corresponding values.
+               Both Series have been cleaned to remove any NaN values.
+
+    Example:
+        >>> df = pd.DataFrame({
+        ...     'time': [1, 2, 3],
+        ...     'time.1': [4, 5, 6],
+        ...     'value': [7, 8, 9],
+        ...     'value.1': [10, 11, 12]
+        ... })
+        >>> time_series, value_series = row_timeseries(df, 'time', 'value', 0)
+        >>> print(time_series)
+        0    1
+        1    4
+        dtype: int64
+        >>> print(value_series)
+        0     7
+        1    10
+        dtype: int64
+    """
+    return clean_timeseries(
+        row_to_array(
+            dataframe,
+            [value_header],
+            row_index,
+        ),
+        row_to_array(
+            dataframe,
+            [time_header],
+            row_index,
+        ),
+    )
 
 
 def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:

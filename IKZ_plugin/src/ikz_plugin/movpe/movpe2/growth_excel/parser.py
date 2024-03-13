@@ -194,13 +194,13 @@ class ParserMovpe2IKZ(MatchingParser):
                         * ureg("millimeter").to("meter").magnitude
                     ],
                     shaft_temperature=ShaftTemperature(
-                        set_value=growth_run_file["T Shaft"][index],
+                        set_value=pd.Series([growth_run_file["T Shaft"][index]]),
                     ),
                     filament_temperature=FilamentTemperature(
-                        set_value=growth_run_file["T Filament"][index],
+                        set_value=pd.Series([growth_run_file["T Filament"][index]]),
                     ),
                     laytec_temperature=LayTecTemperature(
-                        set_value=growth_run_file["T LayTec"][index],
+                        set_value=pd.Series([growth_run_file["T LayTec"][index]]),
                     ),
                 )
             )
@@ -220,22 +220,22 @@ class ParserMovpe2IKZ(MatchingParser):
                 + populate_gas_source(index, growth_run_file),
                 environment=ChamberEnvironmentMovpe(
                     pressure=Pressure(
-                        set_value=(growth_run_file["Pressure"][index])
+                        set_value=pd.Series([growth_run_file["Pressure"][index]])
                         * ureg("mbar").to("pascal").magnitude,
                     ),
                     rotation=Rotation(
-                        set_value=(growth_run_file["Rotation"][index])
+                        set_value=pd.Series([growth_run_file["Rotation"][index]])
                         * ureg("rpm").to("rpm").magnitude,
                     ),
                     carrier_gas=PubChemPureSubstanceSection(
                         name=growth_run_file["Carrier Gas"][index],
                     ),
                     carrier_push_valve=CVDGasFlow(
-                        set_value=growth_run_file["Pushgas Valve"][index]
+                        set_value=pd.Series([growth_run_file["Pushgas Valve"][index]])
                         * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
                     ),
                     uniform_valve=CVDGasFlow(
-                        set_value=growth_run_file["Uniform Valve"][index]
+                        set_value=pd.Series([growth_run_file["Uniform Valve"][index]])
                         * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
                     ),
                 ),

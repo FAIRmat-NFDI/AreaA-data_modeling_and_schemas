@@ -54,12 +54,13 @@ from nomad_material_processing.chemical_vapor_deposition import (
     Pressure,
     BubblerEvaporator,
     CVDSource,
+    VaporRate,
+    MassFlowController,
 )
 
 from ikz_plugin.movpe import (
     BubblerSourceIKZ,
     GasSourceIKZ,
-    CVDVaporRateMovpeIKZ,
 )
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
@@ -237,20 +238,34 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                     ),
                     vapor_source=BubblerEvaporator(
                         temperature=Temperature(
-                            set_value=growth_run_file.get(
-                                f"Bubbler Temp{'' if i == 0 else '.' + str(i)}", 0
-                            )[line_number],
+                            set_value=pd.Series(
+                                [
+                                    growth_run_file.get(
+                                        f"Bubbler Temp{'' if i == 0 else '.' + str(i)}",
+                                        0,
+                                    )[line_number]
+                                ]
+                            ),
                         ),
                         pressure=Pressure(
-                            set_value=growth_run_file.get(
-                                f"Bubbler Pressure{'' if i == 0 else '.' + str(i)}", 0
-                            )[line_number],
+                            set_value=pd.Series(
+                                [
+                                    growth_run_file.get(
+                                        f"Bubbler Pressure{'' if i == 0 else '.' + str(i)}",
+                                        0,
+                                    )[line_number]
+                                ]
+                            ),
                         ),
                         partial_pressure=Pressure(
-                            set_value=growth_run_file.get(
-                                f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
-                                0,
-                            )[line_number],
+                            set_value=pd.Series(
+                                [
+                                    growth_run_file.get(
+                                        f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
+                                        0,
+                                    )[line_number]
+                                ]
+                            ),
                         ),
                         dilution=growth_run_file.get(
                             f"Bubbler Dilution{'' if i == 0 else '.' + str(i)}", 0
@@ -262,20 +277,27 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             f"Inject{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
                     ),
-                    vapor_rate=CVDVaporRateMovpeIKZ(
-                        measurement_type="Mass Flow Controller",
-                        mass_flow_controller=growth_run_file.get(
-                            f"Bubbler MFC{'' if i == 0 else '.' + str(i)}", 0
-                        )[line_number],
-                        rate=[
-                            growth_run_file.get(
-                                f"Bubbler Molar Flux{'' if i == 0 else '.' + str(i)}", 0
-                            )[line_number]
-                            * ureg("mol / minute").to("mol / second").magnitude
-                        ],
-                        process_time=[0],
+                    mass_flow_controller=MassFlowController(
+                        set_value=pd.Series(
+                            [
+                                growth_run_file.get(
+                                    f"Bubbler MFC{'' if i == 0 else '.' + str(i)}", 0
+                                )[line_number]
+                            ]
+                        ),
                     ),
-                )
+                    vapor_rate=VaporRate(
+                        set_value=pd.Series(
+                            [
+                                growth_run_file.get(
+                                    f"Bubbler Molar Flux{'' if i == 0 else '.' + str(i)}",
+                                    0,
+                                )[line_number]
+                            ]
+                        )
+                        * ureg("mol / minute").to("mol / second").magnitude,
+                    ),
+                ),
             )
 
             i += 1
@@ -310,18 +332,25 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                             f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                         )[line_number],
                     ),
-                    vapor_rate=CVDVaporRateMovpeIKZ(
-                        measurement_type="Mass Flow Controller",
-                        mass_flow_controller=growth_run_file.get(
-                            f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
-                        )[line_number],
-                        rate=[
-                            growth_run_file.get(
-                                f"Gas Molar Flux{'' if i == 0 else '.' + str(i)}", 0
-                            )[line_number]
-                            * ureg("mol / minute").to("mol / second").magnitude
-                        ],
-                        process_time=[0],
+                    mass_flow_controller=MassFlowController(
+                        set_value=pd.Series(
+                            [
+                                growth_run_file.get(
+                                    f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
+                                )[line_number]
+                            ]
+                        ),
+                    ),
+                    vapor_rate=VaporRate(
+                        set_value=pd.Series(
+                            [
+                                growth_run_file.get(
+                                    f"Gas Molar Flux{'' if i == 0 else '.' + str(i)}",
+                                    0,
+                                )[line_number]
+                            ]
+                        )
+                        * ureg("mol / minute").to("mol / second").magnitude,
                     ),
                 )
             )

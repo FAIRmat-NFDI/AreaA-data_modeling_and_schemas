@@ -75,12 +75,13 @@ from nomad_material_processing.vapor_deposition import (
 from nomad_material_processing.chemical_vapor_deposition import (
     BubblerEvaporator,
     FlashEvaporator,
-    CVDVaporRate,
+    VaporRate,
     CVDSource,
     Pressure,
     Rotation,
     Temperature,
     CVDGasFlow,
+    MassFlowController,
 )
 
 from nomad_measurements import (
@@ -472,45 +473,6 @@ class ThinFilmStackMovpeReference(ThinFilmStackReference):
         super(ThinFilmStackMovpeReference, self).normalize(archive, logger)
 
 
-# !!!! TODO
-class CVDVaporRateMovpeIKZ(CVDVaporRate):
-    m_def = Section(
-        a_plot=dict(
-            x="process_time",
-            y="rate",
-        ),
-    )
-    mass_flow_controller = Quantity(
-        type=float,
-        description="Flux of material with mass flow controller.",
-        a_eln={
-            "component": "NumberEditQuantity",
-            "defaultDisplayUnit": "cm ** 3 / minute",
-        },
-        unit="cm ** 3 / minute",
-    )
-    rate = Quantity(
-        type=float,
-        description="FILL THE DESCRIPTION",
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-            defaultDisplayUnit="mol / minute",
-        ),
-        shape=[1],
-        unit="mol / second",
-        label="Molar flux",
-    )
-    process_time = Quantity(
-        type=float,
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-            defaultDisplayUnit="minute",
-        ),
-        unit="second",
-        shape=[1],
-    )
-
-
 class SystemComponentIKZ(SystemComponent):
     """
     A section for describing a system component and its role in a composite system.
@@ -852,12 +814,6 @@ class LayTecTemperature(Temperature):
 
 
 class BubblerSourceIKZ(CVDSource):
-    m_def = Section(
-        a_plot=dict(
-            x="vapor_rate/process_time",
-            y="vapor_rate/rate",
-        ),
-    )
     name = Quantity(
         type=str,
         description="""
@@ -871,20 +827,20 @@ class BubblerSourceIKZ(CVDSource):
         """,
     )
     vapor_rate = SubSection(
-        section_def=CVDVaporRateMovpeIKZ,
+        section_def=VaporRate,
         description="""
         The rate of the material being evaporated (mol/time).
+        """,
+    )
+    mass_flow_controller = SubSection(
+        section_def=MassFlowController,
+        description="""
+        The rate of the material being evaporated (cm^3/time).
         """,
     )
 
 
 class FlashSourceIKZ(CVDSource):
-    m_def = Section(
-        a_plot=dict(
-            x="vapor_rate/process_time",
-            y="vapor_rate/rate",
-        ),
-    )
     name = Quantity(
         type=str,
         description="""
@@ -898,27 +854,33 @@ class FlashSourceIKZ(CVDSource):
         """,
     )
     vapor_rate = SubSection(
-        section_def=CVDVaporRateMovpeIKZ,
+        section_def=VaporRate,
         description="""
         The rate of the material being evaporated (mol/time).
+        """,
+    )
+    mass_flow_controller = SubSection(
+        section_def=MassFlowController,
+        description="""
+        The rate of the material being evaporated (cm^3/time).
         """,
     )
 
 
 class GasSourceIKZ(CVDSource):
-    m_def = Section(
-        a_plot=dict(
-            x="vapor_rate/process_time",
-            y="vapor_rate/rate",
-        ),
-    )
     gas_temperature = SubSection(
         section_def=GasTemperature,
     )
     vapor_rate = SubSection(
-        section_def=CVDVaporRateMovpeIKZ,
+        section_def=VaporRate,
         description="""
         The rate of the material being evaporated (mol/time).
+        """,
+    )
+    mass_flow_controller = SubSection(
+        section_def=MassFlowController,
+        description="""
+        The rate of the material being evaporated (cm^3/time).
         """,
     )
 
@@ -957,7 +919,7 @@ class SampleParametersMovpe(SampleParameters):
                 "data": {
                     "type": "scattergl",
                     "line": {"width": 2},
-                    "marker": {"size": 2},
+                    "marker": {"size": 6},
                     "mode": "lines+markers",
                     "name": "Temperature",
                     "x": "#shaft_temperature/time",
@@ -1002,7 +964,7 @@ class SampleParametersMovpe(SampleParameters):
                 "data": {
                     "type": "scattergl",
                     "line": {"width": 2},
-                    "marker": {"size": 2},
+                    "marker": {"size": 6},
                     "mode": "lines+markers",
                     "name": "Filament Temperature",
                     "x": "#filament_temperature/time",
