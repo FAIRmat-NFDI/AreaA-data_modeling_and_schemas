@@ -52,8 +52,10 @@ from nomad_material_processing import (
 from nomad_material_processing.chemical_vapor_deposition import (
     Temperature,
     Pressure,
+    PartialVaporPressure,
     BubblerEvaporator,
-    CVDSource,
+    MolarFlowRate,
+    MassFlowRate,
     VaporRate,
     MassFlowController,
 )
@@ -257,11 +259,21 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                 ]
                             ),
                         ),
-                        partial_pressure=Pressure(
+                        precursor_partial_pressure=PartialVaporPressure(
                             set_value=pd.Series(
                                 [
                                     growth_run_file.get(
                                         f"Bubbler Partial Pressure{'' if i == 0 else '.' + str(i)}",
+                                        0,
+                                    )[line_number]
+                                ]
+                            ),
+                        ),
+                        carrier_gas_flow=MassFlowRate(
+                            set_value=pd.Series(
+                                [
+                                    growth_run_file.get(
+                                        f"Bubbler MFC{'' if i == 0 else '.' + str(i)}",
                                         0,
                                     )[line_number]
                                 ]
@@ -277,16 +289,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             f"Inject{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
                     ),
-                    mass_flow_controller=MassFlowController(
-                        set_value=pd.Series(
-                            [
-                                growth_run_file.get(
-                                    f"Bubbler MFC{'' if i == 0 else '.' + str(i)}", 0
-                                )[line_number]
-                            ]
-                        ),
-                    ),
-                    vapor_rate=VaporRate(
+                    molar_flow_rate=MolarFlowRate(
                         set_value=pd.Series(
                             [
                                 growth_run_file.get(

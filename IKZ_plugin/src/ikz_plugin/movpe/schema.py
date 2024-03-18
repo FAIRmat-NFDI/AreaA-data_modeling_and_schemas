@@ -54,21 +54,16 @@ from nomad_material_processing import (
     CrystallineSubstrate,
     Miscut,
     SubstrateCrystalProperties,
-    Dopant,
     Geometry,
-    Parallelepiped,
     ThinFilm,
     ThinFilmStack,
     ThinFilmStackReference,
-    TimeSeries,
 )
 from nomad_material_processing.vapor_deposition import (
     VaporDeposition,
-    VaporDepositionSource,
     VaporDepositionStep,
     SampleParameters,
     ChamberEnvironment,
-    GasFlow,
     SubstrateHeater,
 )
 
@@ -76,11 +71,13 @@ from nomad_material_processing.chemical_vapor_deposition import (
     BubblerEvaporator,
     FlashEvaporator,
     VaporRate,
+    MolarFlowRate,
     CVDSource,
     Pressure,
     Rotation,
     Temperature,
-    CVDGasFlow,
+    VolumeFlowRate,
+    MassFlowRate,
     MassFlowController,
 )
 
@@ -826,16 +823,10 @@ class BubblerSourceIKZ(CVDSource):
         Example: A heater, a filament, a laser, a bubbler, etc.
         """,
     )
-    vapor_rate = SubSection(
-        section_def=VaporRate,
+    molar_flow_rate = SubSection(
+        section_def=MolarFlowRate,
         description="""
         The rate of the material being evaporated (mol/time).
-        """,
-    )
-    mass_flow_controller = SubSection(
-        section_def=MassFlowController,
-        description="""
-        The rate of the material being evaporated (cm^3/time).
         """,
     )
 
@@ -890,10 +881,10 @@ class ChamberEnvironmentMovpe(ChamberEnvironment):
         section_def=PubChemPureSubstanceSection,
     )
     carrier_push_valve = SubSection(
-        section_def=CVDGasFlow,
+        section_def=VolumeFlowRate,
     )
     uniform_valve = SubSection(
-        section_def=CVDGasFlow,
+        section_def=VolumeFlowRate,
     )
     pressure = SubSection(
         section_def=Pressure,
@@ -1614,26 +1605,6 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
     # grown_sample_upload_id:str = grown_sample_archive.metadata.upload_id
     # grown_sample_entry_id:str = grown_sample_archive.metadata.entry_id
     # StagingUploadFiles(grown_sample_upload_id).write_archive(grown_sample_entry_id, grown_sample_archive.m_to_dict())
-
-
-class RawFileMovpeDepositionControl(EntryData):
-    m_def = Section(
-        a_eln=None,
-        label="Raw File Growth Run Deposition Control",
-    )
-    name = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-        ),
-    )
-    growth_run_deposition_control = Quantity(
-        type=ExperimentMovpeIKZ,
-        a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-        ),
-        shape=["*"],
-    )
 
 
 m_package.__init_metainfo__()

@@ -60,7 +60,7 @@ from nomad_material_processing.chemical_vapor_deposition import (
     Rotation,
     Temperature,
     FlashEvaporator,
-    CVDGasFlow,
+    VolumeFlowRate,
     MassFlowController,
 )
 
@@ -93,10 +93,27 @@ from ikz_plugin.movpe import (
     GasTemperature,
     ShaftTemperature,
     FilamentTemperature,
-    RawFileMovpeDepositionControl,
 )
 
-from ikz_plugin.movpe.movpe1.utils import create_timeseries_objects
+
+class RawFileMovpeDepositionControl(EntryData):
+    m_def = Section(
+        a_eln=None,
+        label="Raw File Growth Run Deposition Control",
+    )
+    name = Quantity(
+        type=str,
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+        ),
+    )
+    growth_run_deposition_control = Quantity(
+        type=ExperimentMovpeIKZ,
+        a_eln=ELNAnnotation(
+            component="ReferenceEditQuantity",
+        ),
+        shape=["*"],
+    )
 
 
 class ParserMovpe1IKZ(MatchingParser):
@@ -118,14 +135,6 @@ class ParserMovpe1IKZ(MatchingParser):
             xlsx, "Deposition Control", comment="#", header=None
         )
         precursors = pd.read_excel(xlsx, "Precursors", comment="#", header=None)
-
-        # # Strip and rename the columns
-        # dep_control.columns = [
-        #     re.sub(r"\s+", " ", str(col).strip()) for col in dep_control.iloc[0]
-        # ]
-        # precursors.columns = [
-        #     re.sub(r"\s+", " ", str(col).strip()) for col in precursors.iloc[0]
-        # ]
 
         dep_control = clean_dataframe_headers(dep_control)
 
@@ -342,7 +351,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                     value=rot_val,
                                     time=rot_time,
                                 ),
-                                uniform_valve=CVDGasFlow(
+                                uniform_valve=VolumeFlowRate(
                                     set_value=uniform_setval,
                                 ),
                             ),
@@ -381,10 +390,10 @@ class ParserMovpe1IKZ(MatchingParser):
                                     carrier_gas=PubChemPureSubstanceSection(
                                         name="Argon",
                                     ),
-                                    carrier_push_valve=CVDGasFlow(
+                                    carrier_push_valve=VolumeFlowRate(
                                         set_value=fe1_ar_push_setval,
                                     ),
-                                    carrier_purge_valve=CVDGasFlow(
+                                    carrier_purge_valve=VolumeFlowRate(
                                         set_value=fe1_ar_purge_setval,
                                     ),
                                 ),
@@ -402,10 +411,10 @@ class ParserMovpe1IKZ(MatchingParser):
                                     carrier_gas=PubChemPureSubstanceSection(
                                         name="Argon",
                                     ),
-                                    carrier_push_valve=CVDGasFlow(
+                                    carrier_push_valve=VolumeFlowRate(
                                         set_value=fe2_ar_push_setval,
                                     ),
-                                    carrier_purge_valve=CVDGasFlow(
+                                    carrier_purge_valve=VolumeFlowRate(
                                         set_value=fe2_ar_purge_setval,
                                     ),
                                 ),

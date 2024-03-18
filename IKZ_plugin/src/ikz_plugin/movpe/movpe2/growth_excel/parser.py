@@ -40,9 +40,6 @@ from nomad.datamodel.metainfo.basesections import (
     PubChemPureSubstanceSection,
 )
 
-from ikz_plugin import IKZMOVPE2Category
-from nomad.search import search
-
 # from nomad_material_processing.utils import create_archive as create_archive_ref
 from nomad_material_processing import (
     SubstrateReference,
@@ -52,6 +49,7 @@ from nomad_material_processing import (
 from nomad_material_processing.chemical_vapor_deposition import (
     Pressure,
     Rotation,
+    VolumeFlowRate,
 )
 
 from ikz_plugin.movpe import (
@@ -64,7 +62,6 @@ from ikz_plugin.movpe import (
     ThinFilmStackMovpeReference,
     SampleParametersMovpe,
     ChamberEnvironmentMovpe,
-    CVDGasFlow,
     ShaftTemperature,
     FilamentTemperature,
     LayTecTemperature,
@@ -230,11 +227,11 @@ class ParserMovpe2IKZ(MatchingParser):
                     carrier_gas=PubChemPureSubstanceSection(
                         name=growth_run_file["Carrier Gas"][index],
                     ),
-                    carrier_push_valve=CVDGasFlow(
+                    carrier_push_valve=VolumeFlowRate(
                         set_value=pd.Series([growth_run_file["Pushgas Valve"][index]])
                         * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
                     ),
-                    uniform_valve=CVDGasFlow(
+                    uniform_valve=VolumeFlowRate(
                         set_value=pd.Series([growth_run_file["Uniform Valve"][index]])
                         * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
                     ),
