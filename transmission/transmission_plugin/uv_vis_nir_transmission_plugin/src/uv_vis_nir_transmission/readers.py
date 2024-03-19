@@ -34,7 +34,7 @@ def read_sample_name(metadata: list) -> str:
     """Reads the sample name from the metadata"""
     if not metadata[2]:
         return None
-    return metadata[2].split(".")[0]
+    return metadata[2].split('.')[0]
 
 
 def read_start_datetime(metadata: list) -> str:
@@ -42,18 +42,18 @@ def read_start_datetime(metadata: list) -> str:
     if not metadata[3] or not metadata[4]:
         return None
     century = str(datetime.now().year // 100)
-    formated_date = metadata[3].replace("/", "-")
-    return f"{century}{formated_date}T{metadata[4]}000Z"
+    formated_date = metadata[3].replace('/', '-')
+    return f'{century}{formated_date}T{metadata[4]}000Z'
 
 
-def read_is_D2_lamp_on(metadata: list) -> bool:
+def read_is_D2_lamp_used(metadata: list) -> bool:
     """Reads whether the D2 lamp was active during the measurement"""
     if not metadata[21]:
         return None
     return bool(float(metadata[21]))
 
 
-def read_is_tungsten_lamp_on(metadata: list) -> bool:
+def read_is_tungsten_lamp_used(metadata: list) -> bool:
     """Reads whether the tungsten lamp was active during the measurement"""
     if not metadata[22]:
         return None
@@ -64,64 +64,28 @@ def read_sample_attenuation_percentage(metadata: list) -> int:
     """Reads the sample attenuation percentage from the metadata"""
     if not metadata[47]:
         return None
-    return int(metadata[47].split()[0].split(":")[1])
+    return int(metadata[47].split()[0].split(':')[1])
 
 
 def read_reference_attenuation_percentage(metadata: list) -> int:
     """Reads the sample attenuation percentage from the metadata"""
     if not metadata[47]:
         return None
-    return int(metadata[47].split()[1].split(":")[1])
+    return int(metadata[47].split()[1].split(':')[1])
 
 
 def read_is_depolarizer_on(metadata: list) -> bool:
     """Reads whether the depolarizer was active during the measurement"""
     if not metadata[46]:
         return False
-    return metadata[46] == "on"
+    return metadata[46] == 'on'
 
 
-METADATA_MAP: Dict[str, Any] = {
-    "sample_name": read_sample_name,
-    "start_datetime": read_start_datetime,
-    "analyst_name": 7,
-    "instrument_name": 11,
-    "instrument_serial_number": 12,
-    "instrument_firmware_version": 13,
-    "is_D2_lamp_on": read_is_D2_lamp_on,
-    "is_tungsten_lamp_on": read_is_tungsten_lamp_on,
-    "sample_beam_position": 44,
-    "common_beam_mask_percentage": 45,
-    "is_common_beam_depolarizer_on": read_is_depolarizer_on,
-    "sample_attenuation_percentage": read_sample_attenuation_percentage,
-    "reference_attenuation_percentage": read_reference_attenuation_percentage,
-    "polarizer_angle": 48,
-    "ordinate": 80,
-    "wavelength_units": 79,
-    "monochromator_change_wavelength": 41,
-    "lamp_change_wavelength": 42,
-}
-
-
-def data_to_template(data: pd.DataFrame) -> Dict[str, Any]:
-    """Builds the data entry dict from the data in a pandas dataframe
-
-    Args:
-        data (pd.DataFrame): The dataframe containing the data.
-
-    Returns:
-        Dict[str, Any]: The dict with the data paths inside NeXus.
-    """
-    output: Dict[str, Any] = {}
-    output["measured_wavelength"] = data.index.values
-    output["measured_ordinate"] = data.values[:, 0]
-
-    return output
-
-
-def parse_detector_line(line: str) -> Dict[str, float]:
-    """Parses a detector line from the asc file. Generates a dict where each key-value
-    pair is the detector setting (value) for the corresponding wavelength (key).
+def read_long_line(line: str) -> Dict[str, float]:
+    """A long line in .asc file is defined as one containing values of a quantity at
+    multiple wavelengths. These values are available within one line but separated by
+    whitespaces. This function generates a dict where each key-value
+    pair is the value for the corresponding wavelength (key).
     Eg. {"600": 0.5, "1050": 1.0}
 
     Args:
@@ -132,7 +96,7 @@ def parse_detector_line(line: str) -> Dict[str, float]:
     """
 
     def convert(val):
-        val_list = val.strip().split("/")
+        val_list = val.strip().split('/')
         return {val_list[0]: float(val_list[1])}
 
     output = dict()
@@ -141,34 +105,77 @@ def parse_detector_line(line: str) -> Dict[str, float]:
     return output
 
 
-def read_detectors(metadata: list) -> Dict[str, Any]:
-    """
-    Reads detector values from the metadata
+def read_monochromator_slit_width(metadata: list) -> Dict[str, float]:
+    """Reads the monochromator slit width from the metadata"""
+    if not metadata[31]:
+        return None
+    return read_long_line(metadata[31])
 
+
+def read_detector_integration_time(metadata: list) -> Dict[str, float]:
+    """Reads the detector integration time from the metadata"""
+    if not metadata[32]:
+        return None
+    return read_long_line(metadata[32])
+
+
+def read_detector_NIR_gain(metadata: list) -> Dict[str, float]:
+    """Reads the detector NIR gain from the metadata"""
+    if not metadata[35]:
+        return None
+    return read_long_line(metadata[35])
+
+
+def read_detector_change_wavelength(metadata: list) -> list[float]:
+    """Reads the detector change wavelength from the metadata"""
+    if not metadata[43]:
+        return None
+    return [float(x) for x in metadata[43].split()]
+
+
+METADATA_MAP: Dict[str, Any] = {
+    'sample_name': read_sample_name,
+    'start_datetime': read_start_datetime,
+    'analyst_name': 7,
+    'instrument_name': 11,
+    'instrument_serial_number': 12,
+    'instrument_firmware_version': 13,
+    'is_D2_lamp_used': read_is_D2_lamp_used,
+    'is_tungsten_lamp_used': read_is_tungsten_lamp_used,
+    'sample_beam_position': 44,
+    'common_beam_mask_percentage': 45,
+    'is_common_beam_depolarizer_on': read_is_depolarizer_on,
+    'sample_attenuation_percentage': read_sample_attenuation_percentage,
+    'reference_attenuation_percentage': read_reference_attenuation_percentage,
+    'detector_integration_time': read_detector_integration_time,
+    'detector_NIR_gain': read_detector_NIR_gain,
+    'detector_change_wavelength': read_detector_change_wavelength,
+    'polarizer_angle': 48,
+    'ordinate': 80,
+    'wavelength_units': 79,
+    'monochromator_slit_width': read_monochromator_slit_width,
+    'monochromator_change_wavelength': 41,
+    'lamp_change_wavelength': 42,
+}
+
+
+def restructure_measured_data(data: pd.DataFrame) -> Dict[str, np.ndarray]:
+    """Builds the data entry dict from the data in a pandas dataframe.
 
     Args:
-        metadata (list): Metadata lines extracted from the asc file.
+        data (pd.DataFrame): The dataframe containing the data.
 
     Returns:
-        Dict[str, Any]: The dictionary containing the detector metadata.
+        Dict[str, np.ndarray]: The dict with the measured data.
     """
-
     output: Dict[str, Any] = {}
-    if metadata[31]:
-        output["detector_slit_width"] = parse_detector_line(metadata[31])
-    if metadata[32]:
-        output["detector_integration_time"] = parse_detector_line(metadata[32])
-    if metadata[35]:
-       output["detector_NIR_gain"] = parse_detector_line(metadata[35])
-    if metadata[43]:
-        output["detector_change_wavelength"] = np.array(
-            [float(x) for x in metadata[43].split()]
-        )
+    output['measured_wavelength'] = data.index.values
+    output['measured_ordinate'] = data.values[:, 0]
 
     return output
 
 
-def read_asc(file_path: str, logger: "BoundLogger" = None) -> Dict[str, Any]:
+def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
     """
     Function for reading the transmission data from PerkinElmer *.asc.
 
@@ -181,9 +188,9 @@ def read_asc(file_path: str, logger: "BoundLogger" = None) -> Dict[str, Any]:
     """
 
     output: Dict[str, Any] = {}
-    data_start_ind = "#DATA"
+    data_start_ind = '#DATA'
 
-    with open(file_path, encoding="utf-8") as file_obj:
+    with open(file_path, encoding='utf-8') as file_obj:
         metadata = []
         for line in file_obj:
             if line.strip() == data_start_ind:
@@ -209,7 +216,6 @@ def read_asc(file_path: str, logger: "BoundLogger" = None) -> Dict[str, Any]:
                 f"Invalid type value {type(val)} of entry '{path}:{val}' in METADATA_MAP"
             )
 
-    output.update(read_detectors(metadata))
-    output.update(data_to_template(data))
+    output.update(restructure_measured_data(data))
 
     return output
