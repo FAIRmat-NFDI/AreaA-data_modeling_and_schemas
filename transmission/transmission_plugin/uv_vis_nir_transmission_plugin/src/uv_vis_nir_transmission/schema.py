@@ -53,8 +53,8 @@ from nomad.datamodel.metainfo.plot import (
     PlotlyFigure,
 )
 
-from uv_vis_nir_transmission import readers
-from nomad_measurements.utils import merge_sections
+from uv_vis_nir_transmission.readers import read_asc
+from uv_vis_nir_transmission.utils import merge_sections
 
 m_package = Package(name="uv-vis-nir-transmission")
 
@@ -346,7 +346,7 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
             tuple[Callable, Callable]: The read, write functions.
         """
         if self.data_file.endswith(".asc"):
-            return readers.read_asc, self.write_nx_transmission
+            return read_asc, self.write_nx_transmission
         return None, None
 
     def write_nx_transmission(
