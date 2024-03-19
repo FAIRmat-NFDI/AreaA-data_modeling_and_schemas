@@ -94,31 +94,107 @@ class MovpeSubstrateParser(MatchingParser):
             )
             substrate_data = SubstrateMovpe(
                 lab_id=substrate_id,
-                supplier=substrates_file["Supplier"][index],
-                supplier_id=substrates_file["Polishing Number"][index],
+                supplier=(
+                    substrates_file["Supplier"][index]
+                    if "Supplier" in substrates_file.columns
+                    else None
+                ),
+                supplier_id=(
+                    substrates_file["Polishing Number"][index]
+                    if "Polishing Number" in substrates_file.columns
+                    else None
+                ),
                 tags=[
-                    substrates_file["Quality"][index],
-                    substrates_file["Crystal"][index],
+                    (
+                        substrates_file["Quality"][index]
+                        if "As Received" in substrates_file.columns
+                        else None
+                    ),
+                    (
+                        substrates_file["Crystal"][index]
+                        if "As Received" in substrates_file.columns
+                        else None
+                    ),
                 ],
-                as_received=substrates_file["As Received"][index],
-                etching=substrates_file["Etching"][index],
-                annealing=substrates_file["Annealing"][index],
-                re_etching=substrates_file["Re-Etching"][index],
-                epi_ready=substrates_file["Epi Ready"][index],
-                quality=substrates_file["Quality"][index],
-                description=str(substrates_file["Substrate Box"][index])
+                as_received=(
+                    substrates_file["As Received"][index]
+                    if "As Received" in substrates_file.columns
+                    else None
+                ),
+                etching=(
+                    substrates_file["Etching"][index]
+                    if "Etching" in substrates_file.columns
+                    else None
+                ),
+                annealing=(
+                    substrates_file["Annealing"][index]
+                    if "Annealing" in substrates_file.columns
+                    else None
+                ),
+                re_etching=(
+                    substrates_file["Re-Etching"][index]
+                    if "Re-Etching" in substrates_file.columns
+                    else None
+                ),
+                epi_ready=(
+                    substrates_file["Epi Ready"][index]
+                    if "Epi Ready" in substrates_file.columns
+                    else None
+                ),
+                quality=(
+                    substrates_file["Quality"][index]
+                    if "Quality" in substrates_file.columns
+                    else None
+                ),
+                description=str(
+                    (
+                        substrates_file["Substrate Box"][index]
+                        if "Substrate Box" in substrates_file.columns
+                        else None
+                    ),
+                )
                 + " "
-                + str(substrates_file["Substrate Index"][index]),
+                + str(
+                    (
+                        substrates_file["Substrate Index"][index]
+                        if "Substrate Index" in substrates_file.columns
+                        else None
+                    ),
+                ),
                 geometry=Parallelepiped(
-                    width=substrates_file["Size X"][index],
-                    length=substrates_file["Size Y"][index],
+                    width=(
+                        substrates_file["Size X"][index]
+                        if "Size X" in substrates_file.columns
+                        else None
+                    ),
+                    length=(
+                        substrates_file["Size Y"][index]
+                        if "Size Y" in substrates_file.columns
+                        else None
+                    ),
                 ),
                 crystal_properties=SubstrateCrystalPropertiesMovpe(
-                    orientation=substrates_file["Orientation"][index],
+                    orientation=(
+                        substrates_file["Orientation"][index]
+                        if "Orientation" in substrates_file.columns
+                        else None
+                    ),
                     miscut=MiscutMovpe(
-                        b_angle=substrates_file["Miscut b angle"][index],
-                        angle=substrates_file["Miscut c angle"][index],
-                        orientation=substrates_file["Miscut c Orientation"][index],
+                        b_angle=(
+                            substrates_file["Miscut b angle"][index]
+                            if "Miscut b angle" in substrates_file.columns
+                            else None
+                        ),
+                        angle=(
+                            substrates_file["Miscut c angle"][index]
+                            if "Miscut c angle" in substrates_file.columns
+                            else None
+                        ),
+                        orientation=(
+                            substrates_file["Miscut c Orientation"][index]
+                            if "Miscut c Orientation" in substrates_file.columns
+                            else None
+                        ),
                     ),
                 ),
                 elemental_composition=populate_element(index, substrates_file),

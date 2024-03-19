@@ -266,7 +266,15 @@ class ParserMovpe1IKZ(MatchingParser):
                     shaft_temp_time * ureg("minute").to("second").magnitude
                 )
 
-                pressure_setval = pd.Series([dep_control["Set Chamber P"].loc[index]])
+                pressure_setval = pd.Series(
+                    [
+                        (
+                            dep_control["Set Chamber P"].loc[index]
+                            if "Set Chamber P" in dep_control.columns
+                            else None
+                        )
+                    ]
+                )
                 pressure_time, pressure_val = row_timeseries(
                     dep_control, "Chamber pressure time", "Read Chamber Pressure", index
                 )
@@ -276,7 +284,15 @@ class ParserMovpe1IKZ(MatchingParser):
                     dep_control, "TV time", "Read throttle valve", index
                 )
 
-                rot_setval = pd.Series([dep_control["Set Rotation S"].loc[index]])
+                rot_setval = pd.Series(
+                    [
+                        (
+                            dep_control["Set Rotation S"].loc[index]
+                            if "Set Rotation S" in dep_control.columns
+                            else None
+                        )
+                    ]
+                )
                 rot_time, rot_val = row_timeseries(
                     dep_control, "rot time", "Read rotation", index
                 )
@@ -289,14 +305,34 @@ class ParserMovpe1IKZ(MatchingParser):
                     fe1_pressure_time * ureg("minute").to("second").magnitude
                 )
 
-                fe1_temp_setval = pd.Series([dep_control["Set FE1 Temp"].loc[index]])
+                fe1_temp_setval = pd.Series(
+                    [
+                        (
+                            dep_control["Set FE1 Temp"].loc[index]
+                            if "Set FE1 Temp" in dep_control.columns
+                            else None
+                        )
+                    ]
+                )
 
                 fe1_ar_push_setval = pd.Series(
-                    [dep_control["Set Ar Push 1"].loc[index]]
+                    [
+                        (
+                            dep_control["Set Ar Push 1"].loc[index]
+                            if "Set Ar Push 1" in dep_control.columns
+                            else None
+                        )
+                    ]
                 )
 
                 fe1_ar_purge_setval = pd.Series(
-                    [dep_control["Set Ar Purge 1"].loc[index]]
+                    [
+                        (
+                            dep_control["Set Ar Purge 1"].loc[index]
+                            if "Set Ar Purge 1" in dep_control.columns
+                            else None
+                        )
+                    ]
                 )
 
                 fe2_pressure_time, fe2_pressure_val = row_timeseries(
@@ -306,14 +342,34 @@ class ParserMovpe1IKZ(MatchingParser):
                     fe2_pressure_time * ureg("minute").to("second").magnitude
                 )
 
-                fe2_temp_setval = pd.Series([dep_control["Set FE2 Temp"].loc[index]])
+                fe2_temp_setval = pd.Series(
+                    [
+                        (
+                            dep_control["Set FE2 Temp"].loc[index]
+                            if "Set FE2 Temp" in dep_control.columns
+                            else None
+                        )
+                    ]
+                )
 
                 fe2_ar_push_setval = pd.Series(
-                    [dep_control["Set Ar Push 2"].loc[index]]
+                    [
+                        (
+                            dep_control["Set Ar Push 2"].loc[index]
+                            if "Set Ar Push 2" in dep_control.columns
+                            else None
+                        )
+                    ]
                 )
 
                 fe2_ar_purge_setval = pd.Series(
-                    [dep_control["Set Ar Purge 2"].loc[index]]
+                    [
+                        (
+                            dep_control["Set Ar Purge 2"].loc[index]
+                            if "Set Ar Purge 2" in dep_control.columns
+                            else None
+                        )
+                    ]
                 )
 
                 gas_temp_time, gas_temp_val = row_timeseries(
@@ -322,7 +378,24 @@ class ParserMovpe1IKZ(MatchingParser):
                 gas_temp_time = gas_temp_time * ureg("minute").to("second").magnitude
 
                 gas_mfc_setval = pd.Series(
-                    [dep_control["Set of Oxygen uniform gas"].loc[index]]
+                    [
+                        (
+                            dep_control["Set of Oxygen uniform gas"].loc[index]
+                            if "Set of Oxygen uniform gas" in dep_control.columns
+                            else None
+                        )
+                    ]
+                )
+                growth_description = (
+                    str(
+                        dep_control["Weekday"].loc[index]
+                        if "Weekday" in dep_control.columns
+                        else None
+                    )
+                    + ". Sequential number: "
+                    + str(dep_control["number"].loc[index])
+                    + ". "
+                    + str(dep_control["Comment"].loc[index])
                 )
 
                 # creating GrowthMovpeIKZ archive
@@ -330,12 +403,20 @@ class ParserMovpe1IKZ(MatchingParser):
                     data_file=data_file_with_path,
                     name="Growth MOVPE 1",
                     lab_id=dep_control_run,
-                    description=f"{dep_control['Weekday'].loc[index]}. Sequential number: {dep_control['number'].loc[index]}. {dep_control['Comment'].loc[index]}",
-                    datetime=dep_control["Date"].loc[index],
+                    description=growth_description,
+                    datetime=(
+                        dep_control["Date"].loc[index]
+                        if "Date" in dep_control.columns
+                        else None
+                    ),
                     steps=[
                         GrowthStepMovpe1IKZ(
                             name="Deposition",
-                            duration=dep_control["Duration"].loc[index],
+                            duration=(
+                                dep_control["Duration"].loc[index]
+                                if "Duration" in dep_control.columns
+                                else None
+                            ),
                             environment=ChamberEnvironmentMovpe(
                                 pressure=Pressure(
                                     set_value=pressure_setval,

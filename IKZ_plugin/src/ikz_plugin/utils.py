@@ -151,12 +151,15 @@ def row_to_array(
             f"{key}{'' if i == 0 else '.' + str(i)}" in dataframe.columns
             for key in quantities
         ):
+            column_name = f"{quantities[0]}{'' if i == 0 else '.' + str(i)}"
             array = array.append(
                 pd.Series(
                     [
-                        dataframe[
-                            f"{quantities[0]}{'' if i == 0 else '.' + str(i)}"
-                        ].loc[row_index],
+                        (
+                            dataframe[column_name].loc[row_index]
+                            if column_name in dataframe.columns
+                            else None
+                        ),
                     ]
                 )
             )

@@ -111,7 +111,13 @@ class ParserMovpe2IKZ(MatchingParser):
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
         growth_run_file = pd.read_excel(mainfile, comment="#")
-        recipe_ids = list(set(growth_run_file["Recipe Name"]))
+        recipe_ids = list(
+            set(
+                growth_run_file["Recipe Name"]
+                if "Recipe Name" in growth_run_file.columns
+                else None
+            )
+        )
 
         # initializing experiments dict
         growth_processes: Dict[str, GrowthMovpeIKZ] = {}
@@ -121,9 +127,21 @@ class ParserMovpe2IKZ(MatchingParser):
         samples_lists: Dict[str, Dict[str, List]] = {}
 
         for index, sample_id in enumerate(growth_run_file["Sample Name"]):
-            recipe_id = growth_run_file["Recipe Name"][index]
-            step_id = growth_run_file["Step Index"][index]
-            substrate_id = growth_run_file["Substrate Name"][index]
+            recipe_id = (
+                growth_run_file["Recipe Name"][index]
+                if "Recipe Name" in growth_run_file.columns
+                else None
+            )
+            step_id = (
+                growth_run_file["Step Index"][index]
+                if "Step Index" in growth_run_file.columns
+                else None
+            )
+            substrate_id = (
+                growth_run_file["Substrate Name"][index]
+                if "Substrate Name" in growth_run_file.columns
+                else None
+            )
 
             # creating ThinFiln and ThinFilmStack archives
             layer_filename = f"{sample_id}_{index}.ThinFilm.archive.{filetype}"
@@ -187,17 +205,45 @@ class ParserMovpe2IKZ(MatchingParser):
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
                     ),
                     distance_to_source=[
-                        (growth_run_file["Distance of Showerhead"][index])
+                        (
+                            growth_run_file["Distance of Showerhead"][index]
+                            if "Distance of Showerhead" in growth_run_file.columns
+                            else None
+                        )
                         * ureg("millimeter").to("meter").magnitude
                     ],
                     shaft_temperature=ShaftTemperature(
-                        set_value=pd.Series([growth_run_file["T Shaft"][index]]),
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["T Shaft"][index]
+                                    if "T Shaft" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        ),
                     ),
                     filament_temperature=FilamentTemperature(
-                        set_value=pd.Series([growth_run_file["T Filament"][index]]),
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["T Filament"][index]
+                                    if "T Filament" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        ),
                     ),
                     laytec_temperature=LayTecTemperature(
-                        set_value=pd.Series([growth_run_file["T LayTec"][index]]),
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["T LayTec"][index]
+                                    if "T LayTec" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        ),
                     ),
                 )
             )
@@ -208,31 +254,80 @@ class ParserMovpe2IKZ(MatchingParser):
             if step_id not in process_steps_lists[recipe_id]:
                 process_steps_lists[recipe_id][step_id] = []
             process_steps_lists[recipe_id][step_id] = GrowthStepMovpe2IKZ(
-                name=growth_run_file["Step name"][index] + " step " + str(step_id),
+                name=str(
+                    growth_run_file["Step name"][index]
+                    if "Step name" in growth_run_file.columns
+                    else None
+                )
+                + " step "
+                + str(step_id),
                 step_index=step_id,
-                duration=growth_run_file["Duration"][index]
-                * ureg("minute").to("second").magnitude,
-                comment=growth_run_file["Comments"][index],
+                duration=(
+                    growth_run_file["Duration"][index]
+                    if "Duration" in growth_run_file.columns
+                    else None * ureg("minute").to("second").magnitude
+                ),
+                comment=(
+                    growth_run_file["Comments"][index]
+                    if "Comments" in growth_run_file.columns
+                    else None
+                ),
                 sources=populate_sources(index, growth_run_file)
                 + populate_gas_source(index, growth_run_file),
                 environment=ChamberEnvironmentMovpe(
                     pressure=Pressure(
-                        set_value=pd.Series([growth_run_file["Pressure"][index]])
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["Pressure"][index]
+                                    if "Pressure" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        )
                         * ureg("mbar").to("pascal").magnitude,
                     ),
                     rotation=Rotation(
-                        set_value=pd.Series([growth_run_file["Rotation"][index]])
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["Rotation"][index]
+                                    if "Rotation" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        )
                         * ureg("rpm").to("rpm").magnitude,
                     ),
                     carrier_gas=PubChemPureSubstanceSection(
-                        name=growth_run_file["Carrier Gas"][index],
+                        name=(
+                            growth_run_file["Carrier Gas"][index]
+                            if "Carrier Gas" in growth_run_file.columns
+                            else None
+                        ),
                     ),
                     carrier_push_valve=VolumeFlowRate(
-                        set_value=pd.Series([growth_run_file["Pushgas Valve"][index]])
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["Pushgas Valve"][index]
+                                    if "Pushgas Valve" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        )
                         * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
                     ),
                     uniform_valve=VolumeFlowRate(
-                        set_value=pd.Series([growth_run_file["Uniform Valve"][index]])
+                        set_value=pd.Series(
+                            [
+                                (
+                                    growth_run_file["Uniform Valve"][index]
+                                    if "Uniform Valve" in growth_run_file.columns
+                                    else None
+                                )
+                            ]
+                        )
                         * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
                     ),
                 ),

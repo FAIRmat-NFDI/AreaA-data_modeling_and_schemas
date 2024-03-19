@@ -1305,7 +1305,12 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
                                 section=sample.substrate.reference,
                             )
                         )
-                        if sample.substrate.reference.substrate.reference is not None:
+                        if hasattr(
+                            getattr(sample.substrate.reference, "substrate"),
+                            "reference",
+                        ):
+
+                            # sample.substrate.reference.substrate.reference is not None:
                             inputs.append(
                                 Link(
                                     name=f"{sample.substrate.reference.substrate.name}",
