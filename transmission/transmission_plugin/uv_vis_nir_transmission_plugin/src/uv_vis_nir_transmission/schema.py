@@ -346,7 +346,7 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
             tuple[Callable, Callable]: The read, write functions.
         """
         if self.data_file.endswith(".asc"):
-            return readers.read_nexus_asc, self.write_nx_transmission
+            return readers.read_asc, self.write_nx_transmission
         return None, None
 
     def write_nx_transmission(
