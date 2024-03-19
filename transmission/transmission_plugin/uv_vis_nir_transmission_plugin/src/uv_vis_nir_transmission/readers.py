@@ -30,71 +30,76 @@ if TYPE_CHECKING:
     )
 
 
-# The min & max wavelength the instrument can measure
-MIN_WAVELENGTH = 190.0
-MAX_WAVELENGTH = 3350.0
+def read_sample_name(metadata: list) -> str:
+    """Reads the sample name from the metadata"""
+    if not metadata[2]:
+        return None
+    return metadata[2].split(".")[0]
 
 
-def read_start_date(metadata: list) -> str:
+def read_start_datetime(metadata: list) -> str:
     """Reads the start date from the metadata"""
+    if not metadata[3] or not metadata[4]:
+        return None
     century = str(datetime.now().year // 100)
     formated_date = metadata[3].replace("/", "-")
     return f"{century}{formated_date}T{metadata[4]}000Z"
 
 
-def read_sample_attenuator(metadata: list) -> int:
-    """Reads the sample attenuator from the metadata"""
+def read_is_D2_lamp_on(metadata: list) -> bool:
+    """Reads whether the D2 lamp was active during the measurement"""
+    if not metadata[21]:
+        return None
+    return bool(float(metadata[21]))
+
+
+def read_is_tungsten_lamp_on(metadata: list) -> bool:
+    """Reads whether the tungsten lamp was active during the measurement"""
+    if not metadata[22]:
+        return None
+    return bool(float(metadata[22]))
+
+
+def read_sample_attenuation_percentage(metadata: list) -> int:
+    """Reads the sample attenuation percentage from the metadata"""
+    if not metadata[47]:
+        return None
     return int(metadata[47].split()[0].split(":")[1])
 
 
-def read_ref_attenuator(metadata: list) -> int:
-    """Reads the sample attenuator from the metadata"""
+def read_reference_attenuation_percentage(metadata: list) -> int:
+    """Reads the sample attenuation percentage from the metadata"""
+    if not metadata[47]:
+        return None
     return int(metadata[47].split()[1].split(":")[1])
 
 
-def is_depolarizer_on(metadata: list) -> bool:
+def read_is_depolarizer_on(metadata: list) -> bool:
     """Reads whether the depolarizer was active during the measurement"""
+    if not metadata[46]:
+        return False
     return metadata[46] == "on"
 
 
-def read_uv_monochromator_range(metadata: list) -> list:
-    """Reads the uv monochromator range from the metadata"""
-    monochromator_change = float(metadata[41])
-    return [MIN_WAVELENGTH, monochromator_change]
-
-
-def read_visir_monochromator_range(metadata: list) -> list:
-    """Reads the visir monochromator range from the metadata"""
-    monochromator_change = float(metadata[41])
-    return [monochromator_change, MAX_WAVELENGTH]
-
-
-def get_d2_range(metadata: list) -> list:
-    """Reads the D2 lamp range from the metadata"""
-    lamp_change = float(metadata[42])
-    return [MIN_WAVELENGTH, lamp_change]
-
-
-def get_halogen_range(metadata: list) -> list:
-    """Reads the halogen lamp range from the metadata"""
-    lamp_change = float(metadata[42])
-    return [lamp_change, MAX_WAVELENGTH]
-
-
 METADATA_MAP: Dict[str, Any] = {
-    "samplename": 8,
-    "/ENTRY[entry]/start_time": read_start_date,
-    "/ENTRY[entry]/instrument/sample_attenuator/attenuator_transmission": read_sample_attenuator,
-    "/ENTRY[entry]/instrument/ref_attenuator/attenuator_transmission": read_ref_attenuator,
-    "/ENTRY[entry]/instrument/common_beam_mask/y_gap": 45,
-    "/ENTRY[entry]/instrument/polarizer": 48,
-    "/ENTRY[entry]/instrument/common_beam_depolarizer": is_depolarizer_on,
-    "/ENTRY[entry]/instrument/spectrometer/GRATING[grating]/wavelength_range": read_uv_monochromator_range,
-    "/ENTRY[entry]/instrument/spectrometer/GRATING[grating1]/wavelength_range": read_visir_monochromator_range,
-    "/ENTRY[entry]/instrument/SOURCE[source]/type": "D2",
-    "/ENTRY[entry]/instrument/SOURCE[source]/wavelength_range": get_d2_range,
-    "/ENTRY[entry]/instrument/SOURCE[source1]/type": "halogen",
-    "/ENTRY[entry]/instrument/SOURCE[source1]/wavelength_range": get_halogen_range,
+    "sample_name": read_sample_name,
+    "start_datetime": read_start_datetime,
+    "analyst_name": 7,
+    "instrument_name": 11,
+    "instrument_serial_number": 12,
+    "instrument_firmware_version": 13,
+    "is_D2_lamp_on": read_is_D2_lamp_on,
+    "is_tungsten_lamp_on": read_is_tungsten_lamp_on,
+    "sample_beam_position": 44,
+    "common_beam_mask_percentage": 45,
+    "is_common_beam_depolarizer_on": read_is_depolarizer_on,
+    "sample_attenuation_percentage": read_sample_attenuation_percentage,
+    "reference_attenuation_percentage": read_reference_attenuation_percentage,
+    "polarizer_angle": 48,
+    "ordinate": 80,
+    "wavelength_units": 79,
+    "monochromator_change_wavelength": 41,
+    "lamp_change_wavelength": 42,
 }
 
 
@@ -107,119 +112,60 @@ def data_to_template(data: pd.DataFrame) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: The dict with the data paths inside NeXus.
     """
-    template: Dict[str, Any] = {}
-    template["/ENTRY[entry]/data/@axes"] = "wavelength"
-    template["/ENTRY[entry]/data/type"] = "transmission"
-    template["/ENTRY[entry]/data/@signal"] = "transmission"
-    template["/ENTRY[entry]/data/wavelength"] = data.index.values
-    template["/ENTRY[entry]/instrument/spectrometer/wavelength"] = data.index.values
-    template["/ENTRY[entry]/data/wavelength/@units"] = "nm"
-    template["/ENTRY[entry]/data/transmission"] = data.values[:, 0]
-    template["/ENTRY[entry]/instrument/measured_data"] = data.values
+    output: Dict[str, Any] = {}
+    output["measured_wavelength"] = data.index.values
+    output["measured_ordinate"] = data.values[:, 0]
 
-    return template
+    return output
 
 
-def parse_detector_line(line: str, convert: Callable[[str], Any] = None) -> List[Any]:
-    """Parses a detector line from the asc file.
+def parse_detector_line(line: str) -> Dict[str, float]:
+    """Parses a detector line from the asc file. Generates a dict where each key-value
+    pair is the detector setting (value) for the corresponding wavelength (key).
+    Eg. {"600": 0.5, "1050": 1.0}
 
     Args:
         line (str): The line to parse.
 
     Returns:
-        List[Any]: The list of detector settings.
+        Dict[str, float]: The dict of detector settings with wavelength as key.
     """
-    if convert is None:
 
-        def convert(val):
-            return val
+    def convert(val):
+        val_list = val.strip().split("/")
+        return {val_list[0]: float(val_list[1])}
 
-    return [convert(s.split("/")[-1]) for s in line.split()]
-
-
-# pylint: disable=too-many-arguments
-def convert_detector_to_template(
-    det_type: str,
-    slit: str,
-    time: float,
-    gain: float,
-    det_idx: int,
-    wavelength_range: List[float],
-) -> Dict[str, Any]:
-    """Writes the detector settings to the template.
-
-    Args:
-        det_type (str): The detector type.
-        slit (float): The slit width.
-        time (float): The exposure time.
-        gain (str): The gain setting.
-
-    Returns:
-        Dict[str, Any]: The dictionary containing the data readout from the asc file.
-    """
-    if det_idx == 0:
-        path = "/ENTRY[entry]/instrument/DETECTOR[detector]"
-    else:
-        path = f"/ENTRY[entry]/instrument/DETECTOR[detector{det_idx}]"
-    template: Dict[str, Any] = {}
-    template[f"{path}/type"] = det_type
-    template[f"{path}/response_time"] = time
-    if gain is not None:
-        template[f"{path}/gain"] = gain
-
-    if slit == "servo":
-        template[f"{path}/slit/type"] = "servo"
-    else:
-        template[f"{path}/slit/type"] = "fixed"
-        template[f"{path}/slit/x_gap"] = float(slit)
-        template[f"{path}/slit/x_gap/@units"] = "nm"
-
-    template[f"{path}/wavelength_range"] = wavelength_range
-
-    return template
+    output = dict()
+    for s in line.split():
+        output.update(convert(s))
+    return output
 
 
 def read_detectors(metadata: list) -> Dict[str, Any]:
-    """Reads detector values from the metadata and writes them into a template
-    with the appropriate NeXus path."""
+    """
+    Reads detector values from the metadata
 
-    template: Dict[str, Any] = {}
-    detector_slits = parse_detector_line(metadata[31])
-    detector_times = parse_detector_line(metadata[32], float)
-    detector_gains = parse_detector_line(metadata[35], float)
-    detector_changes = [float(x) for x in metadata[43].split()]
-    wavelength_ranges = [MIN_WAVELENGTH] + detector_changes[::-1] + [MAX_WAVELENGTH]
 
-    template.update(
-        convert_detector_to_template(
-            "PMT",
-            detector_slits[-1],
-            detector_times[-1],
-            None,
-            2,
-            [wavelength_ranges[0], wavelength_ranges[1]],
-        )
-    )
+    Args:
+        metadata (list): Metadata lines extracted from the asc file.
 
-    for name, idx, slit, time, gain in zip(
-        ["PbS", "InGaAs"],
-        [1, 0],
-        detector_slits[1:],
-        detector_times[1:],
-        detector_gains[1:],
-    ):
-        template.update(
-            convert_detector_to_template(
-                name,
-                slit,
-                time,
-                gain,
-                idx,
-                [wavelength_ranges[2 - idx], wavelength_ranges[3 - idx]],
-            )
+    Returns:
+        Dict[str, Any]: The dictionary containing the detector metadata.
+    """
+
+    output: Dict[str, Any] = {}
+    if metadata[31]:
+        output["detector_slit_width"] = parse_detector_line(metadata[31])
+    if metadata[32]:
+        output["detector_integration_time"] = parse_detector_line(metadata[32])
+    if metadata[35]:
+       output["detector_NIR_gain"] = parse_detector_line(metadata[35])
+    if metadata[43]:
+        output["detector_change_wavelength"] = np.array(
+            [float(x) for x in metadata[43].split()]
         )
 
-    return template
+    return output
 
 
 def read_asc(file_path: str, logger: "BoundLogger" = None) -> Dict[str, Any]:
@@ -249,14 +195,17 @@ def read_asc(file_path: str, logger: "BoundLogger" = None) -> Dict[str, Any]:
     for path, val in METADATA_MAP.items():
         # If the dict value is an int just get the data with it's index
         if isinstance(val, int):
-            output[path] = metadata[val]
+            if metadata[val]:
+                try:
+                    output[path] = float(metadata[val])
+                except ValueError:
+                    output[path] = metadata[val]
         elif isinstance(val, str):
             output[path] = val
         elif isfunction(val):
             output[path] = val(metadata)
         else:
-            print(
-                f"WARNING: "
+            raise ValueError(
                 f"Invalid type value {type(val)} of entry '{path}:{val}' in METADATA_MAP"
             )
 
