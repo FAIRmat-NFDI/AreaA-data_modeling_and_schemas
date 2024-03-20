@@ -124,7 +124,7 @@ def read_detector_integration_time(metadata: list) -> Dict[str, float]:
     return output_dict
 
 
-def read_detector_NIR_gain(metadata: list) -> Dict[str, float]:
+def read_detector_nir_gain(metadata: list) -> Dict[str, float]:
     """Reads the detector NIR gain from the metadata"""
     if not metadata[35]:
         return None
@@ -162,6 +162,17 @@ def read_lamp_change_wavelength(metadata: list) -> list[float]:
     return float(metadata[42]) * ureg.nanometer
 
 
+def read_detector_module(metadata: list) -> str:
+    """Reads the detector module from the metadata"""
+    if not metadata[24]:
+        return None
+    if 'uv/vis/nir detector' in metadata[24].lower():
+        return 'three detector module'
+    if '150mm sphere' in metadata[24].lower():
+        return '150mm sphere'
+    return None
+
+
 METADATA_MAP: Dict[str, Any] = {
     'sample_name': read_sample_name,
     'start_datetime': read_start_datetime,
@@ -177,8 +188,9 @@ METADATA_MAP: Dict[str, Any] = {
     'sample_attenuation_percentage': read_sample_attenuation_percentage,
     'reference_attenuation_percentage': read_reference_attenuation_percentage,
     'detector_integration_time': read_detector_integration_time,
-    'detector_NIR_gain': read_detector_NIR_gain,
+    'detector_NIR_gain': read_detector_nir_gain,
     'detector_change_wavelength': read_detector_change_wavelength,
+    'detector_module': read_detector_module,
     'polarizer_angle': read_polarizer_angle,
     'ordinate': 80,
     'wavelength_units': 79,
