@@ -56,7 +56,7 @@ from nomad.datamodel.metainfo.plot import (
 from uv_vis_nir_transmission.readers import read_asc
 from uv_vis_nir_transmission.utils import merge_sections
 
-m_package = Package(name="uv-vis-nir-transmission")
+m_package = Package(name='uv-vis-nir-transmission')
 
 
 class UVVisNirTransmissionResult(MeasurementResult, ArchiveSection):
@@ -67,23 +67,23 @@ class UVVisNirTransmissionResult(MeasurementResult, ArchiveSection):
     m_def = Section()
     type = Quantity(
         type=str,  # MEnum(["Transmission", "Absorbance"]),
-        description="type of measurement",
+        description='type of measurement',
         # a_eln={"component": "RadioEnumEditQuantity"},
     )
     transmission = Quantity(
         type=np.float64,
-        description="transmittance",
+        description='transmittance',
         # a_eln={"component": "NumberEditQuantity"},
-        shape=["*"],
-        a_plot={"x": "wavelength", "y": "transmission"},
+        shape=['*'],
+        a_plot={'x': 'wavelength', 'y': 'transmission'},
     )
     wavelength = Quantity(
         type=np.float64,
-        description="wavelength",
+        description='wavelength',
         # a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
-        shape=["*"],
-        unit="nm",
-        a_plot={"x": "wavelength", "y": "transmission"},
+        shape=['*'],
+        unit='nm',
+        a_plot={'x': 'wavelength', 'y': 'transmission'},
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -106,14 +106,14 @@ class Accessory(ArchiveSection):
     m_def = Section()
     polarizer = Quantity(
         type=bool,
-        description="polarizer used",
-        a_eln={"component": "BoolEditQuantity"},
+        description='polarizer used',
+        a_eln={'component': 'BoolEditQuantity'},
     )
     aperture = Quantity(
         type=np.float64,
-        description="aperture diameter",
-        a_eln={"component": "NumberEditQuantity"},
-        unit="mm",
+        description='aperture diameter',
+        a_eln={'component': 'NumberEditQuantity'},
+        unit='mm',
     )
 
 
@@ -125,15 +125,15 @@ class SlitWidth(ArchiveSection):
     m_def = Section()
     wavelength = Quantity(
         type=np.float64,
-        description="wavelength",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='wavelength',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
     value = Quantity(
         type=np.float64,
-        description="slit width",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='slit width',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
 
 
@@ -145,9 +145,9 @@ class Monochromator(ArchiveSection):
     m_def = Section()
     monochromator_change_point = Quantity(
         type=np.float64,
-        description="monochromator change point in nm",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='monochromator change point in nm',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
     slit_width = SubSection(
         section_def=SlitWidth,
@@ -163,19 +163,19 @@ class Lamp(ArchiveSection):
     m_def = Section()
     d2_lamp = Quantity(
         type=bool,
-        description="D2 lamp used",
-        a_eln={"component": "BoolEditQuantity"},
+        description='D2 lamp used',
+        a_eln={'component': 'BoolEditQuantity'},
     )
     tungsten_lamp = Quantity(
         type=bool,
-        description="tungsten lamp used",
-        a_eln={"component": "BoolEditQuantity"},
+        description='tungsten lamp used',
+        a_eln={'component': 'BoolEditQuantity'},
     )
     lamp_change_point = Quantity(
         type=np.float64,
-        description="lamp change point in nm",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='lamp change point in nm',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
 
 
@@ -187,14 +187,14 @@ class NirGain(ArchiveSection):
     m_def = Section()
     wavelength = Quantity(
         type=np.float64,
-        description="wavelength",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='wavelength',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
     value = Quantity(
         type=np.float64,
-        description="value",
-        a_eln={"component": "NumberEditQuantity"},
+        description='value',
+        a_eln={'component': 'NumberEditQuantity'},
     )
 
 
@@ -206,15 +206,15 @@ class IntegrationTime(ArchiveSection):
     m_def = Section()
     wavelength = Quantity(
         type=np.float64,
-        description="wavelength",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='wavelength',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
     value = Quantity(
         type=np.float64,
-        description="value",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "s"},
-        unit="s",
+        description='value',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "s"},
+        unit='s',
     )
 
 
@@ -225,15 +225,15 @@ class Detector(ArchiveSection):
 
     m_def = Section()
     module = Quantity(
-        type=MEnum(["three detector module", "150mm integrating sphere"]),
-        description="detector module",
-        a_eln={"component": "RadioEnumEditQuantity"},
+        type=MEnum(['three detector module', '150mm integrating sphere']),
+        description='detector module',
+        a_eln={'component': 'RadioEnumEditQuantity'},
     )
     detector_change_point = Quantity(
         type=np.float64,
-        description="detector change point in nm",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "nm"},
-        unit="nm",
+        description='detector change point in nm',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "nm"},
+        unit='nm',
     )
     nir_gain = SubSection(
         section_def=NirGain,
@@ -253,13 +253,13 @@ class Attenuator(ArchiveSection):
     m_def = Section()
     sample = Quantity(
         type=int,
-        description="sample beam attenuation in %",
-        a_eln={"component": "NumberEditQuantity", "minValue": 0, "maxValue": 100},
+        description='sample beam attenuation in %',
+        a_eln={'component': 'NumberEditQuantity', 'minValue': 0, 'maxValue': 100},
     )
     reference = Quantity(
         type=int,
-        description="reference beam attenuation in %",
-        a_eln={"component": "NumberEditQuantity"},
+        description='reference beam attenuation in %',
+        a_eln={'component': 'NumberEditQuantity'},
     )
 
 
@@ -270,30 +270,30 @@ class InstrumentSettings(ArchiveSection):
 
     m_def = Section()
     ordinate_type = Quantity(
-        type=MEnum(["%T", "A"]),
-        description="ordinate type",
-        a_eln={"component": "RadioEnumEditQuantity"},
+        type=MEnum(['%T', 'A']),
+        description='ordinate type',
+        a_eln={'component': 'RadioEnumEditQuantity'},
     )
     sample_beam_position = Quantity(
-        type=MEnum(["Front", "Rear"]),
-        description="sample beam position",
-        a_eln={"component": "RadioEnumEditQuantity"},
+        type=MEnum(['Front', 'Rear']),
+        description='sample beam position',
+        a_eln={'component': 'RadioEnumEditQuantity'},
     )
     common_beam_mask = Quantity(
         type=int,
-        description="common beam mask",
-        a_eln={"component": "NumberEditQuantity", "minValue": 0, "maxValue": 100},
+        description='common beam mask',
+        a_eln={'component': 'NumberEditQuantity', 'minValue': 0, 'maxValue': 100},
     )
     common_beam_depolarizer = Quantity(
         type=bool,
-        description="common beam depolarizer",
-        a_eln={"component": "BoolEditQuantity"},
+        description='common beam depolarizer',
+        a_eln={'component': 'BoolEditQuantity'},
     )
     polarizer_angle = Quantity(
         type=np.float64,
-        description="polarizer angle in °",
-        a_eln={"component": "NumberEditQuantity"},
-        unit="degrees",
+        description='polarizer angle in °',
+        a_eln={'component': 'NumberEditQuantity'},
+        unit='degrees',
     )
     accessory = SubSection(
         section_def=Accessory,
@@ -320,12 +320,12 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
     m_def = Section()
     user = Quantity(
         type=str,
-        description="analyst name from header in ascii",
-        a_eln={"component": "StringEditQuantity"},
+        description='analyst name from header in ascii',
+        a_eln={'component': 'StringEditQuantity'},
     )
     data_file = Quantity(
         type=str,
-        description="*.asc Data file containing the UV-Vis-NIR transmission spectrum",
+        description='*.asc Data file containing the UV-Vis-NIR transmission spectrum',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.FileEditQuantity,
         ),
@@ -345,15 +345,15 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
         Returns:
             tuple[Callable, Callable]: The read, write functions.
         """
-        if self.data_file.endswith(".asc"):
+        if self.data_file.endswith('.asc'):
             return read_asc, self.write_nx_transmission
         return None, None
 
     def write_nx_transmission(
         self,
-        transmission_dict: "Template",
-        archive: "EntryArchive",
-        logger: "BoundLogger",
+        transmission_dict: 'Template',
+        archive: 'EntryArchive',
+        logger: 'BoundLogger',
     ) -> None:
         """
         Populate `UVVisTransmission` section from a NeXus Template.
@@ -365,15 +365,15 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
         """
         result = UVVisNirTransmissionResult(
             type=transmission_dict.get(
-                "/ENTRY[entry]/data/type",
+                '/ENTRY[entry]/data/type',
                 None,
             ),
             transmission=transmission_dict.get(
-                "/ENTRY[entry]/data/transmission",
+                '/ENTRY[entry]/data/transmission',
                 None,
             ),
             wavelength=transmission_dict.get(
-                "/ENTRY[entry]/data/wavelength",
+                '/ENTRY[entry]/data/wavelength',
                 None,
             ),
         )
@@ -395,7 +395,7 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
         #     logger,
         # )
 
-    def normalize(self, archive: "EntryArchive", logger: "BoundLogger"):
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
         The normalize function of the `UVVisTransmission` section.
 
@@ -423,15 +423,15 @@ class UVVisTransmission(Measurement, PlotSection, EntryData, ArchiveSection):
             x=self.results[0].wavelength,
             y=self.results[0].transmission,
             labels={
-                "x": "Wavelength (nm)",
-                "y": "Transmission",
+                'x': 'Wavelength (nm)',
+                'y': 'Transmission',
             },
-            title="Transmission",
+            title='Transmission',
         )
         self.figures.extend(
             [
                 PlotlyFigure(
-                    label="Linear Plot",
+                    label='Linear Plot',
                     # index=2,
                     figure=line_linear.to_plotly_json(),
                 ),
@@ -458,18 +458,18 @@ class PerkinElmerLambda1050(Instrument, EntryData, ArchiveSection):
     m_def = Section()
     name = Quantity(
         type=str,
-        description="instrument name",
-        a_eln={"component": "StringEditQuantity", "label": "instrument_name"},
+        description='instrument name',
+        a_eln={'component': 'StringEditQuantity', 'label': 'instrument_name'},
     )
     lab_id = Quantity(
         type=str,
-        description="instrument serial number",
-        a_eln={"component": "StringEditQuantity", "label": "instrument_serial_number"},
+        description='instrument serial number',
+        a_eln={'component': 'StringEditQuantity', 'label': 'instrument_serial_number'},
     )
     software_version = Quantity(
         type=str,
-        description="software/firmware version",
-        a_eln={"component": "StringEditQuantity"},
+        description='software/firmware version',
+        a_eln={'component': 'StringEditQuantity'},
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
@@ -492,29 +492,29 @@ class TransmissionSample(CompositeSystem, EntryData, ArchiveSection):
     m_def = Section()
     name = Quantity(
         type=str,
-        description="sample name",
-        a_eln={"component": "StringEditQuantity", "label": "sample_name"},
+        description='sample name',
+        a_eln={'component': 'StringEditQuantity', 'label': 'sample_name'},
     )
     lab_id = Quantity(
         type=str,
-        description="sample id",
-        a_eln={"component": "StringEditQuantity", "label": "sample_id"},
+        description='sample id',
+        a_eln={'component': 'StringEditQuantity', 'label': 'sample_id'},
     )
     chemical_composition = Quantity(
         type=str,
-        description="chemical composition",
-        a_eln={"component": "StringEditQuantity"},
+        description='chemical composition',
+        a_eln={'component': 'StringEditQuantity'},
     )
     length = Quantity(
         type=np.float64,
-        description="length (or thickness) of the sample in mm",
-        a_eln={"component": "NumberEditQuantity"},  # "defaultDisplayUnit": "mm"},
-        unit="mm",
+        description='length (or thickness) of the sample in mm',
+        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "mm"},
+        unit='mm',
     )
     orientation = Quantity(
         type=str,
-        description="crystallographic orientation of sample",
-        a_eln={"component": "StringEditQuantity"},
+        description='crystallographic orientation of sample',
+        a_eln={'component': 'StringEditQuantity'},
     )
 
     def normalize(self, archive, logger: BoundLogger) -> None:
