@@ -19,7 +19,6 @@
 from typing import Dict, Any, TYPE_CHECKING
 from datetime import datetime
 from inspect import isfunction
-from typing import Callable, List, Any, Dict
 import numpy as np
 from nomad.units import ureg
 import pandas as pd
@@ -64,14 +63,14 @@ def read_sample_attenuation_percentage(metadata: list) -> int:
     """Reads the sample attenuation percentage from the metadata"""
     if not metadata[47]:
         return None
-    return int(metadata[47].split()[0].split(':')[1])
+    return int(metadata[47].split()[0].split(':')[1]) * ureg.dimensionless
 
 
 def read_reference_attenuation_percentage(metadata: list) -> int:
     """Reads the sample attenuation percentage from the metadata"""
     if not metadata[47]:
         return None
-    return int(metadata[47].split()[1].split(':')[1])
+    return int(metadata[47].split()[1].split(':')[1]) * ureg.dimensionless
 
 
 def read_is_depolarizer_on(metadata: list) -> bool:
@@ -109,28 +108,58 @@ def read_monochromator_slit_width(metadata: list) -> Dict[str, float]:
     """Reads the monochromator slit width from the metadata"""
     if not metadata[31]:
         return None
-    return read_long_line(metadata[31])
+    output_dict = read_long_line(metadata[31])
+    for key in output_dict:
+        output_dict[key] *= ureg.nanometer
+    return output_dict
 
 
 def read_detector_integration_time(metadata: list) -> Dict[str, float]:
     """Reads the detector integration time from the metadata"""
     if not metadata[32]:
         return None
-    return read_long_line(metadata[32])
+    output_dict = read_long_line(metadata[32])
+    for key in output_dict:
+        output_dict[key] *= ureg.second
+    return output_dict
 
 
 def read_detector_NIR_gain(metadata: list) -> Dict[str, float]:
     """Reads the detector NIR gain from the metadata"""
     if not metadata[35]:
         return None
-    return read_long_line(metadata[35])
+    output_dict = read_long_line(metadata[35])
+    for key in output_dict:
+        output_dict[key] *= ureg.dimensionless
+    return output_dict
 
 
 def read_detector_change_wavelength(metadata: list) -> list[float]:
     """Reads the detector change wavelength from the metadata"""
     if not metadata[43]:
         return None
-    return [float(x) for x in metadata[43].split()]
+    return np.array([float(x) for x in metadata[43].split()]) * ureg.nanometer
+
+
+def read_polarizer_angle(metadata: list) -> list[float]:
+    """Reads the polarizer angle from the metadata"""
+    if not metadata[48]:
+        return None
+    return float(metadata[48]) * ureg.degree
+
+
+def read_monochromator_change_wavelength(metadata: list) -> list[float]:
+    """Reads the monochromator change wavelength from the metadata"""
+    if not metadata[41]:
+        return None
+    return float(metadata[41]) * ureg.nanometer
+
+
+def read_lamp_change_wavelength(metadata: list) -> list[float]:
+    """Reads the lamp change wavelength from the metadata"""
+    if not metadata[42]:
+        return None
+    return float(metadata[42]) * ureg.nanometer
 
 
 METADATA_MAP: Dict[str, Any] = {
@@ -150,12 +179,12 @@ METADATA_MAP: Dict[str, Any] = {
     'detector_integration_time': read_detector_integration_time,
     'detector_NIR_gain': read_detector_NIR_gain,
     'detector_change_wavelength': read_detector_change_wavelength,
-    'polarizer_angle': 48,
+    'polarizer_angle': read_polarizer_angle,
     'ordinate': 80,
     'wavelength_units': 79,
     'monochromator_slit_width': read_monochromator_slit_width,
-    'monochromator_change_wavelength': 41,
-    'lamp_change_wavelength': 42,
+    'monochromator_change_wavelength': read_monochromator_change_wavelength,
+    'lamp_change_wavelength': read_lamp_change_wavelength,
 }
 
 
@@ -170,7 +199,7 @@ def restructure_measured_data(data: pd.DataFrame) -> Dict[str, np.ndarray]:
     """
     output: Dict[str, Any] = {}
     output['measured_wavelength'] = data.index.values
-    output['measured_ordinate'] = data.values[:, 0]
+    output['measured_ordinate'] = data.values[:, 0] * ureg.dimensionless
 
     return output
 
@@ -204,7 +233,7 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
         if isinstance(val, int):
             if metadata[val]:
                 try:
-                    output[path] = float(metadata[val])
+                    output[path] = float(metadata[val]) * ureg.dimensionless
                 except ValueError:
                     output[path] = metadata[val]
         elif isinstance(val, str):
@@ -217,5 +246,6 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
             )
 
     output.update(restructure_measured_data(data))
+    output['measured_wavelength'] *= ureg(output['wavelength_units'])
 
     return output
