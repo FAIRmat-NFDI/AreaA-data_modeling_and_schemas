@@ -55,13 +55,15 @@ from nomad_material_processing import (
     ThinFilmReference,
 )
 
-from nomad_material_processing.chemical_vapor_deposition import (
-    Pressure,
-    Rotation,
+from nomad_material_processing.vapor_deposition import (
     Temperature,
+    Pressure,
+    VolumetricFlowRate,
+)
+from nomad_material_processing.vapor_deposition.cvd import (
+    Rotation,
     FlashEvaporator,
-    VolumeFlowRate,
-    MassFlowController,
+    GasLine,
 )
 
 from ikz_plugin import (
@@ -90,7 +92,6 @@ from ikz_plugin.movpe import (
     ChamberEnvironmentMovpe,
     FlashSourceIKZ,
     GasSourceIKZ,
-    GasTemperature,
     ShaftTemperature,
     FilamentTemperature,
 )
@@ -432,7 +433,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                     value=rot_val,
                                     time=rot_time,
                                 ),
-                                uniform_valve=VolumeFlowRate(
+                                uniform_valve=VolumetricFlowRate(
                                     set_value=uniform_setval,
                                 ),
                             ),
@@ -467,15 +468,15 @@ class ParserMovpe1IKZ(MatchingParser):
                                         temperature=Temperature(
                                             set_value=fe1_temp_setval,
                                         ),
-                                    ),
-                                    carrier_gas=PubChemPureSubstanceSection(
-                                        name="Argon",
-                                    ),
-                                    carrier_push_valve=VolumeFlowRate(
-                                        set_value=fe1_ar_push_setval,
-                                    ),
-                                    carrier_purge_valve=VolumeFlowRate(
-                                        set_value=fe1_ar_purge_setval,
+                                        carrier_gas=PubChemPureSubstanceSection(
+                                            name="Argon",
+                                        ),
+                                        carrier_push_flow_rate=VolumetricFlowRate(
+                                            set_value=fe1_ar_push_setval,
+                                        ),
+                                        carrier_purge_flow_rate=VolumetricFlowRate(
+                                            set_value=fe1_ar_purge_setval,
+                                        ),
                                     ),
                                 ),
                                 FlashSourceIKZ(
@@ -488,25 +489,27 @@ class ParserMovpe1IKZ(MatchingParser):
                                         temperature=Temperature(
                                             set_value=fe2_temp_setval,
                                         ),
-                                    ),
-                                    carrier_gas=PubChemPureSubstanceSection(
-                                        name="Argon",
-                                    ),
-                                    carrier_push_valve=VolumeFlowRate(
-                                        set_value=fe2_ar_push_setval,
-                                    ),
-                                    carrier_purge_valve=VolumeFlowRate(
-                                        set_value=fe2_ar_purge_setval,
+                                        carrier_gas=PubChemPureSubstanceSection(
+                                            name="Argon",
+                                        ),
+                                        carrier_push_flow_rate=VolumetricFlowRate(
+                                            set_value=fe2_ar_push_setval,
+                                        ),
+                                        carrier_purge_flow_rate=VolumetricFlowRate(
+                                            set_value=fe2_ar_purge_setval,
+                                        ),
                                     ),
                                 ),
                                 GasSourceIKZ(
                                     name="Oxygen uniform gas ",
-                                    gas_temperature=GasTemperature(
-                                        value=gas_temp_val,
-                                        time=gas_temp_time,
-                                    ),
-                                    mass_flow_controller=MassFlowController(
-                                        set_value=gas_mfc_setval,
+                                    vapor_source=GasLine(
+                                        temperature=Temperature(
+                                            value=gas_temp_val,
+                                            time=gas_temp_time,
+                                        ),
+                                        total_flow_rate=VolumetricFlowRate(
+                                            set_value=gas_mfc_setval,
+                                        ),
                                     ),
                                 ),
                             ],

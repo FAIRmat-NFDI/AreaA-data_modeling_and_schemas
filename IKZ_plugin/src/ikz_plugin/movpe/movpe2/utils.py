@@ -40,6 +40,8 @@ from nomad.units import ureg
 from nomad.datamodel.metainfo.basesections import (
     SystemComponent,
     CompositeSystemReference,
+    PureSubstanceComponent,
+    PureSubstanceSection,
 )
 
 from ikz_plugin import IKZMOVPE2Category
@@ -49,15 +51,16 @@ from nomad.search import search
 from nomad_material_processing import (
     SubstrateReference,
 )
-from nomad_material_processing.chemical_vapor_deposition import (
+from nomad_material_processing.vapor_deposition import (
+    MolarFlowRate,
     Temperature,
     Pressure,
+    VolumetricFlowRate,
+)
+from nomad_material_processing.vapor_deposition.cvd import (
     PartialVaporPressure,
     BubblerEvaporator,
-    MolarFlowRate,
-    MassFlowRate,
-    VaporRate,
-    MassFlowController,
+    GasLine,
 )
 
 from ikz_plugin.movpe import (
@@ -233,10 +236,15 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                     name=growth_run_file.get(
                         f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
-                    material=CompositeSystemReference(
-                        name=growth_run_file.get(
+                    material=PureSubstanceComponent(
+                        substance_name=growth_run_file.get(
                             f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
                         )[line_number],
+                        pure_substance=PureSubstanceSection(
+                            name=growth_run_file.get(
+                                f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
+                            )[line_number]
+                        ),
                     ),
                     vapor_source=BubblerEvaporator(
                         temperature=Temperature(
@@ -269,7 +277,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                 ]
                             ),
                         ),
-                        carrier_gas_flow=MassFlowRate(
+                        total_flow_rate=VolumetricFlowRate(
                             set_value=pd.Series(
                                 [
                                     growth_run_file.get(
@@ -289,7 +297,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             f"Inject{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
                     ),
-                    molar_flow_rate=MolarFlowRate(
+                    vapor_flow_rate=MolarFlowRate(
                         set_value=pd.Series(
                             [
                                 growth_run_file.get(
@@ -330,21 +338,28 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                     name=growth_run_file.get(
                         f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
-                    material=CompositeSystemReference(
-                        name=growth_run_file.get(
+                    material=PureSubstanceComponent(
+                        substance_name=growth_run_file.get(
                             f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                         )[line_number],
-                    ),
-                    mass_flow_controller=MassFlowController(
-                        set_value=pd.Series(
-                            [
-                                growth_run_file.get(
-                                    f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
-                                )[line_number]
-                            ]
+                        pure_substance=PureSubstanceSection(
+                            name=growth_run_file.get(
+                                f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                            )[line_number]
                         ),
                     ),
-                    vapor_rate=VaporRate(
+                    vapor_source=GasLine(
+                        total_flow_rate=VolumetricFlowRate(
+                            set_value=pd.Series(
+                                [
+                                    growth_run_file.get(
+                                        f"Gas MFC{'' if i == 0 else '.' + str(i)}", 0
+                                    )[line_number]
+                                ]
+                            ),
+                        ),
+                    ),
+                    vapor_flow_rate=MolarFlowRate(
                         set_value=pd.Series(
                             [
                                 growth_run_file.get(

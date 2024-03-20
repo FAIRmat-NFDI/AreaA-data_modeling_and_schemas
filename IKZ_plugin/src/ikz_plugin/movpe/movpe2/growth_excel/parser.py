@@ -45,11 +45,12 @@ from nomad_material_processing import (
     SubstrateReference,
     ThinFilmReference,
 )
-
-from nomad_material_processing.chemical_vapor_deposition import (
+from nomad_material_processing.vapor_deposition import (
     Pressure,
+    VolumetricFlowRate,
+)
+from nomad_material_processing.vapor_deposition.cvd import (
     Rotation,
-    VolumeFlowRate,
 )
 
 from ikz_plugin.movpe import (
@@ -62,6 +63,7 @@ from ikz_plugin.movpe import (
     ThinFilmStackMovpeReference,
     SampleParametersMovpe,
     ChamberEnvironmentMovpe,
+    GasFlowMovpe,
     ShaftTemperature,
     FilamentTemperature,
     LayTecTemperature,
@@ -175,7 +177,9 @@ class ParserMovpe2IKZ(MatchingParser):
                     reference=substrate_ref
                 )
             else:
-                grown_sample_data.substrate = SubstrateReference(lab_id=substrate_id)
+                grown_sample_data.substrate = SubstrateReference(
+                    name=substrate_id, lab_id=substrate_id
+                )
             grown_sample_filename = (
                 f"{sample_id}_{index}.ThinFilmStack.archive.{filetype}"
             )
@@ -299,26 +303,31 @@ class ParserMovpe2IKZ(MatchingParser):
                         )
                         * ureg("rpm").to("rpm").magnitude,
                     ),
-                    carrier_gas=PubChemPureSubstanceSection(
-                        name=(
-                            growth_run_file["Carrier Gas"][index]
-                            if "Carrier Gas" in growth_run_file.columns
-                            else None
-                        ),
-                    ),
-                    carrier_push_valve=VolumeFlowRate(
-                        set_value=pd.Series(
-                            [
-                                (
-                                    growth_run_file["Pushgas Valve"][index]
-                                    if "Pushgas Valve" in growth_run_file.columns
+                    gas_flow=[
+                        GasFlowMovpe(
+                            gas=PubChemPureSubstanceSection(
+                                name=(
+                                    growth_run_file["Carrier Gas"][index]
+                                    if "Carrier Gas" in growth_run_file.columns
                                     else None
+                                ),
+                            ),
+                            flow_rate=VolumetricFlowRate(
+                                set_value=pd.Series(
+                                    [
+                                        (
+                                            growth_run_file["Pushgas Valve"][index]
+                                            if "Pushgas Valve"
+                                            in growth_run_file.columns
+                                            else None
+                                        )
+                                    ]
                                 )
-                            ]
-                        )
-                        * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
-                    ),
-                    uniform_valve=VolumeFlowRate(
+                                * ureg("cm ** 3 / minute"),
+                            ),
+                        ),
+                    ],
+                    uniform_gas_flow_rate=VolumetricFlowRate(
                         set_value=pd.Series(
                             [
                                 (

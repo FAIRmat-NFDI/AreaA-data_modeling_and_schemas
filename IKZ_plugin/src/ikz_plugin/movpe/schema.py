@@ -65,20 +65,19 @@ from nomad_material_processing.vapor_deposition import (
     SampleParameters,
     ChamberEnvironment,
     SubstrateHeater,
+    Pressure,
+    Temperature,
+    MolarFlowRate,
+    VolumetricFlowRate,
+    GasFlow,
 )
 
-from nomad_material_processing.chemical_vapor_deposition import (
+from nomad_material_processing.vapor_deposition.cvd import (
     BubblerEvaporator,
     FlashEvaporator,
-    VaporRate,
-    MolarFlowRate,
     CVDSource,
-    Pressure,
     Rotation,
-    Temperature,
-    VolumeFlowRate,
-    MassFlowRate,
-    MassFlowController,
+    GasSupply,
 )
 
 from nomad_measurements import (
@@ -803,14 +802,6 @@ class FilamentTemperature(Temperature):
     pass
 
 
-class GasTemperature(Temperature):
-    """
-    the temperature of a gas in a gas source
-    """
-
-    pass
-
-
 class LayTecTemperature(Temperature):
     """
     Central shaft temperature (to hold the susceptor)
@@ -820,80 +811,43 @@ class LayTecTemperature(Temperature):
 
 
 class BubblerSourceIKZ(CVDSource):
-    name = Quantity(
-        type=str,
-        description="""
-        A short and descriptive name for this source.
-        """,
-    )
     vapor_source = SubSection(
         section_def=BubblerEvaporator,
-        description="""
-        Example: A heater, a filament, a laser, a bubbler, etc.
-        """,
-    )
-    molar_flow_rate = SubSection(
-        section_def=MolarFlowRate,
-        description="""
-        The rate of the material being evaporated (mol/time).
-        """,
     )
 
 
 class FlashSourceIKZ(CVDSource):
-    name = Quantity(
-        type=str,
-        description="""
-        A short and descriptive name for this source.
-        """,
-    )
     vapor_source = SubSection(
         section_def=FlashEvaporator,
         description="""
         Example: A heater, a filament, a laser, a bubbler, etc.
         """,
     )
-    vapor_rate = SubSection(
-        section_def=VaporRate,
-        description="""
-        The rate of the material being evaporated (mol/time).
-        """,
-    )
-    mass_flow_controller = SubSection(
-        section_def=MassFlowController,
-        description="""
-        The rate of the material being evaporated (cm^3/time).
-        """,
-    )
 
 
 class GasSourceIKZ(CVDSource):
-    gas_temperature = SubSection(
-        section_def=GasTemperature,
+    vapor_source = SubSection(
+        section_def=GasSupply,
     )
-    vapor_rate = SubSection(
-        section_def=VaporRate,
-        description="""
-        The rate of the material being evaporated (mol/time).
-        """,
+
+
+class GasFlowMovpe(GasFlow):
+
+    gas = SubSection(
+        section_def=PureSubstanceSection,
     )
-    mass_flow_controller = SubSection(
-        section_def=MassFlowController,
-        description="""
-        The rate of the material being evaporated (cm^3/time).
-        """,
+    flow_rate = SubSection(
+        section_def=VolumetricFlowRate,
+        label="Push Flow Rate",
+    )
+    purge_flow_rate = SubSection(
+        section_def=VolumetricFlowRate,
     )
 
 
 class ChamberEnvironmentMovpe(ChamberEnvironment):
-    carrier_gas = SubSection(
-        section_def=PubChemPureSubstanceSection,
-    )
-    carrier_push_valve = SubSection(
-        section_def=VolumeFlowRate,
-    )
-    uniform_valve = SubSection(
-        section_def=VolumeFlowRate,
+    uniform_gas_flow_rate = SubSection(
+        section_def=VolumetricFlowRate,
     )
     pressure = SubSection(
         section_def=Pressure,
@@ -1064,36 +1018,39 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
         a_eln={"component": "StringEditQuantity"},
         label="Notes",
     )
-    temperature_substrate = Quantity(
+    temperature_substrate = Quantity(  # CHECK why they are not in the new excel
         type=np.float64,
         description="FILL THE DESCRIPTION",
         a_tabular={"name": "Constant Parameters/Substrate temperature"},
         a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
         unit="celsius",
     )
-    peristaltic_pump_rotation_titan = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Titan"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
+    peristaltic_pump_rotation_titan = (
+        Quantity(  # CHECK why they are not in the new excel
+            type=np.float64,
+            description="FILL THE DESCRIPTION",
+            a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Titan"},
+            a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
+            unit="celsius",
+        )
     )
-    peristaltic_pump_rotation_Sr_La = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Sr La"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
+    peristaltic_pump_rotation_Sr_La = (
+        Quantity(  # CHECK why they are not in the new excel
+            type=np.float64,
+            description="FILL THE DESCRIPTION",
+            a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Sr La"},
+            a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
+            unit="celsius",
+        )
     )
-    duration = Quantity(
-        type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Deposition Control/Growth time"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
-        unit="minute",
-    )
+    duration = VaporDepositionStep.duration.m_copy()
+
     sample_parameters = SubSection(
         section_def=SampleParametersMovpe,
+        repeats=True,
+    )
+    sources = SubSection(
+        section_def=CVDSource,
         repeats=True,
     )
     environment = SubSection(
@@ -1188,12 +1145,8 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
             "component": "StringEditQuantity",
         },
     )
-    duration = Quantity(
-        type=np.float64,
-        description="Past time since process start",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "minute"},
-        unit="second",
-    )
+    duration = VaporDepositionStep.duration.m_copy()
+
     comment = Quantity(
         type=str,
         description="description",
@@ -1316,13 +1269,17 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
                         )
                         if hasattr(
                             getattr(sample.substrate.reference, "substrate"),
-                            "reference",
+                            "name",
                         ):
                             # sample.substrate.reference.substrate.reference is not None:
                             inputs.append(
                                 Link(
                                     name=f"{sample.substrate.reference.substrate.name}",
-                                    section=sample.substrate.reference.substrate.reference,
+                                    section=getattr(
+                                        sample.substrate.reference.substrate,
+                                        "reference",
+                                        None,
+                                    ),
                                 )
                             )
             archive.workflow2.outputs.extend(set(outputs))
