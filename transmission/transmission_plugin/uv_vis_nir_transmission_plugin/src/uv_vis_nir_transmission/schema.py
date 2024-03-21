@@ -94,6 +94,30 @@ class UVVisNirTransmissionResult(MeasurementResult):
         a_plot={'x': 'wavelength', 'y': 'transmittance'},
     )
 
+    def generate_plots(self) -> list[PlotlyFigure]:
+        """
+        Generate the plotly figures for the `UVVisNirTransmissionResult` section.
+
+        Returns:
+            list[PlotlyFigure]: The plotly figures.
+        """
+        line_linear = px.line(
+            x=self.results[0].wavelength,
+            y=self.results[0].transmittance,
+            labels={
+                'x': 'Wavelength (nm)',
+                'y': 'Transmission',
+            },
+            title='Transmission',
+        )
+        figure = [
+            PlotlyFigure(
+                label='Linear Plot',
+                figure=line_linear.to_plotly_json(),
+            ),
+        ]
+        return figure
+
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
         The normalizer for the `UVVisNirTransmissionResult` class.
@@ -483,21 +507,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         if not self.results:
             return
 
-        line_linear = px.line(
-            x=self.results[0].wavelength,
-            y=self.results[0].transmittance,
-            labels={
-                'x': 'Wavelength (nm)',
-                'y': 'Transmission',
-            },
-            title='Transmission',
-        )
-        self.figures = [
-            PlotlyFigure(
-                label='Linear Plot',
-                figure=line_linear.to_plotly_json(),
-            ),
-        ]
+        self.figures = self.results[0].generate_plots()
 
     # def normalize(self, archive, logger: BoundLogger) -> None:
     #     """
