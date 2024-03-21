@@ -233,7 +233,7 @@ class Detector(ArchiveSection):
 
     m_def = Section()
     module = Quantity(
-        type=MEnum(['three detector module', '150mm integrating sphere']),
+        type=MEnum(['three detector module', '150-mm integrating sphere']),
         description='detector module',
         a_eln={'component': 'RadioEnumEditQuantity'},
     )

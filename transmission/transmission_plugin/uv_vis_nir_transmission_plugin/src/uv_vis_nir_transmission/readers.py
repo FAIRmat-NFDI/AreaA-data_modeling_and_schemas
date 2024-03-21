@@ -17,6 +17,7 @@
 #
 
 from typing import Dict, Any, TYPE_CHECKING
+from collections import defaultdict
 from datetime import datetime
 from inspect import isfunction
 import numpy as np
@@ -120,7 +121,7 @@ def read_detector_integration_time(metadata: list) -> Dict[str, float]:
         return None
     output_dict = read_long_line(metadata[32])
     for key in output_dict:
-        output_dict[key] *= ureg.second
+        output_dict[key] *= ureg.s
     return output_dict
 
 
@@ -169,7 +170,7 @@ def read_detector_module(metadata: list) -> str:
     if 'uv/vis/nir detector' in metadata[24].lower():
         return 'three detector module'
     if '150mm sphere' in metadata[24].lower():
-        return '150mm sphere'
+        return '150-mm integrating sphere'
     return None
 
 
@@ -192,7 +193,7 @@ METADATA_MAP: Dict[str, Any] = {
     'detector_change_wavelength': read_detector_change_wavelength,
     'detector_module': read_detector_module,
     'polarizer_angle': read_polarizer_angle,
-    'ordinate': 80,
+    'ordinate_type': 80,
     'wavelength_units': 79,
     'monochromator_slit_width': read_monochromator_slit_width,
     'monochromator_change_wavelength': read_monochromator_change_wavelength,
@@ -228,7 +229,7 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
         Dict[str, Any]: The transmission data and metadata in a Python dictionary.
     """
 
-    output: Dict[str, Any] = {}
+    output: Dict[str, Any] = defaultdict(lambda: None)
     data_start_ind = '#DATA'
 
     with open(file_path, encoding='utf-8') as file_obj:
