@@ -72,12 +72,18 @@ class UVVisNirTransmissionResult(MeasurementResult):
         description='type of measurement',
         # a_eln={"component": "RadioEnumEditQuantity"},
     )
-    transmission = Quantity(
+    transmittance = Quantity(
         type=np.float64,
-        description='transmittance',
+        description='Transmittance percentage %T',
         # a_eln={"component": "NumberEditQuantity"},
         shape=['*'],
-        a_plot={'x': 'wavelength', 'y': 'transmission'},
+        a_plot={'x': 'wavelength', 'y': 'transmittance'},
+    )
+    absorbance = Quantity(
+        type=np.float64,
+        description='Absorbance A',
+        shape=['*'],
+        a_plot={'x': 'wavelength', 'y': 'absorbance'},
     )
     wavelength = Quantity(
         type=np.float64,
@@ -85,7 +91,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
         # a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
         shape=['*'],
         unit='nm',
-        a_plot={'x': 'wavelength', 'y': 'transmission'},
+        a_plot={'x': 'wavelength', 'y': 'transmittance'},
     )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
@@ -358,54 +364,100 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             tuple[Callable, Callable]: The read, write functions.
         """
         if self.data_file.endswith('.asc'):
-            return read_asc, self.write_nx_transmission
+            return read_asc, self.write_transmission_data
         return None, None
 
-    def write_nx_transmission(
+    def write_transmission_data(
         self,
-        transmission_dict: 'Template',
+        transmission_dict: Dict[str, Any],
         archive: 'EntryArchive',
         logger: 'BoundLogger',
     ) -> None:
         """
-        Populate `UVVisTransmission` section from a NeXus Template.
+        Populate `UVVisTransmission` section with the data from the transmission_dict.
 
         Args:
             transmission_dict (Dict[str, Any]): A dictionary with the transmission data.
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         """
+        self.user = transmission_dict['analyst_name']
+
         result = UVVisNirTransmissionResult(
-            type=transmission_dict.get(
-                '/ENTRY[entry]/data/type',
-                None,
-            ),
-            transmission=transmission_dict.get(
-                '/ENTRY[entry]/data/transmission',
-                None,
-            ),
-            wavelength=transmission_dict.get(
-                '/ENTRY[entry]/data/wavelength',
-                None,
-            ),
+            wavelength=transmission_dict['measured_wavelength'],
+            type=transmission_dict['ordinate_type'],
         )
+        if transmission_dict['ordinate_type'] == 'A':
+            result.absorbance = transmission_dict['measured_ordinate']
+        elif transmission_dict['ordinate_type'] == '%T':
+            result.transmittance = transmission_dict['measured_ordinate']
+        else:
+            logger.warn(f"Unknown ordinate type '{transmission_dict['ordinate']}'.")
         result.normalize(archive, logger)
+
+        lamp = Lamp(
+            d2_lamp=transmission_dict['is_d2_lamp_used'],
+            tungsten_lamp=transmission_dict['is_tungsten_lamp_used'],
+            lamp_change_point=transmission_dict['lamp_change_wavelength'],
+        )
+        lamp.normalize(archive, logger)
+
+        detector = Detector(
+            module=transmission_dict['detector_module'],
+            detector_change_point=transmission_dict['detector_change_wavelength'],
+        )
+        for wavelength, value in transmission_dict['detector_NIR_gain'].items():
+            detector.nir_gain.append(
+                NIRGain(
+                    wavelength=wavelength,
+                    value=value,
+                )
+            )
+        for wavelength, value in transmission_dict['detector_integration_time'].items():
+            detector.integration_time.append(
+                IntegrationTime(
+                    wavelength=wavelength,
+                    value=value,
+                )
+            )
+        detector.normalize(archive, logger)
+
+        monochromator = Monochromator(
+            monochromator_change_point=transmission_dict[
+                'monochromator_change_wavelength'
+            ],
+        )
+        for wavelength, slit_width in transmission_dict[
+            'monochromator_slit_width'
+        ].items():
+            monochromator.slit_width.append(
+                SlitWidth(
+                    wavelength=wavelength,
+                    value=slit_width,
+                )
+            )
+        monochromator.normalize(archive, logger)
+
+        transmission_settings = TransmissionSettings(
+            ordinate_type=transmission_dict['ordinate_type'],
+            sample_beam_position=transmission_dict['sample_beam_position'],
+            common_beam_mask=transmission_dict['common_beam_mask_percentage'],
+            common_beam_depolarizer=transmission_dict['is_common_beam_depolarizer_on'],
+            polarizer_angle=transmission_dict['polarizer_angle'],
+            lamp=lamp,
+            detector=detector,
+            monochromator=monochromator,
+        )
+        transmission_settings.normalize(archive, logger)
+
+        # if instrument is not available, make an entry for it and add it as a reference
+        # if instrument is available, add the reference to the instrument
 
         transmission = UVVisTransmission(
             results=[result],
+            transmission_settings=transmission_settings,
         )
         merge_sections(self, transmission, logger)
-
-        nexus_output = None
-        # if self.generate_nexus_file:
-        #     archive_name = archive.metadata.mainfile.split('.')[0]
-        #     nexus_output = f'{archive_name}_output.nxs'
-        # handle_nexus_subsection(
-        #     transmission_dict,
-        #     nexus_output,
-        #     archive,
-        #     logger,
-        # )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
@@ -433,22 +485,19 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
 
         line_linear = px.line(
             x=self.results[0].wavelength,
-            y=self.results[0].transmission,
+            y=self.results[0].transmittance,
             labels={
                 'x': 'Wavelength (nm)',
                 'y': 'Transmission',
             },
             title='Transmission',
         )
-        self.figures.extend(
-            [
-                PlotlyFigure(
-                    label='Linear Plot',
-                    # index=2,
-                    figure=line_linear.to_plotly_json(),
-                ),
-            ]
-        )
+        self.figures = [
+            PlotlyFigure(
+                label='Linear Plot',
+                figure=line_linear.to_plotly_json(),
+            ),
+        ]
 
     # def normalize(self, archive, logger: BoundLogger) -> None:
     #     """
