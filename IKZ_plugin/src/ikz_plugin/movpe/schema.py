@@ -117,6 +117,37 @@ class BubblerPrecursor(PureSubstance, EntryData):
         description="FILL",
         a_eln=ELNAnnotation(component="StringEditQuantity", label="CAS number"),
     )
+    weight = Quantity(
+        type=np.float64,
+        description="""
+        Weight of precursor and bubbler.
+        Attention: Before weighing bubblers,
+        all gaskets and corresponding caps must be attached!
+        """,
+        a_eln=ELNAnnotation(
+            component="NumberEditQuantity",
+            defaultDisplayUnit="gram",
+        ),
+        unit="kg",
+    )
+    weight_difference = Quantity(
+        type=np.float64,
+        description="Weight when the bubbler is exhausted.",
+        a_eln=ELNAnnotation(
+            component="NumberEditQuantity",
+            defaultDisplayUnit="gram",
+        ),
+        unit="kg",
+    )
+    total_comsumption = Quantity(
+        type=np.float64,
+        description="FILL DESCRIPTION.",
+        a_eln=ELNAnnotation(
+            component="NumberEditQuantity",
+            defaultDisplayUnit="gram",
+        ),
+        unit="kg",
+    )
     a_parameter = Quantity(
         type=np.float64,
         description="The A parameter of Antoine equation. Dimensionless.",
@@ -832,7 +863,6 @@ class GasSourceIKZ(CVDSource):
 
 
 class GasFlowMovpe(GasFlow):
-
     gas = SubSection(
         section_def=PureSubstanceSection,
     )
