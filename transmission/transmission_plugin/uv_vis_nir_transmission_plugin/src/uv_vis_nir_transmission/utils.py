@@ -12,9 +12,9 @@ if TYPE_CHECKING:
 
 
 def merge_sections(
-    section: "ArchiveSection",
-    update: "ArchiveSection",
-    logger: "BoundLogger" = None,
+    section: 'ArchiveSection',
+    update: 'ArchiveSection',
+    logger: 'BoundLogger' = None,
 ) -> None:
     if update is None:
         return
@@ -23,8 +23,8 @@ def merge_sections(
         return
     if not isinstance(section, type(update)):
         raise TypeError(
-            "Cannot merge sections of different types: "
-            f"{type(section)} and {type(update)}"
+            'Cannot merge sections of different types: '
+            f'{type(section)} and {type(update)}'
         )
     for name, quantity in update.m_def.all_quantities.items():
         if not update.m_is_set(quantity):

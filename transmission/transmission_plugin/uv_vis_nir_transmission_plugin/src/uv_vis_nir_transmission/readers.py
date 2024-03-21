@@ -153,14 +153,14 @@ def read_monochromator_change_wavelength(metadata: list) -> list[float]:
     """Reads the monochromator change wavelength from the metadata"""
     if not metadata[41]:
         return None
-    return float(metadata[41]) * ureg.nanometer
+    return np.array([float(x) for x in metadata[41].split()]) * ureg.nanometer
 
 
 def read_lamp_change_wavelength(metadata: list) -> list[float]:
     """Reads the lamp change wavelength from the metadata"""
     if not metadata[42]:
         return None
-    return float(metadata[42]) * ureg.nanometer
+    return np.array([float(x) for x in metadata[42].split()]) * ureg.nanometer
 
 
 def read_detector_module(metadata: list) -> str:
