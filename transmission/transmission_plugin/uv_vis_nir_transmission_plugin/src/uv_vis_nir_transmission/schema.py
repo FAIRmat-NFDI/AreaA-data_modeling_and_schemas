@@ -22,10 +22,12 @@ from typing import (
     Callable,
 )
 from nomad.datamodel.data import EntryData
-from nomad.datamodel.metainfo.basesections import CompositeSystem
-from nomad.datamodel.metainfo.basesections import Instrument
-from nomad.datamodel.metainfo.basesections import Measurement
-from nomad.datamodel.metainfo.basesections import MeasurementResult
+from nomad.datamodel.metainfo.basesections import (
+    CompositeSystem,
+    Instrument,
+    Measurement,
+    MeasurementResult,
+)
 import numpy as np
 import plotly.express as px
 from nomad.metainfo import (
@@ -377,12 +379,14 @@ class UVVisNirTransmissionResult(MeasurementResult):
         description='Transmittance percentage %T',
         # a_eln={"component": "NumberEditQuantity"},
         shape=['*'],
+        unit='dimensionless',
         a_plot={'x': 'wavelength', 'y': 'transmittance'},
     )
     absorbance = Quantity(
         type=np.float64,
         description='Absorbance A',
         shape=['*'],
+        unit='dimensionless',
         a_plot={'x': 'wavelength', 'y': 'absorbance'},
     )
     wavelength = Quantity(
@@ -402,8 +406,8 @@ class UVVisNirTransmissionResult(MeasurementResult):
             list[PlotlyFigure]: The plotly figures.
         """
         line_linear = px.line(
-            x=self.results[0].wavelength,
-            y=self.results[0].transmittance,
+            x=self.wavelength.magnitude,
+            y=self.transmittance.magnitude,
             labels={
                 'x': 'Wavelength (nm)',
                 'y': 'Transmission',
