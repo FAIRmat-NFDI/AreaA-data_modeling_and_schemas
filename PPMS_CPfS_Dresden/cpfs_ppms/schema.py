@@ -113,7 +113,7 @@ class CPFSSample(Sample):
         ),
     )
 
-class CPFSETOAnalyzedData(PPMSData):
+class CPFSETOSymmetrizedData(PPMSData):
     field = Quantity(
         type=np.dtype(np.float64),
         unit='gauss',
@@ -150,6 +150,71 @@ class CPFSETOAnalyzedData(PPMSData):
         shape=['*'],
         description='FILL')
 
+class CPFSETOAnalyzedData(PPMSData):
+    field = Quantity(
+        type=np.dtype(np.float64),
+        unit='gauss',
+        shape=['*'],
+        description='FILL')
+    rho_xx_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm*meter',
+        shape=['*'],
+        description='FILL')
+    rho_xx_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm*meter',
+        shape=['*'],
+        description='FILL')
+    sigma_xx_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='siemens/m',
+        shape=['*'],
+        description='FILL')
+    sigma_xx_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='siemens/m',
+        shape=['*'],
+        description='FILL')
+    rho_ohe_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm*meter',
+        shape=['*'],
+        description='FILL')
+    rho_ohe_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm*meter',
+        shape=['*'],
+        description='FILL')
+    rho_ahe_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm*meter',
+        shape=['*'],
+        description='FILL')
+    rho_ahe_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='ohm*meter',
+        shape=['*'],
+        description='FILL')
+    sigma_ahe_up = Quantity(
+        type=np.dtype(np.float64),
+        unit='siemens/m',
+        shape=['*'],
+        description='FILL')
+    sigma_ahe_down = Quantity(
+        type=np.dtype(np.float64),
+        unit='siemens/m',
+        shape=['*'],
+        description='FILL')
+    carrier_concentration = Quantity(
+        type=np.dtype(np.float64),
+        unit='1/meter**3',
+        description='FILL')
+    carrier_mobility = Quantity(
+        type=np.dtype(np.float64),
+        unit='meter**2/volt/second',
+        description='FILL')
+
 class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
 
     # m_def = Section(
@@ -177,6 +242,11 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             ),
             lane_width='600px',
             ),
+    )
+
+    symmetrized_data = SubSection(
+        section_def = CPFSETOSymmetrizedData,
+        repeats = True,
     )
 
     analyzed_data = SubSection(
@@ -297,19 +367,19 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
         if self.software.startswith("Electrical Transport Option"):
             #Try to symmetrize data for each measurement
             maxfield=90000*ureg("gauss")
-            data_analyzed = []
+            data_symmetrized = []
             for mdata in self.data:
                 #For now only for field sweeps
                 if not mdata.name.startswith("Field sweep"):
                     continue
-                ana_data=CPFSETOAnalyzedData()
-                ana_data.name=mdata.name
-                ana_data.title=mdata.name
+                sym_data=CPFSETOSymmetrizedData()
+                sym_data.name=mdata.name
+                sym_data.title=mdata.name
                 fitlength=len(mdata.magnetic_field)/4
                 fitlength-=fitlength % -100
                 fitlength+=1
                 fitfield=np.linspace(-maxfield,maxfield,int(fitlength))
-                ana_data.field=fitfield
+                sym_data.field=fitfield
                 for channel in [0,1]:
                     field=mdata.magnetic_field[np.invert(pd.isnull(mdata.channels[channel].resistance))]
                     res=mdata.channels[channel].resistance[np.invert(pd.isnull(mdata.channels[channel].resistance))]
@@ -334,15 +404,79 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                     upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
                     if self.channel_measurement_type[channel]=="Hall":
                         intermediate=(upfit+np.flip(downfit))/2.
-                        ana_data.rho_xy_down=(downfit-intermediate)*self.samples[channel].depth
-                        ana_data.rho_xy_up=(upfit-intermediate)*self.samples[channel].depth
+                        sym_data.rho_xy_down=(downfit-np.flip(intermediate))*self.samples[channel].depth
+                        sym_data.rho_xy_up=(upfit-intermediate)*self.samples[channel].depth
                     if self.channel_measurement_type[channel]=="TMR":
                         intermediate=(np.flip(downfit)-upfit)/2.
-                        ana_data.rho_xx_down=(downfit+intermediate)*self.samples[channel].depth*self.samples[channel].width/self.samples[channel].length
-                        ana_data.rho_xx_up=(upfit-intermediate)*self.samples[channel].depth*self.samples[channel].width/self.samples[channel].length
-                        ana_data.mr_down=(ana_data.rho_xx_down-ana_data.rho_xx_down[int(fitlength/2)])/ana_data.rho_xx_down[int(fitlength/2)]
-                        ana_data.mr_up=(ana_data.rho_xx_up-ana_data.rho_xx_up[int(fitlength/2)])/ana_data.rho_xx_up[int(fitlength/2)]
+                        sym_data.rho_xx_down=(downfit+np.flip(intermediate))*self.samples[channel].depth*self.samples[channel].width/self.samples[channel].length
+                        sym_data.rho_xx_up=(upfit-intermediate)*self.samples[channel].depth*self.samples[channel].width/self.samples[channel].length
+                        sym_data.mr_down=(sym_data.rho_xx_down-sym_data.rho_xx_down[int(fitlength/2)])/sym_data.rho_xx_down[int(fitlength/2)]
+                        sym_data.mr_up=(sym_data.rho_xx_up-sym_data.rho_xx_up[int(fitlength/2)])/sym_data.rho_xx_up[int(fitlength/2)]
+                data_symmetrized.append(sym_data)
+
+
+                #create symmetrized output files
+                filename="symmetrized_data_"+"_".join(sym_data.name.split())+"_"+self.data_file.strip(".dat")
+                with archive.m_context.raw_file(filename, 'w') as outfile:
+                    outfile.write("#Field (Oe)     rho_xx_up       rho_xx_down      mr_up           mr_down         rho_xy_up       rho_xy_down      \n")
+                    for i in range(int(fitlength)):
+                        outfile.write("{0:16.8e}".format(fitfield[i].magnitude))
+                        if sym_data.rho_xx_up is not None:
+                            outfile.write("{0:16.8e}".format(sym_data.rho_xx_up[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if sym_data.rho_xx_down is not None:
+                            outfile.write("{0:16.8e}".format(sym_data.rho_xx_down[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if sym_data.mr_up is not None:
+                            outfile.write("{0:16.8e}".format(sym_data.mr_up[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if sym_data.mr_down is not None:
+                            outfile.write("{0:16.8e}".format(sym_data.mr_down[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if sym_data.rho_xy_up is not None:
+                            outfile.write("{0:16.8e}".format(sym_data.rho_xy_up[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if sym_data.rho_xy_down is not None:
+                            outfile.write("{0:16.8e}".format(sym_data.rho_xy_down[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        outfile.write("\n")
+
+
+            self.symmetrized_data=data_symmetrized
+
+            #Analyze data: split in ordinary and anomalous, calculate conductivities
+            cutofffield=50000*ureg("gauss")
+            data_analyzed = []
+            for data in self.symmetrized_data:
+                ana_data=CPFSETOAnalyzedData()
+                ana_data.name=data.name
+                ana_data.title=data.name
+                ana_data.field=data.field
+                ana_data.rho_xx_up=data.rho_xx_up
+                ana_data.rho_xx_down=data.rho_xx_down
+                ana_data.sigma_xx_up=1./data.rho_xx_up
+                ana_data.sigma_xx_down=1./data.rho_xx_down
+
+                fitstart=int(len(data.field)*(180000-cutofffield.magnitude)/180000)
+                rho_xy_up_fit=np.poly1d([np.polyfit(data.field[fitstart:].magnitude,data.rho_xy_up[fitstart:].magnitude,1)[0],0])*data.rho_xy_up.units
+                rho_xy_down_fit=np.poly1d([np.polyfit(data.field[fitstart:].magnitude,data.rho_xy_down[fitstart:].magnitude,1)[0],0])*data.rho_xy_down.units
+                ana_data.rho_ohe_up=rho_xy_up_fit(ana_data.field.magnitude)
+                ana_data.rho_ohe_down=rho_xy_down_fit(ana_data.field.magnitude)
+                ana_data.rho_ahe_up=data.rho_xy_up-ana_data.rho_ohe_up
+                ana_data.rho_ahe_down=data.rho_xy_down-ana_data.rho_ohe_down
+                ana_data.sigma_ahe_up=ana_data.rho_ahe_up/(ana_data.rho_ahe_up**2+data.rho_xx_up**2)
+                ana_data.sigma_ahe_down=ana_data.rho_ahe_down/(ana_data.rho_ahe_down**2+data.rho_xx_down**2)
+
+                #ana_data.carrier_concentration=1/(rho_xy)
+
                 data_analyzed.append(ana_data)
+
             self.analyzed_data=data_analyzed
 
             #Now create the according plots
@@ -350,35 +484,50 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             import plotly.graph_objs as go
             from plotly.subplots import make_subplots
             #self.figures=[]
+
+            #Symmetrized plots
             figure1 = make_subplots(rows=1, cols=1, subplot_titles=(["TMR"]))
             figure2 = make_subplots(rows=1, cols=1, subplot_titles=(["MR"]))
             figure3 = make_subplots(rows=1, cols=1, subplot_titles=(["Hall"]))
-            for data in self.analyzed_data:
-                color=int(255./len(self.analyzed_data)*self.analyzed_data.index(data))
-                if data.rho_xx_up is not None:
-                    resistivity_tmr_up=go.Scatter(x=data.field,y=data.rho_xx_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+            for data in self.symmetrized_data:
+                color=int(255./len(self.symmetrized_data)*self.symmetrized_data.index(data))
+                if data.rho_xx_up is not None and data.rho_xx_down is not None:
+                    resistivity_tmr_up=go.Scatter(x=np.concatenate((data.field,np.flip(data.field))),y=np.concatenate((data.rho_xx_up,np.flip(data.rho_xx_down))), name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
                     figure1.add_trace(resistivity_tmr_up, row=1, col=1)
-                if data.rho_xx_down is not None:
-                    resistivity_tmr_down=go.Scatter(x=data.field,y=data.rho_xx_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                    figure1.add_trace(resistivity_tmr_down, row=1, col=1)
-                if data.mr_up is not None:
-                    resistivity_mr_up=go.Scatter(x=data.field,y=data.mr_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                if data.mr_up is not None and data.mr_down is not None:
+                    resistivity_mr_up=go.Scatter(x=np.concatenate((data.field,np.flip(data.field))),y=np.concatenate((data.mr_up,np.flip(data.mr_down))), name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
                     figure2.add_trace(resistivity_mr_up, row=1, col=1)
-                if data.mr_down is not None:
-                    resistivity_mr_down=go.Scatter(x=data.field,y=data.mr_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                    figure2.add_trace(resistivity_mr_down, row=1, col=1)
                 if data.rho_xy_up is not None:
-                    resistivity_hall_up=go.Scatter(x=data.field,y=data.rho_xy_up, name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    resistivity_hall_up=go.Scatter(x=np.concatenate((data.field,np.flip(data.field))),y=np.concatenate((data.rho_xy_up,np.flip(data.rho_xy_down))), name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
                     figure3.add_trace(resistivity_hall_up, row=1, col=1)
-                if data.rho_xy_down is not None:
-                    resistivity_hall_down=go.Scatter(x=data.field,y=data.rho_xy_down, marker_color='rgb({},0,255)'.format(color),showlegend=False)
-                    figure3.add_trace(resistivity_hall_down, row=1, col=1)
             figure1.update_layout(height=400, width=716,showlegend=True)
             figure2.update_layout(height=400, width=716,showlegend=True)
             figure3.update_layout(height=400, width=716,showlegend=True)
             self.figures.append(PlotlyFigure(label="TMR", figure=figure1.to_plotly_json()))
             self.figures.append(PlotlyFigure(label="MR", figure=figure2.to_plotly_json()))
             self.figures.append(PlotlyFigure(label="Hall", figure=figure3.to_plotly_json()))
+
+            #Analyzed plots
+            figure1 = make_subplots(rows=1, cols=1, subplot_titles=(["OHR"]))
+            figure2 = make_subplots(rows=1, cols=1, subplot_titles=(["AHR"]))
+            figure3 = make_subplots(rows=1, cols=1, subplot_titles=(["AHC"]))
+            for data in self.analyzed_data:
+                color=int(255./len(self.analyzed_data)*self.analyzed_data.index(data))
+                if data.rho_ohe_up is not None and data.rho_ohe_down is not None:
+                    resistivity_tmr_up=go.Scatter(x=np.concatenate((data.field,np.flip(data.field))),y=np.concatenate((data.rho_ohe_up,np.flip(data.rho_ohe_down))), name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    figure1.add_trace(resistivity_tmr_up, row=1, col=1)
+                if data.rho_ahe_up is not None and data.rho_ahe_down is not None:
+                    resistivity_mr_up=go.Scatter(x=np.concatenate((data.field,np.flip(data.field))),y=np.concatenate((data.rho_ahe_up,np.flip(data.rho_ahe_down))), name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    figure2.add_trace(resistivity_mr_up, row=1, col=1)
+                if data.sigma_ahe_up is not None and data.sigma_ahe_down is not None:
+                    resistivity_hall_up=go.Scatter(x=np.concatenate((data.field,np.flip(data.field))),y=np.concatenate((data.sigma_ahe_up,np.flip(data.sigma_ahe_down))), name=data.title.split("at")[1].strip("."), marker_color='rgb({},0,255)'.format(color),showlegend=True)
+                    figure3.add_trace(resistivity_hall_up, row=1, col=1)
+            figure1.update_layout(height=400, width=716,showlegend=True)
+            figure2.update_layout(height=400, width=716,showlegend=True)
+            figure3.update_layout(height=400, width=716,showlegend=True)
+            self.figures.append(PlotlyFigure(label="OHR", figure=figure1.to_plotly_json()))
+            self.figures.append(PlotlyFigure(label="AHR", figure=figure2.to_plotly_json()))
+            self.figures.append(PlotlyFigure(label="AHC", figure=figure3.to_plotly_json()))
 
 
 
