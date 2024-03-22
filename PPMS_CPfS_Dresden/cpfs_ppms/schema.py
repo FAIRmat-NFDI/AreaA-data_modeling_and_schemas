@@ -473,7 +473,8 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                 ana_data.sigma_ahe_up=ana_data.rho_ahe_up/(ana_data.rho_ahe_up**2+data.rho_xx_up**2)
                 ana_data.sigma_ahe_down=ana_data.rho_ahe_down/(ana_data.rho_ahe_down**2+data.rho_xx_down**2)
 
-                #ana_data.carrier_concentration=1/(rho_xy)
+                ana_data.carrier_concentration=1./((np.polyfit(data.field[fitstart:].magnitude,data.rho_xy_up[fitstart:].magnitude,1)[0]*data.rho_xy_up.units/data.field.units)*(1.60217663*10**-19*ureg("coulomb")))
+                ana_data.carrier_mobility=1./(ana_data.carrier_concentration*(1.60217663*10**-19*ureg("coulomb"))*ana_data.rho_xx_up[int(len(ana_data.rho_xx_up)/2)])
 
                 data_analyzed.append(ana_data)
 
