@@ -20,11 +20,13 @@ from typing import (
     Dict,
     Any,
     Callable,
+    Union,
 )
 from nomad.datamodel.data import EntryData
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
     Instrument,
+    InstrumentReference,
     Measurement,
     MeasurementResult,
 )
@@ -53,7 +55,7 @@ from nomad.datamodel.metainfo.plot import (
 )
 
 from uv_vis_nir_transmission.readers import read_asc
-from uv_vis_nir_transmission.utils import merge_sections
+from uv_vis_nir_transmission.utils import merge_sections, create_archive
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
@@ -476,6 +478,91 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             return read_asc, self.write_transmission_data
         return None, None
 
+    def create_instrument_entry(
+        self, data_dict: Dict[str, Any], archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> InstrumentReference:
+        """
+        Method for creating the instrument entry. Returns a reference to the created
+        instrument.
+
+        Args:
+            data_dict (Dict[str, Any]): The dictionary containing the instrument data.
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+
+        Returns:
+            InstrumentReference: The instrument reference.
+        """
+        instrument = TransmissionSpectrophotometer(
+            name=data_dict['instrument_name'],
+            serial_number=data_dict['instrument_serial_number'],
+            software_version=data_dict['instrument_firmware_version'],
+        )
+        instrument.normalize(archive, logger)
+
+        logger.info('Created instrument entry.')
+        m_proxy_value = create_archive(instrument, archive, 'instrument.archive.json')
+
+        return InstrumentReference(reference=m_proxy_value)
+
+    def get_instrument_reference(
+        self, data_dict: Dict[str, Any], archive: 'EntryArchive', logger: 'BoundLogger'
+    ) -> Union[InstrumentReference, None]:
+        """
+        Method for getting the instrument reference.
+        Looks for an existing instrument with the given serial number.
+        If found, it returns a reference to this instrument.
+        If no instrument is found, logs a warning, creates a new entry for the instrument
+        and returns a reference to this entry.
+        If multiple instruments are found, it logs a warning and returns None.
+
+        Args:
+            data_dict (Dict[str, Any]): The dictionary containing the instrument data.
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+
+        Returns:
+            Union[InstrumentReference, None]: The instrument reference or None.
+        """
+        from nomad.search import search
+
+        serial_number = data_dict['instrument_serial_number']
+        api_query = {
+            'search_quantities': {
+                'id': (
+                    'data.serial_number#uv_vis_nir_transmission.schema.'
+                    'TransmissionSpectrophotometer'
+                ),
+                'str_value': f'{serial_number}',
+            },
+        }
+        search_result = search(
+            owner='visible',
+            query=api_query,
+            user_id=archive.metadata.main_author.user_id,
+        )
+
+        if not search_result.data:
+            logger.warn(
+                f'No "TransmissionSpectrophotometer" instrument found with the serial '
+                f'number "{serial_number}".'
+            )
+            return self.create_instrument_entry(data_dict, archive, logger)
+
+        if len(search_result.data) > 1:
+            logger.warn(
+                f'Multiple "TransmissionSpectrophotometer" instruments found with the '
+                f'serial number "{serial_number}". Please select it manually.'
+            )
+            return None
+
+        entry = search_result.data[0]
+        upload_id = entry['upload_id']
+        entry_id = entry['entry_id']
+        m_proxy_value = f'../uploads/{upload_id}/archive/{entry_id}#/data'
+
+        return InstrumentReference(reference=m_proxy_value)
+
     def write_transmission_data(
         self,
         transmission_dict: Dict[str, Any],
@@ -561,12 +648,18 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         )
         transmission_settings.normalize(archive, logger)
 
-        # if instrument is not available, make an entry for it and add it as a reference
-        # if instrument is available, add the reference to the instrument
+        instrument_reference = self.get_instrument_reference(
+            transmission_dict, archive, logger
+        )
+        if instrument_reference is not None:
+            instruments = [instrument_reference]
+        else:
+            instruments = []
 
         transmission = UVVisTransmission(
             results=[result],
             transmission_settings=transmission_settings,
+            instruments=instruments,
         )
         merge_sections(self, transmission, logger)
 
