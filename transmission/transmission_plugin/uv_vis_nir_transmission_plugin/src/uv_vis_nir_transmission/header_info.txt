@@ -10,9 +10,9 @@ Line 23: tungsten lamp used (bool), 0: False, 1: True
 Line 32: slit width, space-separeted array of [wavelength]/[value] pairs (float / float)
 Line 33: integration time, space-separeted array of [wavelength]/[value] pairs (float / float)
 Line 36: NIR gain, space-separeted array of [wavelength]/[value] pairs (float / float)
-Line 42: monochromator change at (float)
-Line 43: lamp change at (float)
-Line 44: detector change at (float)
+Line 42: monochromator change at (list(float))
+Line 43: lamp change at list((float))
+Line 44: detector change at (list(float))
 Line 45: sample beam position (str), "Front" or "Rear"
 Line 46: common beam mask (int), [0, 100]
 Line 47: common beam depolarizer (bool), "on" or "off"
