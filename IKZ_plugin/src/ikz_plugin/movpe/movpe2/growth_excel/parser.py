@@ -323,7 +323,9 @@ class ParserMovpe2IKZ(MatchingParser):
                                         )
                                     ]
                                 )
-                                * ureg("cm ** 3 / minute"),
+                                * ureg("cm ** 3 / minute")
+                                .to("meter ** 3 / second")
+                                .magnitude,
                             ),
                         ),
                     ],
@@ -393,6 +395,9 @@ class ParserMovpe2IKZ(MatchingParser):
             )
 
         experiment_reference = []
+
+        sleep(2)  # to give GrowthProcessIKZ the time to be indexed
+
         for recipe_id in recipe_ids:
             experiment_filename = f"{recipe_id}.ExperimentMovpeIKZ.archive.{filetype}"
             growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"

@@ -80,7 +80,8 @@ def populate_dopant(line_number, substrates_file: pd.DataFrame):
     """
     dopants = []
     dopant_quantities = [
-        "Elements",
+        "Doping species",
+        "Doping Level",
     ]
     i = 0
     while True:
@@ -88,16 +89,19 @@ def populate_dopant(line_number, substrates_file: pd.DataFrame):
             f"{key}{'' if i == 0 else '.' + str(i)}" in substrates_file.columns
             for key in dopant_quantities
         ):
-            dopants.append(
-                Dopant(
-                    element=substrates_file.get(
-                        f"Doping species{'' if i == 0 else '.' + str(i)}", ""
-                    )[line_number],
-                    doping_level=substrates_file.get(
-                        f"Doping Level{'' if i == 0 else '.' + str(i)}", ""
-                    )[line_number],
+            doping_species = substrates_file.get(
+                f"Doping species{'' if i == 0 else '.' + str(i)}", ""
+            )[line_number]
+            doping_level = substrates_file.get(
+                f"Doping Level{'' if i == 0 else '.' + str(i)}", ""
+            )[line_number]
+            if not pd.isna(doping_species):
+                dopants.append(
+                    Dopant(
+                        element=doping_species,
+                        doping_level=doping_level,
+                    )
                 )
-            )
             i += 1
         else:
             break

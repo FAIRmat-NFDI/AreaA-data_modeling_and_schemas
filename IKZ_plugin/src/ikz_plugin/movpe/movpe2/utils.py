@@ -236,16 +236,19 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                     name=growth_run_file.get(
                         f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
-                    material=PureSubstanceComponent(
-                        substance_name=growth_run_file.get(
-                            f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
-                        )[line_number],
-                        pure_substance=PureSubstanceSection(
-                            name=growth_run_file.get(
+                    material=[
+                        PureSubstanceComponent(
+                            substance_name=growth_run_file.get(
                                 f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
-                            )[line_number]
+                            )[line_number],
+                            pure_substance=PureSubstanceSection(
+                                name=growth_run_file.get(
+                                    f"Bubbler Material{'' if i == 0 else '.' + str(i)}",
+                                    "",
+                                )[line_number]
+                            ),
                         ),
-                    ),
+                    ],
                     vapor_source=BubblerEvaporator(
                         temperature=Temperature(
                             set_value=pd.Series(
@@ -255,7 +258,8 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                         0,
                                     )[line_number]
                                 ]
-                            ),
+                            )
+                            * ureg("celsius").to("kelvin").magnitude,
                         ),
                         pressure=Pressure(
                             set_value=pd.Series(
@@ -265,7 +269,8 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                         0,
                                     )[line_number]
                                 ]
-                            ),
+                            )
+                            * ureg("mbar").to("pascal").magnitude,
                         ),
                         precursor_partial_pressure=PartialVaporPressure(
                             set_value=pd.Series(
@@ -285,7 +290,10 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                         0,
                                     )[line_number]
                                 ]
-                            ),
+                            )
+                            * ureg("cm **3 / minute")
+                            .to("meter ** 3 / second")
+                            .magnitude,
                         ),
                         dilution=growth_run_file.get(
                             f"Bubbler Dilution{'' if i == 0 else '.' + str(i)}", 0
@@ -338,16 +346,18 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                     name=growth_run_file.get(
                         f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
                     )[line_number],
-                    material=PureSubstanceComponent(
-                        substance_name=growth_run_file.get(
-                            f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
-                        )[line_number],
-                        pure_substance=PureSubstanceSection(
-                            name=growth_run_file.get(
+                    material=[
+                        PureSubstanceComponent(
+                            substance_name=growth_run_file.get(
                                 f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
-                            )[line_number]
+                            )[line_number],
+                            pure_substance=PureSubstanceSection(
+                                name=growth_run_file.get(
+                                    f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                                )[line_number]
+                            ),
                         ),
-                    ),
+                    ],
                     vapor_source=GasLine(
                         total_flow_rate=VolumetricFlowRate(
                             set_value=pd.Series(
