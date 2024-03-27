@@ -202,6 +202,7 @@ class ParserMovpe2IKZ(MatchingParser):
                 samples_lists[recipe_id][step_id] = []
             samples_lists[recipe_id][step_id].append(
                 SampleParametersMovpe(
+                    name=sample_id,
                     layer=ThinFilmReference(
                         reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data",
                     ),

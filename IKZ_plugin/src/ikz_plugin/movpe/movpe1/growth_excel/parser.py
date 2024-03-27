@@ -433,7 +433,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                     value=rot_val,
                                     time=rot_time,
                                 ),
-                                uniform_valve=VolumetricFlowRate(
+                                uniform_gas_flow_rate=VolumetricFlowRate(
                                     set_value=uniform_setval,
                                 ),
                             ),

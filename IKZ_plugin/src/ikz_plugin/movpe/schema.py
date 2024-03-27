@@ -895,6 +895,20 @@ class ChamberEnvironmentMovpe(ChamberEnvironment):
 
 class SampleParametersMovpe(SampleParameters):
     m_def = Section(
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    "shaft_temperature",
+                    "filament_temperature",
+                    "laytec_temperature",
+                    "substrate_temperature",
+                    "in_situ_reflectance",
+                    "growth_rate",
+                    "layer",
+                    "substrate",
+                ],
+            ),
+        ),
         a_plotly_graph_object=[
             {
                 "label": "shaft temperature",
@@ -988,6 +1002,15 @@ class SampleParametersMovpe(SampleParameters):
             },
         ],
     )
+    name = Quantity(
+        type=str,
+        description="""
+        Sample name.
+        """,
+        a_eln=ELNAnnotation(
+            component="StringEditQuantity",
+        ),
+    )
     distance_to_source = Quantity(
         type=float,
         unit="meter",
@@ -1006,6 +1029,9 @@ class SampleParametersMovpe(SampleParameters):
     )
     laytec_temperature = SubSection(
         section_def=LayTecTemperature,
+    )
+    in_situ_reflectance = SubSection(
+        section_def=InSituMonitoringReference,
     )
 
 
@@ -1078,6 +1104,7 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
     sample_parameters = SubSection(
         section_def=SampleParametersMovpe,
         repeats=True,
+        label="Samples",
     )
     sources = SubSection(
         section_def=CVDSource,
@@ -1085,6 +1112,9 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
     )
     environment = SubSection(
         section_def=ChamberEnvironmentMovpe,
+    )
+    in_situ_reflectance = SubSection(
+        section_def=InSituMonitoringReference,
     )
 
     # def normalize(self, archive, logger):
