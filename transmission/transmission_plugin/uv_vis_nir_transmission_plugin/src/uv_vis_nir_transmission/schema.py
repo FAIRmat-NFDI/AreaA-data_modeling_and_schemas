@@ -405,11 +405,17 @@ class UVVisNirTransmissionResult(MeasurementResult):
         line_linear = px.line(
             x=self.wavelength.magnitude,
             y=self.transmittance.magnitude,
-            labels={
-                'x': 'Wavelength (nm)',
-                'y': 'Transmission',
-            },
-            title='Transmission',
+        )
+        line_linear.update_layout(
+            title='Transmission vs wavelength',
+            xaxis_title='Wavelength (nm)',
+            yaxis_title='Transmission',
+            xaxis=dict(
+                fixedrange=False,
+            ),
+            yaxis=dict(
+                fixedrange=False,
+            ),
         )
         figure = [
             PlotlyFigure(
