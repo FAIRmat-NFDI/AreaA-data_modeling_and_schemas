@@ -1,0 +1,71 @@
+[build-system]
+requires = [ "setuptools>=61.0.0",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uv_vis_nir_transmission"
+version = "0.0.1"
+description = "A plugin for NOMAD"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [ "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.9",]
+dependencies = [ "nomad-lab>=1.2.2dev399", "pytest", "typing-extensions==4.4.0",]
+
+[project.license]
+file = "LICENSE"
+
+[tool.setuptools.packages.find]
+where = [ "src",]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.2.0",
+    "pytest",
+    "structlog==22.3.0",
+    "python-logstash",
+]
+
+[tool.ruff]
+include = ["src/nomad_analysis/*.py", "tests/*.py"]
+lint.select = [
+    "E", # pycodestyle
+    "W", # pycodestyle
+    "PL", # pylint
+]
+lint.ignore = [
+    "E501", # Line too long ({width} > {limit} characters)
+    "E701", # Multiple statements on one line (colon)
+    "E731", # Do not assign a lambda expression, use a def
+    "E402",  # Module level import not at top of file
+    "PLR0911", # Too many return statements
+    "PLR0912", # Too many branches
+    "PLR0913", # Too many arguments in function definition
+    "PLR0915", # Too many statements
+    "PLR2004", # Magic value used instead of constant
+    "PLW0603", # Using the global statement
+    "PLW2901", # redefined-loop-name
+    "PLR1714", # consider-using-in
+    "PLR5501", # else-if-used
+]
+lint.fixable = ["ALL"]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+# this is entirely optional, you can remove this if you wish to
+[tool.ruff.format]
+# use single quotes for strings.
+quote-style = "single"
+
+# indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"

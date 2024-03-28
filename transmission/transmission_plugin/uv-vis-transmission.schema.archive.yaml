@@ -1,0 +1,299 @@
+definitions:
+  name: "uv-vis-transmission"
+  sections:
+    UV-VisTransmission:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Measurement
+      - nomad.datamodel.data.EntryData
+      quantities:
+        user:
+          type: string
+          description: analyst name from header in ascii
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        results:
+          repeats: true
+          section:
+            quantities:
+              type:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Transmission
+                    - Absorbance?
+                description: type of measurement
+                m_annotations:
+                  eln:
+                    component: RadioEnumEditQuantity
+              transmission:
+                type: np.float64
+                shape: ['*']
+                description: transmittance
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+              wavelength:
+                type: np.float64
+                shape: ['*']
+                unit: nm
+                description: wavelength
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    defaultDisplayUnit: nm
+        instrument_settings:
+          section:
+            quantities:
+              ordinate_type: # add it as an radioenumquantity with option  [ ] "%T" [ ] "A"
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - "%T"
+                    - A
+                description: ordinate type
+                m_annotations:
+                  eln:
+                    component: RadioEnumEditQuantity
+              # add another radioenumquantity for sample_beam_position with [ ] "Front" or [ ] "Rear"
+              sample_beam_position:
+                type:
+                  type_kind: Enum
+                  type_data:
+                    - Front
+                    - Rear
+                description: sample beam position
+                m_annotations:
+                  eln:
+                    component: RadioEnumEditQuantity
+              common_beam_mask:
+                type: int
+                description: common beam mask
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+                    minValue: 0
+                    maxValue: 100
+              # add a bool quantity for common_beam_depolarizer
+              common_beam_depolarizer:
+                type: bool
+                description: common beam depolarizer
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+              polarizer_angle:
+                type: np.float64
+                unit: degrees
+                description: polarizer angle in °
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+            sub_sections:
+              accessory:
+                section:
+                  quantities:
+                    polarizer: # add it as a bool quantity
+                      type: bool
+                      description: polarizer used
+                      m_annotations:
+                        eln:
+                          component: BoolEditQuantity
+                    aperture:
+                      type: np.float64
+                      description: sample in %
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+              monochromator:
+                section:
+                  quantities:
+                    monochromator_change_point:
+                      type: np.float64
+                      unit: nm
+                      description: monochromator change point in nm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nm
+                  sub_sections:
+                    slit_width:
+                      repeats: true
+                      section:
+                        quantities:
+                          wavelength:
+                            type: np.float64
+                            unit: nm
+                            description: wavelength
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                                defaultDisplayUnit: nm
+                          value:
+                            type: np.float64
+                            description: value
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+
+              lamp:
+                section:
+                  quantities:
+                    d2_lamp:
+                      type: bool
+                      description: D2 lamp used
+                      m_annotations:
+                        eln:
+                          component: BoolEditQuantity
+                    tungsten_lamp:
+                      type: bool
+                      description: tungsten lamp used
+                      m_annotations:
+                        eln:
+                          component: BoolEditQuantity
+                    lamp_change_point:
+                      type: np.float64
+                      unit: nm
+                      description: lamp change point in nm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nm
+              detector:
+                section:
+                  quantities:
+                    module:
+                      type: string
+                      description: module
+                      m_annotations:
+                        eln:
+                          component: StringEditQuantity
+                    detector_change_point:
+                      type: np.float64
+                      unit: nm
+                      description: detector change point in nm
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          defaultDisplayUnit: nm
+                  sub_sections:
+                    nir_gain:
+                      repeats: true
+                      section:
+                        quantities:
+                          wavelength:
+                            type: np.float64
+                            unit: nm
+                            description: wavelength
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                                defaultDisplayUnit: nm
+                          value:
+                            type: np.float64
+                            description: value
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                    integration_time:
+                      repeats: true
+                      section:
+                        quantities:
+                          wavelength:
+                            type: np.float64
+                            unit: nm
+                            description: wavelength
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+                                defaultDisplayUnit: nm
+                          value:
+                            type: np.float64
+                            description: value
+                            m_annotations:
+                              eln:
+                                component: NumberEditQuantity
+              attenuator:
+                section:
+                  quantities:
+                    # sample: # (int) 100, 1, or 0.1 in %
+                    sample:
+                      type: int
+                      description: sample in %
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          minValue: 0
+                          maxValue: 100
+                    # reference: # (int) 100, 1, or 0.1 in %
+                    reference:
+                      type: int
+                      description: reference in %
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+    PelkinElmerLambda950:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Instrument
+      - nomad.datamodel.data.EntryData
+      quantities:
+        name:
+          type: string
+          description: instrument name
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: instrument_name
+        lab_id:
+          type: string
+          description: instrument serial number
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: instrument_serial_number
+        software_version:
+          type: string
+          description: software/firmware version
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+    TransmissionSample:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.CompositeSystem
+      - nomad.datamodel.data.EntryData
+      quantities:
+        name:
+          type: string
+          description: sample name
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: sample_name
+        lab_id:
+          type: string
+          description: sample id
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+              label: sample_id
+        chemical_composition:
+          type: string
+          description: chemical composition
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        length:
+          type: np.float64
+          unit: mm
+          description: length (or thickness) of the sample in mm
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+              defaultDisplayUnit: mm
+        orientation:
+          type: string
+          description: crystallographic orientation of sample
+          m_annotations:
+            eln:
+              component: StringEditQuantity
