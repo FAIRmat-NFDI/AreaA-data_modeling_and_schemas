@@ -23,7 +23,7 @@ import yaml
 import json
 import math
 
-from nomad.datamodel.context import ClientContext
+from nomad.datamodel.context import ClientContext, ServerContext
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import MSection, Quantity, Section
@@ -31,6 +31,7 @@ from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
+from nomad.app.v1.models.models import User
 from nomad.datamodel.data import (
     EntryData,
 )
@@ -71,7 +72,7 @@ from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 
 def get_reference(upload_id, entry_id):
-    return f"../uploads/{upload_id}/archive/{entry_id}"
+    return f'../uploads/{upload_id}/archive/{entry_id}'
 
 
 def get_entry_id_from_file_name(filename, upload_id):
@@ -124,25 +125,25 @@ def create_archive(
     if isinstance(context, ClientContext):
         return None
     if context.raw_path_exists(filename):
-        with context.raw_file(filename, "r") as file:
+        with context.raw_file(filename, 'r') as file:
             existing_dict = yaml.safe_load(file)
     if context.raw_path_exists(filename) and not dict_nan_equal(
         existing_dict, entry_dict
     ):
         logger.error(
-            f"{filename} archive file already exists. "
-            f"You are trying to overwrite it with a different content. "
-            f"To do so, remove the existing archive and click reprocess again."
+            f'{filename} archive file already exists. '
+            f'You are trying to overwrite it with a different content. '
+            f'To do so, remove the existing archive and click reprocess again.'
         )
     if (
         not context.raw_path_exists(filename)
         or existing_dict == entry_dict
         or overwrite
     ):
-        with context.raw_file(filename, "w") as newfile:
-            if file_type == "json":
+        with context.raw_file(filename, 'w') as newfile:
+            if file_type == 'json':
                 json.dump(entry_dict, newfile)
-            elif file_type == "yaml":
+            elif file_type == 'yaml':
                 yaml.dump(entry_dict, newfile)
         context.upload.process_updated_raw_file(filename, allow_modify=True)
 
@@ -186,27 +187,50 @@ def create_archive(
 def fetch_substrate(archive, sample_id, substrate_id, logger):
     substrate_reference_str = None
     search_result = search(
-        owner="all",
+        owner='all',
         query={
-            "results.eln.sections:any": ["SubstrateMovpe", "Substrate"],
-            "results.eln.lab_ids:any": [substrate_id],
+            'results.eln.sections:any': ['SubstrateMovpe', 'Substrate'],
+            'results.eln.lab_ids:any': [substrate_id],
         },
         user_id=archive.metadata.main_author.user_id,
     )
     if not search_result.data:
         logger.warn(
-            f"Substrate entry [{substrate_id}] was not found, upload and reprocess to reference it in ThinFilmStack entry [{sample_id}]"
+            f'Substrate entry [{substrate_id}] was not found, upload and reprocess to reference it in ThinFilmStack entry [{sample_id}]'
         )
         return None
     if len(search_result.data) > 1:
         logger.warn(
-            f"Found {search_result.pagination.total} entries with lab_id: "
+            f'Found {search_result.pagination.total} entries with lab_id: '
             f'"{substrate_id}". Will use the first one found.'
         )
         return None
     if len(search_result.data) >= 1:
-        substrate_reference_str = f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
-        return substrate_reference_str
+        upload_id = search_result.data[0]['upload_id']
+        from nomad.files import UploadFiles
+        from nomad.app.v1.routers.uploads import get_upload_with_read_access
+
+        upload_files = UploadFiles.get(upload_id)
+
+        substrate_context = ServerContext(
+            get_upload_with_read_access(
+                upload_id,
+                User(
+                    is_admin=True,
+                    user_id=archive.metadata.main_author.user_id,
+                ),
+                include_others=True,
+            )
+        )
+
+        if upload_files.raw_path_is_file(substrate_context.raw_path()):
+            substrate_reference_str = f"../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data"
+            return substrate_reference_str
+        else:
+            logger.warn(
+                f"The path '../uploads/{search_result.data[0]['upload_id']}/archive/{search_result.data[0]['entry_id']}#data' is not a file, upload and reprocess to reference it in ThinFilmStack entry [{sample_id}]"
+            )
+            return None
 
 
 def populate_sources(line_number, growth_run_file: pd.DataFrame):
@@ -215,15 +239,15 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
     """
     sources = []
     bubbler_quantities = [
-        "Bubbler Temp",
-        "Bubbler Pressure",
-        "Bubbler Partial Pressure",
-        "Bubbler Dilution",
-        "Source",
-        "Inject",
-        "Bubbler MFC",
-        "Bubbler Molar Flux",
-        "Bubbler Material",
+        'Bubbler Temp',
+        'Bubbler Pressure',
+        'Bubbler Partial Pressure',
+        'Bubbler Dilution',
+        'Source',
+        'Inject',
+        'Bubbler MFC',
+        'Bubbler Molar Flux',
+        'Bubbler Material',
     ]
     i = 0
     while True:
@@ -234,17 +258,17 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
             sources.append(
                 BubblerSourceIKZ(
                     name=growth_run_file.get(
-                        f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
+                        f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ''
                     )[line_number],
                     material=[
                         PureSubstanceComponent(
                             substance_name=growth_run_file.get(
-                                f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ""
+                                f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ''
                             )[line_number],
                             pure_substance=PureSubstanceSection(
                                 name=growth_run_file.get(
                                     f"Bubbler Material{'' if i == 0 else '.' + str(i)}",
-                                    "",
+                                    '',
                                 )[line_number]
                             ),
                         ),
@@ -259,7 +283,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                     )[line_number]
                                 ]
                             )
-                            * ureg("celsius").to("kelvin").magnitude,
+                            * ureg('celsius').to('kelvin').magnitude,
                         ),
                         pressure=Pressure(
                             set_value=pd.Series(
@@ -270,7 +294,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                     )[line_number]
                                 ]
                             )
-                            * ureg("mbar").to("pascal").magnitude,
+                            * ureg('mbar').to('pascal').magnitude,
                         ),
                         precursor_partial_pressure=PartialVaporPressure(
                             set_value=pd.Series(
@@ -291,8 +315,8 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                     )[line_number]
                                 ]
                             )
-                            * ureg("cm **3 / minute")
-                            .to("meter ** 3 / second")
+                            * ureg('cm **3 / minute')
+                            .to('meter ** 3 / second')
                             .magnitude,
                         ),
                         dilution=growth_run_file.get(
@@ -314,7 +338,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                                 )[line_number]
                             ]
                         )
-                        * ureg("mol / minute").to("mol / second").magnitude,
+                        * ureg('mol / minute').to('mol / second').magnitude,
                     ),
                 ),
             )
@@ -331,9 +355,9 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
     """
     gas_sources = []
     gas_source_quantities = [
-        "Gas Material",
-        "Gas MFC",
-        "Gas Molar Flux",
+        'Gas Material',
+        'Gas MFC',
+        'Gas Molar Flux',
     ]
     i = 0
     while True:
@@ -344,16 +368,16 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
             gas_sources.append(
                 GasSourceIKZ(
                     name=growth_run_file.get(
-                        f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                        f"Gas Material{'' if i == 0 else '.' + str(i)}", ''
                     )[line_number],
                     material=[
                         PureSubstanceComponent(
                             substance_name=growth_run_file.get(
-                                f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                                f"Gas Material{'' if i == 0 else '.' + str(i)}", ''
                             )[line_number],
                             pure_substance=PureSubstanceSection(
                                 name=growth_run_file.get(
-                                    f"Gas Material{'' if i == 0 else '.' + str(i)}", ""
+                                    f"Gas Material{'' if i == 0 else '.' + str(i)}", ''
                                 )[line_number]
                             ),
                         ),
@@ -378,7 +402,7 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                                 )[line_number]
                             ]
                         )
-                        * ureg("mol / minute").to("mol / second").magnitude,
+                        * ureg('mol / minute').to('mol / second').magnitude,
                     ),
                 )
             )

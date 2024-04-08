@@ -79,11 +79,11 @@ from ..utils import (
 
 
 class RawFileGrowthRun(EntryData):
-    m_def = Section(a_eln=None, label="Raw File Growth Run")
+    m_def = Section(a_eln=None, label='Raw File Growth Run')
     name = Quantity(
         type=str,
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
     )
     growth_runs = Quantity(
@@ -91,17 +91,17 @@ class RawFileGrowthRun(EntryData):
         # a_eln=ELNAnnotation(
         #     component="ReferenceEditQuantity",
         # ),
-        shape=["*"],
+        shape=['*'],
     )
 
 
 class ParserMovpe2IKZ(MatchingParser):
     def __init__(self):
         super().__init__(
-            name="MOVPE 2 IKZ",
-            code_name="MOVPE 2 IKZ",
-            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
-            supported_compressions=["gz", "bz2", "xz"],
+            name='MOVPE 2 IKZ',
+            code_name='MOVPE 2 IKZ',
+            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
+            supported_compressions=['gz', 'bz2', 'xz'],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
@@ -109,14 +109,14 @@ class ParserMovpe2IKZ(MatchingParser):
         Parses the MOVPE 2 IKZ raw file and creates the corresponding archives.
         """
 
-        filetype = "yaml"
-        data_file = mainfile.split("/")[-1]
-        data_file_with_path = mainfile.split("raw/")[-1]
-        growth_run_file = pd.read_excel(mainfile, comment="#")
+        filetype = 'yaml'
+        data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split('raw/')[-1]
+        growth_run_file = pd.read_excel(mainfile, comment='#')
         recipe_ids = list(
             set(
-                growth_run_file["Recipe Name"]
-                if "Recipe Name" in growth_run_file.columns
+                growth_run_file['Recipe Name']
+                if 'Recipe Name' in growth_run_file.columns
                 else None
             )
         )
@@ -128,29 +128,29 @@ class ParserMovpe2IKZ(MatchingParser):
         # initializing samples dict
         samples_lists: Dict[str, Dict[str, List]] = {}
 
-        for index, sample_id in enumerate(growth_run_file["Sample Name"]):
+        for index, sample_id in enumerate(growth_run_file['Sample Name']):
             recipe_id = (
-                growth_run_file["Recipe Name"][index]
-                if "Recipe Name" in growth_run_file.columns
+                growth_run_file['Recipe Name'][index]
+                if 'Recipe Name' in growth_run_file.columns
                 else None
             )
             step_id = (
-                growth_run_file["Step Index"][index]
-                if "Step Index" in growth_run_file.columns
+                growth_run_file['Step Index'][index]
+                if 'Step Index' in growth_run_file.columns
                 else None
             )
             substrate_id = (
-                growth_run_file["Substrate Name"][index]
-                if "Substrate Name" in growth_run_file.columns
+                growth_run_file['Substrate Name'][index]
+                if 'Substrate Name' in growth_run_file.columns
                 else None
             )
 
             # creating ThinFiln and ThinFilmStack archives
-            layer_filename = f"{sample_id}_{index}.ThinFilm.archive.{filetype}"
+            layer_filename = f'{sample_id}_{index}.ThinFilm.archive.{filetype}'
             layer_archive = EntryArchive(
                 data=ThinFilmMovpe(
-                    name=sample_id + " layer",
-                    lab_id=sample_id + "layer",
+                    name=sample_id + ' layer',
+                    lab_id=sample_id + 'layer',
                 ),
                 m_context=archive.m_context,
                 metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
@@ -163,11 +163,11 @@ class ParserMovpe2IKZ(MatchingParser):
                 logger,
             )
             grown_sample_data = ThinFilmStackMovpe(
-                name=sample_id + " stack",
+                name=sample_id + ' stack',
                 lab_id=sample_id,
                 layers=[
                     ThinFilmReference(
-                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data"
+                        reference=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data'
                     )
                 ],
             )
@@ -180,8 +180,9 @@ class ParserMovpe2IKZ(MatchingParser):
                 grown_sample_data.substrate = SubstrateReference(
                     name=substrate_id, lab_id=substrate_id
                 )
+
             grown_sample_filename = (
-                f"{sample_id}_{index}.ThinFilmStack.archive.{filetype}"
+                f'{sample_id}_{index}.ThinFilmStack.archive.{filetype}'
             )
             grown_sample_archive = EntryArchive(
                 data=grown_sample_data,
@@ -204,25 +205,25 @@ class ParserMovpe2IKZ(MatchingParser):
                 SampleParametersMovpe(
                     name=sample_id,
                     layer=ThinFilmReference(
-                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data",
+                        reference=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, layer_filename)}#data',
                     ),
                     substrate=ThinFilmStackMovpeReference(
-                        reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data",
+                        reference=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, grown_sample_filename)}#data',
                     ),
                     distance_to_source=[
                         (
-                            growth_run_file["Distance of Showerhead"][index]
-                            if "Distance of Showerhead" in growth_run_file.columns
+                            growth_run_file['Distance of Showerhead'][index]
+                            if 'Distance of Showerhead' in growth_run_file.columns
                             else None
                         )
-                        * ureg("millimeter").to("meter").magnitude
+                        * ureg('millimeter').to('meter').magnitude
                     ],
                     shaft_temperature=ShaftTemperature(
                         set_value=pd.Series(
                             [
                                 (
-                                    growth_run_file["T Shaft"][index]
-                                    if "T Shaft" in growth_run_file.columns
+                                    growth_run_file['T Shaft'][index]
+                                    if 'T Shaft' in growth_run_file.columns
                                     else None
                                 )
                             ]
@@ -232,8 +233,8 @@ class ParserMovpe2IKZ(MatchingParser):
                         set_value=pd.Series(
                             [
                                 (
-                                    growth_run_file["T Filament"][index]
-                                    if "T Filament" in growth_run_file.columns
+                                    growth_run_file['T Filament'][index]
+                                    if 'T Filament' in growth_run_file.columns
                                     else None
                                 )
                             ]
@@ -243,8 +244,8 @@ class ParserMovpe2IKZ(MatchingParser):
                         set_value=pd.Series(
                             [
                                 (
-                                    growth_run_file["T LayTec"][index]
-                                    if "T LayTec" in growth_run_file.columns
+                                    growth_run_file['T LayTec'][index]
+                                    if 'T LayTec' in growth_run_file.columns
                                     else None
                                 )
                             ]
@@ -260,21 +261,21 @@ class ParserMovpe2IKZ(MatchingParser):
                 process_steps_lists[recipe_id][step_id] = []
             process_steps_lists[recipe_id][step_id] = GrowthStepMovpe2IKZ(
                 name=str(
-                    growth_run_file["Step name"][index]
-                    if "Step name" in growth_run_file.columns
+                    growth_run_file['Step name'][index]
+                    if 'Step name' in growth_run_file.columns
                     else None
                 )
-                + " step "
+                + ' step '
                 + str(step_id),
                 step_index=step_id,
                 duration=(
-                    growth_run_file["Duration"][index]
-                    if "Duration" in growth_run_file.columns
-                    else None * ureg("minute").to("second").magnitude
+                    growth_run_file['Duration'][index]
+                    if 'Duration' in growth_run_file.columns
+                    else None * ureg('minute').to('second').magnitude
                 ),
                 comment=(
-                    growth_run_file["Comments"][index]
-                    if "Comments" in growth_run_file.columns
+                    growth_run_file['Comments'][index]
+                    if 'Comments' in growth_run_file.columns
                     else None
                 ),
                 sources=populate_sources(index, growth_run_file)
@@ -284,32 +285,32 @@ class ParserMovpe2IKZ(MatchingParser):
                         set_value=pd.Series(
                             [
                                 (
-                                    growth_run_file["Pressure"][index]
-                                    if "Pressure" in growth_run_file.columns
+                                    growth_run_file['Pressure'][index]
+                                    if 'Pressure' in growth_run_file.columns
                                     else None
                                 )
                             ]
                         )
-                        * ureg("mbar").to("pascal").magnitude,
+                        * ureg('mbar').to('pascal').magnitude,
                     ),
                     rotation=Rotation(
                         set_value=pd.Series(
                             [
                                 (
-                                    growth_run_file["Rotation"][index]
-                                    if "Rotation" in growth_run_file.columns
+                                    growth_run_file['Rotation'][index]
+                                    if 'Rotation' in growth_run_file.columns
                                     else None
                                 )
                             ]
                         )
-                        * ureg("rpm").to("rpm").magnitude,
+                        * ureg('rpm').to('rpm').magnitude,
                     ),
                     gas_flow=[
                         GasFlowMovpe(
                             gas=PubChemPureSubstanceSection(
                                 name=(
-                                    growth_run_file["Carrier Gas"][index]
-                                    if "Carrier Gas" in growth_run_file.columns
+                                    growth_run_file['Carrier Gas'][index]
+                                    if 'Carrier Gas' in growth_run_file.columns
                                     else None
                                 ),
                             ),
@@ -317,15 +318,15 @@ class ParserMovpe2IKZ(MatchingParser):
                                 set_value=pd.Series(
                                     [
                                         (
-                                            growth_run_file["Pushgas Valve"][index]
-                                            if "Pushgas Valve"
+                                            growth_run_file['Pushgas Valve'][index]
+                                            if 'Pushgas Valve'
                                             in growth_run_file.columns
                                             else None
                                         )
                                     ]
                                 )
-                                * ureg("cm ** 3 / minute")
-                                .to("meter ** 3 / second")
+                                * ureg('cm ** 3 / minute')
+                                .to('meter ** 3 / second')
                                 .magnitude,
                             ),
                         ),
@@ -334,13 +335,13 @@ class ParserMovpe2IKZ(MatchingParser):
                         set_value=pd.Series(
                             [
                                 (
-                                    growth_run_file["Uniform Valve"][index]
-                                    if "Uniform Valve" in growth_run_file.columns
+                                    growth_run_file['Uniform Valve'][index]
+                                    if 'Uniform Valve' in growth_run_file.columns
                                     else None
                                 )
                             ]
                         )
-                        * ureg("cm ** 3 / minute").to("meter ** 3 / second").magnitude,
+                        * ureg('cm ** 3 / minute').to('meter ** 3 / second').magnitude,
                     ),
                 ),
             )
@@ -351,7 +352,7 @@ class ParserMovpe2IKZ(MatchingParser):
             # creating growth process objects
             if recipe_id not in growth_processes:
                 growth_processes[recipe_id] = GrowthMovpeIKZ(
-                    name="Growth MOVPE 2",
+                    name='Growth MOVPE 2',
                     recipe_id=recipe_id,
                     lab_id=sample_id,
                 )
@@ -379,7 +380,7 @@ class ParserMovpe2IKZ(MatchingParser):
                 )
         # creating growth process archives
         for recipe_id, growth_process_object in growth_processes.items():
-            growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
+            growth_process_filename = f'{recipe_id}.GrowthMovpeIKZ.archive.{filetype}'
             # Activity.normalize(growth_process_object, archive, logger)
             growth_process_archive = EntryArchive(
                 data=growth_process_object,
@@ -400,14 +401,14 @@ class ParserMovpe2IKZ(MatchingParser):
         sleep(2)  # to give GrowthProcessIKZ the time to be indexed
 
         for recipe_id in recipe_ids:
-            experiment_filename = f"{recipe_id}.ExperimentMovpeIKZ.archive.{filetype}"
-            growth_process_filename = f"{recipe_id}.GrowthMovpeIKZ.archive.{filetype}"
+            experiment_filename = f'{recipe_id}.ExperimentMovpeIKZ.archive.{filetype}'
+            growth_process_filename = f'{recipe_id}.GrowthMovpeIKZ.archive.{filetype}'
             experiment_data = ExperimentMovpeIKZ(
-                name=f"{recipe_id} experiment",
-                method="MOVPE 2 experiment",
+                name=f'{recipe_id} experiment',
+                method='MOVPE 2 experiment',
                 lab_id=recipe_id,
                 growth_run=GrowthMovpeIKZReference(
-                    reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data",
+                    reference=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, growth_process_filename)}#data',
                 ),
             )
             experiment_archive = EntryArchive(
@@ -423,10 +424,10 @@ class ParserMovpe2IKZ(MatchingParser):
                 logger,
             )
             experiment_reference.append(
-                f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, experiment_filename)}#data"
+                f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, experiment_filename)}#data'
             )
 
         archive.data = RawFileGrowthRun(
             name=data_file, growth_runs=experiment_reference
         )
-        archive.metadata.entry_name = data_file + "raw file"
+        archive.metadata.entry_name = data_file + 'raw file'
