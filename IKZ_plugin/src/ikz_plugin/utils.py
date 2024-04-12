@@ -109,9 +109,30 @@ def create_archive(
     return get_hash_ref(context.upload_id, filename)
 
 
-def row_to_array(
-    dataframe: pd.DataFrame, quantities: List[str], row_index: int
-) -> pd.Series:
+def df_value(dataframe, column_header, index=None):
+    """
+    Fetches a value from a DataFrame.
+    """
+    if column_header in dataframe.columns:
+        if index is not None:
+            return dataframe[column_header][index]
+        return dataframe[column_header]
+    return None
+
+
+def typed_df_value(dataframe, column_header, value_type, index=None):
+    """
+    Fetches a value of a specified type from a DataFrame.
+    """
+    value = df_value(dataframe, column_header, index)
+    if value_type is str:
+        return str(value)
+    if isinstance(value, value_type):
+        return value
+    return None
+
+
+def row_to_array(dataframe: pd.DataFrame, quantity: str, row_index: int) -> pd.Series:
     """
     Extracts values from a DataFrame row across multiple columns with similar names.
 
@@ -144,28 +165,14 @@ def row_to_array(
         2    7
         dtype: int64
     """
-    array = pd.Series([])
-    i = 0
-    while True:
-        if all(
-            f"{key}{'' if i == 0 else '.' + str(i)}" in dataframe.columns
-            for key in quantities
-        ):
-            column_name = f"{quantities[0]}{'' if i == 0 else '.' + str(i)}"
-            array = array.append(
-                pd.Series(
-                    [
-                        (
-                            dataframe[column_name].loc[row_index]
-                            if column_name in dataframe.columns
-                            else None
-                        ),
-                    ]
-                )
-            )
-            i += 1
-        else:
-            break
+    column_names = [col for col in dataframe.columns if col.startswith(quantity)]
+    array = pd.Series(
+        [
+            dataframe[col].loc[row_index]
+            for col in column_names
+            if col is float or col is int
+        ]
+    )
     return array
 
 
@@ -228,12 +235,12 @@ def row_timeseries(
     return clean_timeseries(
         row_to_array(
             dataframe,
-            [value_header],
+            value_header,
             row_index,
         ),
         row_to_array(
             dataframe,
-            [time_header],
+            time_header,
             row_index,
         ),
     )
@@ -287,26 +294,3 @@ def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe = dataframe.reset_index(drop=True)
 
     return dataframe
-
-
-def df_value(dataframe, column_header, index=None):
-    """
-    Fetches a value from a DataFrame.
-    """
-    if column_header in dataframe.columns:
-        if index is not None:
-            return dataframe[column_header][index]
-        return dataframe[column_header]
-    return None
-
-
-def typed_df_value(dataframe, column_header, value_type, index=None):
-    """
-    Fetches a value of a specified type from a DataFrame.
-    """
-    value = df_value(dataframe, column_header, index)
-    if value_type is str:
-        return str(value)
-    if isinstance(value, value_type):
-        return value
-    return None
