@@ -968,7 +968,12 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
                 )
                 environment = ChamberEnvironment(
                     pressure=Pressure(
-                        value=data['pressure_mbar'],
+                        value=ureg.Quantity(
+                            data['pressure_mbar'].values,
+                            ureg('mbar'),
+                        )
+                        .to('Pa')
+                        .magnitude,
                         time=data['time_s'],
                     ),
                     gas_flow=[
