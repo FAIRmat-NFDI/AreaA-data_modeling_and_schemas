@@ -25,7 +25,7 @@ from typing import List
 
 
 def get_reference(upload_id, entry_id):
-    return f"../uploads/{upload_id}/archive/{entry_id}"
+    return f'../uploads/{upload_id}/archive/{entry_id}'
 
 
 def get_entry_id(upload_id, filename):
@@ -35,7 +35,7 @@ def get_entry_id(upload_id, filename):
 
 
 def get_hash_ref(upload_id, filename):
-    return f"{get_reference(upload_id, get_entry_id(upload_id, filename))}#data"
+    return f'{get_reference(upload_id, get_entry_id(upload_id, filename))}#data'
 
 
 def nan_equal(a, b):
@@ -84,25 +84,25 @@ def create_archive(
     if isinstance(context, ClientContext):
         return None
     if context.raw_path_exists(filename):
-        with context.raw_file(filename, "r") as file:
+        with context.raw_file(filename, 'r') as file:
             existing_dict = yaml.safe_load(file)
     if context.raw_path_exists(filename) and not dict_nan_equal(
         existing_dict, entry_dict
     ):
         logger.error(
-            f"{filename} archive file already exists. "
-            f"You are trying to overwrite it with a different content. "
-            f"To do so, remove the existing archive and click reprocess again."
+            f'{filename} archive file already exists. '
+            f'You are trying to overwrite it with a different content. '
+            f'To do so, remove the existing archive and click reprocess again.'
         )
     if (
         not context.raw_path_exists(filename)
         or existing_dict == entry_dict
         or overwrite
     ):
-        with context.raw_file(filename, "w") as newfile:
-            if file_type == "json":
+        with context.raw_file(filename, 'w') as newfile:
+            if file_type == 'json':
                 json.dump(entry_dict, newfile)
-            elif file_type == "yaml":
+            elif file_type == 'yaml':
                 yaml.dump(entry_dict, newfile)
         context.upload.process_updated_raw_file(filename, allow_modify=True)
 
@@ -267,7 +267,7 @@ def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:
     # Iterate over the columns
     for col in dataframe.iloc[0]:
         # Clean up the column name
-        col = re.sub(r"\s+", " ", str(col).strip())
+        col = re.sub(r'\s+', ' ', str(col).strip())
         # If the column name is in the dictionary, increment the count
         if col in column_counts:
             column_counts[col] += 1
@@ -276,7 +276,7 @@ def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:
             column_counts[col] = 1
         # If the count is greater than 1, append it to the column name
         if column_counts[col] > 1:
-            col = f"{col}.{column_counts[col] - 1}"
+            col = f'{col}.{column_counts[col] - 1}'
         # Add the column name to the list of new column names
         new_columns.append(col)
     # Assign the new column names to the DataFrame
@@ -287,3 +287,26 @@ def clean_dataframe_headers(dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe = dataframe.reset_index(drop=True)
 
     return dataframe
+
+
+def df_value(dataframe, column_header, index=None):
+    """
+    Fetches a value from a DataFrame.
+    """
+    if column_header in dataframe.columns:
+        if index is not None:
+            return dataframe[column_header][index]
+        return dataframe[column_header]
+    return None
+
+
+def typed_df_value(dataframe, column_header, value_type, index=None):
+    """
+    Fetches a value of a specified type from a DataFrame.
+    """
+    value = df_value(dataframe, column_header, index)
+    if value_type is str:
+        return str(value)
+    if isinstance(value, value_type):
+        return value
+    return None

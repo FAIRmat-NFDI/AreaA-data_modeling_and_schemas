@@ -751,7 +751,7 @@ class LiMimeasurementReference(SectionReference):
     )
 
 
-class Steps(SectionReference):
+class Steps(ActivityReference):
     """
     A section used for referencing SubstratePreparationSteps.
     """

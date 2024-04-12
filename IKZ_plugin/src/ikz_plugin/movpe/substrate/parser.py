@@ -42,7 +42,10 @@ from nomad_material_processing import (
     Dopant,
 )
 from ikz_plugin import IKZMOVPECategory
-from ikz_plugin.utils import create_archive
+from ikz_plugin.utils import (
+    create_archive,
+    typed_df_value,
+)
 from ikz_plugin.movpe import (
     SubstrateInventory,
     SubstrateMovpe,
@@ -57,11 +60,11 @@ from .utils import (
 
 
 class RawFileSubstrateInventory(EntryData):
-    m_def = Section(a_eln=None, label="Raw File Substrate Inventory")
+    m_def = Section(a_eln=None, label='Raw File Substrate Inventory')
     measurement = Quantity(
         type=SubstrateInventory,
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
+            component='ReferenceEditQuantity',
         ),
     )
 
@@ -69,131 +72,71 @@ class RawFileSubstrateInventory(EntryData):
 class MovpeSubstrateParser(MatchingParser):
     def __init__(self):
         super().__init__(
-            name="MOVPE Substrate IKZ",
-            code_name="MOVPE Substrate IKZ",
-            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
-            supported_compressions=["gz", "bz2", "xz"],
+            name='MOVPE Substrate IKZ',
+            code_name='MOVPE Substrate IKZ',
+            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
+            supported_compressions=['gz', 'bz2', 'xz'],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        filetype = "yaml"
-        data_file = mainfile.split("/")[-1]
-        data_file_with_path = mainfile.split("raw/")[-1]
+        filetype = 'yaml'
+        data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split('raw/')[-1]
         xlsx = pd.ExcelFile(mainfile)
         substrates_file = pd.read_excel(
             xlsx,
-            "Substrate",
-            comment="#",
+            'Substrate',
+            comment='#',
         )
         substrates_file.columns = substrates_file.columns.str.strip()
         substrate_list = []
-        for index, substrate_id in enumerate(substrates_file["Substrates"]):
+        for index, substrate_id in enumerate(substrates_file['Substrates']):
             # creating Substrate archives
             substrate_filename = (
-                f"{substrate_id}_{index}.SubstrateIKZ.archive.{filetype}"
+                f'{substrate_id}_{index}.SubstrateIKZ.archive.{filetype}'
             )
             substrate_data = SubstrateMovpe(
                 lab_id=substrate_id,
-                supplier=(
-                    substrates_file["Supplier"][index]
-                    if "Supplier" in substrates_file.columns
-                    else None
-                ),
+                supplier=(typed_df_value(substrates_file, 'Supplier', str, index)),
                 supplier_id=(
-                    substrates_file["Polishing Number"][index]
-                    if "Polishing Number" in substrates_file.columns
-                    else None
+                    typed_df_value(substrates_file, 'Polishing Number', str, index)
                 ),
                 tags=[
-                    (
-                        substrates_file["Quality"][index]
-                        if "As Received" in substrates_file.columns
-                        else None
-                    ),
-                    (
-                        substrates_file["Crystal"][index]
-                        if "As Received" in substrates_file.columns
-                        else None
-                    ),
+                    typed_df_value(substrates_file, 'Quality', str, index),
+                    typed_df_value(substrates_file, 'Crystal', str, index),
                 ],
                 as_received=(
-                    substrates_file["As Received"][index]
-                    if "As Received" in substrates_file.columns
-                    else None
+                    typed_df_value(substrates_file, 'As Received', bool, index)
                 ),
-                etching=(
-                    substrates_file["Etching"][index]
-                    if "Etching" in substrates_file.columns
-                    else None
-                ),
-                annealing=(
-                    substrates_file["Annealing"][index]
-                    if "Annealing" in substrates_file.columns
-                    else None
-                ),
-                re_etching=(
-                    substrates_file["Re-Etching"][index]
-                    if "Re-Etching" in substrates_file.columns
-                    else None
-                ),
-                epi_ready=(
-                    substrates_file["Epi Ready"][index]
-                    if "Epi Ready" in substrates_file.columns
-                    else None
-                ),
-                quality=(
-                    substrates_file["Quality"][index]
-                    if "Quality" in substrates_file.columns
-                    else None
-                ),
-                description=str(
-                    (
-                        substrates_file["Substrate Box"][index]
-                        if "Substrate Box" in substrates_file.columns
-                        else None
-                    ),
-                )
-                + " "
-                + str(
-                    (
-                        substrates_file["Substrate Index"][index]
-                        if "Substrate Index" in substrates_file.columns
-                        else None
-                    ),
-                ),
+                etching=(typed_df_value(substrates_file, 'Etching', bool, index)),
+                annealing=(typed_df_value(substrates_file, 'Annealing', bool, index)),
+                re_etching=(typed_df_value(substrates_file, 'Re-Etching', bool, index)),
+                epi_ready=(typed_df_value(substrates_file, 'Epi Ready', bool, index)),
+                quality=(typed_df_value(substrates_file, 'Quality', bool, index)),
+                description=f"{typed_df_value(substrates_file, 'Substrate Box', bool, index)} {typed_df_value(substrates_file, 'Substrate Index', bool, index)}",
                 geometry=Parallelepiped(
-                    width=(
-                        substrates_file["Size X"][index]
-                        if "Size X" in substrates_file.columns
-                        else None
-                    ),
-                    length=(
-                        substrates_file["Size Y"][index]
-                        if "Size Y" in substrates_file.columns
-                        else None
-                    ),
+                    width=(typed_df_value(substrates_file, 'Size X', float, index)),
+                    length=(typed_df_value(substrates_file, 'Size Y', float, index)),
                 ),
                 crystal_properties=SubstrateCrystalPropertiesMovpe(
                     orientation=(
-                        substrates_file["Orientation"][index]
-                        if "Orientation" in substrates_file.columns
-                        else None
+                        typed_df_value(substrates_file, 'Orientation', str, index)
                     ),
                     miscut=MiscutMovpe(
                         b_angle=(
-                            substrates_file["Miscut b angle"][index]
-                            if "Miscut b angle" in substrates_file.columns
-                            else None
+                            typed_df_value(
+                                substrates_file, 'Miscut b angle', float, index
+                            )
                         ),
                         angle=(
-                            substrates_file["Miscut c angle"][index]
-                            if "Miscut c angle" in substrates_file.columns
-                            else None
+                            typed_df_value(
+                                substrates_file, 'Miscut c angle', float, index
+                            )
                         ),
                         orientation=(
-                            substrates_file["Miscut c Orientation"][index]
-                            if "Miscut c Orientation" in substrates_file.columns
-                            else None
+                            typed_df_value(
+                                substrates_file, 'Miscut c Orientation', str, index
+                            )
                         ),
                     ),
                 ),
@@ -215,7 +158,7 @@ class MovpeSubstrateParser(MatchingParser):
             )
             substrate_list.append(
                 SubstrateMovpeReference(
-                    reference=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, substrate_filename)}#data",
+                    reference=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, substrate_filename)}#data',
                 )
             )
         invenroty_data = SubstrateInventory(
@@ -227,7 +170,7 @@ class MovpeSubstrateParser(MatchingParser):
             m_context=archive.m_context,
             metadata=EntryMetadata(upload_id=archive.m_context.upload_id),
         )
-        inventory_filename = f"{data_file[:-5]}.archive.{filetype}"
+        inventory_filename = f'{data_file[:-5]}.archive.{filetype}'
 
         create_archive(
             inventory_archive.m_to_dict(),
@@ -238,6 +181,6 @@ class MovpeSubstrateParser(MatchingParser):
         )
 
         archive.data = RawFileSubstrateInventory(
-            measurement=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, inventory_archive)}#data",
+            measurement=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.m_context.upload_id, inventory_archive)}#data',
         )
-        archive.metadata.entry_name = data_file + " substrates file"
+        archive.metadata.entry_name = data_file + ' substrates file'
