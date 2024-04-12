@@ -24,6 +24,7 @@ dependencies = [
 dev = [
     "ruff>=0.2.0",
     "pytest",
+    "structlog==22.3.0",
 ]
 
 [project.license]
