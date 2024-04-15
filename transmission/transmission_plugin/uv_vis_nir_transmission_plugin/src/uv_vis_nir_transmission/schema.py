@@ -613,18 +613,18 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         detector = Detector(
             module=transmission_dict['detector_module'],
         )
-        for wavelength, value in transmission_dict['detector_NIR_gain'].items():
+        for wavelength_value in transmission_dict['detector_NIR_gain']:
             detector.nir_gain.append(
                 NIRGain(
-                    wavelength=wavelength,
-                    value=value,
+                    wavelength=wavelength_value['wavelength'],
+                    value=wavelength_value['value'],
                 )
             )
-        for wavelength, value in transmission_dict['detector_integration_time'].items():
+        for wavelength_value in transmission_dict['detector_integration_time']:
             detector.integration_time.append(
                 IntegrationTime(
-                    wavelength=wavelength,
-                    value=value,
+                    wavelength=wavelength_value['wavelength'],
+                    value=wavelength_value['value'],
                 )
             )
         for wavelength in transmission_dict['detector_change_wavelength']:
@@ -632,19 +632,28 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         detector.normalize(archive, logger)
 
         monochromator = Monochromator()
-        for wavelength, slit_width in transmission_dict[
-            'monochromator_slit_width'
-        ].items():
-            if isinstance(slit_width, str):
+        for wavelength_value in transmission_dict['monochromator_slit_width']:
+            if (
+                isinstance(wavelength_value['value'], str)
+                and wavelength_value['value'].lower() == 'servo'
+            ):
                 slit_width_obj = SlitWidth(
-                    wavelength=wavelength,
+                    wavelength=wavelength_value['wavelength'],
+                    value=None,
                     slit_width_servo=True,
                 )
-            else:
+            elif isinstance(wavelength_value['value'], ureg.Quantity):
                 slit_width_obj = SlitWidth(
-                    wavelength=wavelength,
-                    value=slit_width,
+                    wavelength=wavelength_value['wavelength'],
+                    value=wavelength_value['value'],
+                    slit_width_servo=False,
                 )
+            else:
+                logger.warning(
+                    f'Invalid slit width value "{wavelength_value["value"]}" for '
+                    f'wavelength "{wavelength_value["wavelength"]}".'
+                )
+                continue
             monochromator.slit_width.append(slit_width_obj)
         for wavelength in transmission_dict['monochromator_change_wavelength']:
             monochromator.monochromator_change_point.append(

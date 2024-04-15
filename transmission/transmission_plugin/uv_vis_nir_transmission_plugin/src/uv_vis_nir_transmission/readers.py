@@ -178,17 +178,30 @@ def read_long_line(line: str, logger: 'BoundLogger') -> list:
         list: The list of wavelength-value pairs.
     """
 
-    def convert(val):
-        val_list = val.strip().split('/')
+    def try_float(val: str) -> float:
         try:
-            return {val_list[0]: float(val_list[1])}
+            return float(val)
         except ValueError:
-            return {val_list[0]: val_list[1]}
+            return val
 
-    output = dict()
-    for s in line.split():
-        output.update(convert(s))
-    return output
+    output_list = []
+    for key_value_pair in line.split():
+        key_value_pair_list = key_value_pair.split('/')
+        if len(key_value_pair_list) == 1:
+            output_list.append(
+                {'wavelength': None, 'value': try_float(key_value_pair_list[0])}
+            )
+        elif len(key_value_pair_list) == 2:
+            output_list.append(
+                {
+                    'wavelength': float(key_value_pair_list[0]) * ureg.nanometer,
+                    'value': try_float(key_value_pair_list[1]),
+                }
+            )
+        else:
+            logger.warning(f'Unexpected value while reading the long line: {line}')
+
+    return output_list
 
 
 def read_monochromator_slit_width(metadata: list, logger: 'BoundLogger') -> list:
@@ -203,12 +216,12 @@ def read_monochromator_slit_width(metadata: list, logger: 'BoundLogger') -> list
         list: The monochromator slit width at different wavelengths.
     """
     if not metadata[31]:
-        return None
-    output_dict = read_long_line(metadata[31])
-    for key, val in output_dict.items():
-        if isinstance(val, float):
-            output_dict[key] *= ureg.nanometer
-    return output_dict
+        return []
+    output_list = read_long_line(metadata[31], logger)
+    for i, el in enumerate(output_list):
+        if isinstance(el['value'], float):
+            output_list[i]['value'] *= ureg.nanometer
+    return output_list
 
 
 def read_detector_integration_time(metadata: list, logger: 'BoundLogger') -> list:
@@ -223,11 +236,12 @@ def read_detector_integration_time(metadata: list, logger: 'BoundLogger') -> lis
         list: The detector integration time at different wavelengths.
     """
     if not metadata[32]:
-        return None
-    output_dict = read_long_line(metadata[32])
-    for key in output_dict:
-        output_dict[key] *= ureg.s
-    return output_dict
+        return []
+    output_list = read_long_line(metadata[32], logger)
+    for i, el in enumerate(output_list):
+        if isinstance(el['value'], float):
+            output_list[i]['value'] *= ureg.s
+    return output_list
 
 
 def read_detector_nir_gain(metadata: list, logger: 'BoundLogger') -> list:
@@ -242,11 +256,12 @@ def read_detector_nir_gain(metadata: list, logger: 'BoundLogger') -> list:
         list: The detector NIR gain at different wavelengths.
     """
     if not metadata[35]:
-        return None
-    output_dict = read_long_line(metadata[35])
-    for key in output_dict:
-        output_dict[key] *= ureg.dimensionless
-    return output_dict
+        return []
+    output_list = read_long_line(metadata[35], logger)
+    for i, el in enumerate(output_list):
+        if isinstance(el['value'], float):
+            output_list[i]['value'] *= ureg.dimensionless
+    return output_list
 
 
 def read_detector_change_wavelength(metadata: list, logger: 'BoundLogger') -> list:
