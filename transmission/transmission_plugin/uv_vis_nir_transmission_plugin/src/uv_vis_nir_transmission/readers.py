@@ -30,35 +30,85 @@ if TYPE_CHECKING:
     )
 
 
-def read_sample_name(metadata: list) -> str:
-    """Reads the sample name from the metadata"""
+def read_sample_name(metadata: list, logger: 'BoundLogger') -> str:
+    """
+    Reads the sample name from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        str: The sample name.
+    """
     if not metadata[2]:
         return None
     return metadata[2].split('.')[0]
 
 
-def read_start_datetime(metadata: list) -> str:
-    """Reads the start date from the metadata"""
+def read_start_datetime(metadata: list, logger: 'BoundLogger') -> str:
+    """
+    Reads the start date from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        str: The start date.
+    """
     if not metadata[3] or not metadata[4]:
         return None
-    century = str(datetime.now().year // 100)
-    formated_date = metadata[3].replace('/', '-')
-    return f'{century}{formated_date}T{metadata[4]}000Z'
+    try:
+        century = str(datetime.now().year // 100)
+        formated_date = metadata[3].replace('/', '-')
+        return f'{century}{formated_date}T{metadata[4]}Z'
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the start date.\n{e}')
+    return None
 
 
-def read_is_D2_lamp_used(metadata: list) -> bool:
-    """Reads whether the D2 lamp was active during the measurement"""
+def read_is_D2_lamp_used(metadata: list, logger: 'BoundLogger') -> bool:
+    """
+    Reads whether the D2 lamp was active during the measurement.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        bool: Whether the D2 lamp was active during the measurement.
+    """
     if not metadata[21]:
         return None
-    return bool(float(metadata[21]))
+    try:
+        return bool(float(metadata[21]))
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the D2 lamp data.\n{e}')
+    return None
 
 
-def read_is_tungsten_lamp_used(metadata: list) -> bool:
-    """Reads whether the tungsten lamp was active during the measurement"""
+def read_is_tungsten_lamp_used(metadata: list, logger: 'BoundLogger') -> bool:
+    """
+    Reads whether the tungsten lamp was active during the measurement.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        bool: Whether the tungsten lamp was active during the measurement.
+    """
     if not metadata[22]:
         return None
-    return bool(float(metadata[22]))
-
+    try:
+        return bool(float(metadata[22]))
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the tungsten lamp data.\n{e}')
+    return None
 
 def read_sample_attenuation_percentage(metadata: list) -> int:
     """Reads the sample attenuation percentage from the metadata"""
@@ -73,26 +123,44 @@ def read_reference_attenuation_percentage(metadata: list) -> int:
         return None
     return int(metadata[47].split()[1].split(':')[1]) * ureg.dimensionless
 
+def read_is_depolarizer_on(metadata: list, logger: 'BoundLogger') -> bool:
+    """
+    Reads whether the depolarizer was active during the measurement.
 
-def read_is_depolarizer_on(metadata: list) -> bool:
-    """Reads whether the depolarizer was active during the measurement"""
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        bool: Whether the depolarizer was active during the measurement.
+    """
     if not metadata[46]:
+        return None
+    if metadata[46] == 'on':
+        return True
+    if metadata[46] == 'off':
         return False
-    return metadata[46] == 'on'
+    if logger is not None:
+        logger.warning('Unexpected value for depolarizer state.')
+    return None
 
 
-def read_long_line(line: str) -> Dict[str, float]:
-    """A long line in .asc file is defined as one containing values of a quantity at
-    multiple wavelengths. These values are available within one line but separated by
-    whitespaces. This function generates a dict where each key-value
-    pair is the value for the corresponding wavelength (key).
-    Eg. {"600": 0.5, "1050": 1.0}
+def read_long_line(line: str, logger: 'BoundLogger') -> list:
+    """
+    A long line in the data file contains of a quantity at multiple wavelengths. These
+    values are available within one line but separated by whitespaces. The function
+    generates a list of wavelength-value pairs.
+    Eg. [
+            {'wavelength': 3350, 'value': 2.4},
+            {'wavelength': 860.8, 'value': 2.05},
+        ],
 
     Args:
         line (str): The line to parse.
+        logger (BoundLogger): A structlog logger.
 
     Returns:
-        Dict[str, float]: The dict of detector settings with wavelength as key.
+        list: The list of wavelength-value pairs.
     """
 
     def convert(val):
@@ -108,8 +176,17 @@ def read_long_line(line: str) -> Dict[str, float]:
     return output
 
 
-def read_monochromator_slit_width(metadata: list) -> Dict[str, float]:
-    """Reads the monochromator slit width from the metadata"""
+def read_monochromator_slit_width(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the monochromator slit width from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: The monochromator slit width at different wavelengths.
+    """
     if not metadata[31]:
         return None
     output_dict = read_long_line(metadata[31])
@@ -119,8 +196,17 @@ def read_monochromator_slit_width(metadata: list) -> Dict[str, float]:
     return output_dict
 
 
-def read_detector_integration_time(metadata: list) -> Dict[str, float]:
-    """Reads the detector integration time from the metadata"""
+def read_detector_integration_time(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the detector integration time from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: The detector integration time at different wavelengths.
+    """
     if not metadata[32]:
         return None
     output_dict = read_long_line(metadata[32])
@@ -129,8 +215,17 @@ def read_detector_integration_time(metadata: list) -> Dict[str, float]:
     return output_dict
 
 
-def read_detector_nir_gain(metadata: list) -> Dict[str, float]:
-    """Reads the detector NIR gain from the metadata"""
+def read_detector_nir_gain(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the detector NIR gain from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: The detector NIR gain at different wavelengths.
+    """
     if not metadata[35]:
         return None
     output_dict = read_long_line(metadata[35])
@@ -139,36 +234,103 @@ def read_detector_nir_gain(metadata: list) -> Dict[str, float]:
     return output_dict
 
 
-def read_detector_change_wavelength(metadata: list) -> list[float]:
-    """Reads the detector change wavelength from the metadata"""
+def read_detector_change_wavelength(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the detector change wavelength from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: The detector change wavelengths.
+    """
     if not metadata[43]:
         return None
-    return np.array([float(x) for x in metadata[43].split()]) * ureg.nanometer
+    try:
+        return np.array([float(x) for x in metadata[43].split()]) * ureg.nanometer
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the detector change wavelength.\n{e}')
+    return None
 
 
-def read_polarizer_angle(metadata: list) -> list[float]:
-    """Reads the polarizer angle from the metadata"""
+def read_polarizer_angle(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the polarizer angle from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: The polarizer angle.
+    """
     if not metadata[48]:
         return None
-    return float(metadata[48]) * ureg.degree
+    try:
+        return float(metadata[48]) * ureg.degree
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the polarizer angle.\n{e}')
+    return None
 
 
-def read_monochromator_change_wavelength(metadata: list) -> list[float]:
-    """Reads the monochromator change wavelength from the metadata"""
+def read_monochromator_change_wavelength(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the monochromator change wavelength from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list: The monochromator change wavelengths.
+    """
     if not metadata[41]:
         return None
-    return np.array([float(x) for x in metadata[41].split()]) * ureg.nanometer
+    try:
+        return np.array([float(x) for x in metadata[41].split()]) * ureg.nanometer
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(
+                f'Error in reading the monochromator change wavelength.\n{e}'
+            )
+    return None
 
 
-def read_lamp_change_wavelength(metadata: list) -> list[float]:
-    """Reads the lamp change wavelength from the metadata"""
+def read_lamp_change_wavelength(metadata: list, logger: 'BoundLogger') -> list:
+    """
+    Reads the lamp change wavelength from the metadata.
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        list[float]: The lamp change wavelengths.
+    """
     if not metadata[42]:
         return None
-    return np.array([float(x) for x in metadata[42].split()]) * ureg.nanometer
+    try:
+        return np.array([float(x) for x in metadata[42].split()]) * ureg.nanometer
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the lamp change wavelength.\n{e}')
+    return None
 
 
-def read_detector_module(metadata: list) -> str:
-    """Reads the detector module from the metadata"""
+def read_detector_module(metadata: list, logger: 'BoundLogger') -> str:
+    """
+    Reads the detector module from the metadata
+
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        str: The detector module.
+    """
     if not metadata[24]:
         return None
     if 'uv/vis/nir detector' in metadata[24].lower():
@@ -206,7 +368,8 @@ METADATA_MAP: Dict[str, Any] = {
 
 
 def restructure_measured_data(data: pd.DataFrame) -> Dict[str, np.ndarray]:
-    """Builds the data entry dict from the data in a pandas dataframe.
+    """
+    Builds the data entry dict from the data in a pandas dataframe.
 
     Args:
         data (pd.DataFrame): The dataframe containing the data.
@@ -253,10 +416,8 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
                     output[path] = float(metadata[val]) * ureg.dimensionless
                 except ValueError:
                     output[path] = metadata[val]
-        elif isinstance(val, str):
-            output[path] = val
         elif isfunction(val):
-            output[path] = val(metadata)
+            output[path] = val(metadata, logger)
         else:
             raise ValueError(
                 f"Invalid type value {type(val)} of entry '{path}:{val}' in METADATA_MAP"
