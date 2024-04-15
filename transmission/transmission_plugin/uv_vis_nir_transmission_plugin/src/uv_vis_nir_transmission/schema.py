@@ -43,6 +43,7 @@ from nomad.datamodel.data import (
     EntryData,
     ArchiveSection,
 )
+from nomad.units import ureg
 
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
