@@ -1113,9 +1113,6 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
     environment = SubSection(
         section_def=ChamberEnvironmentMovpe,
     )
-    in_situ_reflectance = SubSection(
-        section_def=InSituMonitoringReference,
-    )
 
     # def normalize(self, archive, logger):
     #     super(GrowthStepMovpe1IKZ, self).normalize(archive, logger)
@@ -1223,6 +1220,9 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
     )
     environment = SubSection(
         section_def=ChamberEnvironmentMovpe,
+    )
+    in_situ_reflectance = SubSection(
+        section_def=InSituMonitoringReference,
     )
 
 
