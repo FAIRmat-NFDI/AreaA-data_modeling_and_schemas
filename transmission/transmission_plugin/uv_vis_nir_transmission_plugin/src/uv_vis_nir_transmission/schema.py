@@ -422,6 +422,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
             yaxis=dict(
                 fixedrange=False,
             ),
+            template='plotly_white',
         )
         figure = [
             PlotlyFigure(
