@@ -652,6 +652,11 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             )
         monochromator.normalize(archive, logger)
 
+        attenuator = Attenuator(
+            sample=transmission_dict['sample_attenuation_percentage'],
+            reference=transmission_dict['reference_attenuation_percentage'],
+        )
+
         transmission_settings = TransmissionSettings(
             ordinate_type=transmission_dict['ordinate_type'],
             sample_beam_position=transmission_dict['sample_beam_position'],
@@ -661,6 +666,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             lamp=lamp,
             detector=detector,
             monochromator=monochromator,
+            attenuator=attenuator,
         )
         transmission_settings.normalize(archive, logger)
 
