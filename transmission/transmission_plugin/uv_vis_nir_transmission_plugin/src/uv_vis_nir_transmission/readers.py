@@ -110,18 +110,33 @@ def read_is_tungsten_lamp_used(metadata: list, logger: 'BoundLogger') -> bool:
             logger.warning(f'Error in reading the tungsten lamp data.\n{e}')
     return None
 
-def read_sample_attenuation_percentage(metadata: list) -> int:
-    """Reads the sample attenuation percentage from the metadata"""
-    if not metadata[47]:
-        return None
-    return int(metadata[47].split()[0].split(':')[1]) * ureg.dimensionless
 
+def read_attenuation_percentage(metadata: list, logger) -> Dict[str, int]:
+    """
+    Reads the sample and reference attenuation percentage from the metadata
 
-def read_reference_attenuation_percentage(metadata: list) -> int:
-    """Reads the sample attenuation percentage from the metadata"""
-    if not metadata[47]:
-        return None
-    return int(metadata[47].split()[1].split(':')[1]) * ureg.dimensionless
+    Args:
+        metadata (list): The metadata list.
+        logger (BoundLogger): A structlog logger.
+
+    Returns:
+        Dict[str, int]: The sample and reference attenuation percentage.
+    """
+    output_dict = {'sample': None, 'reference': None}
+    try:
+        for attenuation_val in metadata[47].split():
+            key, val = attenuation_val.split(':')
+            if val == '':
+                continue
+            if 'S' in key:
+                output_dict['sample'] = int(val) * ureg.dimensionless
+            elif 'R' in key:
+                output_dict['reference'] = int(val) * ureg.dimensionless
+    except ValueError as e:
+        if logger is not None:
+            logger.warning(f'Error in reading the attenuation data.\n{e}')
+    return output_dict
+
 
 def read_is_depolarizer_on(metadata: list, logger: 'BoundLogger') -> bool:
     """
@@ -352,8 +367,7 @@ METADATA_MAP: Dict[str, Any] = {
     'sample_beam_position': 44,
     'common_beam_mask_percentage': 45,
     'is_common_beam_depolarizer_on': read_is_depolarizer_on,
-    'sample_attenuation_percentage': read_sample_attenuation_percentage,
-    'reference_attenuation_percentage': read_reference_attenuation_percentage,
+    'attenuation_percentage': read_attenuation_percentage,
     'detector_integration_time': read_detector_integration_time,
     'detector_NIR_gain': read_detector_nir_gain,
     'detector_change_wavelength': read_detector_change_wavelength,

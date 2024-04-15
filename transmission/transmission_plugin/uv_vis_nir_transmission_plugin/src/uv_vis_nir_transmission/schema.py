@@ -653,8 +653,8 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         monochromator.normalize(archive, logger)
 
         attenuator = Attenuator(
-            sample=transmission_dict['sample_attenuation_percentage'],
-            reference=transmission_dict['reference_attenuation_percentage'],
+            sample=transmission_dict['attenuation_percentage']['sample'],
+            reference=transmission_dict['attenuation_percentage']['reference'],
         )
 
         transmission_settings = TransmissionSettings(
