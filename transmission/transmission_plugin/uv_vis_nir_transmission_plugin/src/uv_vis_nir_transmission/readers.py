@@ -97,7 +97,10 @@ def read_long_line(line: str) -> Dict[str, float]:
 
     def convert(val):
         val_list = val.strip().split('/')
-        return {val_list[0]: float(val_list[1])}
+        try:
+            return {val_list[0]: float(val_list[1])}
+        except ValueError:
+            return {val_list[0]: val_list[1]}
 
     output = dict()
     for s in line.split():
@@ -110,8 +113,9 @@ def read_monochromator_slit_width(metadata: list) -> Dict[str, float]:
     if not metadata[31]:
         return None
     output_dict = read_long_line(metadata[31])
-    for key in output_dict:
-        output_dict[key] *= ureg.nanometer
+    for key, val in output_dict.items():
+        if isinstance(val, float):
+            output_dict[key] *= ureg.nanometer
     return output_dict
 
 

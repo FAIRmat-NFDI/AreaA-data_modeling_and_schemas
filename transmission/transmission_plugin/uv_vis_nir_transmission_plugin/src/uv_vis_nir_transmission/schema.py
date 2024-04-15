@@ -176,6 +176,11 @@ class SlitWidth(ArchiveSection):
         a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nm'},
         unit='nm',
     )
+    slit_width_servo = Quantity(
+        type=bool,
+        description='True if slit width servo is on, i.e., the slit width varies.',
+        a_eln={'component': 'BoolEditQuantity'},
+    )
 
 
 class ChangePoint(ArchiveSection):
@@ -630,12 +635,17 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         for wavelength, slit_width in transmission_dict[
             'monochromator_slit_width'
         ].items():
-            monochromator.slit_width.append(
-                SlitWidth(
+            if isinstance(slit_width, str):
+                slit_width_obj = SlitWidth(
+                    wavelength=wavelength,
+                    slit_width_servo=True,
+                )
+            else:
+                slit_width_obj = SlitWidth(
                     wavelength=wavelength,
                     value=slit_width,
                 )
-            )
+            monochromator.slit_width.append(slit_width_obj)
         for wavelength in transmission_dict['monochromator_change_wavelength']:
             monochromator.monochromator_change_point.append(
                 ChangePoint(wavelength=wavelength)
