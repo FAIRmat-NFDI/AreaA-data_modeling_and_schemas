@@ -36,30 +36,30 @@ We are developing a more verbose documentation to describe the basesections cont
 
 ## Use Cases Summary
 
-| Category              | Use Case                  |Institute| Code Type       | folder path                                                                 |
-| --------------------- | ------------------------- |---------| --------------- | --------------------------------------------------------------------------- |
-| Crystal Growth        | Float Zone                |   IKZ   |YAML Schema     | [float_zone_IKZ](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/float_zone_IKZ) |
-| Crystal Growth        | Float Zone                |         |                 | float_zone_CPFS-Dresden                                                     |
-| Crystal Growth        | Flux growth               |         |                 | flux_growth_CPFS-Dresden                                                    |
-| Crystal Growth        | Melt Czochralski          |   IKZ   |  Plugin      | [czochralski](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/czochralski)|
-| Crystal Growth        | Melt Czochralski          |         |                 | melt_czochralski_Dropka                                                     |
-| Sinterization         | Oxide Powder              |  IKZ    |                 | oxide_powder_preparation                                                    |
-| Epitaxial Growth      | MOVPE-SrTiO               |  IKZ    |   Plugin         | [movpe_1](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/movpe/movpe1_growth_parser)|
-| Epitaxial Growth      | MOVPE-Ga2O3               |  IKZ    |   Plugin      | [movpe_2](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/movpe/movpe2_growth_parser)|
-| Epitaxial Growth      | MOVPE                     | IMEM-CNR|  Plugin        | [movpe](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IMEM-CNR_plugin)|
-| Crystal Growth        | Directional Solidification|  IKZ    |   Plugin       | [directional_solidification](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/directional_solidification)|
-| Epitaxial Growth      | MBE                       |  PDI   |                 | mbe_epitaxy                                                                 |
-| Epitaxial Growth      | MBE                       |  IKZ    |                 | mbe_SiGe                                                                    |
-| Sol-Gel Synthesis     | Aerogels                  |         |                 | aerogel_synthesis                                                           |
-| Database              | Material_db from IKZ      |  IKZ    |                 | material_db_IKZ                                                             |
-| Surface Coating       | Spin-coating              |         |                 | surface_coating_methods                                                     |
-| Surface Coating       | Dip-coating               |         |                 | surface_coating_methods                                                     |
-| Surface Coating       | Sputtering                |         |                 | surface_coating_methods                                                     |
-| Surface Coating       | Evaporation               |         |                 | surface_coating_methods                                                     |
-| Electric properties   | Hall Measurements         |  IKZ    |    Plugin      | [Lakeshore_plugin](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/Lakeshore_plugin)|
-| Transmission          | Transmission measurements |         |                 | transmission                                                                |
-| AFM                   | Atomic Force Microscopy   |         |                 | AFM                                                                         |
-| Various               |                           |         |                 | CPFS-Dresden                                                                |
+| Category            | Use Case                   | Institute | Code Type   | folder path                                                                                                                                                       |
+| ------------------- | -------------------------- | --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Crystal Growth      | Float Zone                 | IKZ       | YAML Schema | [float_zone_IKZ](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/float_zone_IKZ)                                                   |
+| Crystal Growth      | Float Zone                 |           |             | float_zone_CPFS-Dresden                                                                                                                                           |
+| Crystal Growth      | Flux growth                |           |             | flux_growth_CPFS-Dresden                                                                                                                                          |
+| Crystal Growth      | Melt Czochralski           | IKZ       | Plugin      | [czochralski](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/czochralski)                               |
+| Crystal Growth      | Melt Czochralski           |           |             | melt_czochralski_Dropka                                                                                                                                           |
+| Sinterization       | Oxide Powder               | IKZ       |             | oxide_powder_preparation                                                                                                                                          |
+| Epitaxial Growth    | MOVPE-SrTiO                | IKZ       | Plugin      | [movpe_1](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/movpe/movpe1_growth_parser)                    |
+| Epitaxial Growth    | MOVPE-Ga2O3                | IKZ       | Plugin      | [movpe_2](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/movpe/movpe2_growth_parser)                    |
+| Epitaxial Growth    | MOVPE                      | IMEM-CNR  | Plugin      |  [movpe](https://github.com/IMEM-CNR-Parma/IMEM-NOMAD-plugins)                                                                                                                                                                |
+| Crystal Growth      | Directional Solidification | IKZ       | Plugin      | [directional_solidification](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/IKZ_plugin/src/ikz_plugin/directional_solidification) |
+| Epitaxial Growth    | MBE                        | PDI       |             | mbe_epitaxy                                                                                                                                                       |
+| Epitaxial Growth    | MBE                        | IKZ       |             | mbe_SiGe                                                                                                                                                          |
+| Sol-Gel Synthesis   | Aerogels                   |           |             | aerogel_synthesis                                                                                                                                                 |
+| Database            | Material_db from IKZ       | IKZ       |             | material_db_IKZ                                                                                                                                                   |
+| Surface Coating     | Spin-coating               |           |             | surface_coating_methods                                                                                                                                           |
+| Surface Coating     | Dip-coating                |           |             | surface_coating_methods                                                                                                                                           |
+| Surface Coating     | Sputtering                 |           |             | surface_coating_methods                                                                                                                                           |
+| Surface Coating     | Evaporation                |           |             | surface_coating_methods                                                                                                                                           |
+| Electric properties | Hall Measurements          | IKZ       | Plugin      | [Lakeshore_plugin](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/Lakeshore_plugin)                                               |
+| Transmission        | Transmission measurements  |           |             | transmission                                                                                                                                                      |
+| AFM                 | Atomic Force Microscopy    |           |             | AFM                                                                                                                                                               |
+| Various             |                            |           |             | CPFS-Dresden                                                                                                                                                      |
 
 ---
 
