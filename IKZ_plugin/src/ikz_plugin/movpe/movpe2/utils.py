@@ -329,7 +329,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
                             f"Inject{'' if i == 0 else '.' + str(i)}", 0
                         )[line_number],
                     ),
-                    vapor_flow_rate=MolarFlowRate(
+                    vapor_molar_flow_rate=MolarFlowRate(
                         set_value=pd.Series(
                             [
                                 growth_run_file.get(
@@ -393,7 +393,7 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                             ),
                         ),
                     ),
-                    vapor_flow_rate=MolarFlowRate(
+                    vapor_molar_flow_rate=MolarFlowRate(
                         set_value=pd.Series(
                             [
                                 growth_run_file.get(
