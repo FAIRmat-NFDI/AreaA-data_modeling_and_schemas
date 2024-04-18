@@ -39,7 +39,7 @@ from nomad.metainfo.metainfo import (
 )
 from nomad.datamodel.data import (
     EntryDataCategory,
-    EntryData
+    EntryData,
 )
 
 from nomad_material_processing.vapor_deposition import (
@@ -519,16 +519,16 @@ class UnoldThermalEvaporation(ThermalEvaporation, EntryData):
         links=["http://purl.obolibrary.org/obo/CHMO_0001360"],
         a_plot=[
             dict(
-                x="steps/:/sources/:/material_source/rate/process_time",
-                y="steps/:/sources/:/material_source/rate/rate",
+                x="steps/:/sources/:/impinging_flux/time",
+                y="steps/:/sources/:/impinging_flux/value",
             ),
             dict(
-                x="steps/:/sources/:/evaporation_source/temperature/process_time",
-                y="steps/:/sources/:/evaporation_source/temperature/temperature",
+                x="steps/:/sources/:/vapor_source/temperature/time",
+                y="steps/:/sources/:/vapor_source/temperature/value",
             ),
             dict(
-                x="steps/:/environment/pressure/process_time",
-                y="steps/:/environment/pressure/pressure",
+                x="steps/:/environment/pressure/time",
+                y="steps/:/environment/pressure/value",
                 layout=dict(
                     yaxis=dict(
                         type="log",
@@ -546,7 +546,7 @@ class UnoldThermalEvaporation(ThermalEvaporation, EntryData):
         a_eln=ELNAnnotation(component="FileEditQuantity"),
     )
 
-    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+    def normalize(self, archive: "EntryArchive", logger: "BoundLogger") -> None:
         """
         The normalizer for the `HZBUnoldLabThermalEvaporation` class. Will generate and
         fill the `steps` attribute using the `log_file`.
@@ -635,18 +635,20 @@ class UnoldThermalEvaporation(ThermalEvaporation, EntryData):
                             time=step["Process Time in seconds"],
                         ),
                     )
-                    material = [PureSubstanceComponent(
-                        substance_section=PubChemPureSubstanceSection(
-                            molecular_formula=source_materials[source_nr],
+                    material = [
+                        PureSubstanceComponent(
+                            pure_substance=PubChemPureSubstanceSection(
+                                molecular_formula=source_materials[source_nr],
+                            )
                         )
-                    )]
+                    ]
                     impinging_flux = ImpingingFlux(
                         value=1e-6 * step[f"{source} PV"],
                         set_value=1e-6 * step[f"{source} TSP"],
                         time=step["Process Time in seconds"],
                         set_time=step["Process Time in seconds"],
                         measurement_type="Quartz Crystal Microbalance",
-                    ),
+                    )
                     thermal_evaporation_source = ThermalEvaporationSource(
                         name=source_materials[source_nr],
                         material=material,
