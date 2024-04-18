@@ -19,20 +19,17 @@
 
 import pandas as pd
 
-import pint
-
 from nomad.units import ureg
 
 import importlib
 
-import nomad.datamodel as nodm
-
 from nomad.datamodel.metainfo.eln.labfolder import LabfolderProject
 
-from nomad.metainfo import Package, Section, MEnum, SubSection, Quantity
+from nomad.metainfo import Package, Section, Quantity
 
 from nomad.datamodel.data import (
     EntryData,
+    ElnIntegrationCategory
 )
 
 
@@ -50,9 +47,6 @@ from nomad_material_processing.utils import (
     create_archive,
 )
 
-from nomad.datamodel.metainfo.eln import (
-    Ensemble,
-)
 
 m_package = Package(name='cpfs_labfolder_general')
 
@@ -69,8 +63,9 @@ def clean_attribute(input_key: str) -> str:
     return output_key
 
 class CPFSGenLabfolderProject(LabfolderProject,EntryData):
-
     m_def = Section(
+        label='General Labfolder Project Import',
+        categories=[ElnIntegrationCategory],
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -195,7 +190,7 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                                 except Exception as error:
                                                     logger.warning("JSON entry with key "+key1+" could not be parsed with error: "+str(error))
                                                     continue
-                                            continue
+                                        continue
                                     maps1=maps[key1]
                                     for key2 in maps1:
                                         if "object" in maps1[key2]:
@@ -208,7 +203,7 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                                     except Exception as error:
                                                         logger.warning("JSON entry with key "+key1+key2+" could not be parsed with error: "+str(error))
                                                         continue
-                                                continue
+                                            continue
                                         maps2=maps1[key2]
                                         for key3 in maps2:
                                             if "object" in maps2[key3]:
@@ -238,10 +233,11 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
                                             try:
                                                 line=table[repcount]
                                                 for key2 in maps[key1]:
-                                                    try:
-                                                        setattr(section_object,maps[key1][key2]["key"],line[key2])
-                                                    except Exception as error:
-                                                        logger.warning("Text entry with key "+key1+key2+" could not be parsed with error: "+str(error))
+                                                    if maps[key1][key2]["object"]==section:
+                                                        try:
+                                                            setattr(section_object,maps[key1][key2]["key"],line[key2])
+                                                        except Exception as error:
+                                                            logger.warning("Text entry with key "+key1+key2+" could not be parsed with error: "+str(error))
 
                                             except KeyError:
                                                 found=False

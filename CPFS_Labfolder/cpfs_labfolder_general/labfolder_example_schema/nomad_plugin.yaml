@@ -1,0 +1,3 @@
+description: A NOMAD plugin to demonstrate the LabFolder import.
+name: LabFolder Import Example
+plugin_type: schema
