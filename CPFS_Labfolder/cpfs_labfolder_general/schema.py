@@ -106,15 +106,22 @@ class CPFSGenLabfolderProject(LabfolderProject,EntryData):
         super(CPFSGenLabfolderProject, self).normalize(archive, logger)
 
         import re
-        import json
 
         TAG_RE=re.compile(r'<[^>]+>')
 
         _selection_mapping = dict()
 
         if self.mapping_file:
-            with archive.m_context.raw_file(self.mapping_file, 'r') as mapping:
-                inp=json.load(mapping)
+            if self.mapping_file.endswith(".json"):
+                import json
+                with archive.m_context.raw_file(self.mapping_file, 'r') as mapping:
+                    inp=json.load(mapping)
+            elif self.mapping_file.endswith(".yaml"):
+                import yaml
+                with archive.m_context.raw_file(self.mapping_file, 'r') as mapping:
+                    inp=yaml.safe_load(mapping)
+            else:
+                logger.error("The mapping file has an unsuitable format. Please use a json or yaml file.")
             for cl in inp["Classes"].keys():
                 try:
                     _selection_mapping[cl]=getattr(importlib.import_module(".".join(inp["Classes"][cl]["class"].split(".")[:-1])),inp["Classes"][cl]["class"].split(".")[-1])

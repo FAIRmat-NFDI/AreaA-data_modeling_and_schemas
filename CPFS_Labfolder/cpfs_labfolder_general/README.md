@@ -93,6 +93,8 @@ For all elements, the syntax is the following:
 
 Nestings of \<field_name_in_LabFolder> are possible and neccessary to map nested data element structures. Also, table elements are always nested with '<table_title>' and '<column_header>'.
 
+The mapping file can also be provided in the yaml format of the same structure, see the example for details.
+
 ### The import process
 
 To import in NOMAD, just create a new upload, choose 'Create from schema', and select the 'General Labfolder Project Import'. In the following page, enter all necessary information as given above together with the mapping file. After saving, new archive files (depending on the mapping file) are created within the upload folder.
@@ -241,6 +243,57 @@ The following mapping file links the entries of the LabFolder entry and the NOMA
     }
   }
   ~~~
+
+  The mapping file can also be provided in the yaml format:
+
+  ~~~
+  Classes:
+  LabFolderImportExample:
+    class: labfolder_example_schema.LabfolderImportExample
+    type: main
+    attribute: ''
+    repeats: 'false'
+    name: LabFolderImportExample.archive.json
+  RepeatingSub:
+    class: labfolder_example_schema.RepeatFromTable
+    type: SubSection
+    attribute: from_table
+    repeats: per line
+    name: ''
+  ArchiveReference:
+    class: labfolder_example_schema.SeparateArchive
+    type: Archive
+    attribute: reference
+    repeats: 'false'
+    name: LF.data.To show nesting.Archive name+.archive.json
+Mapping:
+  Data elements:
+    The first quantity:
+      object: LabFolderImportExample
+      key: quantity_1
+    Archive value:
+      object: ArchiveReference
+      key: value
+    To show nesting:
+      The second quantity:
+        object: LabFolderImportExample
+        key: quantity_2
+      Archive name:
+        object: ArchiveReference
+        key: name
+  Text elements:
+    Text entry:
+      object: LabFolderImportExample
+      key: text_field
+  Table elements:
+    Entries in the table:
+      Element name:
+        object: RepeatingSub
+        key: name
+      element value:
+        object: RepeatingSub
+        key: value
+~~~
 
   ### Importing the entry into NOMAD
 
