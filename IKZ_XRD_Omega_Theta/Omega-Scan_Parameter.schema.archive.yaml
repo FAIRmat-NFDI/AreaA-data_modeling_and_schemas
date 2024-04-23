@@ -1,0 +1,125 @@
+definitions:
+  name: Omega Scan
+  sections:
+    OmegaScan:
+      base_sections:
+        - nomad.datamodel.metainfo.basesections.Measurement
+        - nomad.datamodel.data.EntryData
+      quantities:
+        Omega_scan_recipe_name:
+          type: str
+          description: "Omega scan recipe name"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        # XPos:
+        #   type: int
+        #   description: "XPos"
+        #   m_annotations:
+        #     eln:
+        #       component: NumberEditQuantity
+        # YPos:
+        #   type: int
+        #   description: "YPos"
+        #   m_annotations:
+        #     eln:
+        #       component: NumberEditQuantity
+      sub_sections:
+        results:
+          repeats: true
+          section: '#/ParameterList'
+    ParameterList:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.MeasurementResult
+      - nomad.datamodel.data.ArchiveSection
+      quantities:
+        name:
+          type: str
+          description: "Name of the scan generated from the X-Y position"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        XPos:
+          type: int
+          description: "XPos"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        YPos:
+          type: int
+          description: "YPos"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        Tilt:
+          type: np.float64
+          description: "Tilt"
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        Tilt_direction:
+          type: np.float64
+          description: "Tilt direction"
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        Component_0:
+          type: np.float64
+          description: "Component 0"
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        Component_90:
+          type: np.float64
+          description: "Component 90"
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        Reference_offset:
+          type: np.float64
+          description: "Reference offset"
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        Reference_axis:
+          type: string
+          description: "Reference axis"
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+      sub_sections:
+        Scan_Curves:
+          repeats: true
+          section: '#/ScanCurve'
+    ScanCurve:
+      base_sections:
+      - nomad.datamodel.data.ArchiveSection
+      quantities:
+        name:
+          name:
+          type: str
+          description:
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        omega:
+          type: np.float64
+          shape: ['*']
+          description:
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
+        intensity:
+          type: np.float64
+          shape: ['*']
+          description:
+          unit: "°"
+          m_annotations:
+            eln:
+              component: NumberEditQuantity
