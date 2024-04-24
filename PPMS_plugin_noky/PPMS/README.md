@@ -4,6 +4,10 @@ This README describes the PPMSMeasurement plugin for NOMAD. This plugin can read
 
 **Important note:** For now, only ETO and ACT measurement modes are supported.
 
+## Installation
+
+To use the PPMSMeasurement plugin, install it according to [this](https://nomad-lab.eu/prod/v1/docs/howto/oasis/plugins_install.html) guide.
+
 ## Prerequisites
 
 To use the PPMSMeasurement plugin, the following points have to be met:

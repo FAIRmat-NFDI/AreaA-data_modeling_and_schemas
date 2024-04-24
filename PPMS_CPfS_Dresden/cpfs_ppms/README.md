@@ -4,6 +4,10 @@ This plugin is an extension of the PPMSMeasurement plugin. All information from 
 
 **Important note:** Most of the additional features are for now oly available for the ETO measurement mode of the PPMS.
 
+## Installation
+
+To use the CPFSPPMSMeasurement plugin, install it and the underlying PPMSMeasurement plugin according to [this](https://nomad-lab.eu/prod/v1/docs/howto/oasis/plugins_install.html) guide.
+
 ## Additional functionalities
 
 All functions of the PPMSMeasurement plugin are executed first. After that, the following additional steps are performed.

@@ -1,0 +1,46 @@
+Classes:
+  LabFolderImportExample:
+    class: labfolder_example_schema.LabfolderImportExample
+    type: main
+    attribute: ''
+    repeats: 'false'
+    name: LabFolderImportExample.archive.json
+  RepeatingSub:
+    class: labfolder_example_schema.RepeatFromTable
+    type: SubSection
+    attribute: from_table
+    repeats: per line
+    name: ''
+  ArchiveReference:
+    class: labfolder_example_schema.SeparateArchive
+    type: Archive
+    attribute: reference
+    repeats: 'false'
+    name: LF.data.To show nesting.Archive name+.archive.json
+Mapping:
+  Data elements:
+    The first quantity:
+      object: LabFolderImportExample
+      key: quantity_1
+    Archive value:
+      object: ArchiveReference
+      key: value
+    To show nesting:
+      The second quantity:
+        object: LabFolderImportExample
+        key: quantity_2
+      Archive name:
+        object: ArchiveReference
+        key: name
+  Text elements:
+    Text entry:
+      object: LabFolderImportExample
+      key: text_field
+  Table elements:
+    Entries in the table:
+      Element name:
+        object: RepeatingSub
+        key: name
+      element value:
+        object: RepeatingSub
+        key: value
