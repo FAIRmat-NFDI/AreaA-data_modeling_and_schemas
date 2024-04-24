@@ -365,8 +365,16 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
         self.channel_measurement_type=modelist
 
         if self.software.startswith("Electrical Transport Option"):
-            #Try to symmetrize data for each measurement
+            #find biggest fitlength
             maxfield=90000*ureg("gauss")
+            fitlength=0
+            for mdata in self.data:
+                if len(mdata.magnetic_field)/4 > fitlength:
+                    fitlength=len(mdata.magnetic_field)/4
+            fitlength-=fitlength % -100
+            fitlength+=1
+            fitfield=np.linspace(-maxfield,maxfield,int(fitlength))
+            #Try to symmetrize data for each measurement
             data_symmetrized = []
             for mdata in self.data:
                 #For now only for field sweeps
@@ -375,10 +383,6 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                 sym_data=CPFSETOSymmetrizedData()
                 sym_data.name=mdata.name
                 sym_data.title=mdata.name
-                fitlength=len(mdata.magnetic_field)/4
-                fitlength-=fitlength % -100
-                fitlength+=1
-                fitfield=np.linspace(-maxfield,maxfield,int(fitlength))
                 sym_data.field=fitfield
                 for channel in [0,1]:
                     field=mdata.magnetic_field[np.invert(pd.isnull(mdata.channels[channel].resistance))]
@@ -397,11 +401,20 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                                 downsweep.append(i) #downsweep finished
                             if len(upsweep)==0:
                                 upsweep.append(i) # upsweep started
-                    if len(upsweep)!=2 or len(downsweep)!=2:
+                    if len(upsweep)!=2 and len(downsweep)!=2:
                         logger.warning("Measurement "+mdata.name+" did not contain up- and downsweep in field.")
                         continue
-                    downfit=np.interp(fitfield,np.flip(field[downsweep[0]:downsweep[1]]),np.flip(res[downsweep[0]:downsweep[1]]))
-                    upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
+                    elif len(downsweep)!=2:
+                        logger.warning("Measurement "+mdata.name+" did not contain downsweep in field. Using upsweep for both ways.")
+                        upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
+                        downfit=upfit
+                    elif len(upsweep)!=2:
+                        logger.warning("Measurement "+mdata.name+" did not contain upsweep in field. Using downsweep for both ways.")
+                        downfit=np.interp(fitfield,np.flip(field[downsweep[0]:downsweep[1]]),np.flip(res[downsweep[0]:downsweep[1]]))
+                        upfit=downfit
+                    else:
+                        downfit=np.interp(fitfield,np.flip(field[downsweep[0]:downsweep[1]]),np.flip(res[downsweep[0]:downsweep[1]]))
+                        upfit=np.interp(fitfield,field[upsweep[0]:upsweep[1]],res[upsweep[0]:upsweep[1]])
                     if self.channel_measurement_type[channel]=="Hall":
                         intermediate=(upfit+np.flip(downfit))/2.
                         sym_data.rho_xy_down=(downfit-np.flip(intermediate))*self.samples[channel].depth
@@ -451,6 +464,9 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
             self.symmetrized_data=data_symmetrized
 
             #Analyze data: split in ordinary and anomalous, calculate conductivities
+            filename="analyzed_data_carrier_mobility_and_concentration_"+"_"+self.data_file.strip(".dat")
+            carrierout=archive.m_context.raw_file(filename, 'w')
+            carrierout.write("#Temperature      carrier concentration    carrier mobility\n")
             cutofffield=50000*ureg("gauss")
             data_analyzed = []
             for data in self.symmetrized_data:
@@ -477,6 +493,35 @@ class CPFSPPMSMeasurement(PPMSMeasurement,EntryData):
                 ana_data.carrier_mobility=1./(ana_data.carrier_concentration*(1.60217663*10**-19*ureg("coulomb"))*ana_data.rho_xx_up[int(len(ana_data.rho_xx_up)/2)])
 
                 data_analyzed.append(ana_data)
+
+                #create analyzed output files
+                carrierout.write("{}        {}      {}\n".format(ana_data.name.split()[3],ana_data.carrier_concentration.magnitude/1000000.,ana_data.carrier_mobility.magnitude*10000.))
+                filename="analyzed_data_"+"_".join(ana_data.name.split())+"_"+self.data_file.strip(".dat")
+                with archive.m_context.raw_file(filename, 'w') as outfile:
+                    outfile.write("#Field (Oe)     rho_ohe_up      rho_ahe_up      rho_ahe_down    sigma_ahe_up       sigma_ahe_down      \n")
+                    for i in range(int(fitlength)):
+                        outfile.write("{0:16.8e}".format(fitfield[i].magnitude))
+                        if ana_data.rho_ohe_up is not None:
+                            outfile.write("{0:16.8e}".format(ana_data.rho_ohe_up[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if ana_data.rho_ahe_up is not None:
+                            outfile.write("{0:16.8e}".format(ana_data.rho_ahe_up[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if ana_data.rho_ahe_down is not None:
+                            outfile.write("{0:16.8e}".format(ana_data.rho_ahe_down[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if ana_data.sigma_ahe_up is not None:
+                            outfile.write("{0:16.8e}".format(ana_data.sigma_ahe_up[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        if ana_data.rho_ahe_down is not None:
+                            outfile.write("{0:16.8e}".format(ana_data.rho_ahe_down[i].magnitude))
+                        else:
+                            outfile.write("NaN             ")
+                        outfile.write("\n")
 
             self.analyzed_data=data_analyzed
 
