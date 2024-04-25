@@ -69,7 +69,7 @@ def read_start_datetime(metadata: list, logger: 'BoundLogger') -> str:
     return None
 
 
-def read_is_D2_lamp_used(metadata: list, logger: 'BoundLogger') -> bool:
+def read_is_d2_lamp_used(metadata: list, logger: 'BoundLogger') -> bool:
     """
     Reads whether the D2 lamp was active during the measurement.
 
@@ -381,7 +381,7 @@ METADATA_MAP: Dict[str, Any] = {
     'instrument_name': 11,
     'instrument_serial_number': 12,
     'instrument_firmware_version': 13,
-    'is_D2_lamp_used': read_is_D2_lamp_used,
+    'is_d2_lamp_used': read_is_d2_lamp_used,
     'is_tungsten_lamp_used': read_is_tungsten_lamp_used,
     'sample_beam_position': 44,
     'common_beam_mask_percentage': 45,
