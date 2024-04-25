@@ -29,6 +29,7 @@ from nomad.datamodel.metainfo.basesections import (
     InstrumentReference,
     Measurement,
     MeasurementResult,
+    ReadableIdentifiers,
 )
 import numpy as np
 import plotly.express as px
@@ -471,6 +472,17 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
     """
     Entry class for UVVisTransmission.
     """
+
+    m_def = Section(
+        label='UV-Vis-NIR Transmission',
+        a_template={
+            'measurement_identifiers': {},
+        },
+    )
+
+    measurement_identifiers = SubSection(
+        section_def=ReadableIdentifiers,
+    )
 
     data_file = Quantity(
         type=str,

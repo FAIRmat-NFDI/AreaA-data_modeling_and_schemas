@@ -64,7 +64,7 @@ class UVVisTransmissionParser(MatchingParser):
         self, mainfile: str, archive: 'EntryArchive', logger=None, child_archives=None
     ) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = ELNUVVisTransmission()
+        entry = ELNUVVisTransmission.m_from_dict(ELNUVVisTransmission.m_def.a_template)
         entry.data_file = data_file
         file_name = f'{"".join(data_file.split(".")[:-1])}.archive.json'
         archive.data = RawFileUVVisTransmissionData(
