@@ -65,7 +65,7 @@ def merge_sections(
 
 
 def get_reference(upload_id, entry_id):
-    return f'../uploads/{upload_id}/archive/{entry_id}#data'
+    return f'../uploads/{upload_id}/archive/{entry_id}#/data'
 
 
 def get_entry_id_from_file_name(file_name, archive):
