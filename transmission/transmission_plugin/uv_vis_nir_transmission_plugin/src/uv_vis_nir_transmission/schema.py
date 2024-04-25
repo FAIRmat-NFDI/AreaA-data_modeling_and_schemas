@@ -510,8 +510,9 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             name=data_dict['instrument_name'],
             serial_number=data_dict['instrument_serial_number'],
             software_version=data_dict['instrument_firmware_version'],
-            datetime=data_dict['start_datetime'],
         )
+        if data_dict['start_datetime'] is not None:
+            instrument.datetime = data_dict['start_datetime']
         instrument.normalize(archive, logger)
 
         logger.info('Created instrument entry.')
@@ -592,7 +593,8 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             logger (BoundLogger): A structlog logger.
         """
         self.user = transmission_dict['analyst_name']
-        self.datetime = transmission_dict['start_datetime']
+        if transmission_dict['start_datetime'] is not None:
+            self.datetime = transmission_dict['start_datetime']
 
         result = UVVisNirTransmissionResult(
             wavelength=transmission_dict['measured_wavelength'],
