@@ -187,19 +187,23 @@ def read_long_line(line: str, logger: 'BoundLogger') -> list:
     output_list = []
     for key_value_pair in line.split():
         key_value_pair_list = key_value_pair.split('/')
-        if len(key_value_pair_list) == 1:
-            output_list.append(
-                {'wavelength': None, 'value': try_float(key_value_pair_list[0])}
-            )
-        elif len(key_value_pair_list) == 2:
-            output_list.append(
-                {
-                    'wavelength': float(key_value_pair_list[0]) * ureg.nanometer,
-                    'value': try_float(key_value_pair_list[1]),
-                }
-            )
-        else:
-            logger.warning(f'Unexpected value while reading the long line: {line}')
+        try:
+            if len(key_value_pair_list) == 1:
+                output_list.append(
+                    {'wavelength': None, 'value': try_float(key_value_pair_list[0])}
+                )
+            elif len(key_value_pair_list) == 2:
+                output_list.append(
+                    {
+                        'wavelength': float(key_value_pair_list[0]) * ureg.nanometer,
+                        'value': try_float(key_value_pair_list[1]),
+                    }
+                )
+            else:
+                logger.warning(f'Unexpected value while reading the long line: {line}')
+        except ValueError as e:
+            if logger is not None:
+                logger.warning(f'Error in reading the long line.\n{e}')
 
     return output_list
 
@@ -285,7 +289,7 @@ def read_detector_change_wavelength(metadata: list, logger: 'BoundLogger') -> li
     return None
 
 
-def read_polarizer_angle(metadata: list, logger: 'BoundLogger') -> list:
+def read_polarizer_angle(metadata: list, logger: 'BoundLogger') -> float:
     """
     Reads the polarizer angle from the metadata.
 

@@ -184,7 +184,7 @@ class SlitWidth(ArchiveSection):
     )
 
 
-class ChangePoint(ArchiveSection):
+class WavelengthChangePoint(ArchiveSection):
     m_def = Section()
     wavelength = Quantity(
         type=np.float64,
@@ -201,7 +201,7 @@ class Monochromator(ArchiveSection):
 
     m_def = Section()
     monochromator_change_point = SubSection(
-        section_def=ChangePoint,
+        section_def=WavelengthChangePoint,
         repeats=True,
         description='monochromator change point in nm',
     )
@@ -228,7 +228,7 @@ class Lamp(ArchiveSection):
         a_eln={'component': 'BoolEditQuantity'},
     )
     lamp_change_point = SubSection(
-        section_def=ChangePoint,
+        section_def=WavelengthChangePoint,
         repeats=True,
         description='lamp change point in nm',
     )
@@ -285,7 +285,7 @@ class Detector(ArchiveSection):
         a_eln={'component': 'RadioEnumEditQuantity'},
     )
     detector_change_point = SubSection(
-        section_def=ChangePoint,
+        section_def=WavelengthChangePoint,
         repeats=True,
         description='detector change point in nm',
     )
@@ -474,7 +474,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
 
     data_file = Quantity(
         type=str,
-        description='*.asc Data file containing the UV-Vis-NIR transmission spectrum',
+        description='Data file containing the UV-Vis-NIR transmission spectrum',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.FileEditQuantity,
         ),
@@ -611,7 +611,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             tungsten_lamp=transmission_dict['is_tungsten_lamp_used'],
         )
         for wavelength in transmission_dict['lamp_change_wavelength']:
-            lamp.lamp_change_point.append(ChangePoint(wavelength=wavelength))
+            lamp.lamp_change_point.append(WavelengthChangePoint(wavelength=wavelength))
         lamp.normalize(archive, logger)
 
         detector = Detector(
@@ -632,7 +632,9 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
                 )
             )
         for wavelength in transmission_dict['detector_change_wavelength']:
-            detector.detector_change_point.append(ChangePoint(wavelength=wavelength))
+            detector.detector_change_point.append(
+                WavelengthChangePoint(wavelength=wavelength)
+            )
         detector.normalize(archive, logger)
 
         monochromator = Monochromator()
@@ -661,7 +663,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             monochromator.slit_width.append(slit_width_obj)
         for wavelength in transmission_dict['monochromator_change_wavelength']:
             monochromator.monochromator_change_point.append(
-                ChangePoint(wavelength=wavelength)
+                WavelengthChangePoint(wavelength=wavelength)
             )
         monochromator.normalize(archive, logger)
 
