@@ -1,0 +1,7 @@
+description: This is a parser plugin for UV-Vis Transmission data.
+name: parsers/uv_vis_nir_transmission
+plugin_type: parser
+mainfile_mime_re: text/.*|application/zip
+mainfile_name_re: ^.*\.asc$
+parser_class_name: uv_vis_nir_transmission.parser.UVVisTransmissionParser
+code_name: UV-Vis Transmission Parser
