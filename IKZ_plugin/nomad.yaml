@@ -4,52 +4,37 @@ normalize:
       - MetainfoNormalizer
 plugins:
   include:
-    - 'schemas/nomad_measurements'
-    - 'parsers/xrd'
-    - 'schemas/analysis'
     - 'schemas/nomad_material_processing'
-    - 'parsers/hall_lakeshore_measurement'
-    - 'parsers/hall_lakeshore_instrument'
-    - 'parsers/laytec_epitt'
-    - 'schemas/basesections_IKZ'
+    - 'schemas/ikz'
+    - 'schemas/ikz/pld'
     - 'schemas/characterization_IKZ'
-    - 'schemas/substrate_IKZ'
-    - 'parsers/czochralski'
-    - 'parsers/movpe_2'
-    - 'parsers/movpe_1_deposition_control'
-    - 'parsers/movpe_1'
-    - 'parsers/movpe_substrates'
+    - 'parsers/czochralski_IKZ'
+    - 'parsers/movpe_2_growth_excel'
+    - 'parsers/movpe_1_growth_excel'
+    - 'parsers/movpe_1_constant_parameters'
+    - 'parsers/substrates_IKZ'
     - 'parsers/directional_solidification'
+  exclude:
+    - 'parsers/nexus'
+
   options:
-    schemas/nomad_measurements:
-      python_package: nomad_measurements
-    parsers/xrd:
-      python_package: xrd
-    schemas/analysis:
-      python_package: analysis
     schemas/nomad_material_processing:
       python_package: nomad_material_processing
-    parsers/hall_lakeshore_measurement:
-      python_package: hall.measurement_parser
-    parsers/hall_lakeshore_instrument:
-      python_package: hall.instrument_parser
-    parsers/laytec_epitt:
-      python_package: laytec_epitt
-    schemas/basesections_IKZ:
-      python_package: basesections
+    schemas/ikz:
+      python_package: ikz_plugin
+    schemas/ikz/pld:
+      python_package: ikz_plugin.pld
     schemas/characterization_IKZ:
-      python_package: characterization
-    schemas/substrate_IKZ:
-      python_package: substrate
-    parsers/czochralski:
-      python_package: czochralski
-    parsers/movpe_2:
-      python_package: movpe.movpe2_growth_parser
-    parsers/movpe_1_deposition_control:
-      python_package: movpe.movpe1_growth_parser.deposition_control
-    parsers/movpe_1:
-      python_package: movpe.movpe1_growth_parser.constant_parameters
-    parsers/movpe_substrates:
-     python_package: movpe.substrate_parser
+      python_package: ikz_plugin.characterization
+    parsers/czochralski_IKZ:
+      python_package: ikz_plugin.czochralski
+    parsers/movpe_2_growth_excel:
+      python_package: ikz_plugin.movpe.movpe2.growth_excel
+    parsers/movpe_1_growth_excel:
+      python_package: ikz_plugin.movpe.movpe1.growth_excel
+    parsers/movpe_1_constant_parameters:
+      python_package: ikz_plugin.movpe.movpe1.constant_parameters
+    parsers/substrates_IKZ:
+     python_package: ikz_plugin.movpe.substrate
     parsers/directional_solidification:
-      python_package: directional_solidification
+      python_package: ikz_plugin.directional_solidification
