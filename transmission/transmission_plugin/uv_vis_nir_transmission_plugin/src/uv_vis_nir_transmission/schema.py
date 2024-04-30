@@ -120,7 +120,10 @@ class TransmissionSample(CompositeSystem, EntryData):
     length = Quantity(
         type=np.float64,
         description='length (or thickness) of the sample in mm',
-        a_eln={'component': 'NumberEditQuantity'},  # "defaultDisplayUnit": "mm"},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'mm',
+        },
         unit='mm',
     )
     orientation = Quantity(
@@ -155,7 +158,10 @@ class Accessory(ArchiveSection):
     aperture = Quantity(
         type=np.float64,
         description='aperture diameter',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'mm'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'mm',
+        },
         unit='mm',
     )
 
@@ -169,13 +175,19 @@ class SlitWidth(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description='wavelength',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nm'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'nm',
+        },
         unit='nm',
     )
     value = Quantity(
         type=np.float64,
         description='slit width',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nm'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'nm',
+        },
         unit='nm',
     )
     slit_width_servo = Quantity(
@@ -190,7 +202,10 @@ class WavelengthChangePoint(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description='wavelength',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nm'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'nm',
+        },
         unit='nm',
     )
 
@@ -244,13 +259,17 @@ class NIRGain(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description='wavelength',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nm'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'nm',
+        },
         unit='nm',
     )
     value = Quantity(
         type=np.float64,
         description='value',
         a_eln={'component': 'NumberEditQuantity'},
+        unit='dimensionless',
     )
 
 
@@ -263,13 +282,19 @@ class IntegrationTime(ArchiveSection):
     wavelength = Quantity(
         type=np.float64,
         description='wavelength',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nm'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'nm',
+        },
         unit='nm',
     )
     value = Quantity(
         type=np.float64,
         description='value',
-        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 's'},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 's',
+        },
         unit='s',
     )
 
@@ -309,12 +334,22 @@ class Attenuator(ArchiveSection):
     sample = Quantity(
         type=int,
         description='sample beam attenuation in %',
-        a_eln={'component': 'NumberEditQuantity', 'minValue': 0, 'maxValue': 100},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'minValue': 0,
+            'maxValue': 100,
+        },
+        unit='dimensionless',
     )
     reference = Quantity(
         type=int,
         description='reference beam attenuation in %',
-        a_eln={'component': 'NumberEditQuantity', 'minValue': 0, 'maxValue': 100},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'minValue': 0,
+            'maxValue': 100,
+        },
+        unit='dimensionless',
     )
 
 
@@ -337,7 +372,12 @@ class TransmissionSettings(ArchiveSection):
     common_beam_mask = Quantity(
         type=int,
         description='common beam mask',
-        a_eln={'component': 'NumberEditQuantity', 'minValue': 0, 'maxValue': 100},
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'minValue': 0,
+            'maxValue': 100,
+        },
+        unit='dimensionless',
     )
     common_beam_depolarizer = Quantity(
         type=bool,
@@ -373,15 +413,9 @@ class UVVisNirTransmissionResult(MeasurementResult):
     """
 
     m_def = Section()
-    type = Quantity(
-        type=str,  # MEnum(["Transmission", "Absorbance"]),
-        description='type of measurement',
-        # a_eln={"component": "RadioEnumEditQuantity"},
-    )
     transmittance = Quantity(
         type=np.float64,
         description='Transmittance percentage %T',
-        # a_eln={"component": "NumberEditQuantity"},
         shape=['*'],
         unit='dimensionless',
         a_plot={'x': 'wavelength', 'y': 'transmittance'},
@@ -396,10 +430,8 @@ class UVVisNirTransmissionResult(MeasurementResult):
     wavelength = Quantity(
         type=np.float64,
         description='wavelength',
-        # a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nm"},
         shape=['*'],
         unit='nm',
-        a_plot={'x': 'wavelength', 'y': 'transmittance'},
     )
 
     def generate_plots(self) -> list[PlotlyFigure]:
@@ -610,7 +642,6 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
 
         result = UVVisNirTransmissionResult(
             wavelength=transmission_dict['measured_wavelength'],
-            type=transmission_dict['ordinate_type'],
         )
         if transmission_dict['ordinate_type'] == 'A':
             result.absorbance = transmission_dict['measured_ordinate']
