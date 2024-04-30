@@ -441,29 +441,40 @@ class UVVisNirTransmissionResult(MeasurementResult):
         Returns:
             list[PlotlyFigure]: The plotly figures.
         """
-        line_linear = px.line(
-            x=self.wavelength.magnitude,
-            y=self.transmittance.magnitude,
-        )
-        line_linear.update_layout(
-            title='Transmission vs wavelength',
-            xaxis_title='Wavelength (nm)',
-            yaxis_title='Transmission',
-            xaxis=dict(
-                fixedrange=False,
-            ),
-            yaxis=dict(
-                fixedrange=False,
-            ),
-            template='plotly_white',
-        )
-        figure = [
-            PlotlyFigure(
-                label='Linear Plot',
-                figure=line_linear.to_plotly_json(),
-            ),
-        ]
-        return figure
+        figures = []
+        if self.wavelength is None:
+            return figures
+
+        for key in ['transmittance', 'absorbance']:
+            if getattr(self, key) is None:
+                continue
+
+            y = getattr(self, key).magnitude
+            y_label = key.capitalize()
+
+            line_linear = px.line(
+                x=self.wavelength.to('nm').magnitude,
+                y=y,
+            )
+            line_linear.update_layout(
+                title=f'{y_label} vs wavelength',
+                xaxis_title='Wavelength (nm)',
+                yaxis_title=y_label,
+                xaxis=dict(
+                    fixedrange=False,
+                ),
+                yaxis=dict(
+                    fixedrange=False,
+                ),
+                template='plotly_white',
+            )
+            figures.append(
+                PlotlyFigure(
+                    label=f'{y_label} Linear Plot',
+                    figure=line_linear.to_plotly_json(),
+                ),
+            )
+        return figures
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
