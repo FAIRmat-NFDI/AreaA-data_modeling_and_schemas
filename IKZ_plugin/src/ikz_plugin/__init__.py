@@ -6,6 +6,7 @@ import math
 from nomad.datamodel.data import EntryData, EntryDataCategory, ArchiveSection
 
 from nomad.metainfo import (
+    SchemaPackage,
     Package,
     Quantity,
     SubSection,
@@ -28,7 +29,7 @@ from nomad.datamodel.metainfo.basesections import (
     PureSubstanceSection,
     PureSubstanceComponent,
 )
-
+from nomad.config import config
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
@@ -42,7 +43,12 @@ from nomad.utils import hash
 
 from ikz_plugin.utils import create_archive
 
-m_package = Package(name='basesections_IKZ')
+
+configuration = config.get_plugin_entry_point('ikz_plugin:ikz_plugin')
+
+m_package = SchemaPackage()
+
+ikz_plugin = m_package
 
 
 class IKZCategory(EntryDataCategory):
