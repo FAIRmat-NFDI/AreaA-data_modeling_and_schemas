@@ -66,7 +66,7 @@ from nomad_material_processing.vapor_deposition.cvd import (
     GasLine,
 )
 
-from ikz_plugin import (
+from ikz_plugin.general import (
     IKZMOVPE1Category,
     Solution,
     LiquidComponent,

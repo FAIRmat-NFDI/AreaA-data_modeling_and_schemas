@@ -6,12 +6,12 @@ from nomad.datamodel.metainfo.basesections import (
 from nomad.metainfo import Package, Quantity, SubSection, MEnum, Datetime, Section
 from nomad.datamodel.data import EntryData
 
-from ikz_plugin import (
+from ikz_plugin.general import (
     IKZCategory,
     SubstratePreparationStep,
 )
 
-m_package = Package(name="characterization_IKZ")
+m_package = Package(name='characterization_IKZ')
 
 
 class AFMresults(MeasurementResult):
@@ -21,31 +21,31 @@ class AFMresults(MeasurementResult):
 
     roughness = Quantity(
         type=np.float64,
-        description="RMS roughness value obtained by AFM",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "picometer"},
-        unit="picometer",
+        description='RMS roughness value obtained by AFM',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'picometer'},
+        unit='picometer',
     )
     surface_features = Quantity(
-        type=MEnum(["Step Flow", "Step Bunching", "2D Island"]),
-        a_eln={"component": "EnumEditQuantity"},
+        type=MEnum(['Step Flow', 'Step Bunching', '2D Island']),
+        a_eln={'component': 'EnumEditQuantity'},
     )
     scale = Quantity(
         type=np.float64,
-        description="scale of the image, to be multiplied by 5 to know the image size",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "nanometer"},
-        unit="nanometer",
+        description='scale of the image, to be multiplied by 5 to know the image size',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'nanometer'},
+        unit='nanometer',
     )
     image = Quantity(
         type=str,
-        description="image showing the thickness measurement points",
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        description='image showing the thickness measurement points',
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     crop_image = Quantity(
         type=str,
-        description="crop image ready to be used for AI-based analysis",
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        description='crop image ready to be used for AI-based analysis',
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
 
 
@@ -55,22 +55,22 @@ class AFMmeasurement(Measurement, SubstratePreparationStep, EntryData):
     """
 
     m_def = Section(
-        a_eln={"hide": ["steps"]},
+        a_eln={'hide': ['steps']},
         categories=[IKZCategory],
-        label="AFM",
+        label='AFM',
     )
 
     method = Quantity(
         type=str,
-        default="AFM (IKZ MOVPE)",
+        default='AFM (IKZ MOVPE)',
     )
     description = Quantity(
         type=str,
-        a_eln={"component": "StringEditQuantity"},
+        a_eln={'component': 'StringEditQuantity'},
     )
     datetime = Quantity(
         type=Datetime,
-        a_eln={"component": "DateTimeEditQuantity"},
+        a_eln={'component': 'DateTimeEditQuantity'},
     )
     results = SubSection(
         section_def=AFMresults,
@@ -85,21 +85,21 @@ class LiMiresults(MeasurementResult):
 
     image = Quantity(
         type=str,
-        description="image showing the thickness measurement points",
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        description='image showing the thickness measurement points',
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     crop_image = Quantity(
         type=str,
-        description="crop image ready to be used for AI-based analysis",
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        description='crop image ready to be used for AI-based analysis',
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     scale = Quantity(
         type=np.float64,
-        description="scale of the image",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "micrometer"},
-        unit="micrometer",
+        description='scale of the image',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'micrometer'},
+        unit='micrometer',
     )
 
 
@@ -109,17 +109,17 @@ class LightMicroscope(Measurement, SubstratePreparationStep, EntryData):
     """
 
     m_def = Section(
-        a_eln={"hide": ["steps"]},
+        a_eln={'hide': ['steps']},
         categories=[IKZCategory],
-        label="Light Microscope",
+        label='Light Microscope',
     )
     method = Quantity(
         type=str,
-        default="Light Microscope (MOVPE IKZ)",
+        default='Light Microscope (MOVPE IKZ)',
     )
     datetime = Quantity(
         type=Datetime,
-        a_eln={"component": "DateTimeEditQuantity"},
+        a_eln={'component': 'DateTimeEditQuantity'},
     )
     results = SubSection(
         section_def=LiMiresults,

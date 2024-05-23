@@ -45,7 +45,7 @@ from nomad.datamodel.metainfo.basesections import (
     PureSubstanceSection,
 )
 
-from ikz_plugin import IKZMOVPE2Category
+from ikz_plugin.general import IKZMOVPE2Category
 from nomad.search import search
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref

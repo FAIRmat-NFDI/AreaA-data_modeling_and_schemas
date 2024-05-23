@@ -38,7 +38,7 @@ from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
-from ikz_plugin import IKZMOVPE1Category
+from ikz_plugin.general import IKZMOVPE1Category
 from ikz_plugin.movpe import (
     ExperimentMovpeIKZ,
     GrowthMovpe1IKZConstantParameters,
@@ -47,7 +47,7 @@ from ikz_plugin.movpe import (
 
 
 class RawFileConstantParameters(EntryData):
-    m_def = Section(a_eln=None, label="Raw File Constant Parameters")
+    m_def = Section(a_eln=None, label='Raw File Constant Parameters')
     constant_parameters_file = Quantity(
         type=GrowthMovpe1IKZConstantParameters,
         # a_eln=ELNAnnotation(
@@ -60,29 +60,29 @@ class RawFileConstantParameters(EntryData):
 class ParserMovpe1IKZ(MatchingParser):
     def __init__(self):
         super().__init__(
-            name="MOVPE 1 IKZ",
-            code_name="MOVPE 1 IKZ",
-            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
-            supported_compressions=["gz", "bz2", "xz"],
+            name='MOVPE 1 IKZ',
+            code_name='MOVPE 1 IKZ',
+            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
+            supported_compressions=['gz', 'bz2', 'xz'],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         xlsx = pd.ExcelFile(mainfile)
-        data_file = mainfile.split("/")[-1]
-        data_file_with_path = mainfile.split("raw/")[-1]
+        data_file = mainfile.split('/')[-1]
+        data_file_with_path = mainfile.split('raw/')[-1]
         sheet = pd.read_excel(
-            xlsx, "Overview", comment="#", converters={"Overview": str}
+            xlsx, 'Overview', comment='#', converters={'Overview': str}
         )
         overview = sheet.rename(columns=lambda x: x.strip())
-        if len(overview["Constant Parameters ID"]) > 1:
+        if len(overview['Constant Parameters ID']) > 1:
             logger.warning(
-                f"Only one line expected in the Overview sheet of {data_file_with_path}"
+                f'Only one line expected in the Overview sheet of {data_file_with_path}'
             )
-        filetype = "yaml"
+        filetype = 'yaml'
         filename = f"{overview['Constant Parameters ID'][0]}_constant_parameters_growth.archive.{filetype}"
         growth_archive = EntryArchive(
             data=GrowthMovpe1IKZConstantParameters(
-                lab_id=overview["Constant Parameters ID"][0],
+                lab_id=overview['Constant Parameters ID'][0],
                 data_file=data_file_with_path,
             ),
             m_context=archive.m_context,
@@ -96,8 +96,8 @@ class ParserMovpe1IKZ(MatchingParser):
             logger,
         )
         archive.data = RawFileConstantParameters(
-            constant_parameters_file=f"../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data"
+            constant_parameters_file=f'../uploads/{archive.m_context.upload_id}/archive/{hash(archive.metadata.upload_id, filename)}#data'
         )
         archive.metadata.entry_name = (
-            overview["Constant Parameters ID"][0] + "constant parameters file"
+            overview['Constant Parameters ID'][0] + 'constant parameters file'
         )

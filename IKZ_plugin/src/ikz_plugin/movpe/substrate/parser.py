@@ -41,7 +41,7 @@ from nomad_material_processing import (
     Miscut,
     Dopant,
 )
-from ikz_plugin import IKZMOVPECategory
+from ikz_plugin.general import IKZMOVPECategory
 from ikz_plugin.utils import (
     create_archive,
     typed_df_value,

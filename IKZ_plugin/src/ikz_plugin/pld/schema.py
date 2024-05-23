@@ -29,6 +29,7 @@ from typing import (
     Any,
     TYPE_CHECKING,
 )
+from nomad.config import config
 from nomad_material_processing import (
     CrystallineSubstrate,
     ThinFilm,
@@ -64,6 +65,7 @@ from nomad_material_processing.utils import (
     create_archive,
 )
 from nomad.metainfo import (
+    SchemaPackage,
     Package,
     Quantity,
     Section,
@@ -112,7 +114,9 @@ if TYPE_CHECKING:
         BoundLogger,
     )
 
-m_package = Package(name='IKZ PLD')
+configuration = config.get_plugin_entry_point('ikz_plugin.pld:pld_schema')
+
+m_package = SchemaPackage()
 
 
 def read_dlog(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:

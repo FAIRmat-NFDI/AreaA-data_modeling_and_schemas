@@ -58,7 +58,7 @@ from nomad.utils import hash
 
 from ikz_plugin.utils import create_archive
 
-configuration = config.get_plugin_entry_point('ikz_plugin.general:general')
+configuration = config.get_plugin_entry_point('ikz_plugin.general:general_schema')
 
 m_package = SchemaPackage()
 

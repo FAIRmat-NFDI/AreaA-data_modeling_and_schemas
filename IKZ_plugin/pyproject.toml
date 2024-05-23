@@ -35,6 +35,7 @@ dependencies = [
     'nomad-analysis',
     'statsmodels',
     'lakeshore_plugin@git+https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas.git@main#subdirectory=Lakeshore_plugin',
+    'laytec_epitt@git+https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas.git@main#subdirectory=LayTec_EpiTT_plugin',
 ]
 
 [project.optional-dependencies]
@@ -120,6 +121,8 @@ where = ["src"]
 
 [project.entry-points.'nomad.plugin']
 
-general = "ikz_plugin.general:general"
+general_schema = "ikz_plugin.general:general_schema"
+movpe_schema = "ikz_plugin.movpe:movpe_schema"
+pld_schema = "ikz_plugin.pld:pld_schema"
 
 
