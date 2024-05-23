@@ -75,12 +75,12 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
     m_def = Section()
     serial_number = Quantity(
         type=str,
-        description='instrument serial number',
+        description='Instrument serial number.',
         a_eln={'component': 'StringEditQuantity'},
     )
     software_version = Quantity(
         type=str,
-        description='software/firmware version',
+        description='Software/firmware version.',
         a_eln={'component': 'StringEditQuantity'},
     )
 
@@ -119,7 +119,7 @@ class TransmissionSample(CompositeSystem, EntryData):
     )
     length = Quantity(
         type=np.float64,
-        description='length (or thickness) of the sample in mm',
+        description='Length (or thickness) of the sample in mm.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'mm',
@@ -128,7 +128,7 @@ class TransmissionSample(CompositeSystem, EntryData):
     )
     orientation = Quantity(
         type=str,
-        description='crystallographic orientation of sample',
+        description='Crystallographic orientation of the sample.',
         a_eln={'component': 'StringEditQuantity'},
     )
 
@@ -246,10 +246,12 @@ class SlitWidth(SettingOverWavelengthRange):
     Slit width setting over a range of wavelength.
     """
 
-    m_def = Section()
+    m_def = Section(
+        description='Slit width value over a wavelength range.',
+    )
     value = Quantity(
         type=np.float64,
-        description='Value of slit width over a range of wavelength.',
+        description='Slit width value.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
@@ -319,7 +321,7 @@ class NIRGain(SettingOverWavelengthRange):
     """
 
     m_def = Section(
-        description='NIR gain over a range of wavelength.',
+        description='NIR gain over a wavelength range.',
     )
     value = Quantity(
         type=np.float64,
@@ -335,7 +337,7 @@ class IntegrationTime(SettingOverWavelengthRange):
     """
 
     m_def = Section(
-        description='Integration time for a given wavelength range.',
+        description='Integration time over a wavelength range.',
     )
     value = Quantity(
         type=np.float64,
