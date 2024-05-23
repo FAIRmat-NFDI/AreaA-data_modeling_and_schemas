@@ -222,13 +222,23 @@ class SettingOverWavelengthRange(ArchiveSection):
         """
         super().normalize(archive, logger)
 
-        right_limit = '-'
-        left_limit = '-'
+        upper_limit = '-'
+        lower_limit = '-'
         if self.wavelength_upper_limit is not None:
-            right_limit = self.wavelength_upper_limit.magnitude
+            upper_limit = self.wavelength_upper_limit.magnitude
         if self.wavelength_lower_limit is not None:
-            left_limit = self.wavelength_lower_limit.magnitude
-        self.name = f'[{left_limit}, {right_limit}]'
+            lower_limit = self.wavelength_lower_limit.magnitude
+        if isinstance(upper_limit, float) and isinstance(lower_limit, float):
+            if upper_limit < lower_limit:
+                logger.warning(
+                    f'Upper limit of wavelength "{upper_limit}" should be greater than'
+                    f'lower limit of wavelength "{lower_limit}".'
+                )
+            upper_limit = '-'
+            lower_limit = '-'
+            self.wavelength_upper_limit = None
+            self.wavelength_lower_limit = None
+        self.name = f'[{lower_limit}, {upper_limit}]'
 
 
 class SlitWidth(SettingOverWavelengthRange):
@@ -835,17 +845,6 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             return
 
         self.figures = self.results[0].generate_plots()
-
-    # def normalize(self, archive, logger: BoundLogger) -> None:
-    #     """
-    #     The normalizer for the `UVVisTransmission` class.
-
-    #     Args:
-    #         archive (EntryArchive): The archive containing the section that is being
-    #         normalized.
-    #         logger (BoundLogger): A structlog logger.
-    #     """
-    #     super(UVVisTransmission, self).normalize(archive, logger)
 
 
 m_package.__init_metainfo__()
