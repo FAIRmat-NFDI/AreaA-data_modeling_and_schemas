@@ -86,7 +86,7 @@ from nomad_measurements import (
     ActivityReference,
 )
 
-from laytec_epitt import LayTecEpiTTMeasurement
+from laytec_epitt_plugin import LayTecEpiTTMeasurement
 from hall import HallMeasurement
 from ikz_plugin.general import (
     IKZMOVPECategory,
