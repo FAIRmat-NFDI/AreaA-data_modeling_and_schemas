@@ -17,7 +17,17 @@
 
 import numpy as np
 
-from nomad.metainfo import Package, Quantity, MEnum, SubSection, Section, MSection
+from nomad.metainfo import (
+    SchemaPackage,
+    Package,
+    Quantity,
+    MEnum,
+    SubSection,
+    Section,
+    MSection,
+)
+
+from nomad.config import config
 from nomad.datamodel.data import EntryData, ArchiveSection
 from . import reader as hall_reader
 from .measurement import GenericMeasurement, VariableFieldMeasurement
@@ -47,7 +57,10 @@ from nomad.datamodel.metainfo.annotations import (
 
 from ikz_plugin.general import IKZHallCategory
 
-m_package = Package(name="hall_lakeshore")
+
+configuration = config.get_plugin_entry_point("lakeshore_plugin.hall:hall_schema")
+
+m_package = SchemaPackage()
 
 
 class HallMeasurementResult(MeasurementResult):

@@ -44,3 +44,8 @@ where = [
     "src",
 ]
 
+[project.entry-points.'nomad.plugin']
+
+hall_schema = "lakeshore_plugin.hall:hall_schema"
+
+
