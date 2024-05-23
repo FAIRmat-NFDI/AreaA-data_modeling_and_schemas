@@ -234,10 +234,10 @@ class SettingOverWavelengthRange(ArchiveSection):
                     f'Upper limit of wavelength "{upper_limit}" should be greater than'
                     f'lower limit of wavelength "{lower_limit}".'
                 )
-            upper_limit = '-'
-            lower_limit = '-'
-            self.wavelength_upper_limit = None
-            self.wavelength_lower_limit = None
+                upper_limit = '-'
+                lower_limit = '-'
+                self.wavelength_upper_limit = None
+                self.wavelength_lower_limit = None
         self.name = f'[{lower_limit}, {upper_limit}]'
 
 
