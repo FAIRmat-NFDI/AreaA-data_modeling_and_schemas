@@ -23,12 +23,13 @@ from nomad.metainfo import (
     Quantity,
     MEnum,
     SubSection,
+    Category,
     Section,
     MSection,
 )
 
 from nomad.config import config
-from nomad.datamodel.data import EntryData, ArchiveSection
+from nomad.datamodel.data import EntryData, ArchiveSection, EntryDataCategory
 from . import reader as hall_reader
 from .measurement import GenericMeasurement, VariableFieldMeasurement
 from .hall_instrument import Instrument
@@ -55,12 +56,13 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
 
-from ikz_plugin.general import IKZHallCategory
-
-
 configuration = config.get_plugin_entry_point("lakeshore_plugin.hall:hall_schema")
 
 m_package = SchemaPackage()
+
+
+class IKZHallCategory(EntryDataCategory):
+    m_def = Category(label="Hall", categories=[EntryDataCategory])
 
 
 class HallMeasurementResult(MeasurementResult):
