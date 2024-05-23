@@ -35,7 +35,7 @@ from nomad.datamodel.data import (
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from nomad_measurements import ProcessReference
-from laytec_epitt.schema import (
+from laytec_epitt_plugin.schema import (
     LayTecEpiTTMeasurement,
     IKZLayTecEpiTTCategory,
     ReflectanceWavelengthTransient,
