@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "laytec_epitt"
+name = "laytec_epitt_plugin"
 version = "0.0.1"
 description = "A plugin for NOMAD containing LayTec EpiTT data model."
 readme = "README.md"
