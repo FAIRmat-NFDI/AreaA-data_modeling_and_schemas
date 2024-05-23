@@ -29,42 +29,41 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-from hall.schema import (
+from lakeshore_plugin.hall.schema import (
     HallInstrument,
 )
 
-from nomad.datamodel.datamodel import (
-    EntryArchive,
-    EntryMetadata
-)
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from nomad_material_processing.utils import create_archive
+
 
 class RawFileLakeshoreInstrument(EntryData):
     instrument = Quantity(
         type=HallInstrument,
         a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        )
+            component="ReferenceEditQuantity",
+        ),
     )
 
 
 class HallInstrumentParser(MatchingParser):
-
     def __init__(self):
         super().__init__(
-            name='NOMAD Lakeshore Hall measurements plugin',
-            code_name= 'Lakeshore measurements Parser',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz']
+            name="NOMAD Lakeshore Hall measurements plugin",
+            code_name="Lakeshore measurements Parser",
+            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
+            supported_compressions=["gz", "bz2", "xz"],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        data_file = mainfile.split('/')[-1]
+        data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
         entry = HallInstrument()
         entry.data_file = data_file_with_path
-        file_name = f'{data_file[:-5]}.archive.json'
-        #entry.normalize(archive, logger)
-        archive.data = RawFileLakeshoreInstrument(instrument=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' instrument file'
+        file_name = f"{data_file[:-5]}.archive.json"
+        # entry.normalize(archive, logger)
+        archive.data = RawFileLakeshoreInstrument(
+            instrument=create_archive(entry, archive, file_name)
+        )
+        archive.metadata.entry_name = data_file + " instrument file"

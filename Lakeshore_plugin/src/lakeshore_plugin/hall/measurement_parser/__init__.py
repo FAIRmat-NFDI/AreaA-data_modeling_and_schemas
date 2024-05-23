@@ -15,6 +15,6 @@
 # limitations under the License.
 #
 
-#from ..schema import *
-from hall.schema import *
+# from ..schema import *
+from lakeshore_plugin.hall.schema import *
 from .parser import *

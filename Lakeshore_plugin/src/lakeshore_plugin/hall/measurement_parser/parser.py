@@ -29,7 +29,11 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-from hall.schema import ExperimentLakeshoreHall, HallMeasurement, HallMeasurementReference
+from lakeshore_plugin.hall.schema import (
+    ExperimentLakeshoreHall,
+    HallMeasurement,
+    HallMeasurementReference,
+)
 
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
