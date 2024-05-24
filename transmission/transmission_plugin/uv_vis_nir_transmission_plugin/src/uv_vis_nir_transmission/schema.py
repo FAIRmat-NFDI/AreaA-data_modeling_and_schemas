@@ -469,25 +469,41 @@ class UVVisNirTransmissionResult(MeasurementResult):
     """
 
     m_def = Section()
+    array_index = Quantity(
+        type=int,
+        description='Array of indices used for plotting quantity vectors.',
+        shape=['*'],
+    )
     transmittance = Quantity(
         type=np.float64,
         description='Transmittance percentage %T',
         shape=['*'],
         unit='dimensionless',
-        a_plot={'x': 'wavelength', 'y': 'transmittance'},
+        a_plot={'x': 'array_index', 'y': 'transmittance'},
     )
     absorbance = Quantity(
         type=np.float64,
         description='Absorbance A',
         shape=['*'],
         unit='dimensionless',
-        a_plot={'x': 'wavelength', 'y': 'absorbance'},
+        a_plot={'x': 'array_index', 'y': 'absorbance'},
+    )
+    absorption_coefficient = Quantity(
+        type=np.float64,
+        description=(
+            'Absorption coefficient "α" calculated from transmittance '
+            'and sample thickness.'
+        ),
+        shape=['*'],
+        unit='1/cm',
+        a_plot={'x': 'array_index', 'y': 'absorption_coefficient'},
     )
     wavelength = Quantity(
         type=np.float64,
         description='wavelength',
         shape=['*'],
         unit='nm',
+        a_plot={'x': 'array_index', 'y': 'wavelength'},
     )
 
     def generate_plots(self) -> list[PlotlyFigure]:
@@ -501,19 +517,19 @@ class UVVisNirTransmissionResult(MeasurementResult):
         if self.wavelength is None:
             return figures
 
-        for key in ['transmittance', 'absorbance']:
+        for key in ['transmittance', 'absorbance', 'absorption_coefficient']:
             if getattr(self, key) is None:
                 continue
 
             y = getattr(self, key).magnitude
-            y_label = key.capitalize()
+            y_label = key.replace('_', ' ').capitalize()
 
             line_linear = px.line(
                 x=self.wavelength.to('nm').magnitude,
                 y=y,
             )
             line_linear.update_layout(
-                title=f'{y_label} vs wavelength',
+                title=f'{y_label} over Wavelength',
                 xaxis_title='Wavelength (nm)',
                 yaxis_title=y_label,
                 xaxis=dict(
@@ -526,10 +542,11 @@ class UVVisNirTransmissionResult(MeasurementResult):
             )
             figures.append(
                 PlotlyFigure(
-                    label=f'{y_label} Linear Plot',
+                    label=f'{y_label} linear plot',
                     figure=line_linear.to_plotly_json(),
                 ),
             )
+
         return figures
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
@@ -542,6 +559,20 @@ class UVVisNirTransmissionResult(MeasurementResult):
             logger (BoundLogger): A structlog logger.
         """
         super(UVVisNirTransmissionResult, self).normalize(archive, logger)
+        if archive.data.samples:
+            sample = archive.data.samples[0]
+            if sample.reference is None:
+                logger.warn('No reference sample found.')
+            if sample.reference.get('length') is not None:
+                if self.get('transmittance') is not None:
+                    self.absorption_coefficient = -np.log(
+                        self.transmittance
+                    ) / sample.reference.length.to('cm')
+                return
+        # reset absorption coefficient if required conditions are not met
+        if archive.data.results:
+            if archive.data.results[0].get('absorption_coefficient') is not None:
+                archive.data.results[0].absorption_coefficient = None
 
 
 class UVVisTransmission(Measurement):
