@@ -469,6 +469,11 @@ class UVVisNirTransmissionResult(MeasurementResult):
     """
 
     m_def = Section()
+    array_index = Quantity(
+        type=int,
+        description='Array of indices used for plotting quantity vectors.',
+        shape=['*'],
+    )
     transmittance = Quantity(
         type=np.float64,
         description='Transmittance percentage %T',
@@ -481,7 +486,16 @@ class UVVisNirTransmissionResult(MeasurementResult):
         description='Absorbance A',
         shape=['*'],
         unit='dimensionless',
-        a_plot={'x': 'wavelength', 'y': 'absorbance'},
+    )
+    absorption_coefficient = Quantity(
+        type=np.float64,
+        description=(
+            'Absorption coefficient "α" calculated from transmittance '
+            'and sample thickness.'
+        ),
+        shape=['*'],
+        unit='1/cm',
+        a_plot={'x': 'array_index', 'y': 'absorption_coefficient'},
     )
     wavelength = Quantity(
         type=np.float64,
@@ -501,12 +515,12 @@ class UVVisNirTransmissionResult(MeasurementResult):
         if self.wavelength is None:
             return figures
 
-        for key in ['transmittance', 'absorbance']:
+        for key in ['transmittance', 'absorbance', 'absorption_coefficient']:
             if getattr(self, key) is None:
                 continue
 
             y = getattr(self, key).magnitude
-            y_label = key.capitalize()
+            y_label = key.replace('_', ' ').capitalize()
 
             line_linear = px.line(
                 x=self.wavelength.to('nm').magnitude,
