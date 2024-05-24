@@ -559,6 +559,18 @@ class UVVisNirTransmissionResult(MeasurementResult):
             logger (BoundLogger): A structlog logger.
         """
         super(UVVisNirTransmissionResult, self).normalize(archive, logger)
+        if archive.data.samples:
+            sample = archive.data.samples[0]
+            if sample.reference is None:
+                logger.warn('No reference sample found.')
+            if sample.reference.get('length') is not None:
+                if self.get('transmittance') is not None:
+                    self.absorption_coefficient = -np.log(
+                        self.transmittance
+                    ) / sample.reference.length.to('cm')
+                return
+        # reset absorption coefficient if required conditions are not met
+        archive.data.results[0].absorption_coefficient = None
 
 
 class UVVisTransmission(Measurement):
