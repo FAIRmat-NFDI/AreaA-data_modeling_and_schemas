@@ -219,9 +219,9 @@ def read_monochromator_slit_width(metadata: list, logger: 'BoundLogger') -> list
     Returns:
         list: The monochromator slit width at different wavelengths.
     """
-    if not metadata[31]:
+    if not metadata[17]:
         return []
-    output_list = read_long_line(metadata[31], logger)
+    output_list = read_long_line(metadata[17], logger)
     for i, el in enumerate(output_list):
         if isinstance(el['value'], float):
             output_list[i]['value'] *= ureg.nanometer
