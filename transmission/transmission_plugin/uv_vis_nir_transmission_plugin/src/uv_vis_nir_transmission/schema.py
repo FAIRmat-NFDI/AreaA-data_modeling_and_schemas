@@ -479,13 +479,14 @@ class UVVisNirTransmissionResult(MeasurementResult):
         description='Transmittance percentage %T',
         shape=['*'],
         unit='dimensionless',
-        a_plot={'x': 'wavelength', 'y': 'transmittance'},
+        a_plot={'x': 'array_index', 'y': 'transmittance'},
     )
     absorbance = Quantity(
         type=np.float64,
         description='Absorbance A',
         shape=['*'],
         unit='dimensionless',
+        a_plot={'x': 'array_index', 'y': 'absorbance'},
     )
     absorption_coefficient = Quantity(
         type=np.float64,
@@ -502,6 +503,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
         description='wavelength',
         shape=['*'],
         unit='nm',
+        a_plot={'x': 'array_index', 'y': 'wavelength'},
     )
 
     def generate_plots(self) -> list[PlotlyFigure]:
@@ -527,7 +529,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
                 y=y,
             )
             line_linear.update_layout(
-                title=f'{y_label} vs wavelength',
+                title=f'{y_label} over Wavelength',
                 xaxis_title='Wavelength (nm)',
                 yaxis_title=y_label,
                 xaxis=dict(
@@ -540,10 +542,11 @@ class UVVisNirTransmissionResult(MeasurementResult):
             )
             figures.append(
                 PlotlyFigure(
-                    label=f'{y_label} Linear Plot',
+                    label=f'{y_label} linear plot',
                     figure=line_linear.to_plotly_json(),
                 ),
             )
+
         return figures
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
