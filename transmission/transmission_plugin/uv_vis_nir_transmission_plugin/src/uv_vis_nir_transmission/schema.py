@@ -570,7 +570,9 @@ class UVVisNirTransmissionResult(MeasurementResult):
                     ) / sample.reference.length.to('cm')
                 return
         # reset absorption coefficient if required conditions are not met
-        archive.data.results[0].absorption_coefficient = None
+        if archive.data.results:
+            if archive.data.results[0].get('absorption_coefficient') is not None:
+                archive.data.results[0].absorption_coefficient = None
 
 
 class UVVisTransmission(Measurement):
