@@ -87,8 +87,8 @@ from nomad_measurements import (
 )
 
 from laytec_epitt_plugin import LayTecEpiTTMeasurement
-from lakeshore_plugin.hall import HallMeasurement
-from ikz_plugin.general import (
+from lakeshore_plugin.hall.schema import HallMeasurement
+from ikz_plugin.general.schema import (
     IKZMOVPECategory,
     IKZMOVPE1Category,
     IKZMOVPE2Category,
