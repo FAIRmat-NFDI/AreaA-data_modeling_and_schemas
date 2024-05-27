@@ -35,8 +35,6 @@ from nomad.datamodel.metainfo.annotations import (
     ELNComponentEnum,
 )
 from nomad.parsing import MatchingParser
-from nomad.datamodel.context import ServerContext
-from nomad.processing.data import Upload
 from nomad.app.v1.models.models import User
 from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.search import search, MetadataPagination
@@ -78,7 +76,7 @@ from ikz_plugin.utils import (
     clean_dataframe_headers,
     typed_df_value,
 )
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
     ExperimentMovpeIKZ,
     GrowthMovpeIKZReference,
     GrowthMovpeIKZ,
@@ -119,13 +117,13 @@ class RawFileMovpeDepositionControl(EntryData):
 
 
 class ParserMovpe1IKZ(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name='MOVPE 1 Deposition Control IKZ',
-            code_name='MOVPE 1 Deposition Control IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz'],
-        )
+    # def __init__(self):
+    #     super().__init__(
+    #         name='MOVPE 1 Deposition Control IKZ',
+    #         code_name='MOVPE 1 Deposition Control IKZ',
+    #         code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
+    #         supported_compressions=['gz', 'bz2', 'xz'],
+    #     )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         filetype = 'yaml'

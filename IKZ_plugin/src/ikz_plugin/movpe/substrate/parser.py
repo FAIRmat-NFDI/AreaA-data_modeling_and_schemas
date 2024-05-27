@@ -46,7 +46,7 @@ from ikz_plugin.utils import (
     create_archive,
     typed_df_value,
 )
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
     SubstrateInventory,
     SubstrateMovpe,
     SubstrateCrystalPropertiesMovpe,

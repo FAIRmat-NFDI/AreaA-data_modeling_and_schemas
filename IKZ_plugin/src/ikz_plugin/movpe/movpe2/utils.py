@@ -64,7 +64,7 @@ from nomad_material_processing.vapor_deposition.cvd import (
     GasLine,
 )
 
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
     BubblerSourceIKZ,
     GasSourceIKZ,
 )

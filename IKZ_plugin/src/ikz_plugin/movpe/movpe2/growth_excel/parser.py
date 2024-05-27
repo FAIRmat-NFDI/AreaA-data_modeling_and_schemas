@@ -53,7 +53,7 @@ from nomad_material_processing.vapor_deposition.cvd import (
     Rotation,
 )
 
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
     ExperimentMovpeIKZ,
     GrowthStepMovpe2IKZ,
     GrowthMovpeIKZ,

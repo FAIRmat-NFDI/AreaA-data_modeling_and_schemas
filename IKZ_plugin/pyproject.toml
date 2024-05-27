@@ -122,6 +122,7 @@ where = ["src"]
 [project.entry-points.'nomad.plugin']
 
 general_schema = "ikz_plugin.general:general_schema"
+movpe1_growth_excel_parser = "ikz_plugin.movpe.movpe1.growth_excel:movpe1_growth_excel_parser"
 movpe_schema = "ikz_plugin.movpe:movpe_schema"
 pld_schema = "ikz_plugin.pld:pld_schema"
 
