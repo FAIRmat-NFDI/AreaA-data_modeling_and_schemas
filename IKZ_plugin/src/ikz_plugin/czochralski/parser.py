@@ -30,7 +30,7 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from ikz_plugin.czochralski import MeltCzochralskiExperiment, Sensors
+from ikz_plugin.czochralski.schema import MeltCzochralskiExperiment, Sensors
 
 
 class CSVFile(EntryData):

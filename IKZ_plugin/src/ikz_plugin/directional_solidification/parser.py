@@ -30,7 +30,9 @@ from nomad.datamodel.data import (
 )
 
 from nomad_material_processing.utils import create_archive
-from ikz_plugin.directional_solidification import DirectionalSolidificationExperiment
+from ikz_plugin.directional_solidification.schema import (
+    DirectionalSolidificationExperiment,
+)
 
 
 class RawFileDigitalProtocol(EntryData):

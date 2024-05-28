@@ -93,7 +93,7 @@ from ikz_plugin.general.schema import (
     IKZMOVPE2Category,
     SubstratePreparationStepReference,
 )
-from ikz_plugin.characterization import AFMmeasurement, LightMicroscope
+from ikz_plugin.characterization.schema import AFMmeasurement, LightMicroscope
 
 configuration = config.get_plugin_entry_point('ikz_plugin.movpe:movpe_schema')
 

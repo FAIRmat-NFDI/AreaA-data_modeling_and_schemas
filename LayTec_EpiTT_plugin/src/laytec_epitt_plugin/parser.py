@@ -76,14 +76,6 @@ class RawFileLayTecEpiTT(EntryData):
 
 
 class EpiTTParser(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name="NOMAD LayTec EpiTT schema and parser plugin",
-            code_name="EpiTT Parser",  #'HZB Unold Lab Parser',
-            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
-            supported_compressions=["gz", "bz2", "xz"],
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
