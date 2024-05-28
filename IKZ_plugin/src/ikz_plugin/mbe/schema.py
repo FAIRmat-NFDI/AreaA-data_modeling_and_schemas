@@ -5,7 +5,9 @@ import pandas as pd
 import json
 
 from nomad.units import ureg
+from nomad.config import config
 from nomad.metainfo import (
+    SchemaPackage,
     Package,
     Quantity,
     SubSection,
@@ -18,9 +20,11 @@ from nomad.datamodel.data import EntryData, ArchiveSection
 from nomad.datamodel.metainfo.eln import PublicationReference
 from nomad.datamodel.metainfo.eln import Entity, Activity, SampleID
 from nomad.datamodel.util import parse_path
-from ikz_plugin.general import SampleCutIKZ, SubstratePreparationIKZ
+from ikz_plugin.general.schema import SampleCutIKZ, SubstratePreparationIKZ
 
-m_package = Package(name='mbe_IKZ')
+configuration = config.get_plugin_entry_point('ikz_plugin.mbe:mbe_schema')
+
+m_package = SchemaPackage()
 
 
 class GrowthRecipeStep(EntryData):
@@ -441,7 +445,7 @@ class MbeExperiment(EntryData):
     substrate_preparation = SubSection(
         section_def=SubstratePreparationIKZ
     )  # , repeats=True)
-    substrate_cut = SubSection(section_def=SampleCut)  # , repeats=True)
+    substrate_cut = SubSection(section_def=SampleCutIKZ)  # , repeats=True)
     growth_recipe = SubSection(section_def=GrowthRecipe)  # , repeats=True)
     calibration_date_sources = SubSection(
         section_def=CalibrationDateSources

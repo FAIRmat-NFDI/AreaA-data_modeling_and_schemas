@@ -15,5 +15,37 @@
 # limitations under the License.
 #
 
-from .schema import *
-from .parser import *
+from nomad.config.models.plugins import SchemaPackageEntryPoint, ParserEntryPoint
+from pydantic import Field
+
+
+class CzochralskiSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+    parameter: int = Field(0, description='Custom configuration parameter')
+
+    def load(self):
+        from ikz_plugin.czochralski.schema import m_package
+
+        return m_package
+
+
+czochralski_schema = CzochralskiSchemaPackageEntryPoint(
+    name='CzochralskiSchema',
+    description='Schema package defined using the new plugin mechanism.',
+)
+
+
+class CzochralskiParserEntryPoint(ParserEntryPoint):
+    parameter: int = Field(0, description='Custom configuration parameter')
+
+    def load(self):
+        from ikz_plugin.czochralski.parser import CzParser
+
+        return CzParser(**self.dict())
+
+
+czochralski_multilog_parser = CzochralskiParserEntryPoint(
+    name='CzochralskiParser',
+    description='Parser defined using the new plugin mechanism.',
+    mainfile_name_re=r'.+\.multilog.csv',
+    mainfile_mime_re='text/csv',
+)

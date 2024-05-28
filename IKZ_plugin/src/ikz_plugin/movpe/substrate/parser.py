@@ -70,14 +70,6 @@ class RawFileSubstrateInventory(EntryData):
 
 
 class MovpeSubstrateParser(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name='MOVPE Substrate IKZ',
-            code_name='MOVPE Substrate IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz'],
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         filetype = 'yaml'
         data_file = mainfile.split('/')[-1]

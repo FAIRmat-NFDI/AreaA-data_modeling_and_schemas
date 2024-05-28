@@ -3,15 +3,21 @@ from nomad.datamodel.metainfo.basesections import (
     Measurement,
     MeasurementResult,
 )
-from nomad.metainfo import Package, Quantity, SubSection, MEnum, Datetime, Section
+from nomad.metainfo import SchemaPackage, Quantity, SubSection, MEnum, Datetime, Section
 from nomad.datamodel.data import EntryData
+
+from nomad.config import config
 
 from ikz_plugin.general.schema import (
     IKZCategory,
     SubstratePreparationStep,
 )
 
-m_package = Package(name='characterization_IKZ')
+configuration = config.get_plugin_entry_point(
+    'ikz_plugin.characterization:characterization_schema'
+)
+
+m_package = SchemaPackage()
 
 
 class AFMresults(MeasurementResult):

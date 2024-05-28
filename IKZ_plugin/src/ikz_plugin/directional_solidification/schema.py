@@ -41,7 +41,7 @@ from structlog.stdlib import (
 )
 
 from nomad.metainfo import (
-    Package,
+    SchemaPackage,
     Quantity,
     SubSection,
     Datetime,
@@ -52,6 +52,7 @@ from nomad.datamodel.data import (
     ArchiveSection,
 )
 
+from nomad.config import config
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from nomad.utils import hash
@@ -60,7 +61,11 @@ from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
 from ikz_plugin.general.schema import IKZDSCategory
 
-m_package = Package(name='Directional Solidification Experiment')
+configuration = config.get_plugin_entry_point(
+    'ikz_plugin.directional_solidification:dir_sol_schema'
+)
+
+m_package = SchemaPackage()
 
 
 def custom_separator(line):

@@ -42,7 +42,6 @@ from nomad.metainfo import (
     Reference,
 )
 from nomad.datamodel.data import EntryData, ArchiveSection, Author
-from nomad.search import search, MetadataPagination
 
 from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 from nomad.datamodel.metainfo.workflow import (

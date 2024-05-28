@@ -15,5 +15,25 @@
 # limitations under the License.
 #
 
-from ikz_plugin.movpe.schema import *
-from .parser import *
+from nomad.config.models.plugins import ParserEntryPoint
+from pydantic import Field
+
+
+class Movpe2ParserEntryPoint(ParserEntryPoint):
+    parameter: int = Field(0, description='Custom configuration parameter')
+
+    def load(self):
+        from ikz_plugin.movpe.movpe2.growth_excel.parser import ParserMovpe2IKZ
+
+        return ParserMovpe2IKZ(**self.dict())
+
+
+movpe2_growth_excel_parser = Movpe2ParserEntryPoint(
+    name='Movpe2Parser',
+    description='Parser defined using the new plugin mechanism.',
+    mainfile_name_re=r'.+\.growth.movpe.ikz.xlsx',
+    mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    # mainfile_contents_dict={
+    #     'GrowthRun': {'__has_all_keys': ['Sample Name']},
+    # },
+)

@@ -1,8 +1,0 @@
-plugin_type: parser #schema
-name: MOVPE 2 IKZ
-description: |
-  This is a schema and parser for movpe IKZ
-mainfile_name_re: ^.+\.growth.movpe.ikz.xlsx$
-mainfile_mime_re: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-parser_class_name: ikz_plugin.movpe.movpe2.growth_excel.ParserMovpe2IKZ
-code_name: MOVPE 2 IKZ

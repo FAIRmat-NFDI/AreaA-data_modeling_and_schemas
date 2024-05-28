@@ -96,14 +96,6 @@ class RawFileGrowthRun(EntryData):
 
 
 class ParserMovpe2IKZ(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name='MOVPE 2 IKZ',
-            code_name='MOVPE 2 IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz'],
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         """
         Parses the MOVPE 2 IKZ raw file and creates the corresponding archives.
