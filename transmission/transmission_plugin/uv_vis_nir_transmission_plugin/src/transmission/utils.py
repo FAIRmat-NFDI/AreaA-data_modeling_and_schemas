@@ -18,8 +18,27 @@ if TYPE_CHECKING:
 def merge_sections(  # noqa: PLR0912
     section: 'ArchiveSection',
     update: 'ArchiveSection',
+    overwrite_quantity: bool = False,
     logger: 'BoundLogger' = None,
 ) -> None:
+    """
+    Updates the `section` based on the `update` section.
+    Unpopulated quantities and subsections in the `section` will be populated with the
+    values from the `update` section.
+    In case a repeating subsection in update section has a different number of entries,
+    a warning will be issued, and `section` will remain unchanged.
+    In case a quantity is present in both sections, the one in `section` will be
+    overwritten provided that `overwrite_quantity` is set to `True`.
+
+    Args:
+        section (ArchiveSection): section to update.
+        update (ArchiveSection): section to update from.
+        overwrite_quantity (bool, optional): Whether to overwrite quantities in `section`
+        logger (BoundLogger, optional): A structlog logger.
+
+    Raises:
+        TypeError: If the sections are of different types.
+    """
     if update is None:
         return
     if section is None:
@@ -41,6 +60,8 @@ def merge_sections(  # noqa: PLR0912
             or quantity.repeats
             and (section.m_get(quantity) != update.m_get(quantity)).any()
         ):
+            if overwrite_quantity:
+                section.m_set(quantity, update.m_get(quantity))
             warning = f'Merging sections with different values for quantity "{name}".'
             if logger:
                 logger.warning(warning)
