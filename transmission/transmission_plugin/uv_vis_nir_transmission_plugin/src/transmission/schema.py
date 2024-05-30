@@ -149,7 +149,6 @@ class TransmissionSample(CompositeSystem, EntryData):
             logger (BoundLogger): A structlog logger.
         """
         if self.chemical_composition is not None:
-            self.elemental_composition = []  # reset elemental composition
             pure_substance = PubChemPureSubstanceSection(
                 molecular_formula=self.chemical_composition,
             )
@@ -157,7 +156,21 @@ class TransmissionSample(CompositeSystem, EntryData):
             component = PureSubstanceComponent(pure_substance=pure_substance)
             component.normalize(archive, logger)
             component.substance_name = pure_substance.name
-            self.components = [component]
+            if len(self.components) == 1:
+                fallback = self.components[0].m_copy()
+                try:
+                    merge_sections(
+                        self.components[0],
+                        component,
+                        overwrite_quantity=True,
+                        logger=logger,
+                    )
+                except TypeError as e:
+                    logger.warn(f'Encountered error while merging components: \n{e}')
+                    self.components = [fallback]
+            else:
+                self.components = [component]
+            self.elemental_composition = []  # reset elemental composition
 
         super().normalize(archive, logger)
 
