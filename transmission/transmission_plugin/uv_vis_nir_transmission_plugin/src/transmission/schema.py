@@ -35,6 +35,8 @@ from nomad.datamodel.metainfo.annotations import (
 )
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
+    PureSubstanceComponent,
+    PubChemPureSubstanceSection,
     Instrument,
     InstrumentReference,
     Measurement,
@@ -146,6 +148,17 @@ class TransmissionSample(CompositeSystem, EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         """
+        if self.chemical_composition is not None:
+            self.elemental_composition = []  # reset elemental composition
+            pure_substance = PubChemPureSubstanceSection(
+                molecular_formula=self.chemical_composition,
+            )
+            pure_substance.normalize(archive, logger)
+            component = PureSubstanceComponent(pure_substance=pure_substance)
+            component.normalize(archive, logger)
+            component.substance_name = pure_substance.name
+            self.components = [component]
+
         super().normalize(archive, logger)
 
 
