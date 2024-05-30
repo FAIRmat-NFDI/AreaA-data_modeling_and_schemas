@@ -138,6 +138,9 @@ class TransmissionSample(CompositeSystem, EntryData):
         description='Crystallographic orientation of the sample.',
         a_eln={'component': 'StringEditQuantity'},
     )
+    components = SubSection(
+        section_def=PureSubstanceComponent,
+    )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
