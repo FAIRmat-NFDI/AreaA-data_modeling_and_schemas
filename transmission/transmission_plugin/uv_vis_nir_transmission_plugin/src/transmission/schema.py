@@ -116,12 +116,15 @@ class TransmissionSample(CompositeSystem, EntryData):
     )
     chemical_composition = Quantity(
         type=str,
-        description='chemical composition',
+        description='Chemical composition of the sample. For example, "Ga2O3".',
         a_eln={'component': 'StringEditQuantity'},
     )
     length = Quantity(
         type=np.float64,
-        description='Length (or thickness) of the sample in mm.',
+        description=(
+            'Length (or thickness) of the sample. '
+            'The dimension of the sample along the path of the light beam.'
+        ),
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'mm',
