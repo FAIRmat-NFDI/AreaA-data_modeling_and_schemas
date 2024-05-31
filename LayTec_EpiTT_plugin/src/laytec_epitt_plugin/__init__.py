@@ -19,8 +19,8 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint, ParserEntryPoin
 from pydantic import Field
 
 
-class LayTecPackageEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description="Custom configuration parameter")
+class LayTecEntryPoint(SchemaPackageEntryPoint):
+    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from laytec_epitt_plugin.schema import m_package
@@ -28,14 +28,14 @@ class LayTecPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-laytec_schema = LayTecPackageEntryPoint(
-    name="LayTecSchema",
-    description="Schema package defined using the new plugin mechanism.",
+laytec_schema = LayTecEntryPoint(
+    name='LayTecSchema',
+    description='Schema package defined using the new plugin mechanism.',
 )
 
 
 class LayTecParserEntryPoint(ParserEntryPoint):
-    parameter: int = Field(0, description="Custom configuration parameter")
+    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from laytec_epitt_plugin.parser import EpiTTParser
@@ -44,8 +44,8 @@ class LayTecParserEntryPoint(ParserEntryPoint):
 
 
 laytec_parser = LayTecParserEntryPoint(
-    name="EpiTTParser",
-    description="Parser defined using the new plugin mechanism.",
-    mainfile_name_re=r".*\.dat",
-    mainfile_contents_re="FILETYPE = EpiNet DatArchiver File",
+    name='EpiTTParser',
+    description='Parser defined using the new plugin mechanism.',
+    mainfile_name_re=r'.*\.dat',
+    mainfile_contents_re='FILETYPE = EpiNet DatArchiver File',
 )

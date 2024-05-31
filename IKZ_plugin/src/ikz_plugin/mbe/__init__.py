@@ -2,7 +2,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 from pydantic import Field
 
 
-class MbeSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+class MbeEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
@@ -11,7 +11,7 @@ class MbeSchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-mbe_schema = MbeSchemaPackageEntryPoint(
+mbe_schema = MbeEntryPoint(
     name='MbeSchema',
     description='Schema package defined using the new plugin mechanism.',
 )

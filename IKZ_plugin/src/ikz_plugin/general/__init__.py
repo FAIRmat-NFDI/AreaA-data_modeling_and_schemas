@@ -2,7 +2,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 from pydantic import Field
 
 
-class GeneralPackageEntryPoint(SchemaPackageEntryPoint):
+class GeneralEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
@@ -11,7 +11,7 @@ class GeneralPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-general_schema = GeneralPackageEntryPoint(
+general_schema = GeneralEntryPoint(
     name='GeneralSchema',
     description='Schema package defined using the new plugin mechanism.',
 )

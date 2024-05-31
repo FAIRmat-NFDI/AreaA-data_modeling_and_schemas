@@ -19,7 +19,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint, ParserEntryPoin
 from pydantic import Field
 
 
-class DirectionalSolidificationSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+class DirSolEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
@@ -28,7 +28,7 @@ class DirectionalSolidificationSchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-dir_sol_schema = DirectionalSolidificationSchemaPackageEntryPoint(
+dir_sol_schema = DirSolEntryPoint(
     name='DirectionalSolidificationSchema',
     description='Schema package defined using the new plugin mechanism.',
 )

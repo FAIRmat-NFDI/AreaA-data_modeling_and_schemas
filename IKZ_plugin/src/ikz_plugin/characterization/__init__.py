@@ -19,7 +19,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 from pydantic import Field
 
 
-class CharacterizationSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+class CharacterizationEntryPoint(EntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
@@ -28,7 +28,7 @@ class CharacterizationSchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-characterization_schema = CharacterizationSchemaPackageEntryPoint(
+characterization_schema = CharacterizationEntryPoint(
     name='CharacterizationSchema',
     description='Schema package defined using the new plugin mechanism.',
 )

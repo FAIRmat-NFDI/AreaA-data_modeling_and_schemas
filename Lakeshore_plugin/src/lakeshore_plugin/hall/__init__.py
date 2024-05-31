@@ -19,7 +19,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 from pydantic import Field
 
 
-class SchemaPackageEntryPoint(SchemaPackageEntryPoint):
+class HallEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description="Custom configuration parameter")
 
     def load(self):
@@ -28,7 +28,7 @@ class SchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-hall_schema = SchemaPackageEntryPoint(
+hall_schema = HallEntryPoint(
     name="HallSchema",
     description="Schema package defined using the new plugin mechanism.",
 )

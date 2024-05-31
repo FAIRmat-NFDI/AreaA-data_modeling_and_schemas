@@ -19,7 +19,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 from pydantic import Field
 
 
-class MovpeSchemaPackageEntryPoint(SchemaPackageEntryPoint):
+class MovpeEntryPoint(SchemaPackageEntryPoint):
     parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
@@ -28,7 +28,7 @@ class MovpeSchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-movpe_schema = MovpeSchemaPackageEntryPoint(
+movpe_schema = MovpeEntryPoint(
     name='MovpeSchema',
     description='Schema package defined using the new plugin mechanism.',
 )
