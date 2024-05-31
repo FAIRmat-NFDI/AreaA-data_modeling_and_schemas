@@ -488,15 +488,16 @@ class UVVisNirTransmissionResult(MeasurementResult):
         unit='dimensionless',
         a_plot={'x': 'array_index', 'y': 'absorbance'},
     )
-    absorption_coefficient = Quantity(
+    extinction_coefficient = Quantity(
         type=np.float64,
         description=(
-            'Absorption coefficient "α" calculated from transmittance '
-            'and sample thickness.'
+            'Extinction coefficient calculated from transmittance and sample thickness '
+            'values: -log(T)/L. The coefficient includes the effects of '
+            'absorption, reflection, and scattering.'
         ),
         shape=['*'],
         unit='1/cm',
-        a_plot={'x': 'array_index', 'y': 'absorption_coefficient'},
+        a_plot={'x': 'array_index', 'y': 'extinction_coefficient'},
     )
     wavelength = Quantity(
         type=np.float64,
@@ -517,7 +518,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
         if self.wavelength is None:
             return figures
 
-        for key in ['transmittance', 'absorbance', 'absorption_coefficient']:
+        for key in ['transmittance', 'absorbance', 'extinction_coefficient']:
             if getattr(self, key) is None:
                 continue
 
@@ -565,14 +566,14 @@ class UVVisNirTransmissionResult(MeasurementResult):
                 logger.warn('No reference sample found.')
             if sample.reference.get('length') is not None:
                 if self.get('transmittance') is not None:
-                    self.absorption_coefficient = -np.log(
-                        self.transmittance
+                    self.extinction_coefficient = -np.log(
+                        self.transmittance / 100
                     ) / sample.reference.length.to('cm')
                 return
         # reset absorption coefficient if required conditions are not met
         if archive.data.results:
-            if archive.data.results[0].get('absorption_coefficient') is not None:
-                archive.data.results[0].absorption_coefficient = None
+            if archive.data.results[0].get('extinction_coefficient') is not None:
+                archive.data.results[0].extinction_coefficient = None
 
 
 class UVVisTransmission(Measurement):
