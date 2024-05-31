@@ -23,7 +23,6 @@ import yaml
 import json
 import math
 
-from nomad.datamodel.context import ClientContext, ServerContext
 
 from nomad.datamodel import EntryArchive
 from nomad.metainfo import MSection, Quantity, Section
@@ -31,7 +30,6 @@ from nomad.parsing import MatchingParser
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
-from nomad.app.v1.models.models import User
 from nomad.datamodel.data import (
     EntryData,
 )
@@ -46,7 +44,7 @@ from nomad.datamodel.metainfo.basesections import (
 )
 
 from ikz_plugin.general.schema import IKZMOVPE2Category
-from nomad.search import search
+
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
 from nomad_material_processing import (
@@ -122,6 +120,9 @@ def dict_nan_equal(dict1, dict2):
 def create_archive(
     entry_dict, context, filename, file_type, logger, *, overwrite: bool = False
 ):
+    from nomad.datamodel.context import ClientContext, ServerContext
+    from nomad.app.v1.models.models import User
+
     if isinstance(context, ClientContext):
         return None
     if context.raw_path_exists(filename):
@@ -185,6 +186,10 @@ def create_archive(
 
 
 def fetch_substrate(archive, sample_id, substrate_id, logger):
+    from nomad.datamodel.context import ClientContext, ServerContext
+    from nomad.app.v1.models.models import User
+    from nomad.search import search
+
     substrate_reference_str = None
     search_result = search(
         owner='all',

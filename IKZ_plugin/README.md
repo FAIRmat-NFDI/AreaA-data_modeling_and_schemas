@@ -142,43 +142,18 @@ To load the full functionality, use the following `plugins` section:
 ```yaml
 plugins:
   include:
-    - 'parsers/nomad_measurements/xrd'
-    - 'schemas/analysis'
-    - 'schemas/nomad_material_processing'
-    - 'parsers/hall_lakeshore_measurement'
-    - 'parsers/hall_lakeshore_instrument'
-    - 'parsers/laytec_epitt'
-    - 'parsers/czochralski'
-    - 'parsers/movpe_2_growth_excel'
-    - 'parsers/movpe_1_growth_excel'
-    - 'parsers/movpe_1_constant_parameters'
-    - 'parsers/movpe_substrates_IKZ'
-    - 'parsers/directional_solidification'
-  options:
-    parsers/nomad_measurements/xrd:
-      python_package: nomad_measurements.xrd.parser
-    schemas/analysis:
-      python_package: analysis
-    schemas/nomad_material_processing:
-      python_package: nomad_material_processing
-    parsers/hall_lakeshore_measurement:
-      python_package: hall.measurement_parser
-    parsers/hall_lakeshore_instrument:
-      python_package: hall.instrument_parser
-    parsers/laytec_epitt:
-      python_package: laytec_epitt
-    parsers/czochralski:
-      python_package: ikz_plugin.czochralski
-    parsers/movpe_2_growth_excel:
-      python_package: ikz_plugin.movpe.movpe2.growth_excel
-    parsers/movpe_1_growth_excel:
-      python_package: ikz_plugin.movpe.movpe1.growth_excel
-    parsers/movpe_1_constant_parameters:
-      python_package: ikz_plugin.movpe.movpe1.constant_parameters
-    parsers/movpe_substrates_IKZ:
-     python_package: ikz_plugin.movpe.substrate
-    parsers/directional_solidification:
-      python_package: ikz_plugin.directional_solidification
+    - 'ikz_plugin.general:general_schema'
+    - 'ikz_plugin.characterization:characterization_schema'
+    - 'ikz_plugin.pld:pld_schema'
+    - 'ikz_plugin.movpe:movpe_schema'
+    - 'ikz_plugin.movpe.movpe2.growth_excel:movpe2_growth_excel_parser'
+    - 'ikz_plugin.movpe.movpe1.growth_excel:movpe1_growth_excel_parser'
+    - 'ikz_plugin.movpe.substrate:substrate_excel_parser'
+    - 'ikz_plugin.mbe:mbe_schema'
+    - 'ikz_plugin.directional_solidification:dir_sol_schema'
+    - 'ikz_plugin.directional_solidification:dir_sol_manual_protocol_excel_parser'
+    - 'ikz_plugin.czochralski:czochralski_schema'
+    - 'ikz_plugin.czochralski:czochralski_multilog_parser'
 ```
 
 ### Run the tests
