@@ -16,83 +16,70 @@
 # limitations under the License.
 #
 
-from time import sleep, perf_counter
 import pandas as pd
-import re
-import yaml
-import json
-
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import (
-    Section,
-    SubSection,
-    Quantity,
-)
-from nomad.units import ureg
-
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-    ELNComponentEnum,
-)
 from nomad.datamodel.data import (
     EntryData,
 )
-from nomad.parsing import MatchingParser
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.utils import hash
-
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
 from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,
-    PureSubstanceComponent,
     PubChemPureSubstanceSection,
+    PureSubstanceComponent,
     PureSubstanceSection,
 )
-
+from nomad.metainfo import (
+    Quantity,
+    Section,
+)
+from nomad.parsing import MatchingParser
+from nomad.search import MetadataPagination, search
+from nomad.units import ureg
+from nomad.utils import hash
 from nomad_material_processing import (
     SubstrateReference,
     ThinFilmReference,
 )
-
 from nomad_material_processing.vapor_deposition import (
-    Temperature,
     Pressure,
+    Temperature,
     VolumetricFlowRate,
 )
 from nomad_material_processing.vapor_deposition.cvd import (
-    Rotation,
     FlashEvaporator,
     GasLine,
+    Rotation,
 )
 
 from ikz_plugin.general.schema import (
-    IKZMOVPE1Category,
-    Solution,
     LiquidComponent,
-)
-from ikz_plugin.utils import (
-    get_hash_ref,
-    create_archive,
-    row_timeseries,
-    clean_dataframe_headers,
-    typed_df_value,
+    Solution,
 )
 from ikz_plugin.movpe.schema import (
+    ChamberEnvironmentMovpe,
     ExperimentMovpeIKZ,
-    GrowthMovpeIKZReference,
+    FilamentTemperature,
+    FlashSourceIKZ,
+    GasSourceIKZ,
     GrowthMovpeIKZ,
+    GrowthMovpeIKZReference,
     GrowthStepMovpe1IKZ,
     PrecursorsPreparationIKZ,
     PrecursorsPreparationIKZReference,
-    ThinFilmStackMovpeReference,
-    ThinFilmStackMovpe,
-    ThinFilmMovpe,
-    SystemComponentIKZ,
     SampleParametersMovpe,
-    ChamberEnvironmentMovpe,
-    FlashSourceIKZ,
-    GasSourceIKZ,
     ShaftTemperature,
-    FilamentTemperature,
+    SystemComponentIKZ,
+    ThinFilmMovpe,
+    ThinFilmStackMovpe,
+    ThinFilmStackMovpeReference,
+)
+from ikz_plugin.utils import (
+    clean_dataframe_headers,
+    create_archive,
+    get_hash_ref,
+    row_timeseries,
 )
 
 
@@ -118,8 +105,6 @@ class RawFileMovpeDepositionControl(EntryData):
 
 class ParserMovpe1IKZ(MatchingParser):
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        from nomad.search import search, MetadataPagination
-
         filetype = 'yaml'
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split('/')[-1]

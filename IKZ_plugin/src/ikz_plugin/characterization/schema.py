@@ -1,12 +1,11 @@
 import numpy as np
+from nomad.config import config
+from nomad.datamodel.data import EntryData
 from nomad.datamodel.metainfo.basesections import (
     Measurement,
     MeasurementResult,
 )
-from nomad.metainfo import SchemaPackage, Quantity, SubSection, MEnum, Datetime, Section
-from nomad.datamodel.data import EntryData
-
-from nomad.config import config
+from nomad.metainfo import Datetime, MEnum, Quantity, SchemaPackage, Section, SubSection
 
 from ikz_plugin.general.schema import (
     IKZCategory,

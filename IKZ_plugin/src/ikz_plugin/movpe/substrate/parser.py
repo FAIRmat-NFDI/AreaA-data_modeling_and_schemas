@@ -17,45 +17,39 @@
 #
 
 import pandas as pd
-
-from nomad.utils import hash
-
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import (
-    Section,
-    MSection,
-    Quantity,
-)
-
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
 from nomad.datamodel.data import (
     EntryData,
 )
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+from nomad.metainfo import (
+    Quantity,
+    Section,
+)
+from nomad.parsing import MatchingParser
+from nomad.utils import hash
 from nomad_material_processing import (
     Parallelepiped,
-    SubstrateCrystalProperties,
-    Miscut,
-    Dopant,
 )
-from ikz_plugin.general.schema import IKZMOVPECategory
+
+from ikz_plugin.movpe.schema import (
+    MiscutMovpe,
+    SubstrateCrystalPropertiesMovpe,
+    SubstrateInventory,
+    SubstrateMovpe,
+    SubstrateMovpeReference,
+)
 from ikz_plugin.utils import (
     create_archive,
     typed_df_value,
 )
-from ikz_plugin.movpe.schema import (
-    SubstrateInventory,
-    SubstrateMovpe,
-    SubstrateCrystalPropertiesMovpe,
-    MiscutMovpe,
-    SubstrateMovpeReference,
-)
+
 from .utils import (
-    populate_element,
     populate_dopant,
+    populate_element,
 )
 
 

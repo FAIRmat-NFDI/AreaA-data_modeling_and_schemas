@@ -17,19 +17,18 @@
 #
 
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import (
-    MSection,
-    Quantity,
-)
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
 from nomad.datamodel.data import (
     EntryData,
 )
-
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+from nomad.metainfo import (
+    Quantity,
+)
+from nomad.parsing import MatchingParser
 from nomad_material_processing.utils import create_archive
+
 from ikz_plugin.directional_solidification.schema import (
     DirectionalSolidificationExperiment,
 )

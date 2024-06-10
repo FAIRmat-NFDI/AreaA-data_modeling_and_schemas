@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-import re
-import yaml
 import json
 import math
+import re
+
 import pandas as pd
-from typing import List
+import yaml
 
 
 def get_reference(upload_id, entry_id):

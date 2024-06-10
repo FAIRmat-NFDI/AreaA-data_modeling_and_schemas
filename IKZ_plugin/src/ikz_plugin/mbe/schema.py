@@ -1,25 +1,22 @@
-import numpy as np
 import re
 from datetime import datetime as dt
-import pandas as pd
-import json
 
-from nomad.units import ureg
+import numpy as np
+import pandas as pd
 from nomad.config import config
-from nomad.metainfo import (
-    SchemaPackage,
-    Package,
-    Quantity,
-    SubSection,
-    MEnum,
-    Reference,
-    Datetime,
-    Section,
+from nomad.datamodel.data import EntryData
+from nomad.datamodel.metainfo.eln import (
+    Activity,
+    PublicationReference,
 )
-from nomad.datamodel.data import EntryData, ArchiveSection
-from nomad.datamodel.metainfo.eln import PublicationReference
-from nomad.datamodel.metainfo.eln import Entity, Activity, SampleID
-from nomad.datamodel.util import parse_path
+from nomad.metainfo import (
+    Datetime,
+    Quantity,
+    SchemaPackage,
+    Section,
+    SubSection,
+)
+
 from ikz_plugin.general.schema import SampleCutIKZ, SubstratePreparationIKZ
 
 configuration = config.get_plugin_entry_point('ikz_plugin.mbe:mbe_schema')
@@ -238,7 +235,7 @@ class GrowthRecipe(EntryData, Activity):
                 for step, value in enumerate(data[' Time']):
                     for key in data.keys():
                         if str(data[key][step]) == 'nan':
-                            data[key][step] = int(0)
+                            data[key][step] = 0
                     growth_recipes[step] = GrowthRecipeStep()
                     setattr(growth_recipes[step], 'epi_step', data['EpiStep'][step])
                     setattr(growth_recipes[step], 'name', data[' Type'][step])
@@ -261,7 +258,7 @@ class GrowthRecipe(EntryData, Activity):
                             str(data[' Time'][step]).replace('(t=', '').replace(')', '')
                         )
                         (time, usec) = clean.split('.')
-                        microsec = '{:<06}'.format(usec)
+                        microsec = f'{usec:<06}'
                         (hour, min, sec) = time.split(':')
                         time = pd.Timedelta(
                             seconds=int(sec),
@@ -359,7 +356,7 @@ class GrowthLog(EntryData, Activity):
                 steps = []
                 self.tasks = []
                 for index, line in enumerate(filelines):
-                    if f'H\t' in line:
+                    if 'H\t' in line:
                         steps.append(index)
                 steps.append(len(filelines))
                 for index, step in enumerate(steps):

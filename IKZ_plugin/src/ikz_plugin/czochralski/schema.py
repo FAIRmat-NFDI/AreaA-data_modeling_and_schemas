@@ -18,21 +18,19 @@
 
 import numpy as np
 import pandas as pd
-
 from nomad.config import config
-from nomad.datamodel.metainfo.basesections import Instrument, Activity, Experiment
-from nomad.parsing.tabular import TableData
-from nomad.datamodel.data import EntryData, User, ArchiveSection
+from nomad.datamodel.data import ArchiveSection, EntryData, User
+from nomad.datamodel.metainfo.basesections import Activity, Experiment, Instrument
 from nomad.metainfo import (
-    SchemaPackage,
-    Quantity,
-    SubSection,
-    MEnum,
     Datetime,
-    Section,
-    Reference,
+    MEnum,
+    Quantity,
     QuantityReference,
+    SchemaPackage,
+    Section,
+    SubSection,
 )
+from nomad.parsing.tabular import TableData
 
 configuration = config.get_plugin_entry_point(
     'ikz_plugin.czochralski:czochralski_schema'

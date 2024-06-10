@@ -16,33 +16,22 @@
 # limitations under the License.
 #
 
-from time import sleep, perf_counter
 import pandas as pd
-
 from nomad.datamodel import EntryArchive
+from nomad.datamodel.data import (
+    EntryData,
+)
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.metainfo import (
-    MSection,
     Quantity,
     Section,
 )
 from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
-from nomad.datamodel.data import (
-    EntryData,
-)
-from nomad.search import search
-from nomad_material_processing.utils import create_archive as create_archive_ref
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
 
-from ikz_plugin.general.schema import IKZMOVPE1Category
 from ikz_plugin.movpe.schema import (
-    ExperimentMovpeIKZ,
     GrowthMovpe1IKZConstantParameters,
-    ThinFilmStackMovpe,
 )
 
 

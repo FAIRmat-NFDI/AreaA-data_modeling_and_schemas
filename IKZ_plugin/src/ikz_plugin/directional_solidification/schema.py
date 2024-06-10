@@ -16,48 +16,40 @@
 # limitations under the License.
 #
 
+import io
+
 import numpy as np
 import pandas as pd
-import io
-import plotly.express as px
-import plotly.graph_objs as go
-from plotly.subplots import make_subplots
-
+from nomad.config import config
+from nomad.datamodel.data import (
+    ArchiveSection,
+    EntryData,
+)
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.datamodel.metainfo.basesections import (
     Entity,
-    SectionReference,
     EntityReference,
-    PureSubstance,
-    Measurement,
     Experiment,
-    Component,
+    Instrument,
+    Measurement,
     Process,
     ProcessStep,
-    Instrument,
+    PureSubstance,
+    SectionReference,
 )
-
+from nomad.datamodel.metainfo.plot import PlotSection
+from nomad.metainfo import (
+    Datetime,
+    Quantity,
+    SchemaPackage,
+    Section,
+    SubSection,
+)
+from nomad.parsing.tabular import create_archive
+from nomad.utils import hash
 from structlog.stdlib import (
     BoundLogger,
 )
-
-from nomad.metainfo import (
-    SchemaPackage,
-    Quantity,
-    SubSection,
-    Datetime,
-    Section,
-)
-from nomad.datamodel.data import (
-    EntryData,
-    ArchiveSection,
-)
-
-from nomad.config import config
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-
-from nomad.utils import hash
-from nomad.parsing.tabular import TableData, create_archive
-from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
 
 from ikz_plugin.general.schema import IKZDSCategory
 

@@ -1,99 +1,77 @@
 import numpy as np
-import plotly.express as px
-from plotly.subplots import make_subplots
-from nomad.datamodel.metainfo.basesections import (
-    Activity,
-    ActivityStep,
-    System,
-    Component,
-    SystemComponent,
-    PureSubstance,
-    Process,
-    PureSubstanceComponent,
-    PureSubstanceSection,
-    EntityReference,
-    CompositeSystemReference,
-    PubChemPureSubstanceSection,
-    SectionReference,
-    Experiment,
-    ExperimentStep,
-)
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-    SectionProperties,
-)
-from nomad.parsing.tabular import TableData
-from structlog.stdlib import (
-    BoundLogger,
-)
+from lakeshore_plugin.hall.schema import HallMeasurement
+from laytec_epitt_plugin import LayTecEpiTTMeasurement
+from nomad.config import config
+from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
+    SectionProperties,
 )
-from nomad.config import config
-from nomad.metainfo import (
-    SchemaPackage,
-    Package,
-    Quantity,
-    SubSection,
-    MEnum,
-    Datetime,
-    Section,
-    Reference,
+from nomad.datamodel.metainfo.basesections import (
+    Component,
+    Experiment,
+    ExperimentStep,
+    Process,
+    PureSubstance,
+    PureSubstanceSection,
+    SectionReference,
+    System,
+    SystemComponent,
 )
-from nomad.datamodel.data import EntryData, ArchiveSection, Author
-
-from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
+from nomad.datamodel.metainfo.plot import PlotSection
 from nomad.datamodel.metainfo.workflow import (
     Link,
-    Task,
-    Workflow,
 )
-
+from nomad.metainfo import (
+    Quantity,
+    Reference,
+    SchemaPackage,
+    Section,
+    SubSection,
+)
+from nomad.parsing.tabular import TableData
 from nomad_material_processing import (
-    SubstrateReference,
     CrystallineSubstrate,
+    Geometry,
     Miscut,
     SubstrateCrystalProperties,
-    Geometry,
+    SubstrateReference,
     ThinFilm,
     ThinFilmStack,
     ThinFilmStackReference,
 )
 from nomad_material_processing.vapor_deposition import (
+    ChamberEnvironment,
+    GasFlow,
+    Pressure,
+    SampleParameters,
+    SubstrateHeater,
+    Temperature,
     VaporDeposition,
     VaporDepositionStep,
-    SampleParameters,
-    ChamberEnvironment,
-    SubstrateHeater,
-    Pressure,
-    Temperature,
-    MolarFlowRate,
     VolumetricFlowRate,
-    GasFlow,
 )
-
 from nomad_material_processing.vapor_deposition.cvd import (
     BubblerEvaporator,
-    FlashEvaporator,
     CVDSource,
-    Rotation,
+    FlashEvaporator,
     GasSupply,
+    Rotation,
 )
-
 from nomad_measurements import (
     ActivityReference,
 )
+from structlog.stdlib import (
+    BoundLogger,
+)
 
-from laytec_epitt_plugin import LayTecEpiTTMeasurement
-from lakeshore_plugin.hall.schema import HallMeasurement
+from ikz_plugin.characterization.schema import AFMmeasurement, LightMicroscope
 from ikz_plugin.general.schema import (
-    IKZMOVPECategory,
     IKZMOVPE1Category,
-    IKZMOVPE2Category,
+    IKZMOVPECategory,
     SubstratePreparationStepReference,
 )
-from ikz_plugin.characterization.schema import AFMmeasurement, LightMicroscope
 
 configuration = config.get_plugin_entry_point('ikz_plugin.movpe:movpe_schema')
 

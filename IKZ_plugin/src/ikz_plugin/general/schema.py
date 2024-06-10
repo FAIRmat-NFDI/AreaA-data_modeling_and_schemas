@@ -1,60 +1,38 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from nomad.datamodel.datamodel import (
-        EntryArchive,
-    )
-    from structlog.stdlib import (
-        BoundLogger,
-    )
+    pass
 
-from nomad.config import config
-from nomad.datamodel.data import Schema
-from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
-from nomad.metainfo import Quantity, SchemaPackage
 
 import numpy as np
-import yaml
-import json
-import math
-
-from nomad.datamodel.data import EntryData, EntryDataCategory, ArchiveSection
-
-from nomad.metainfo import (
-    SchemaPackage,
-    Package,
-    Quantity,
-    SubSection,
-    Datetime,
-    Section,
-    Category,
-    MEnum,
-    Reference,
-)
-
+from nomad.config import config
+from nomad.datamodel.data import ArchiveSection, EntryData, EntryDataCategory
+from nomad.datamodel.metainfo.annotations import ELNAnnotation
 from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,
-    Component,
-    System,
     Activity,
     ActivityStep,
-    ProcessStep,
-    Process,
+    Component,
+    CompositeSystem,
     CompositeSystemReference,
-    PureSubstanceSection,
+    Process,
+    ProcessStep,
     PureSubstanceComponent,
+    PureSubstanceSection,
+    System,
 )
-from nomad.config import config
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-    ELNComponentEnum,
+from nomad.metainfo import (
+    Category,
+    Datetime,
+    MEnum,
+    Quantity,
+    Reference,
+    SchemaPackage,
+    Section,
+    SubSection,
 )
-
-from nomad_material_processing import SubstrateReference
-
-from nomad_measurements import ActivityReference
-
 from nomad.utils import hash
+from nomad_material_processing import SubstrateReference
+from nomad_measurements import ActivityReference
 
 from ikz_plugin.utils import create_archive
 
@@ -577,11 +555,11 @@ class SampleCutIKZ(Process, EntryData):
         filetype = 'yaml'
         if not self.number_of_samples:
             logger.error(
-                f"Error in SampleCut: 'number_of_samples' expected, but None found."
+                "Error in SampleCut: 'number_of_samples' expected, but None found."
             )
         if not self.parent_sample:
             logger.error(
-                f"Error in SampleCut: 'parent_sample' expected, but None found."
+                "Error in SampleCut: 'parent_sample' expected, but None found."
             )
         if self.children_samples:
             logger.error(
