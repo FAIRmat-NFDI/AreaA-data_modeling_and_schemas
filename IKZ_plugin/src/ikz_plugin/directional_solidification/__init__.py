@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class DirSolEntryPoint(SchemaPackageEntryPoint):
-
     def load(self):
         from ikz_plugin.directional_solidification.schema import m_package
 
@@ -34,7 +33,6 @@ dir_sol_schema = DirSolEntryPoint(
 
 
 class DirSolManualProtocolParserEntryPoint(ParserEntryPoint):
-
     def load(self):
         from ikz_plugin.directional_solidification.parser import DSParserIKZ
 
@@ -43,7 +41,7 @@ class DirSolManualProtocolParserEntryPoint(ParserEntryPoint):
 
 dir_sol_manual_protocol_excel_parser = DirSolManualProtocolParserEntryPoint(
     name='DirSolManualProtocolParser',
-    description='Parser defined using the new plugin mechanism.',
+    description='Parse excel files containing parameters from the process.',
     mainfile_name_re=r'.+\.ds.manualprotocol.xlsx',
     mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 )

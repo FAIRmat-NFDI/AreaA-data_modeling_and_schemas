@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class Movpe1ParserEntryPoint(ParserEntryPoint):
-
     def load(self):
         from ikz_plugin.movpe.movpe1.growth_excel.parser import ParserMovpe1IKZ
 
@@ -29,7 +28,7 @@ class Movpe1ParserEntryPoint(ParserEntryPoint):
 
 movpe1_growth_excel_parser = Movpe1ParserEntryPoint(
     name='Movpe1Parser',
-    description='Parser defined using the new plugin mechanism.',
+    description='Parse excel files containing growth process parameters logged manually.',
     mainfile_name_re='.+\.xlsx',
     mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     mainfile_contents_dict={

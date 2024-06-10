@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class SubstrateParserEntryPoint(ParserEntryPoint):
-
     def load(self):
         from ikz_plugin.movpe.substrate.parser import MovpeSubstrateParser
 
@@ -29,7 +28,7 @@ class SubstrateParserEntryPoint(ParserEntryPoint):
 
 substrate_excel_parser = SubstrateParserEntryPoint(
     name='SubstrateParser',
-    description='Parser defined using the new plugin mechanism.',
+    description='Parse excel files containing substrate parameters logged manually.',
     mainfile_name_re='.+\.substrates.movpe.ikz.xlsx',
     mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     mainfile_contents_dict={
