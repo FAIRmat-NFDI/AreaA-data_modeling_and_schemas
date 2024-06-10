@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class MovpeEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.movpe.schema import m_package
@@ -30,5 +29,5 @@ class MovpeEntryPoint(SchemaPackageEntryPoint):
 
 movpe_schema = MovpeEntryPoint(
     name='MovpeSchema',
-    description='Schema package defined using the new plugin mechanism.',
+    description='Schema package for Metal-Organic Vapor Phase Epitaxy (MOVPE) definitions.',
 )

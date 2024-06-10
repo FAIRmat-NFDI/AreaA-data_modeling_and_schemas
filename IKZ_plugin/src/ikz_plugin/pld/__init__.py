@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class PldEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.pld.schema import m_package
@@ -30,5 +29,5 @@ class PldEntryPoint(SchemaPackageEntryPoint):
 
 pld_schema = PldEntryPoint(
     name='PldSchema',
-    description='Schema package defined using the new plugin mechanism.',
+    description='A package containing schemas for Pulsed Laser Deposition (PLD) done at IKZ.',
 )

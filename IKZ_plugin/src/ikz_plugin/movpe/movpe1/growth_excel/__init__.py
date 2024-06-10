@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class Movpe1ParserEntryPoint(ParserEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.movpe.movpe1.growth_excel.parser import ParserMovpe1IKZ

@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class CzochralskiEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.czochralski.schema import m_package
@@ -30,12 +29,11 @@ class CzochralskiEntryPoint(SchemaPackageEntryPoint):
 
 czochralski_schema = CzochralskiEntryPoint(
     name='CzochralskiSchema',
-    description='Schema package defined using the new plugin mechanism.',
+    description='Schema package for Czochralski Method definitions.',
 )
 
 
 class CzochralskiParserEntryPoint(ParserEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.czochralski.parser import CzParser

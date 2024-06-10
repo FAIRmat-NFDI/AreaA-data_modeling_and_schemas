@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class CharacterizationEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.characterization.schema import m_package
@@ -30,5 +29,5 @@ class CharacterizationEntryPoint(SchemaPackageEntryPoint):
 
 characterization_schema = CharacterizationEntryPoint(
     name='CharacterizationSchema',
-    description='Schema package defined using the new plugin mechanism.',
+    description='Schema package for general characterization methods used at IKZ.',
 )

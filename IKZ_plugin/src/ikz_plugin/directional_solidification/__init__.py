@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class DirSolEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.directional_solidification.schema import m_package
@@ -30,12 +29,11 @@ class DirSolEntryPoint(SchemaPackageEntryPoint):
 
 dir_sol_schema = DirSolEntryPoint(
     name='DirectionalSolidificationSchema',
-    description='Schema package defined using the new plugin mechanism.',
+    description='Schema package for Directional Solidification definitions.',
 )
 
 
 class DirSolManualProtocolParserEntryPoint(ParserEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.directional_solidification.parser import DSParserIKZ

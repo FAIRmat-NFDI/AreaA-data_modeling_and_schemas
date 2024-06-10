@@ -3,7 +3,6 @@ from pydantic import Field
 
 
 class GeneralEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.general.schema import m_package
@@ -13,5 +12,5 @@ class GeneralEntryPoint(SchemaPackageEntryPoint):
 
 general_schema = GeneralEntryPoint(
     name='GeneralSchema',
-    description='Schema package defined using the new plugin mechanism.',
+    description='Schema package for general definitions used throughout IKZ.',
 )

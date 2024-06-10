@@ -29,7 +29,6 @@ from typing import (
     Any,
     TYPE_CHECKING,
 )
-from nomad.config import config
 from nomad_material_processing import (
     CrystallineSubstrate,
     ThinFilm,
@@ -114,7 +113,6 @@ if TYPE_CHECKING:
         BoundLogger,
     )
 
-configuration = config.get_plugin_entry_point('ikz_plugin.pld:pld_schema')
 
 m_package = SchemaPackage()
 

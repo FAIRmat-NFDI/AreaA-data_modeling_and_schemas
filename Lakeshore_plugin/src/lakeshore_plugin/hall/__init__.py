@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class HallEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description="Custom configuration parameter")
 
     def load(self):
         from lakeshore_plugin.hall.schema import m_package
@@ -30,5 +29,5 @@ class HallEntryPoint(SchemaPackageEntryPoint):
 
 hall_schema = HallEntryPoint(
     name="HallSchema",
-    description="Schema package defined using the new plugin mechanism.",
+    description="Schema package for Hall measurement definitions.",
 )

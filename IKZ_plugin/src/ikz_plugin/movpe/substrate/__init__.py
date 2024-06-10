@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class SubstrateParserEntryPoint(ParserEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
 
     def load(self):
         from ikz_plugin.movpe.substrate.parser import MovpeSubstrateParser
