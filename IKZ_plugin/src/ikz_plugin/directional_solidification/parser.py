@@ -17,46 +17,41 @@
 #
 
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import (
-    MSection,
-    Quantity,
-)
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
 from nomad.datamodel.data import (
     EntryData,
 )
-
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+from nomad.metainfo import (
+    Quantity,
+)
+from nomad.parsing import MatchingParser
 from nomad_material_processing.utils import create_archive
-from ikz_plugin.directional_solidification import DirectionalSolidificationExperiment
+
+from ikz_plugin.directional_solidification.schema import (
+    DirectionalSolidificationExperiment,
+)
+
 
 class RawFileDigitalProtocol(EntryData):
     measurement = Quantity(
         type=DirectionalSolidificationExperiment,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
-        )
+        ),
     )
 
 
 class DSParserIKZ(MatchingParser):
-
-    def __init__(self):
-        super().__init__(
-            name='Directional Solidification IKZ',
-            code_name= 'Directional Solidification IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz']
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         data_file = mainfile.split('/')[-1]
-        data_file_with_path = mainfile.split("raw/")[-1]
+        data_file_with_path = mainfile.split('raw/')[-1]
         entry = DirectionalSolidificationExperiment()
         entry.digital_protocol_file = data_file_with_path
         file_name = f'{data_file[:-4]}.archive.json'
-        #entry.normalize(archive, logger)
-        archive.data = RawFileDigitalProtocol(measurement=create_archive(entry,archive,file_name))
+        # entry.normalize(archive, logger)
+        archive.data = RawFileDigitalProtocol(
+            measurement=create_archive(entry, archive, file_name)
+        )
         archive.metadata.entry_name = data_file + ' growth file'

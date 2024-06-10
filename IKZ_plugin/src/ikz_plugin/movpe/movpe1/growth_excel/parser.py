@@ -16,85 +16,70 @@
 # limitations under the License.
 #
 
-from time import sleep, perf_counter
 import pandas as pd
-import re
-import yaml
-import json
-
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import (
-    Section,
-    SubSection,
-    Quantity,
+from nomad.datamodel.data import (
+    EntryData,
 )
-from nomad.units import ureg
-
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
-    ELNComponentEnum,
 )
-from nomad.parsing import MatchingParser
-from nomad.datamodel.context import ServerContext
-from nomad.processing.data import Upload
-from nomad.app.v1.models.models import User
-from nomad.datamodel.data import EntryData, ArchiveSection
-from nomad.search import search, MetadataPagination
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.utils import hash
-
 from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,
-    PureSubstanceComponent,
     PubChemPureSubstanceSection,
+    PureSubstanceComponent,
     PureSubstanceSection,
 )
-
+from nomad.metainfo import (
+    Quantity,
+    Section,
+)
+from nomad.parsing import MatchingParser
+from nomad.search import MetadataPagination, search
+from nomad.units import ureg
+from nomad.utils import hash
 from nomad_material_processing import (
     SubstrateReference,
     ThinFilmReference,
 )
-
 from nomad_material_processing.vapor_deposition import (
-    Temperature,
     Pressure,
+    Temperature,
     VolumetricFlowRate,
 )
 from nomad_material_processing.vapor_deposition.cvd import (
-    Rotation,
     FlashEvaporator,
     GasLine,
+    Rotation,
 )
 
-from ikz_plugin import (
-    IKZMOVPE1Category,
-    Solution,
+from ikz_plugin.general.schema import (
     LiquidComponent,
+    Solution,
 )
-from ikz_plugin.utils import (
-    get_hash_ref,
-    create_archive,
-    row_timeseries,
-    clean_dataframe_headers,
-    typed_df_value,
-)
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
+    ChamberEnvironmentMovpe,
     ExperimentMovpeIKZ,
-    GrowthMovpeIKZReference,
+    FilamentTemperature,
+    FlashSourceIKZ,
+    GasSourceIKZ,
     GrowthMovpeIKZ,
+    GrowthMovpeIKZReference,
     GrowthStepMovpe1IKZ,
     PrecursorsPreparationIKZ,
     PrecursorsPreparationIKZReference,
-    ThinFilmStackMovpeReference,
-    ThinFilmStackMovpe,
-    ThinFilmMovpe,
-    SystemComponentIKZ,
     SampleParametersMovpe,
-    ChamberEnvironmentMovpe,
-    FlashSourceIKZ,
-    GasSourceIKZ,
     ShaftTemperature,
-    FilamentTemperature,
+    SystemComponentIKZ,
+    ThinFilmMovpe,
+    ThinFilmStackMovpe,
+    ThinFilmStackMovpeReference,
+)
+from ikz_plugin.utils import (
+    clean_dataframe_headers,
+    create_archive,
+    get_hash_ref,
+    row_timeseries,
 )
 
 
@@ -119,14 +104,6 @@ class RawFileMovpeDepositionControl(EntryData):
 
 
 class ParserMovpe1IKZ(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name='MOVPE 1 Deposition Control IKZ',
-            code_name='MOVPE 1 Deposition Control IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz'],
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         filetype = 'yaml'
         xlsx = pd.ExcelFile(mainfile)

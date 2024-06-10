@@ -1,10 +1,10 @@
 # IKZ Plugin
 
-This directory contains plugins designed for the IKZ institute.
+This directory contains a plugin called `ikz_plugin` designed for the IKZ institute.
 
-See also:
+This a python package that contains several subpackages for each technique.
 
-[movpe README](https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin/src/movpe)
+Check the README within each subfolder for more deatils on each technique.
 
 ## Structure
 
@@ -12,13 +12,15 @@ The directory tree:
 
 ```bash
 IKZ_plugin/
-├── nomad.yaml
 ├── src
-│   ├── czochralski
-│   ├── directional_solidification
-│   ├── pld
-│   ├── mbe
-│   └── movpe
+│   └── ikz_plugin
+│       ├── general
+│       ├── characterization
+│       ├── czochralski
+│       ├── directional_solidification
+│       ├── pld
+│       ├── mbe
+│       └── movpe
 └── tests
     └── data
         ├── czochralski
@@ -28,110 +30,23 @@ IKZ_plugin/
         └── movpe
 ```
 
-
-
-
-
-
-
 - `src/`: contains the source code for the plugins.
 - `tests/`: contains tests for the plugins.
 
-Please refer to the README.md file in each subdirectory for more information about each plugin.
-
 ## Installation
 
-To use these plugins, you need to:
+To use the plugin, you need to clone this repo in your local machine and install the package with pip:
 
-- add the `src/` directory to your `PYTHONPATH`. You can do this by running the following command in the terminal where you run NOMAD:
-
-```sh
-export PYTHONPATH="$PYTHONPATH:/your/path/IKZ_plugin/src"
-```
-
-Export this system variable in the same terminal where you run NOMAD (`nomad admin run appworker`).
-
-To make this path persistent, write into the .pyenv/bin/activate file of your virtual environment. Use the path of your local OS where you cloned this repository.
-
-- include it in your `nomad.yaml` configuration file and specify the Python package for the plugin in the options section.
-
-```yaml
-plugins:
-  include:
-    - 'parsers/movpe_2'
-```
-
-The name after the `/` is user defined.
-Then, specify the Python package for the plugin in the options section:
-
-```yaml
-options:
-  parsers/movpe_2:
-    python_package: movpe.movpe2_growth_parser
-```
-
-This plugin requires to clone in your local machines other plugin repositories:
-
-```sh
-git clone https://github.com/FAIRmat-NFDI/nomad-measurements
-git clone https://github.com/FAIRmat-NFDI/nomad-material-processing
+```bash
 git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas
+cd IKZ_plugin
+pip install -e .[dev]
 ```
 
-Consequentlty, other paths must be appended to `PYTHONPATH` system variable:
+For more details on what happens under the hood, check the `.toml` file in the `IKZ_plugin` folder:
 
-```sh
-export MYPATH=/your/path
-export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src
-export PYTHONPATH=$PYTHONPATH:$MYPATH/PLUGINS/nomad-measurements/src/nomad_measurements
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/Lakeshore_plugin/src
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/LayTec_EpiTT_plugin/src
-export PYTHONPATH=$PYTHONPATH:$MYPATH/AreaA-data_modeling_and_schemas/IKZ_plugin/src
-```
-
-To load the full functionality, use the following `plugins` section:
-
-```yaml
-plugins:
-  include:
-    - 'parsers/nomad_measurements/xrd'
-    - 'schemas/analysis'
-    - 'schemas/nomad_material_processing'
-    - 'parsers/hall_lakeshore_measurement'
-    - 'parsers/hall_lakeshore_instrument'
-    - 'parsers/laytec_epitt'
-    - 'parsers/czochralski'
-    - 'parsers/movpe_2_growth_excel'
-    - 'parsers/movpe_1_growth_excel'
-    - 'parsers/movpe_1_constant_parameters'
-    - 'parsers/movpe_substrates_IKZ'
-    - 'parsers/directional_solidification'
-  options:
-    parsers/nomad_measurements/xrd:
-      python_package: nomad_measurements.xrd.parser
-    schemas/analysis:
-      python_package: analysis
-    schemas/nomad_material_processing:
-      python_package: nomad_material_processing
-    parsers/hall_lakeshore_measurement:
-      python_package: hall.measurement_parser
-    parsers/hall_lakeshore_instrument:
-      python_package: hall.instrument_parser
-    parsers/laytec_epitt:
-      python_package: laytec_epitt
-    parsers/czochralski:
-      python_package: ikz_plugin.czochralski
-    parsers/movpe_2_growth_excel:
-      python_package: ikz_plugin.movpe.movpe2.growth_excel
-    parsers/movpe_1_growth_excel:
-      python_package: ikz_plugin.movpe.movpe1.growth_excel
-    parsers/movpe_1_constant_parameters:
-      python_package: ikz_plugin.movpe.movpe1.constant_parameters
-    parsers/movpe_substrates_IKZ:
-     python_package: ikz_plugin.movpe.substrate
-    parsers/directional_solidification:
-      python_package: ikz_plugin.directional_solidification
-```
+- all the installed subpackages are listed under the section `[project.entry-points.'nomad.plugin']`.
+- `dependencies` and `[project.optional-dependencies]` contain all the other packages installed along to this one.
 
 ## Usage
 
@@ -139,11 +54,7 @@ You need to copy and fill the tabular files in `tests/data` folder, then drag an
 
 Please refer to the README.md file in each subdirectory for more information about each plugin.
 
-## Develop
-
-### Fork the project
-
-This project was forked from the github project page <https://github.com/nomad-coe/nomad-schema-plugin-example>
+## Development
 
 ### Clone your fork
 

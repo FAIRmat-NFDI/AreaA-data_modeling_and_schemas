@@ -1,7 +1,0 @@
-description: This is a plugin schema and parser for LayTec EpiTT Measurements and exported *.dat files.
-name: LayTec EpiTT schema and parser plugin
-plugin_type: parser # schema
-mainfile_name_re: ^.*\.dat$
-mainfile_contents_re: 'FILETYPE = EpiNet DatArchiver File'
-parser_class_name: laytec_epitt.EpiTTParser
-code_name: EpiTT Parser

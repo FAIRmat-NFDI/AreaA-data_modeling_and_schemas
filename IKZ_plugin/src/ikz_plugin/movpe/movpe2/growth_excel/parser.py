@@ -16,29 +16,24 @@
 # limitations under the License.
 #
 
-from time import sleep, perf_counter
-import pandas as pd
-import yaml
-import json
+from time import sleep
 from typing import Dict, List
 
-from nomad.units import ureg
-
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.utils import hash
-from nomad.metainfo import MSection, Quantity, Section
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
+import pandas as pd
 from nomad.datamodel.data import (
     EntryData,
 )
-
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
 from nomad.datamodel.metainfo.basesections import (
-    SystemComponent,
     PubChemPureSubstanceSection,
 )
+from nomad.metainfo import Quantity, Section
+from nomad.parsing import MatchingParser
+from nomad.units import ureg
+from nomad.utils import hash
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
 from nomad_material_processing import (
@@ -53,28 +48,27 @@ from nomad_material_processing.vapor_deposition.cvd import (
     Rotation,
 )
 
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
+    ChamberEnvironmentMovpe,
     ExperimentMovpeIKZ,
-    GrowthStepMovpe2IKZ,
+    FilamentTemperature,
+    GasFlowMovpe,
     GrowthMovpeIKZ,
     GrowthMovpeIKZReference,
+    GrowthStepMovpe2IKZ,
+    LayTecTemperature,
+    SampleParametersMovpe,
+    ShaftTemperature,
     ThinFilmMovpe,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
-    SampleParametersMovpe,
-    ChamberEnvironmentMovpe,
-    GasFlowMovpe,
-    ShaftTemperature,
-    FilamentTemperature,
-    LayTecTemperature,
 )
-
 from ikz_plugin.utils import create_archive
 
 from ..utils import (
     fetch_substrate,
-    populate_sources,
     populate_gas_source,
+    populate_sources,
 )
 
 
@@ -96,14 +90,6 @@ class RawFileGrowthRun(EntryData):
 
 
 class ParserMovpe2IKZ(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name='MOVPE 2 IKZ',
-            code_name='MOVPE 2 IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz'],
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         """
         Parses the MOVPE 2 IKZ raw file and creates the corresponding archives.

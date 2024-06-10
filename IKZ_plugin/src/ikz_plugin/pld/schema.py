@@ -17,91 +17,88 @@
 #
 
 
-import re
 import datetime
+import re
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Union,
+)
 
 import numpy as np
 import plotly.graph_objects as go
-
-from typing import (
-    Union,
-    Dict,
-    Any,
-    TYPE_CHECKING,
+from nomad.datamodel.data import (
+    ArchiveSection,
+    EntryData,
+    EntryDataCategory,
+)
+from nomad.datamodel.metainfo.annotations import (
+    BrowserAnnotation,
+    ELNAnnotation,
+    ELNComponentEnum,
+    SectionProperties,
+)
+from nomad.datamodel.metainfo.basesections import (
+    CompositeSystem,
+    CompositeSystemReference,
+    PubChemPureSubstanceSection,
+    PureSubstanceComponent,
+    PureSubstanceSection,
+    ReadableIdentifiers,
+)
+from nomad.datamodel.metainfo.plot import (
+    PlotlyFigure,
+    PlotSection,
+)
+from nomad.datamodel.metainfo.workflow import (
+    Link,
+)
+from nomad.metainfo import (
+    MProxy,
+    Quantity,
+    Reference,
+    SchemaPackage,
+    Section,
+    SectionProxy,
+    SubSection,
+)
+from nomad.metainfo.metainfo import (
+    Category,
 )
 from nomad_material_processing import (
     CrystallineSubstrate,
-    ThinFilm,
-    ThinFilmStack,
+    Dopant,
+    Miscut,
     Parallelepiped,
     SubstrateCrystalProperties,
-    Miscut,
-    Dopant,
     SubstrateReference,
+    ThinFilm,
+    ThinFilmStack,
+)
+from nomad_material_processing.utils import (
+    create_archive,
 )
 from nomad_material_processing.vapor_deposition import (
-    Temperature,
     ChamberEnvironment,
-    Pressure,
     GasFlow,
+    Pressure,
+    Temperature,
     ThinFilmReference,
     ThinFilmStackReference,
     VolumetricFlowRate,
 )
 from nomad_material_processing.vapor_deposition.pvd import (
-    SourcePower,
     PVDSampleParameters,
+    SourcePower,
 )
 from nomad_material_processing.vapor_deposition.pvd.pld import (
     PLDLaser,
     PLDSource,
-    PulsedLaserDeposition,
     PLDStep,
     PLDTarget,
     PLDTargetComponent,
-)
-from nomad_material_processing.utils import (
-    create_archive,
-)
-from nomad.metainfo import (
-    Package,
-    Quantity,
-    Section,
-    SubSection,
-    MProxy,
-    Reference,
-    SectionProxy,
-)
-from nomad.datamodel.data import (
-    ArchiveSection,
-    EntryData,
-)
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-    BrowserAnnotation,
-    SectionProperties,
-    ELNComponentEnum,
-)
-from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,
-    PureSubstanceComponent,
-    PureSubstanceSection,
-    PubChemPureSubstanceSection,
-    ReadableIdentifiers,
-    CompositeSystemReference,
-)
-from nomad.datamodel.metainfo.plot import (
-    PlotSection,
-    PlotlyFigure,
-)
-from nomad.metainfo.metainfo import (
-    Category,
-)
-from nomad.datamodel.data import (
-    EntryDataCategory,
-)
-from nomad.datamodel.metainfo.workflow import (
-    Link,
+    PulsedLaserDeposition,
 )
 
 if TYPE_CHECKING:
@@ -112,7 +109,8 @@ if TYPE_CHECKING:
         BoundLogger,
     )
 
-m_package = Package(name='IKZ PLD')
+
+m_package = SchemaPackage()
 
 
 def read_dlog(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
@@ -823,8 +821,8 @@ class IKZPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
         self.figures = []
         layers = {}
         if self.data_log and self.recipe_log:
-            import pandas as pd
             import numpy as np
+            import pandas as pd
             from nomad.units import ureg
 
             pattern = re.compile(

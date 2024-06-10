@@ -23,11 +23,12 @@ import plotly.graph_objs as go
 
 from nomad.metainfo import (
     Quantity,
-    Package,
+    SchemaPackage,
     SubSection,
+    Category,
     Section,
 )
-from nomad.metainfo.metainfo import Category
+from nomad.config import config
 from nomad.datamodel.data import (
     EntryData,
     ArchiveSection,
@@ -47,7 +48,9 @@ from nomad_measurements import (
     ProcessReference,
 )
 
-m_package = Package(name="LayTec EpiTT Schema")
+configuration = config.get_plugin_entry_point("laytec_epitt_plugin:laytec_schema")
+
+m_package = SchemaPackage()
 
 
 class IKZLayTecEpiTTCategory(EntryDataCategory):
@@ -463,5 +466,6 @@ class LayTecEpiTTMeasurement(InSituMeasurement, PlotSection, EntryData):
                 "dragmode": False,
             }
             self.figures = [PlotlyFigure(label="figure 1", figure=overview_fig_json)]
+
 
 m_package.__init_metainfo__()

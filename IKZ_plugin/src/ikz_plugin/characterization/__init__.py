@@ -15,4 +15,19 @@
 # limitations under the License.
 #
 
-from .schema import *
+from nomad.config.models.plugins import SchemaPackageEntryPoint
+from pydantic import Field
+
+
+class CharacterizationEntryPoint(SchemaPackageEntryPoint):
+
+    def load(self):
+        from ikz_plugin.characterization.schema import m_package
+
+        return m_package
+
+
+characterization_schema = CharacterizationEntryPoint(
+    name='CharacterizationSchema',
+    description='Schema package for general characterization methods used at IKZ.',
+)

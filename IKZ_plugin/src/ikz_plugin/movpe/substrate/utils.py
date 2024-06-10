@@ -16,30 +16,9 @@
 # limitations under the License.
 #
 
-from time import sleep, perf_counter
+
 import pandas as pd
-from typing import Dict, List
-import yaml
-import json
-import math
-
-from nomad.datamodel.context import ClientContext
-
-from nomad.datamodel import EntryArchive
-from nomad.metainfo import MSection, Quantity, Section
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
-from nomad.datamodel.data import (
-    EntryData,
-)
-
-from nomad.units import ureg
-
 from nomad.datamodel.metainfo.basesections import (
-    SystemComponent,
-    CompositeSystemReference,
     ElementalComposition,
 )
 from nomad_material_processing import (

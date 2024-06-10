@@ -1,26 +1,27 @@
-import numpy as np
 import re
 from datetime import datetime as dt
+
+import numpy as np
 import pandas as pd
-import json
-
-from nomad.units import ureg
-from nomad.metainfo import (
-    Package,
-    Quantity,
-    SubSection,
-    MEnum,
-    Reference,
-    Datetime,
-    Section,
+from nomad.config import config
+from nomad.datamodel.data import EntryData
+from nomad.datamodel.metainfo.eln import (
+    Activity,
+    PublicationReference,
 )
-from nomad.datamodel.data import EntryData, ArchiveSection
-from nomad.datamodel.metainfo.eln import PublicationReference
-from nomad.datamodel.metainfo.eln import Entity, Activity, SampleID
-from nomad.datamodel.util import parse_path
-from ikz_plugin import SampleCutIKZ, SubstratePreparationIKZ
+from nomad.metainfo import (
+    Datetime,
+    Quantity,
+    SchemaPackage,
+    Section,
+    SubSection,
+)
 
-m_package = Package(name='mbe_IKZ')
+from ikz_plugin.general.schema import SampleCutIKZ, SubstratePreparationIKZ
+
+configuration = config.get_plugin_entry_point('ikz_plugin.mbe:mbe_schema')
+
+m_package = SchemaPackage()
 
 
 class GrowthRecipeStep(EntryData):
@@ -234,7 +235,7 @@ class GrowthRecipe(EntryData, Activity):
                 for step, value in enumerate(data[' Time']):
                     for key in data.keys():
                         if str(data[key][step]) == 'nan':
-                            data[key][step] = int(0)
+                            data[key][step] = 0
                     growth_recipes[step] = GrowthRecipeStep()
                     setattr(growth_recipes[step], 'epi_step', data['EpiStep'][step])
                     setattr(growth_recipes[step], 'name', data[' Type'][step])
@@ -257,7 +258,7 @@ class GrowthRecipe(EntryData, Activity):
                             str(data[' Time'][step]).replace('(t=', '').replace(')', '')
                         )
                         (time, usec) = clean.split('.')
-                        microsec = '{:<06}'.format(usec)
+                        microsec = f'{usec:<06}'
                         (hour, min, sec) = time.split(':')
                         time = pd.Timedelta(
                             seconds=int(sec),
@@ -355,7 +356,7 @@ class GrowthLog(EntryData, Activity):
                 steps = []
                 self.tasks = []
                 for index, line in enumerate(filelines):
-                    if f'H\t' in line:
+                    if 'H\t' in line:
                         steps.append(index)
                 steps.append(len(filelines))
                 for index, step in enumerate(steps):
@@ -441,7 +442,7 @@ class MbeExperiment(EntryData):
     substrate_preparation = SubSection(
         section_def=SubstratePreparationIKZ
     )  # , repeats=True)
-    substrate_cut = SubSection(section_def=SampleCut)  # , repeats=True)
+    substrate_cut = SubSection(section_def=SampleCutIKZ)  # , repeats=True)
     growth_recipe = SubSection(section_def=GrowthRecipe)  # , repeats=True)
     calibration_date_sources = SubSection(
         section_def=CalibrationDateSources

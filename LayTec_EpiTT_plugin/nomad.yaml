@@ -1,9 +1,0 @@
-normalize:
-  normalizers:
-    include:
-    - MetainfoNormalizer
-plugins:
-  include: 'schemas/laytecepitt'
-  options:
-    schemas/laytecepitt:
-      python_package: laytec_epitt

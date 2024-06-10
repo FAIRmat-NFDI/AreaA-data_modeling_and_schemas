@@ -17,45 +17,39 @@
 #
 
 import pandas as pd
-
-from nomad.utils import hash
-
 from nomad.datamodel import EntryArchive
-from nomad.metainfo import (
-    Section,
-    MSection,
-    Quantity,
-)
-
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
 from nomad.datamodel.data import (
     EntryData,
 )
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+from nomad.metainfo import (
+    Quantity,
+    Section,
+)
+from nomad.parsing import MatchingParser
+from nomad.utils import hash
 from nomad_material_processing import (
     Parallelepiped,
-    SubstrateCrystalProperties,
-    Miscut,
-    Dopant,
 )
-from ikz_plugin import IKZMOVPECategory
+
+from ikz_plugin.movpe.schema import (
+    MiscutMovpe,
+    SubstrateCrystalPropertiesMovpe,
+    SubstrateInventory,
+    SubstrateMovpe,
+    SubstrateMovpeReference,
+)
 from ikz_plugin.utils import (
     create_archive,
     typed_df_value,
 )
-from ikz_plugin.movpe import (
-    SubstrateInventory,
-    SubstrateMovpe,
-    SubstrateCrystalPropertiesMovpe,
-    MiscutMovpe,
-    SubstrateMovpeReference,
-)
+
 from .utils import (
-    populate_element,
     populate_dopant,
+    populate_element,
 )
 
 
@@ -70,14 +64,6 @@ class RawFileSubstrateInventory(EntryData):
 
 
 class MovpeSubstrateParser(MatchingParser):
-    def __init__(self):
-        super().__init__(
-            name='MOVPE Substrate IKZ',
-            code_name='MOVPE Substrate IKZ',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz'],
-        )
-
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
         filetype = 'yaml'
         data_file = mainfile.split('/')[-1]

@@ -16,4 +16,5 @@
 #
 
 from ikz_plugin.movpe.schema import *
+
 from .parser import *

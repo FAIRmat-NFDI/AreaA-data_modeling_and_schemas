@@ -16,59 +16,37 @@
 # limitations under the License.
 #
 
-from time import sleep, perf_counter
-import pandas as pd
-from typing import Dict, List
-import yaml
 import json
 import math
 
-from nomad.datamodel.context import ClientContext, ServerContext
-
-from nomad.datamodel import EntryArchive
-from nomad.metainfo import MSection, Quantity, Section
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
+import pandas as pd
+import yaml
 from nomad.app.v1.models.models import User
-from nomad.datamodel.data import (
-    EntryData,
-)
-
-from nomad.units import ureg
-
+from nomad.datamodel.context import ClientContext, ServerContext
 from nomad.datamodel.metainfo.basesections import (
-    SystemComponent,
-    CompositeSystemReference,
     PureSubstanceComponent,
     PureSubstanceSection,
 )
-
-from ikz_plugin import IKZMOVPE2Category
 from nomad.search import search
+from nomad.units import ureg
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
-from nomad_material_processing import (
-    SubstrateReference,
-)
 from nomad_material_processing.vapor_deposition import (
     MolarFlowRate,
-    Temperature,
     Pressure,
+    Temperature,
     VolumetricFlowRate,
 )
 from nomad_material_processing.vapor_deposition.cvd import (
-    PartialVaporPressure,
     BubblerEvaporator,
     GasLine,
+    PartialVaporPressure,
 )
 
-from ikz_plugin.movpe import (
+from ikz_plugin.movpe.schema import (
     BubblerSourceIKZ,
     GasSourceIKZ,
 )
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 
 def get_reference(upload_id, entry_id):
@@ -207,8 +185,8 @@ def fetch_substrate(archive, sample_id, substrate_id, logger):
         return None
     if len(search_result.data) >= 1:
         upload_id = search_result.data[0]['upload_id']
-        from nomad.files import UploadFiles
         from nomad.app.v1.routers.uploads import get_upload_with_read_access
+        from nomad.files import UploadFiles
 
         upload_files = UploadFiles.get(upload_id)
 

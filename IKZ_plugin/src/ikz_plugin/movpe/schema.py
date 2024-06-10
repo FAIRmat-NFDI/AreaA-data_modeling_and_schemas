@@ -1,101 +1,81 @@
 import numpy as np
-import plotly.express as px
-from plotly.subplots import make_subplots
-from nomad.datamodel.metainfo.basesections import (
-    Activity,
-    ActivityStep,
-    System,
-    Component,
-    SystemComponent,
-    PureSubstance,
-    Process,
-    PureSubstanceComponent,
-    PureSubstanceSection,
-    EntityReference,
-    CompositeSystemReference,
-    PubChemPureSubstanceSection,
-    SectionReference,
-    Experiment,
-    ExperimentStep,
-)
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-    SectionProperties,
-)
-from nomad.parsing.tabular import TableData
-from structlog.stdlib import (
-    BoundLogger,
-)
+from lakeshore_plugin.hall.schema import HallMeasurement
+from laytec_epitt_plugin import LayTecEpiTTMeasurement
+from nomad.config import config
+from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
+    SectionProperties,
 )
-
-from nomad.metainfo import (
-    Package,
-    Quantity,
-    SubSection,
-    MEnum,
-    Datetime,
-    Section,
-    Reference,
+from nomad.datamodel.metainfo.basesections import (
+    Component,
+    Experiment,
+    ExperimentStep,
+    Process,
+    PureSubstance,
+    PureSubstanceSection,
+    SectionReference,
+    System,
+    SystemComponent,
 )
-from nomad.datamodel.data import EntryData, ArchiveSection, Author
-from nomad.search import search, MetadataPagination
-
-from nomad.datamodel.metainfo.plot import PlotSection, PlotlyFigure
+from nomad.datamodel.metainfo.plot import PlotSection
 from nomad.datamodel.metainfo.workflow import (
     Link,
-    Task,
-    Workflow,
 )
-
+from nomad.metainfo import (
+    Quantity,
+    Reference,
+    SchemaPackage,
+    Section,
+    SubSection,
+)
+from nomad.parsing.tabular import TableData
 from nomad_material_processing import (
-    SubstrateReference,
     CrystallineSubstrate,
+    Geometry,
     Miscut,
     SubstrateCrystalProperties,
-    Geometry,
+    SubstrateReference,
     ThinFilm,
     ThinFilmStack,
     ThinFilmStackReference,
 )
 from nomad_material_processing.vapor_deposition import (
+    ChamberEnvironment,
+    GasFlow,
+    Pressure,
+    SampleParameters,
+    SubstrateHeater,
+    Temperature,
     VaporDeposition,
     VaporDepositionStep,
-    SampleParameters,
-    ChamberEnvironment,
-    SubstrateHeater,
-    Pressure,
-    Temperature,
-    MolarFlowRate,
     VolumetricFlowRate,
-    GasFlow,
 )
-
 from nomad_material_processing.vapor_deposition.cvd import (
     BubblerEvaporator,
-    FlashEvaporator,
     CVDSource,
-    Rotation,
+    FlashEvaporator,
     GasSupply,
+    Rotation,
 )
-
 from nomad_measurements import (
     ActivityReference,
 )
+from structlog.stdlib import (
+    BoundLogger,
+)
 
-from laytec_epitt import LayTecEpiTTMeasurement
-from hall import HallMeasurement
-from ikz_plugin import (
-    IKZMOVPECategory,
+from ikz_plugin.characterization.schema import AFMmeasurement, LightMicroscope
+from ikz_plugin.general.schema import (
     IKZMOVPE1Category,
-    IKZMOVPE2Category,
+    IKZMOVPECategory,
     SubstratePreparationStepReference,
 )
-from ikz_plugin.characterization import AFMmeasurement, LightMicroscope
 
-m_package = Package(name="movpe_IKZ")
+configuration = config.get_plugin_entry_point('ikz_plugin.movpe:movpe_schema')
+
+m_package = SchemaPackage()
 
 
 class BubblerPrecursor(PureSubstance, EntryData):
@@ -110,13 +90,13 @@ class BubblerPrecursor(PureSubstance, EntryData):
     m_def = Section(categories=[IKZMOVPECategory])
     name = Quantity(
         type=str,
-        description="FILL",
-        a_eln=ELNAnnotation(component="StringEditQuantity", label="Substance Name"),
+        description='FILL',
+        a_eln=ELNAnnotation(component='StringEditQuantity', label='Substance Name'),
     )
     cas_number = Quantity(
         type=str,
-        description="FILL",
-        a_eln=ELNAnnotation(component="StringEditQuantity", label="CAS number"),
+        description='FILL',
+        a_eln=ELNAnnotation(component='StringEditQuantity', label='CAS number'),
     )
     weight = Quantity(
         type=np.float64,
@@ -126,62 +106,62 @@ class BubblerPrecursor(PureSubstance, EntryData):
         all gaskets and corresponding caps must be attached!
         """,
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="gram",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='gram',
         ),
-        unit="kg",
+        unit='kg',
     )
     weight_difference = Quantity(
         type=np.float64,
-        description="Weight when the bubbler is exhausted.",
+        description='Weight when the bubbler is exhausted.',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="gram",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='gram',
         ),
-        unit="kg",
+        unit='kg',
     )
     total_comsumption = Quantity(
         type=np.float64,
-        description="FILL DESCRIPTION.",
+        description='FILL DESCRIPTION.',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="gram",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='gram',
         ),
-        unit="kg",
+        unit='kg',
     )
     a_parameter = Quantity(
         type=np.float64,
-        description="The A parameter of Antoine equation. Dimensionless.",
+        description='The A parameter of Antoine equation. Dimensionless.',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="millimeter",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter',
         ),
-        unit="millimeter",
+        unit='millimeter',
     )
     b_parameter = Quantity(
         type=np.float64,
-        description="The B parameter of Antoine equation. Temperature units.",
+        description='The B parameter of Antoine equation. Temperature units.',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius',
         ),
-        unit="kelvin",
+        unit='kelvin',
     )
     c_parameter = Quantity(
         type=np.float64,
-        description="The C parameter of Antoine equation. Temperature units.",
+        description='The C parameter of Antoine equation. Temperature units.',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius',
         ),
-        unit="kelvin",
+        unit='kelvin',
     )
     information_sheet = Quantity(
         type=str,
-        description="pdf files containing certificate and other documentation",
-        a_browser={"adaptor": "RawFileAdaptor"},
+        description='pdf files containing certificate and other documentation',
+        a_browser={'adaptor': 'RawFileAdaptor'},
         a_eln=ELNAnnotation(
-            component="FileEditQuantity",
+            component='FileEditQuantity',
         ),
     )
 
@@ -194,57 +174,57 @@ class Cylinder(Geometry):
     m_def = Section()
     height = Quantity(
         type=np.float64,
-        description="docs",
+        description='docs',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="nanometer",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='nanometer',
         ),
-        unit="nanometer",
+        unit='nanometer',
     )
     radius = Quantity(
         type=np.float64,
-        description="docs",
+        description='docs',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="millimeter",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter',
         ),
-        unit="millimeter",
+        unit='millimeter',
     )
     lower_cap_radius = Quantity(
         type=np.float64,
-        description="docs",
+        description='docs',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="millimeter",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter',
         ),
-        unit="millimeter",
+        unit='millimeter',
     )
     upper_cap_radius = Quantity(
         type=np.float64,
-        description="docs",
+        description='docs',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="millimeter",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter',
         ),
-        unit="millimeter",
+        unit='millimeter',
     )
     cap_surface_area = Quantity(
         type=np.float64,
-        description="docs",
+        description='docs',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="millimeter ** 2",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter ** 2',
         ),
-        unit="millimeter ** 2",
+        unit='millimeter ** 2',
     )
     lateral_surface_area = Quantity(
         type=np.float64,
-        description="docs",
+        description='docs',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="millimeter ** 2",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter ** 2',
         ),
-        unit="millimeter ** 2",
+        unit='millimeter ** 2',
     )
 
 
@@ -255,51 +235,51 @@ class MiscutMovpe(Miscut):
     commonly expressed as the angular displacement of a crystal plane.
     """
 
-    m_def = Section(label="Miscut")
+    m_def = Section(label='Miscut')
 
     b_angle = Quantity(
         type=float,
-        description="crystallographic orientation of the substrate in [hkl]",
+        description='crystallographic orientation of the substrate in [hkl]',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
+            component='NumberEditQuantity',
         ),
         a_tabular={
-            "name": "Substrate/Miscut b angle",
+            'name': 'Substrate/Miscut b angle',
             # "unit": "deg"
         },
-        unit="deg",
+        unit='deg',
     )
     angle = Quantity(
         type=float,
-        description="angular displacement from crystallographic orientation of the substrate",
+        description='angular displacement from crystallographic orientation of the substrate',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="deg",
-            label="c angle",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='deg',
+            label='c angle',
         ),
-        unit="deg",
+        unit='deg',
         a_tabular={
-            "name": "Substrate/Miscut c angle",
+            'name': 'Substrate/Miscut c angle',
             # "unit": "deg"
         },
     )
     angle_deviation = Quantity(
         type=float,
-        description="uncertainty on the angular displacement",
+        description='uncertainty on the angular displacement',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="deg",
-            label="c angle deviation",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='deg',
+            label='c angle deviation',
         ),
-        unit="deg",
+        unit='deg',
     )
     orientation = Quantity(
         type=str,
-        description="crystallographic orientation of the substrate in [hkl]",
+        description='crystallographic orientation of the substrate in [hkl]',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
-        a_tabular={"name": "Substrate/Miscut c Orientation"},
+        a_tabular={'name': 'Substrate/Miscut c Orientation'},
     )
 
 
@@ -310,13 +290,13 @@ class SubstrateCrystalPropertiesMovpe(SubstrateCrystalProperties):
     and the specific arrangement of atoms within the crystal lattice.
     """
 
-    m_def = Section(label="CrystalProperties")
+    m_def = Section(label='CrystalProperties')
     orientation = Quantity(
         type=str,
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
-        a_tabular={"name": "Substrate/Orientation"},
+        a_tabular={'name': 'Substrate/Orientation'},
     )
     miscut = SubSection(section_def=MiscutMovpe)
 
@@ -327,29 +307,29 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
     """
 
     m_def = Section(
-        label_quantity="lab_id", categories=[IKZMOVPECategory], label="Substrate"
+        label_quantity='lab_id', categories=[IKZMOVPECategory], label='Substrate'
     )
     as_received = Quantity(
         type=bool,
-        description="Is the sample annealed?",
+        description='Is the sample annealed?',
         a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
+            component='BoolEditQuantity',
         ),
         # a_tabular={"name": "Substrate/As Received"},
     )
     etching = Quantity(
         type=bool,
-        description="Usable Sample",
+        description='Usable Sample',
         a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
+            component='BoolEditQuantity',
         ),
         # a_tabular={"name": "Substrate/Etching"},
     )
     annealing = Quantity(
         type=bool,
-        description="Usable Sample",
+        description='Usable Sample',
         a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
+            component='BoolEditQuantity',
         ),
         # a_tabular={"name": "Substrate/Annealing"},
     )
@@ -367,59 +347,59 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
     # )
     tags = Quantity(
         type=str,
-        description="FILL",
+        description='FILL',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Box ID",
+            component='StringEditQuantity',
+            label='Box ID',
         ),
-        a_tabular={"name": "Substrate/Substrate Box"},
+        a_tabular={'name': 'Substrate/Substrate Box'},
     )
     re_etching = Quantity(
         type=bool,
-        description="Usable Sample",
+        description='Usable Sample',
         a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
+            component='BoolEditQuantity',
         ),
-        a_tabular={"name": "Substrate/Re-Etching"},
+        a_tabular={'name': 'Substrate/Re-Etching'},
     )
     re_annealing = Quantity(
         type=bool,
-        description="Usable Sample",
+        description='Usable Sample',
         a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
+            component='BoolEditQuantity',
         ),
-        a_tabular={"name": "Substrate/Re-Annealing"},
+        a_tabular={'name': 'Substrate/Re-Annealing'},
     )
     epi_ready = Quantity(
         type=bool,
-        description="Sample ready for epitaxy",
+        description='Sample ready for epitaxy',
         a_eln=ELNAnnotation(
-            component="BoolEditQuantity",
+            component='BoolEditQuantity',
         ),
-        a_tabular={"name": "Substrate/Epi Ready"},
+        a_tabular={'name': 'Substrate/Epi Ready'},
     )
     quality = Quantity(
         type=str,
-        description="Defective Sample",
+        description='Defective Sample',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
-        a_tabular={"name": "Substrate/Quality"},
+        a_tabular={'name': 'Substrate/Quality'},
     )
     information_sheet = Quantity(
         type=str,
-        description="pdf files containing certificate and other documentation",
-        a_browser={"adaptor": "RawFileAdaptor"},
+        description='pdf files containing certificate and other documentation',
+        a_browser={'adaptor': 'RawFileAdaptor'},
         a_eln=ELNAnnotation(
-            component="FileEditQuantity",
+            component='FileEditQuantity',
         ),
     )
     description = Quantity(
         type=str,
-        description="description",
+        description='description',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Notes",
+            component='StringEditQuantity',
+            label='Notes',
         ),
     )
 
@@ -430,24 +410,24 @@ class ThinFilmMovpe(ThinFilm, EntryData):
     """
 
     m_def = Section(
-        label_quantity="lab_id",
+        label_quantity='lab_id',
         categories=[IKZMOVPECategory],
-        label="ThinFilmMovpe",
+        label='ThinFilmMovpe',
     )
     lab_id = Quantity(
         type=str,
-        description="the Sample created in the current growth",
-        a_tabular={"name": "GrowthRun/Sample Name"},
+        description='the Sample created in the current growth',
+        a_tabular={'name': 'GrowthRun/Sample Name'},
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Grown Sample ID",
+            component='StringEditQuantity',
+            label='Grown Sample ID',
         ),
     )
     test_quantities = Quantity(
         type=str,
-        description="Test quantity",
+        description='Test quantity',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
     )
 
@@ -458,24 +438,24 @@ class ThinFilmStackMovpe(ThinFilmStack, EntryData):
     """
 
     m_def = Section(
-        label_quantity="lab_id",
+        label_quantity='lab_id',
         categories=[IKZMOVPECategory],
-        label="ThinFilmStackMovpe",
+        label='ThinFilmStackMovpe',
     )
     lab_id = Quantity(
         type=str,
-        description="the Sample created in the current growth",
-        a_tabular={"name": "GrowthRun/Sample Name"},
+        description='the Sample created in the current growth',
+        a_tabular={'name': 'GrowthRun/Sample Name'},
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Grown Sample ID",
+            component='StringEditQuantity',
+            label='Grown Sample ID',
         ),
     )
     test_quantities = Quantity(
         type=str,
-        description="Test quantity",
+        description='Test quantity',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
     )
 
@@ -487,19 +467,19 @@ class ThinFilmStackMovpeReference(ThinFilmStackReference):
 
     lab_id = Quantity(
         type=str,
-        description="the Sample created in the current growth",
-        a_tabular={"name": "GrowthRun/Sample Name"},
+        description='the Sample created in the current growth',
+        a_tabular={'name': 'GrowthRun/Sample Name'},
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Grown Sample ID",
+            component='StringEditQuantity',
+            label='Grown Sample ID',
         ),
     )
     reference = Quantity(
         type=ThinFilmStackMovpe,
-        description="A reference to a NOMAD `ThinFilmStackMovpe` entry.",
+        description='A reference to a NOMAD `ThinFilmStackMovpe` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="ThinFilmStackMovpe Reference",
+            component='ReferenceEditQuantity',
+            label='ThinFilmStackMovpe Reference',
         ),
     )
 
@@ -517,18 +497,18 @@ class SystemComponentIKZ(SystemComponent):
 
     molar_concentration = Quantity(
         type=np.float64,
-        description="The solvent for the current substance.",
-        unit="mol/liter",
-        a_eln=dict(component="NumberEditQuantity", defaultDisplayUnit="mol/liter"),
+        description='The solvent for the current substance.',
+        unit='mol/liter',
+        a_eln=dict(component='NumberEditQuantity', defaultDisplayUnit='mol/liter'),
         a_tabular={
-            "name": "Precursors/Molar conc",
+            'name': 'Precursors/Molar conc',
             # "unit": "gram"
         },
     )
     system = Quantity(
         type=Reference(System.m_def),
-        description="A reference to the component system.",
-        a_eln=dict(component="ReferenceEditQuantity"),
+        description='A reference to the component system.',
+        a_eln=dict(component='ReferenceEditQuantity'),
     )
 
 
@@ -539,53 +519,53 @@ class PrecursorsPreparationIKZ(Process, EntryData):
 
     m_def = Section(
         a_eln={
-            "hide": [
-                "instruments",
-                "steps",
-                "samples",
+            'hide': [
+                'instruments',
+                'steps',
+                'samples',
             ]
         },
-        label_quantity="name",
+        label_quantity='name',
         categories=[IKZMOVPE1Category],
-        label="PrecursorsPreparation",
+        label='PrecursorsPreparation',
     )
     data_file = Quantity(
         type=str,
-        description="Upload here the spreadsheet file containing the deposition control data",
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        description='Upload here the spreadsheet file containing the deposition control data',
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     lab_id = Quantity(
         type=str,
-        description="FILL",
-        a_tabular={"name": "Precursors/Sample ID"},
-        a_eln={"component": "StringEditQuantity", "label": "Sample ID"},
+        description='FILL',
+        a_tabular={'name': 'Precursors/Sample ID'},
+        a_eln={'component': 'StringEditQuantity', 'label': 'Sample ID'},
     )
     name = Quantity(
         type=str,
-        description="FILL",
-        a_tabular={"name": "Precursors/number"},
+        description='FILL',
+        a_tabular={'name': 'Precursors/number'},
         a_eln={
-            "component": "StringEditQuantity",
+            'component': 'StringEditQuantity',
         },
     )
     description = Quantity(
         type=str,
-        a_eln={"component": "StringEditQuantity"},
+        a_eln={'component': 'StringEditQuantity'},
     )
     flow_titanium = Quantity(  # TODO make this a single flow
         type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Precursors/Set flow Ti"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "ml / minute"},
-        unit="ml / minute",
+        description='FILL THE DESCRIPTION',
+        a_tabular={'name': 'Precursors/Set flow Ti'},
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'ml / minute'},
+        unit='ml / minute',
     )
     flow_calcium = Quantity(
         type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Precursors/Set flow Ca"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "ml / minute"},
-        unit="ml / minute",
+        description='FILL THE DESCRIPTION',
+        a_tabular={'name': 'Precursors/Set flow Ca'},
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'ml / minute'},
+        unit='ml / minute',
     )
     # precursors = SubSection(
     #     section_def=SystemComponent,
@@ -610,14 +590,14 @@ class PrecursorsPreparationIKZReference(ActivityReference):
     """
 
     m_def = Section(
-        label="PrecursorsPreparationReference",
+        label='PrecursorsPreparationReference',
     )
     reference = Quantity(
         type=PrecursorsPreparationIKZ,
-        description="A reference to a NOMAD `PrecursorsPreparationIKZ` entry.",
+        description='A reference to a NOMAD `PrecursorsPreparationIKZ` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="PrecursorsPreparationIKZ Reference",
+            component='ReferenceEditQuantity',
+            label='PrecursorsPreparationIKZ Reference',
         ),
     )
 
@@ -629,10 +609,10 @@ class InSituMonitoringReference(SectionReference):
 
     reference = Quantity(
         type=LayTecEpiTTMeasurement,
-        description="A reference to a NOMAD `InSituMonitoring` entry.",
+        description='A reference to a NOMAD `InSituMonitoring` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="In situ Monitoring Reference",
+            component='ReferenceEditQuantity',
+            label='In situ Monitoring Reference',
         ),
     )
 
@@ -645,10 +625,10 @@ class HallMeasurementReference(SectionReference):
 
     reference = Quantity(
         type=HallMeasurement,
-        description="A reference to a NOMAD `HallMeasurement` entry.",
+        description='A reference to a NOMAD `HallMeasurement` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="Hall Measurement Reference",
+            component='ReferenceEditQuantity',
+            label='Hall Measurement Reference',
         ),
     )
 
@@ -662,14 +642,14 @@ class SubstrateMovpeReference(SubstrateReference):
         type=str,
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.StringEditQuantity,
-            label="Substrate ID",
+            label='Substrate ID',
         ),
     )
     reference = Quantity(
         type=SubstrateMovpe,
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.ReferenceEditQuantity,
-            label="Substrate",
+            label='Substrate',
         ),
     )
 
@@ -682,11 +662,11 @@ class SubstrateInventory(EntryData, TableData):
     m_def = Section(
         a_eln=None,
         categories=[IKZMOVPECategory],
-        label="SubstrateInventory",
+        label='SubstrateInventory',
     )
     data_file = Quantity(
         type=str,
-        description="Upload here the spreadsheet file containing the substrates data",
+        description='Upload here the spreadsheet file containing the substrates data',
         # a_tabular_parser={
         #     "parsing_options": {"comment": "#"},
         #     "mapping_options": [
@@ -697,8 +677,8 @@ class SubstrateInventory(EntryData, TableData):
         #         }
         #     ],
         # },
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     substrates = SubSection(
         section_def=SubstrateMovpeReference,
@@ -717,10 +697,10 @@ class AFMmeasurementReference(SectionReference):
 
     reference = Quantity(
         type=AFMmeasurement,
-        description="A reference to a NOMAD `AFMmeasurement` entry.",
+        description='A reference to a NOMAD `AFMmeasurement` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="AFM Measurement Reference",
+            component='ReferenceEditQuantity',
+            label='AFM Measurement Reference',
         ),
     )
 
@@ -732,10 +712,10 @@ class LiMimeasurementReference(SectionReference):
 
     reference = Quantity(
         type=LightMicroscope,
-        description="A reference to a NOMAD `LightMicroscope` entry.",
+        description='A reference to a NOMAD `LightMicroscope` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="Light Microscope Measurement Reference",
+            component='ReferenceEditQuantity',
+            label='Light Microscope Measurement Reference',
         ),
     )
 
@@ -814,7 +794,7 @@ class GasFlowMovpe(GasFlow):
     )
     flow_rate = SubSection(
         section_def=VolumetricFlowRate,
-        label="Push Flow Rate",
+        label='Push Flow Rate',
     )
     purge_flow_rate = SubSection(
         section_def=VolumetricFlowRate,
@@ -844,106 +824,106 @@ class SampleParametersMovpe(SampleParameters):
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
-                    "shaft_temperature",
-                    "filament_temperature",
-                    "laytec_temperature",
-                    "substrate_temperature",
-                    "in_situ_reflectance",
-                    "growth_rate",
-                    "layer",
-                    "substrate",
+                    'shaft_temperature',
+                    'filament_temperature',
+                    'laytec_temperature',
+                    'substrate_temperature',
+                    'in_situ_reflectance',
+                    'growth_rate',
+                    'layer',
+                    'substrate',
                 ],
             ),
         ),
         a_plotly_graph_object=[
             {
-                "label": "shaft temperature",
-                "index": 0,
-                "dragmode": "pan",
-                "data": {
-                    "type": "scattergl",
-                    "line": {"width": 2},
-                    "marker": {"size": 6},
-                    "mode": "lines+markers",
-                    "name": "Temperature",
-                    "x": "#shaft_temperature/time",
-                    "y": "#shaft_temperature/value",
+                'label': 'shaft temperature',
+                'index': 0,
+                'dragmode': 'pan',
+                'data': {
+                    'type': 'scattergl',
+                    'line': {'width': 2},
+                    'marker': {'size': 6},
+                    'mode': 'lines+markers',
+                    'name': 'Temperature',
+                    'x': '#shaft_temperature/time',
+                    'y': '#shaft_temperature/value',
                 },
-                "layout": {
-                    "title": {"text": "Shaft Temperature"},
-                    "xaxis": {
-                        "showticklabels": True,
-                        "fixedrange": True,
-                        "ticks": "",
-                        "title": {"text": "Process time [min]"},
-                        "showline": True,
-                        "linewidth": 1,
-                        "linecolor": "black",
-                        "mirror": True,
+                'layout': {
+                    'title': {'text': 'Shaft Temperature'},
+                    'xaxis': {
+                        'showticklabels': True,
+                        'fixedrange': True,
+                        'ticks': '',
+                        'title': {'text': 'Process time [min]'},
+                        'showline': True,
+                        'linewidth': 1,
+                        'linecolor': 'black',
+                        'mirror': True,
                     },
-                    "yaxis": {
-                        "showticklabels": True,
-                        "fixedrange": True,
-                        "ticks": "",
-                        "title": {"text": "Temperature [°C]"},
-                        "showline": True,
-                        "linewidth": 1,
-                        "linecolor": "black",
-                        "mirror": True,
+                    'yaxis': {
+                        'showticklabels': True,
+                        'fixedrange': True,
+                        'ticks': '',
+                        'title': {'text': 'Temperature [°C]'},
+                        'showline': True,
+                        'linewidth': 1,
+                        'linecolor': 'black',
+                        'mirror': True,
                     },
-                    "showlegend": False,
+                    'showlegend': False,
                 },
-                "config": {
-                    "displayModeBar": False,
-                    "scrollZoom": False,
-                    "responsive": False,
-                    "displaylogo": False,
-                    "dragmode": False,
+                'config': {
+                    'displayModeBar': False,
+                    'scrollZoom': False,
+                    'responsive': False,
+                    'displaylogo': False,
+                    'dragmode': False,
                 },
             },
             {
-                "label": "filament temperature",
-                "index": 1,
-                "dragmode": "pan",
-                "data": {
-                    "type": "scattergl",
-                    "line": {"width": 2},
-                    "marker": {"size": 6},
-                    "mode": "lines+markers",
-                    "name": "Filament Temperature",
-                    "x": "#filament_temperature/time",
-                    "y": "#filament_temperature/value",
+                'label': 'filament temperature',
+                'index': 1,
+                'dragmode': 'pan',
+                'data': {
+                    'type': 'scattergl',
+                    'line': {'width': 2},
+                    'marker': {'size': 6},
+                    'mode': 'lines+markers',
+                    'name': 'Filament Temperature',
+                    'x': '#filament_temperature/time',
+                    'y': '#filament_temperature/value',
                 },
-                "layout": {
-                    "title": {"text": "Filament Temperature"},
-                    "xaxis": {
-                        "showticklabels": True,
-                        "fixedrange": True,
-                        "ticks": "",
-                        "title": {"text": "Process time [min]"},
+                'layout': {
+                    'title': {'text': 'Filament Temperature'},
+                    'xaxis': {
+                        'showticklabels': True,
+                        'fixedrange': True,
+                        'ticks': '',
+                        'title': {'text': 'Process time [min]'},
                         # "showline": True,
-                        "linewidth": 1,
-                        "linecolor": "black",
-                        "mirror": True,
+                        'linewidth': 1,
+                        'linecolor': 'black',
+                        'mirror': True,
                     },
-                    "yaxis": {
-                        "showticklabels": True,
-                        "fixedrange": True,
-                        "ticks": "",
-                        "title": {"text": "Temperature [°C]"},
+                    'yaxis': {
+                        'showticklabels': True,
+                        'fixedrange': True,
+                        'ticks': '',
+                        'title': {'text': 'Temperature [°C]'},
                         # "showline": True,
-                        "linewidth": 1,
-                        "linecolor": "black",
-                        "mirror": True,
+                        'linewidth': 1,
+                        'linecolor': 'black',
+                        'mirror': True,
                     },
-                    "showlegend": False,
+                    'showlegend': False,
                 },
-                "config": {
-                    "displayModeBar": False,
-                    "scrollZoom": False,
-                    "responsive": False,
-                    "displaylogo": False,
-                    "dragmode": False,
+                'config': {
+                    'displayModeBar': False,
+                    'scrollZoom': False,
+                    'responsive': False,
+                    'displaylogo': False,
+                    'dragmode': False,
                 },
             },
         ],
@@ -954,13 +934,13 @@ class SampleParametersMovpe(SampleParameters):
         Sample name.
         """,
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
     )
     distance_to_source = Quantity(
         type=float,
-        unit="meter",
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "millimeter"},
+        unit='meter',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'millimeter'},
         description="""
         The distance between the substrate and the source.
         It is an array because multiple sources can be used.
@@ -997,10 +977,10 @@ class GrowthStepMovpeIKZ(VaporDepositionStep, PlotSection):
 
     step_index = Quantity(
         type=str,
-        description="the step index",
-        a_tabular={"name": "Constant Parameters/Step"},
+        description='the step index',
+        a_tabular={'name': 'Constant Parameters/Step'},
         a_eln={
-            "component": "StringEditQuantity",
+            'component': 'StringEditQuantity',
         },
     )
 
@@ -1012,37 +992,37 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
 
     m_def = Section(
         a_eln=None,
-        label="Growth Step Movpe 1",
+        label='Growth Step Movpe 1',
     )
     comment = Quantity(
         type=str,
-        description="description",
-        a_eln={"component": "StringEditQuantity"},
-        label="Notes",
+        description='description',
+        a_eln={'component': 'StringEditQuantity'},
+        label='Notes',
     )
     temperature_substrate = Quantity(  # CHECK why they are not in the new excel
         type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Constant Parameters/Substrate temperature"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
+        description='FILL THE DESCRIPTION',
+        a_tabular={'name': 'Constant Parameters/Substrate temperature'},
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'celsius'},
+        unit='celsius',
     )
     peristaltic_pump_rotation_titan = (
         Quantity(  # CHECK why they are not in the new excel
             type=np.float64,
-            description="FILL THE DESCRIPTION",
-            a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Titan"},
-            a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-            unit="celsius",
+            description='FILL THE DESCRIPTION',
+            a_tabular={'name': 'Constant Parameters/Peristaltic pump rotation Titan'},
+            a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'celsius'},
+            unit='celsius',
         )
     )
     peristaltic_pump_rotation_Sr_La = (
         Quantity(  # CHECK why they are not in the new excel
             type=np.float64,
-            description="FILL THE DESCRIPTION",
-            a_tabular={"name": "Constant Parameters/Peristaltic pump rotation Sr La"},
-            a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-            unit="celsius",
+            description='FILL THE DESCRIPTION',
+            a_tabular={'name': 'Constant Parameters/Peristaltic pump rotation Sr La'},
+            a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'celsius'},
+            unit='celsius',
         )
     )
     duration = VaporDepositionStep.duration.m_copy()
@@ -1050,7 +1030,7 @@ class GrowthStepMovpe1IKZ(GrowthStepMovpeIKZ):
     sample_parameters = SubSection(
         section_def=SampleParametersMovpe,
         repeats=True,
-        label="Samples",
+        label='Samples',
     )
     sources = SubSection(
         section_def=CVDSource,
@@ -1126,7 +1106,7 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
     """
 
     m_def = Section(
-        label="Growth Step Movpe 2",
+        label='Growth Step Movpe 2',
         a_eln=None,
     )
     name = Quantity(
@@ -1134,27 +1114,27 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
         description="""
         A short and descriptive name for this step.
         """,
-        a_tabular={"name": "GrowthRun/Step name"},
+        a_tabular={'name': 'GrowthRun/Step name'},
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Step name",
+            component='StringEditQuantity',
+            label='Step name',
         ),
     )
     step_index = Quantity(
         type=str,
-        description="the ID from RTG",
-        a_tabular={"name": "GrowthRun/Step Index"},
+        description='the ID from RTG',
+        a_tabular={'name': 'GrowthRun/Step Index'},
         a_eln={
-            "component": "StringEditQuantity",
+            'component': 'StringEditQuantity',
         },
     )
     duration = VaporDepositionStep.duration.m_copy()
 
     comment = Quantity(
         type=str,
-        description="description",
-        a_eln={"component": "StringEditQuantity"},
-        label="Notes",
+        description='description',
+        a_eln={'component': 'StringEditQuantity'},
+        label='Notes',
     )
     sample_parameters = SubSection(
         section_def=SampleParametersMovpe,
@@ -1181,12 +1161,12 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
-                    "name",
-                    "method",
-                    "data_file",
-                    "datetime",
-                    "end_time",
-                    "duration",
+                    'name',
+                    'method',
+                    'data_file',
+                    'datetime',
+                    'end_time',
+                    'duration',
                 ],
             ),
             # hide=[
@@ -1198,9 +1178,9 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
             #     "lab_id",
             # ],
         ),
-        label_quantity="lab_id",
+        label_quantity='lab_id',
         categories=[IKZMOVPECategory],
-        label="Growth Process",
+        label='Growth Process',
     )
 
     # datetime
@@ -1210,11 +1190,11 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
     # method
     method = Quantity(
         type=str,
-        default="MOVPE IKZ",
+        default='MOVPE IKZ',
     )
     data_file = Quantity(
         type=str,
-        description="Upload here the spreadsheet file containing the deposition control data",
+        description='Upload here the spreadsheet file containing the deposition control data',
         # a_tabular_parser={
         #     "parsing_options": {"comment": "#"},
         #     "mapping_options": [
@@ -1225,20 +1205,20 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
         #         }
         #     ],
         # },
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     description = Quantity(
         type=str,
-        description="description",
-        a_eln={"component": "StringEditQuantity"},
-        label="Notes",
+        description='description',
+        a_eln={'component': 'StringEditQuantity'},
+        label='Notes',
     )
     recipe_id = Quantity(
         type=str,
-        description="the ID from RTG",
-        a_tabular={"name": "GrowthRun/Recipe Name"},
-        a_eln={"component": "StringEditQuantity", "label": "Recipe ID"},
+        description='the ID from RTG',
+        a_tabular={'name': 'GrowthRun/Recipe Name'},
+        a_eln={'component': 'StringEditQuantity', 'label': 'Recipe ID'},
     )
     steps = SubSection(
         section_def=GrowthStepMovpeIKZ,
@@ -1263,27 +1243,27 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
                     for sample in step.sample_parameters:
                         outputs.append(
                             Link(
-                                name=f"{sample.layer.name}",
+                                name=f'{sample.layer.name}',
                                 section=sample.layer.reference,
                             )
                         )
                         outputs.append(
                             Link(
-                                name=f"{sample.substrate.name}",
+                                name=f'{sample.substrate.name}',
                                 section=sample.substrate.reference,
                             )
                         )
                         if hasattr(
-                            getattr(sample.substrate.reference, "substrate"),
-                            "name",
+                            getattr(sample.substrate.reference, 'substrate'),
+                            'name',
                         ):
                             # sample.substrate.reference.substrate.reference is not None:
                             inputs.append(
                                 Link(
-                                    name=f"{sample.substrate.reference.substrate.name}",
+                                    name=f'{sample.substrate.reference.substrate.name}',
                                     section=getattr(
                                         sample.substrate.reference.substrate,
-                                        "reference",
+                                        'reference',
                                         None,
                                     ),
                                 )
@@ -1298,13 +1278,13 @@ class GrowthMovpeIKZReference(ActivityReference):
     """
 
     m_def = Section(
-        label="GrowthProcessReference",
+        label='GrowthProcessReference',
     )
     reference = Quantity(
         type=GrowthMovpeIKZ,
-        description="A reference to a NOMAD `GrowthMovpeIKZ` entry.",
+        description='A reference to a NOMAD `GrowthMovpeIKZ` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
+            component='ReferenceEditQuantity',
         ),
     )
 
@@ -1316,62 +1296,62 @@ class GrowthMovpe1IKZConstantParameters(Process, EntryData, TableData):
 
     m_def = Section(
         # a_eln={"hide": ["samples"]},
-        label_quantity="lab_id",  # "growth_id",
+        label_quantity='lab_id',  # "growth_id",
         categories=[IKZMOVPE1Category],
-        label="Growth Process Constant parameters",
+        label='Growth Process Constant parameters',
     )
     data_file = Quantity(
         type=str,
-        description="Upload here the spreadsheet file containing the growth data",
+        description='Upload here the spreadsheet file containing the growth data',
         a_tabular_parser={
-            "parsing_options": {"comment": "#"},
-            "mapping_options": [
+            'parsing_options': {'comment': '#'},
+            'mapping_options': [
                 {
-                    "mapping_mode": "row",
-                    "file_mode": "current_entry",
-                    "sections": ["steps"],
+                    'mapping_mode': 'row',
+                    'file_mode': 'current_entry',
+                    'sections': ['steps'],
                 }
             ],
         },
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     method = Quantity(
         type=str,
-        default="Growth (MOVPE 1 IKZ)",
+        default='Growth (MOVPE 1 IKZ)',
     )
     description = Quantity(
         type=str,
-        description="description",
-        a_tabular={"name": "Overview/Notes"},
-        a_eln={"component": "StringEditQuantity", "label": "Notes"},
+        description='description',
+        a_tabular={'name': 'Overview/Notes'},
+        a_eln={'component': 'StringEditQuantity', 'label': 'Notes'},
     )
     lab_id = Quantity(
         type=str,
-        description="FILL",
-        a_eln={"component": "StringEditQuantity", "label": "Constant Parameters ID"},
+        description='FILL',
+        a_eln={'component': 'StringEditQuantity', 'label': 'Constant Parameters ID'},
     )
     composition = Quantity(
         type=str,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Overview/Composition"},
+        description='FILL THE DESCRIPTION',
+        a_tabular={'name': 'Overview/Composition'},
         a_eln={
-            "component": "StringEditQuantity",
+            'component': 'StringEditQuantity',
         },
     )
     substrate_temperature = Quantity(
         type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Overview/Substrate T"},
-        a_eln={"component": "NumberEditQuantity", "defaultDisplayUnit": "celsius"},
-        unit="celsius",
+        description='FILL THE DESCRIPTION',
+        a_tabular={'name': 'Overview/Substrate T'},
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'celsius'},
+        unit='celsius',
     )
     oxygen_argon_ratio = Quantity(
         type=np.float64,
-        description="FILL THE DESCRIPTION",
-        a_tabular={"name": "Overview/Oxygen Argon ratio"},
+        description='FILL THE DESCRIPTION',
+        a_tabular={'name': 'Overview/Oxygen Argon ratio'},
         a_eln={
-            "component": "NumberEditQuantity",
+            'component': 'NumberEditQuantity',
         },
     )
     steps = SubSection(
@@ -1386,14 +1366,14 @@ class GrowthMovpe1IKZConstantParametersReference(ActivityReference):
     """
 
     m_def = Section(
-        label="GrowthProcesses",
+        label='GrowthProcesses',
     )
     reference = Quantity(
         type=GrowthMovpe1IKZConstantParameters,
-        description="A reference to a NOMAD `GrowthMovpe1IKZConstantParameters` entry.",
+        description='A reference to a NOMAD `GrowthMovpe1IKZConstantParameters` entry.',
         a_eln=ELNAnnotation(
-            component="ReferenceEditQuantity",
-            label="GrowthMovpe1IKZConstantParameters Reference",
+            component='ReferenceEditQuantity',
+            label='GrowthMovpe1IKZConstantParameters Reference',
         ),
     )
 
@@ -1406,7 +1386,7 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
     m_def = Section(
         # a_eln={"hide": ["steps"]},
         categories=[IKZMOVPECategory],
-        label="MOVPE Experiment",
+        label='MOVPE Experiment',
     )
     # lab_id
     method = Quantity(
@@ -1414,39 +1394,39 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
     )
     data_file = Quantity(
         type=str,
-        description="Upload here the spreadsheet file containing the growth data",
-        a_browser={"adaptor": "RawFileAdaptor"},
-        a_eln={"component": "FileEditQuantity"},
+        description='Upload here the spreadsheet file containing the growth data',
+        a_browser={'adaptor': 'RawFileAdaptor'},
+        a_eln={'component': 'FileEditQuantity'},
     )
     description = Quantity(
         type=str,
-        description="description",
+        description='description',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
-            label="Notes",
+            component='StringEditQuantity',
+            label='Notes',
         ),
     )
     substrate_temperature = Quantity(
         type=np.float64,
-        description="FILL THE DESCRIPTION",
+        description='FILL THE DESCRIPTION',
         a_eln=ELNAnnotation(
-            component="NumberEditQuantity",
-            defaultDisplayUnit="celsius",
+            component='NumberEditQuantity',
+            defaultDisplayUnit='celsius',
         ),
-        unit="kelvin",
+        unit='kelvin',
     )
     oxygen_argon_ratio = Quantity(
         type=str,
-        description="FILL THE DESCRIPTION",
+        description='FILL THE DESCRIPTION',
         a_eln=ELNAnnotation(
-            component="StringEditQuantity",
+            component='StringEditQuantity',
         ),
     )
     composition = Quantity(
         type=str,
-        description="FILL THE DESCRIPTION",
+        description='FILL THE DESCRIPTION',
         a_eln={
-            "component": "StringEditQuantity",
+            'component': 'StringEditQuantity',
         },
     )
     precursors_preparation = SubSection(
@@ -1474,7 +1454,7 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
 
         self.steps = []
         # super(ExperimentMovpeIKZ, self).normalize(archive, logger)
-        for process in ["precursors_preparation", "growth_run"]:
+        for process in ['precursors_preparation', 'growth_run']:
             # try:
             #     workflow2 = getattr(self, process).reference.m_parent.workflow2
             # except AttributeError:
@@ -1490,7 +1470,7 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
                     ExperimentStep(activity=reference, name=reference.name)
                 )
 
-        for technique in ["in_situ_reflectance", "hall", "afm", "light_microscopy"]:
+        for technique in ['in_situ_reflectance', 'hall', 'afm', 'light_microscopy']:
             # try:
             #     workflow2 = getattr(
             #         self.characterization, technique

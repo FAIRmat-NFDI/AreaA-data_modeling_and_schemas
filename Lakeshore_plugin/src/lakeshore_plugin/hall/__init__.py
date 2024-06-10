@@ -19,8 +19,7 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 from pydantic import Field
 
 
-class SchemaPackageEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description="Custom configuration parameter")
+class HallEntryPoint(SchemaPackageEntryPoint):
 
     def load(self):
         from lakeshore_plugin.hall.schema import m_package
@@ -28,7 +27,7 @@ class SchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-hall_schema = SchemaPackageEntryPoint(
+hall_schema = HallEntryPoint(
     name="HallSchema",
-    description="Schema package defined using the new plugin mechanism.",
+    description="Schema package for Hall measurement definitions.",
 )

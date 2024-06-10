@@ -15,5 +15,25 @@
 # limitations under the License.
 #
 
-from ikz_plugin.movpe.schema import *
-from .parser import *
+from nomad.config.models.plugins import ParserEntryPoint
+from pydantic import Field
+
+
+class SubstrateParserEntryPoint(ParserEntryPoint):
+    def load(self):
+        from ikz_plugin.movpe.substrate.parser import MovpeSubstrateParser
+
+        return MovpeSubstrateParser(**self.dict())
+
+
+substrate_excel_parser = SubstrateParserEntryPoint(
+    name='SubstrateParser',
+    description='Parse excel files containing substrate parameters logged manually.',
+    mainfile_name_re='.+\.substrates.movpe.ikz.xlsx',
+    mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    mainfile_contents_dict={
+        'Substrate': {
+            '__has_all_keys': ['Substrates', 'Crystal', 'Orientation', 'Elements']
+        }
+    },
+)
