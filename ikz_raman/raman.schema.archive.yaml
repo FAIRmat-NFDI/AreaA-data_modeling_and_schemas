@@ -1,0 +1,441 @@
+definitions:
+  name: "ExperimentDetails"
+  sections:
+    Ramanspectroscopy:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Measurement
+      - nomad.datamodel.data.EntryData
+
+      quantities:
+        title:
+          type: str
+          description: "Title of the experiment."
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+        # date:
+        #   type: str #nomad.metainfo.Datetime
+        #   description: "Date and time when the experiment was recorded."
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+
+        # acquisition_date:
+        #   type: str #nomad.metainfo.Datetime
+        #   description: "Exact date and time of data acquisition."
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+
+        project:
+          type: str
+          description: "Project under which the experiment was conducted."
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+
+        # sample:
+        #   type: str
+        #   description: "Sample used in the experiment."
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+
+        site:
+          type: str
+          description: "Site where the experiment was conducted."
+          m_annotations:
+            eln:
+              component: StringEditQuantity
+        method:
+          type: str
+          default: "Raman"
+          description: "Method used for the experiment."
+          # m_annotations:
+          #   eln:
+          #     component: StringEditQuantity
+        # remark:
+        #   type: str
+        #   description: "Additional remarks regarding the experiment."
+        #   m_annotations:
+        #     eln:
+        #       component: StringEditQuantity
+
+      sub_sections:
+        instruments:
+          section: '#/RamanSpectrometerReference'
+
+        manual_settings:
+          section:
+            m_annotations:
+              eln:
+                #lane_width: 200px
+            # quantities:
+            #   test:
+            #     type: str
+            #     description: "Test setting."
+            #     m_annotations:
+            #       eln:
+            #         component: StringEditQuantity
+            sub_sections:
+              excitation:
+                section:
+                  m_annotations:
+                    eln:
+                      #lane_width: 200px
+                  quantities:
+                    filter_1:
+                      type:
+                        type_kind: Enum
+                        type_data: ["488", "442", "514", "633"]
+                      unit: nanometer
+                      description: "Options for Filter 1."
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    filter_2:
+                      type:
+                        type_kind: Enum
+                        type_data: ["488", "442", "514", "633"]
+                      unit: nanometer
+                      description: "Options for Filter 2."
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    filter_3:
+                      type:
+                        type_kind: Enum
+                        type_data: ["488", "442", "514", "633"]
+                      unit: nanometer
+                      description: "Options for Filter 3."
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    polarizer:
+                      type:
+                        type_kind: Enum
+                        type_data: ['E||', 'E|-', 'E Circular']
+                      description: "Type of polarizer used."
+                      m_annotations:
+                        eln:
+                          component: EnumEditQuantity
+                    spacer:
+                      type: np.float64
+                      unit: millimeter
+                      description: "Adjustment range of the screw spacer."
+                      m_annotations:
+                        eln:
+                          component: NumberEditQuantity
+                          minValue: 1
+                          maxValue: 10
+
+              detection:
+                section:
+                  quantities:
+                    E_parallel:
+                      type: bool
+                      description: "Detection configuration for E parallel."
+                      m_annotations:
+                        eln:
+                          component: BoolEditQuantity
+                    E_perpendicular:
+                      type: bool
+                      description: "Detection configuration for E perpendicular."
+                      m_annotations:
+                        eln:
+                          component: BoolEditQuantity
+                    E_circular:
+                      type: bool
+                      description: "Detection configuration for E circular."
+                      m_annotations:
+                        eln:
+                          component: BoolEditQuantity
+
+
+        measurement_settings:
+          section:
+            quantities:
+              acquisition_time:
+                type: np.float64
+                unit: second
+                description: "Time taken for data acquisition."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              accumulations:
+                type: int
+                description: "Number of accumulations performed."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              range:
+                type: str
+                description: "Range of the measurement."
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+
+              windows:
+                type: int
+                description: "Number of analysis windows."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              auto_scanning:
+                type: bool
+                description: "Whether auto scanning was enabled."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              autofocus:
+                type: bool
+                description: "Whether autofocus was enabled."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              auto_exposure:
+                type: bool
+                description: "Whether auto exposure was enabled."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              spike_filter:
+                type: str
+                description: "Type of spike filter used."
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+
+              delay_time:
+                type: np.float64
+                unit: second
+                description: "Delay time set between acquisitions."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              binning:
+                type: int
+                description: "Binning factor used in data acquisition."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              readout_mode:
+                type: str
+                description: "Mode of data readout used."
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+
+              denoise:
+                type: bool
+                description: "Whether denoise processing was applied."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              ics_correction:
+                type: bool
+                description: "Whether ICS correction was applied."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              dark_correction:
+                type: bool
+                description: "Whether dark correction was applied."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              instrument_process:
+                type: bool
+                description: "Whether any instrument process was applied."
+                m_annotations:
+                  eln:
+                    component: BoolEditQuantity
+
+              detector_gain:
+                type: np.float64
+                description: "Gain setting of the detector."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              detector_adc:
+                type: int
+                description: "ADC setting of the detector."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              detector_temperature:
+                type: np.float64
+                unit: celsius
+                description: "Temperature of the detector."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              objective:
+                type: str
+                description: "Objective lens magnification used."
+                m_annotations:
+                  eln:
+                    component: StringEditQuantity
+
+              grating:
+                type: int
+                description: "Grating used in the instrument, measured in lines per mm."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              filter:
+                type: int
+                description: "Percentage of filter used."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              laser:
+                type: np.float64
+                unit: nanometer
+                description: "Wavelength of the laser used."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              hole:
+                type: np.float64
+                unit: micron
+                description: "Diameter of the hole used."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              x:
+                type: np.float64
+                unit: micron
+                description: "X-coordinate position of the sample."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              y:
+                type: np.float64
+                unit: micron
+                description: "Y-coordinate position of the sample."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              z:
+                type: np.float64
+                unit: micron
+                description: "Z-coordinate position of the sample."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+
+        results:
+          repeats: true
+          section:
+            quantities:
+              wavenumbers:
+                type: np.float64
+                shape: ['*']
+                description: "Wavenumbers measured in 1/cm."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+              intensity:
+                type: np.float64
+                shape: ['*']
+                description: "Intensity of the measured spectrum."
+                m_annotations:
+                  eln:
+                    component: NumberEditQuantity
+
+          base_sections:
+          - nomad.datamodel.metainfo.basesections.Instrument
+          quantities:
+            ramanspectrometer:
+              type: '#/RamanSpectrometer'
+              m_annotations:
+                eln:
+                  component: ReferenceEditQuantity
+    RamanSpectrometerReference:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.SectionReference
+      quantities:
+        reference:
+          type: '#/RamanSpectrometer'
+          m_annotations:
+            eln:
+              component: ReferenceEditQuantity
+              label: "raman_spectrometer"
+
+    RamanSpectrometer:
+      base_sections:
+      - nomad.datamodel.metainfo.basesections.Instrument
+      - nomad.datamodel.data.EntryData
+      quantities:
+        instrument_name:
+          type: str
+          default: "LabRAM"
+          description: "Name of the instrument used."
+          # m_annotations:
+          #   eln:
+          #     component: StringEditQuantity
+
+        lab_id:
+          type: str
+          default: -825368879
+          description: "Identifier for the instrument."
+          # m_annotations:
+          #   eln:
+          #     component: StringEditQuantity
+          #     label: "Raman Spectrometer ID"
+
+        detector:
+          type: str
+          default: "Andor CCD"
+          description: "Type of detector used."
+          # m_annotations:
+          #   eln:
+          #     component: StringEditQuantity
+
+        detector_id:
+          type: int
+          default: 1859378131
+          description: "Identifier for the detector."
+          # m_annotations:
+          #   eln:
+          #     component: NumberEditQuantity
+
+        stage_xy:
+          type: str
+          default: "Marzhauser"
+          description: "XY stage model used."
+          # m_annotations:
+          #   eln:
+          #     component: StringEditQuantity
+
+        stage_z:
+          type: str
+          default: "Marzhauser"
+          description: "Z stage model used."
+          # m_annotations:
+          #   eln:
+          #     component: StringEditQuantity

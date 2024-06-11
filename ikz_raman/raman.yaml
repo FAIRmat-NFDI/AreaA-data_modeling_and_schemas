@@ -1,0 +1,39 @@
+Title: 3611subs
+Date: 05.03.2024 14:20
+Acquisition Date: 05.03.2024 14:20:02
+Acquisition Time: 20
+Accumulations: 4
+Range: 99...1000
+Windows: 2
+Auto Scanning: Off
+Autofocus: Off
+AutoExposure: Off
+Spike Filter: Multiple accum.
+Delay Time: 0.1
+Binning: 1
+Readout Mode: Signal
+DeNoise: Off
+ICS Correction: Off
+Dark Correction: Off
+Instrument Process: Off
+Detector Gain:
+Detector ADC:
+Detector Temperature: -62
+Instrument: LabRAM
+Instrument ID: -825368879
+Detector: Andor CCD
+Detector ID: 1859378131
+Objective: x100
+Grating: 1800
+Filter: 10%
+Laser: 514.532
+Hole: 150
+StageXY: Marzhauser
+StageZ: Marzhauser
+X: -3103.5
+Y: -1967.3
+Z: 370.8
+Project:
+Sample:
+Site:
+Remark:
