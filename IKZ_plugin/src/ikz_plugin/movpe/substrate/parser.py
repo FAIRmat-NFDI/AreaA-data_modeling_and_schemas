@@ -17,11 +17,10 @@
 #
 
 import pandas as pd
-from nomad.datamodel import EntryArchive
+from nomad.datamodel.datamodel import EntryArchive
 from nomad.datamodel.data import (
     EntryData,
 )
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
@@ -34,6 +33,8 @@ from nomad.utils import hash
 from nomad_material_processing import (
     Parallelepiped,
 )
+
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from ikz_plugin.movpe.schema import (
     MiscutMovpe,

@@ -21,13 +21,12 @@ import math
 
 import pandas as pd
 import yaml
-from nomad.app.v1.models.models import User
 from nomad.datamodel.context import ClientContext, ServerContext
 from nomad.datamodel.metainfo.basesections import (
     PureSubstanceComponent,
     PureSubstanceSection,
 )
-from nomad.search import search
+
 from nomad.units import ureg
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
@@ -163,6 +162,8 @@ def create_archive(
 
 
 def fetch_substrate(archive, sample_id, substrate_id, logger):
+    from nomad.search import search
+
     substrate_reference_str = None
     search_result = search(
         owner='all',
@@ -187,6 +188,7 @@ def fetch_substrate(archive, sample_id, substrate_id, logger):
         upload_id = search_result.data[0]['upload_id']
         from nomad.app.v1.routers.uploads import get_upload_with_read_access
         from nomad.files import UploadFiles
+        from nomad.app.v1.models.models import User
 
         upload_files = UploadFiles.get(upload_id)
 

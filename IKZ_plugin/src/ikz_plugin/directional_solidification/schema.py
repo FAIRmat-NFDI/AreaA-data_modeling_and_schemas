@@ -25,6 +25,7 @@ from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
 )
+
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.datamodel.metainfo.basesections import (
     Entity,

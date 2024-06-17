@@ -17,11 +17,10 @@
 #
 
 import pandas as pd
-from nomad.datamodel import EntryArchive
 from nomad.datamodel.data import (
     EntryData,
 )
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
@@ -35,7 +34,6 @@ from nomad.metainfo import (
     Section,
 )
 from nomad.parsing import MatchingParser
-from nomad.search import MetadataPagination, search
 from nomad.units import ureg
 from nomad.utils import hash
 from nomad_material_processing import (
@@ -52,6 +50,8 @@ from nomad_material_processing.vapor_deposition.cvd import (
     GasLine,
     Rotation,
 )
+
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from ikz_plugin.general.schema import (
     LiquidComponent,
@@ -105,6 +105,8 @@ class RawFileMovpeDepositionControl(EntryData):
 
 class ParserMovpe1IKZ(MatchingParser):
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
+        from nomad.search import MetadataPagination, search
+
         filetype = 'yaml'
         xlsx = pd.ExcelFile(mainfile)
         data_file = mainfile.split('/')[-1]

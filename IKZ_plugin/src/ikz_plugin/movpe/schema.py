@@ -1241,33 +1241,39 @@ class GrowthMovpeIKZ(VaporDeposition, EntryData):
             for step in self.steps:
                 if step.sample_parameters is not None:
                     for sample in step.sample_parameters:
-                        outputs.append(
-                            Link(
-                                name=f'{sample.layer.name}',
-                                section=sample.layer.reference,
-                            )
-                        )
-                        outputs.append(
-                            Link(
-                                name=f'{sample.substrate.name}',
-                                section=sample.substrate.reference,
-                            )
-                        )
-                        if hasattr(
-                            getattr(sample.substrate.reference, 'substrate'),
-                            'name',
-                        ):
-                            # sample.substrate.reference.substrate.reference is not None:
-                            inputs.append(
+                        if sample.layer is not None:
+                            outputs.append(
                                 Link(
-                                    name=f'{sample.substrate.reference.substrate.name}',
-                                    section=getattr(
-                                        sample.substrate.reference.substrate,
-                                        'reference',
-                                        None,
-                                    ),
+                                    name=f'{sample.layer.name}',
+                                    section=sample.layer.reference,
                                 )
                             )
+                        if sample.substrate is not None:
+                            outputs.append(
+                                Link(
+                                    name=f'{sample.substrate.name}',
+                                    section=sample.substrate.reference,
+                                )
+                            )
+
+                        if (
+                            sample.substrate is not None
+                            and sample.substrate.reference is not None
+                        ):
+                            if hasattr(
+                                getattr(sample.substrate.reference, 'substrate'),
+                                'name',
+                            ):
+                                inputs.append(
+                                    Link(
+                                        name=f'{sample.substrate.reference.substrate.name}',
+                                        section=getattr(
+                                            sample.substrate.reference.substrate,
+                                            'reference',
+                                            None,
+                                        ),
+                                    )
+                                )
             archive.workflow2.outputs.extend(set(outputs))
             archive.workflow2.inputs.extend(set(inputs))
 

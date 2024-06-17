@@ -17,11 +17,11 @@
 #
 
 import pandas as pd
-from nomad.datamodel import EntryArchive
+
 from nomad.datamodel.data import (
     EntryData,
 )
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+
 from nomad.metainfo import (
     Quantity,
     Section,
@@ -29,6 +29,9 @@ from nomad.metainfo import (
 from nomad.parsing import MatchingParser
 from nomad.parsing.tabular import create_archive
 from nomad.utils import hash
+
+
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from ikz_plugin.movpe.schema import (
     GrowthMovpe1IKZConstantParameters,

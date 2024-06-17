@@ -16,7 +16,8 @@
 # limitations under the License.
 #
 
-from nomad.datamodel import EntryArchive
+
+from nomad.datamodel.datamodel import EntryArchive
 from nomad.datamodel.data import (
     EntryData,
 )

@@ -34,6 +34,9 @@ from nomad.utils import hash
 from nomad_material_processing import SubstrateReference
 from nomad_measurements import ActivityReference
 
+
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+
 from ikz_plugin.utils import create_archive
 
 configuration = config.get_plugin_entry_point('ikz_plugin.general:general_schema')
@@ -549,8 +552,6 @@ class SampleCutIKZ(Process, EntryData):
     )
 
     def normalize(self, archive, logger):
-        from nomad.datamodel import EntryArchive, EntryMetadata
-
         super(SampleCutIKZ, self).normalize(archive, logger)
         filetype = 'yaml'
         if not self.number_of_samples:

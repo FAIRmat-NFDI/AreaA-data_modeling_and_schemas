@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-from nomad.datamodel import EntryArchive
+
 from nomad.datamodel.data import (
     EntryData,
 )
@@ -28,6 +28,8 @@ from nomad.metainfo import (
 )
 from nomad.parsing import MatchingParser
 from nomad_material_processing.utils import create_archive
+
+from nomad.datamodel.datamodel import EntryArchive
 
 from ikz_plugin.czochralski.schema import Sensors
 

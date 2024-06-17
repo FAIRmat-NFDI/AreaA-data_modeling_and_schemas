@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-from nomad.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
     Quantity,

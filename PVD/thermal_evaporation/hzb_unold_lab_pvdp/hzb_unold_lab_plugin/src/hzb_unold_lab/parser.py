@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-from nomad.datamodel import EntryArchive
+from nomad.datamodel.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
     Quantity,
@@ -37,24 +37,23 @@ class PVDPLogFile(EntryData):
     process = Quantity(
         type=HZBUnoldLabThermalEvaporation,
         a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        )
+            component="ReferenceEditQuantity",
+        ),
     )
 
 
 class PVDPParser(MatchingParser):
-
     def __init__(self):
         super().__init__(
-            name='parsers/hzb_unold_lab',
-            code_name='HZB Unold Lab Parser',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz']
+            name="parsers/hzb_unold_lab",
+            code_name="HZB Unold Lab Parser",
+            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
+            supported_compressions=["gz", "bz2", "xz"],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        log_file = mainfile.split('/')[-1]
+        log_file = mainfile.split("/")[-1]
         entry = HZBUnoldLabThermalEvaporation(log_file=log_file)
-        file_name = f'{log_file[:-4]}.archive.json'
-        archive.data = PVDPLogFile(process=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = log_file[:-4] + ' log file'
+        file_name = f"{log_file[:-4]}.archive.json"
+        archive.data = PVDPLogFile(process=create_archive(entry, archive, file_name))
+        archive.metadata.entry_name = log_file[:-4] + " log file"
