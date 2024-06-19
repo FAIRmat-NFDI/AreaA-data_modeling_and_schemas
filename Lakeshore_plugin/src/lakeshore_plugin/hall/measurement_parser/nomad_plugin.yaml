@@ -1,9 +1,0 @@
-plugin_type: parser
-name: NOMAD Lakeshore Hall measurements plugin
-description: |
-  This is a schema and parser for Lakeshore Hall measurements
-mainfile_name_re: ^.+\.txt$
-mainfile_mime_re:  (?:text/plain|application/x-wine-extension-ini)
-mainfile_contents_re: (?s)\[Sample parameters\].*?\[Measurements\]
-parser_class_name: hall.measurement_parser.HallMeasurementsParser
-code_name: Lakeshore measurements Parser

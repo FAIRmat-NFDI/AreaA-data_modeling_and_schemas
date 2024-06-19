@@ -1128,7 +1128,13 @@ class GrowthStepMovpe2IKZ(GrowthStepMovpeIKZ):
             'component': 'StringEditQuantity',
         },
     )
-    duration = VaporDepositionStep.duration.m_copy()
+    duration = Quantity(
+        type=float,
+        unit='second',
+        a_eln=ELNAnnotation(
+            component='NumberEditQuantity',
+        ),
+    )
 
     comment = Quantity(
         type=str,
