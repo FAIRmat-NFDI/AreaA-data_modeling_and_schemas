@@ -368,7 +368,7 @@ def read_detector_module(metadata: list, logger: 'BoundLogger') -> str:
     if not metadata[24]:
         return None
     if 'uv/vis/nir detector' in metadata[24].lower():
-        return 'three detector module'
+        return 'uv/vis/nir detector'
     if '150mm sphere' in metadata[24].lower():
         return '150-mm integrating sphere'
     return None

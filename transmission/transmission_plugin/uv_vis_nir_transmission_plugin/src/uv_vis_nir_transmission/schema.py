@@ -406,13 +406,20 @@ class Detector(ArchiveSection):
         description='Detector setting over a wavelength range.',
     )
     module = Quantity(
-        type=MEnum(['three detector module', '150-mm integrating sphere']),
-        description='Type of detector module used.',
-        a_eln={'component': 'RadioEnumEditQuantity'},
+        type=str,
+        a_eln={'component': 'StringEditQuantity'},
+        description="""
+        Various type of the detector modules:
+        | Detector Module                      | Description          |
+        |--------------------------------------|----------------------|
+        | **Three Detector Module**            | Installed as standard module on Perkin-Elmer Lambda 1050 WB and NB spectrophotometers. Contains three detectors for different wavelength ranges: PMT, PbS, InGaAs (Near Infrared). |
+        | **150-mm Integrating Sphere**        | <add> |
+        | **Two Detector Module**              | Installed on Perkin-Elmer Lambda 750, 900, 950 spectrophotometers. Contains two detectors for different wavelength ranges: PMT, PbS. |
+        """,
     )
     detector_change_point = Quantity(
         type=np.float64,
-        description='The wavelength at which the detector module changes. ',
+        description='The wavelength at which the detector module changes.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
@@ -838,8 +845,18 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         )
         lamp.normalize(archive, logger)
 
+        detector_module = transmission_dict['detector_module']
+        if detector_module == 'uv/vis/nir detector':
+            if 'lambda 1050' in transmission_dict['instrument_name'].lower():
+                detector_module = 'Three Detector Module'
+            elif 'lambda 950' in transmission_dict['instrument_name'].lower():
+                detector_module = 'Two Detector Module'
+            elif 'lambda 900' in transmission_dict['instrument_name'].lower():
+                detector_module = 'Two Detector Module'
+            elif 'lambda 750' in transmission_dict['instrument_name'].lower():
+                detector_module = 'Two Detector Module'
         detector = Detector(
-            module=transmission_dict['detector_module'],
+            module=detector_module,
         )
         for idx, wavelength_value in enumerate(transmission_dict['detector_NIR_gain']):
             nir_gain = NIRGain(
