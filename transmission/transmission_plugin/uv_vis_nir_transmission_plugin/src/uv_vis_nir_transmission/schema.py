@@ -49,6 +49,7 @@ from nomad.units import ureg
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
+    SectionProperties,
 )
 
 from nomad.datamodel.metainfo.plot import (
@@ -437,7 +438,6 @@ class Attenuator(ArchiveSection):
     m_def = Section(
         description='Attenuation setting for the sample and reference beam.',
     )
-    m_def = Section()
     sample = Quantity(
         type=int,
         description='Sample beam attenuation in percentage.',
