@@ -184,12 +184,12 @@ class SettingOverWavelengthRange(ArchiveSection):
     )
     name = Quantity(
         type=str,
-        description='Short description containing wavelength range',
+        description='Short description containing wavelength range.',
         a_eln={'component': 'StringEditQuantity'},
     )
     wavelength_upper_limit = Quantity(
         type=np.float64,
-        description='Upper limit of wavelength in nm.',
+        description='Upper limit of wavelength range.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
@@ -198,7 +198,7 @@ class SettingOverWavelengthRange(ArchiveSection):
     )
     wavelength_lower_limit = Quantity(
         type=np.float64,
-        description='Lower limit of wavelength in nm.',
+        description='Lower limit of wavelength range.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
@@ -207,7 +207,7 @@ class SettingOverWavelengthRange(ArchiveSection):
     )
     value = Quantity(
         type=np.float64,
-        description='Value of the setting',
+        description='Value of the setting.',
         a_eln={'component': 'NumberEditQuantity'},
         unit='dimensionless',
     )
@@ -445,7 +445,7 @@ class TransmissionSettings(ArchiveSection):
     sample_beam_position = Quantity(
         type=MEnum(['Front', 'Rear']),
         description=(
-            'Position of the sample beam: either the front or the back of the sample'
+            'Position of the sample beam: either the front or the back of the sample '
             'chamber.'
         ),
         a_eln={'component': 'EnumEditQuantity'},
@@ -453,7 +453,7 @@ class TransmissionSettings(ArchiveSection):
     common_beam_mask = Quantity(
         type=int,
         description=(
-            'Mask setting for the common beam in percentage.</br>'
+            'Mask setting for the common beam in percentage.'
             '100% means the mask is fully open and '
             '100% of the beam passes. 0% means the mask is closed and no light passes.'
         ),
