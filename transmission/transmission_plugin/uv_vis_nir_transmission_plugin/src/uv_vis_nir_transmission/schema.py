@@ -173,14 +173,16 @@ class SettingOverWavelengthRange(ArchiveSection):
 
     m_def = Section(
         description='An instrument setting set over a range of wavelength.',
-        a_display={
-            'order': [
-                'name',
-                'wavelength_upper_limit',
-                'wavelength_lower_limit',
-                'value',
-            ]
-        },
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'value',
+                ],
+            ),
+        ),
     )
     name = Quantity(
         type=str,
@@ -207,7 +209,7 @@ class SettingOverWavelengthRange(ArchiveSection):
     )
     value = Quantity(
         type=np.float64,
-        description='Value of the setting.',
+        description='Value of the given instrument setting.',
         a_eln={'component': 'NumberEditQuantity'},
         unit='dimensionless',
     )
@@ -248,6 +250,16 @@ class SlitWidth(SettingOverWavelengthRange):
 
     m_def = Section(
         description='Slit width value over a wavelength range.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'value',
+                ],
+            ),
+        ),
     )
     value = Quantity(
         type=np.float64,
@@ -336,6 +348,16 @@ class NIRGain(SettingOverWavelengthRange):
 
     m_def = Section(
         description='NIR gain factor over a wavelength range.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'value',
+                ],
+            ),
+        ),
     )
     value = Quantity(
         type=np.float64,
@@ -352,6 +374,16 @@ class IntegrationTime(SettingOverWavelengthRange):
 
     m_def = Section(
         description='Integration time over a wavelength range.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'value',
+                ],
+            ),
+        ),
     )
     value = Quantity(
         type=np.float64,
@@ -430,10 +462,21 @@ class Attenuator(ArchiveSection):
 
 class TransmissionSettings(ArchiveSection):
     """
-    Section for setting of the instrument used for tranmission measurement.
+    Section for setting of the instrument used for transmission measurement.
     """
 
-    m_def = Section()
+    m_def = Section(
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'ordinate_type',
+                    'sample_beam_position',
+                    'common_beam_mask',
+                    'common_beam_depolarizer',
+                ],
+            ),
+        ),
+    )
     ordinate_type = Quantity(
         type=MEnum(['%T', 'A']),
         description=(
