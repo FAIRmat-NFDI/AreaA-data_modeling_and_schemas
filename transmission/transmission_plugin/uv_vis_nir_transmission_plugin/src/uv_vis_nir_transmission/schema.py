@@ -172,6 +172,34 @@ class Accessory(ArchiveSection):
         a_eln={'component': 'RichTextEditQuantity'},
     )
 
+class Aperture(Accessory):
+    """
+    Section for adding settings of a custom aperture.
+    """
+
+    m_def = Section(
+        description=(
+            'Custom aperture placed in front of the sample inside the sample compartment'
+        ),
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'diameter',
+                ],
+            ),
+        ),
+    )
+    diameter = Quantity(
+        type=np.float64,
+        description='Diameter of the aperture.',
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'mm',
+        },
+        unit='mm',
+    )
+
 
 class SettingOverWavelengthRange(ArchiveSection):
     """
