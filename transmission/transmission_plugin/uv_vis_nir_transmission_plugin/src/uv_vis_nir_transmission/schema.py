@@ -404,18 +404,48 @@ class Detector(ArchiveSection):
 
     m_def = Section(
         description='Detector setting over a wavelength range.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'module',
+                    'detectors',
+                    'detector_change_point',
+                    'nir_gain',
+                    'integration_time',
+                ],
+            ),
+        ),
     )
     module = Quantity(
-        type=str,
-        a_eln={'component': 'StringEditQuantity'},
+        type=MEnum(
+            [
+                'Three Detector Module',
+                'Two Detector Module',
+                '150-mm Integrating Sphere',
+            ]
+        ),
+        a_eln={'component': 'EnumEditQuantity'},
         description="""
-        Various type of the detector modules:
+        Modules containing multiple detectors for different wavelength ranges.
         | Detector Module                      | Description          |
         |--------------------------------------|----------------------|
-        | **Three Detector Module**            | Installed as standard module on Perkin-Elmer Lambda 1050 WB and NB spectrophotometers. Contains three detectors for different wavelength ranges: PMT, PbS, InGaAs (Near Infrared). |
-        | **150-mm Integrating Sphere**        | <add> |
+        | **Three Detector Module**            | Installed as standard module on Perkin-Elmer Lambda 1050 WB and NB spectrophotometers. Contains three detectors for different wavelength ranges: PMT, InGaAs, PbS. |
         | **Two Detector Module**              | Installed on Perkin-Elmer Lambda 750, 900, 950 spectrophotometers. Contains two detectors for different wavelength ranges: PMT, PbS. |
+        | **150-mm Integrating Sphere**        | Includes an integrating sphere with a diameter of 150 mm which is equipped with PMT (R928) and InGaAs detector. The PMT covers 200-860.8 nm and the InGaAs detector covers 860.8-2500 nm. |
         """,
+    )
+    detectors = Quantity(
+        type=str,
+        description="""
+        Detectors used in the instrument. Some of the popular detectors are:
+        | Detector          | Description          |
+        |-------------------|----------------------|
+        | **PMT**           | Photomultiplier Tube detector used for the Ultra-Violet (UV) or visible range.|
+        | **InGaAs**        | Indium Gallium Arsenide detector used for Near-Infra-red (NIR) range.|
+        | **PbS**           | Lead Sulphide detector used for Infrared (IR) range.|
+        """,
+        a_eln={'component': 'StringEditQuantity'},
+        shape=['*'],
     )
     detector_change_point = Quantity(
         type=np.float64,
@@ -435,6 +465,16 @@ class Detector(ArchiveSection):
         section_def=IntegrationTime,
         repeats=True,
     )
+
+    def normalize(self, archive, logger):
+        super().normalize(archive, logger)
+        if self.module is not None:
+            if self.module == 'Three Detector Module':
+                self.detectors = ['PMT', 'InGaAs', 'PbS']
+            elif self.module == 'Two Detector Module':
+                self.detectors = ['PMT', 'PbS']
+            elif self.module == '150-mm Integrating Sphere':
+                self.detectors = ['PMT', 'InGaAs']
 
 
 class Attenuator(ArchiveSection):
@@ -855,6 +895,8 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
                 detector_module = 'Two Detector Module'
             elif 'lambda 750' in transmission_dict['instrument_name'].lower():
                 detector_module = 'Two Detector Module'
+        if detector_module == '150mm sphere':
+            detector_module = '150-mm Integrating Sphere'
         detector = Detector(
             module=detector_module,
         )

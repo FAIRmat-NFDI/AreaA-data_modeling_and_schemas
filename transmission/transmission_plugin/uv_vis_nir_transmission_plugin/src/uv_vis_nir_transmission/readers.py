@@ -370,7 +370,11 @@ def read_detector_module(metadata: list, logger: 'BoundLogger') -> str:
     if 'uv/vis/nir detector' in metadata[24].lower():
         return 'uv/vis/nir detector'
     if '150mm sphere' in metadata[24].lower():
-        return '150-mm integrating sphere'
+        return '150mm sphere'
+    if logger is not None:
+        logger.warning(
+            f'Unexpected detector module found: "{metadata[24]}". Returning None.'
+        )
     return None
 
 
