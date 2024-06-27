@@ -138,16 +138,16 @@ def read_attenuation_percentage(metadata: list, logger) -> Dict[str, int]:
     return output_dict
 
 
-def read_is_depolarizer_on(metadata: list, logger: 'BoundLogger') -> bool:
+def read_is_common_beam_depolarizer_on(metadata: list, logger: 'BoundLogger') -> bool:
     """
-    Reads whether the depolarizer was active during the measurement.
+    Reads whether the common beam depolarizer was active during the measurement.
 
     Args:
         metadata (list): The metadata list.
         logger (BoundLogger): A structlog logger.
 
     Returns:
-        bool: Whether the depolarizer was active during the measurement.
+        bool: Whether the common beam depolarizer was active during the measurement.
     """
     if not metadata[46]:
         return None
@@ -156,7 +156,7 @@ def read_is_depolarizer_on(metadata: list, logger: 'BoundLogger') -> bool:
     if metadata[46] == 'off':
         return False
     if logger is not None:
-        logger.warning('Unexpected value for depolarizer state.')
+        logger.warning('Unexpected value for common beam depolarizer state.')
     return None
 
 
@@ -368,9 +368,13 @@ def read_detector_module(metadata: list, logger: 'BoundLogger') -> str:
     if not metadata[24]:
         return None
     if 'uv/vis/nir detector' in metadata[24].lower():
-        return 'three detector module'
+        return 'uv/vis/nir detector'
     if '150mm sphere' in metadata[24].lower():
-        return '150-mm integrating sphere'
+        return '150mm sphere'
+    if logger is not None:
+        logger.warning(
+            f'Unexpected detector module found: "{metadata[24]}". Returning None.'
+        )
     return None
 
 
@@ -385,7 +389,7 @@ METADATA_MAP: Dict[str, Any] = {
     'is_tungsten_lamp_used': read_is_tungsten_lamp_used,
     'sample_beam_position': 44,
     'common_beam_mask_percentage': 45,
-    'is_common_beam_depolarizer_on': read_is_depolarizer_on,
+    'is_common_beam_depolarizer_on': read_is_common_beam_depolarizer_on,
     'attenuation_percentage': read_attenuation_percentage,
     'detector_integration_time': read_detector_integration_time,
     'detector_NIR_gain': read_detector_nir_gain,
