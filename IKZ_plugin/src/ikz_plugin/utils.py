@@ -170,7 +170,8 @@ def row_to_array(dataframe: pd.DataFrame, quantity: str, row_index: int) -> pd.S
         [
             dataframe[col].loc[row_index]
             for col in column_names
-            if col is float or col is int
+            if isinstance(dataframe[col].loc[row_index], float)
+            or isinstance(dataframe[col].loc[row_index], int)
         ]
     )
     return array

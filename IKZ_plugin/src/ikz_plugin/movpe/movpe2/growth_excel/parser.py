@@ -60,7 +60,7 @@ from ikz_plugin.movpe.schema import (
     LayTecTemperature,
     SampleParametersMovpe,
     ShaftTemperature,
-    ThinFilmMovpe,
+    ThinFilmMovpeIKZ,
     ThinFilmStackMovpe,
     ThinFilmStackMovpeReference,
 )
@@ -135,7 +135,7 @@ class ParserMovpe2IKZ(MatchingParser):
             # creating ThinFiln and ThinFilmStack archives
             layer_filename = f'{sample_id}_{index}.ThinFilm.archive.{filetype}'
             layer_archive = EntryArchive(
-                data=ThinFilmMovpe(
+                data=ThinFilmMovpeIKZ(
                     name=sample_id + ' layer',
                     lab_id=sample_id + 'layer',
                 ),
