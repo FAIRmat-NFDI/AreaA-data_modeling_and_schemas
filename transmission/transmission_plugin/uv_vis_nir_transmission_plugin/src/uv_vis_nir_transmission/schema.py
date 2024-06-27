@@ -643,12 +643,6 @@ class TransmissionSettings(ArchiveSection):
         default=False,
         a_eln={'component': 'BoolEditQuantity'},
     )
-    polarizer_angle = Quantity(
-        type=np.float64,
-        description='polarizer angle in °',
-        a_eln={'component': 'NumberEditQuantity'},
-        unit='degrees',
-    )
     accessory = SubSection(
         section_def=Accessory,
         repeats=True,
@@ -1060,7 +1054,6 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             sample_beam_position=transmission_dict['sample_beam_position'],
             common_beam_mask=transmission_dict['common_beam_mask_percentage'],
             common_beam_depolarizer=transmission_dict['is_common_beam_depolarizer_on'],
-            polarizer_angle=transmission_dict['polarizer_angle'],
             lamp=lamp,
             detector=detector,
             monochromator=monochromator,
