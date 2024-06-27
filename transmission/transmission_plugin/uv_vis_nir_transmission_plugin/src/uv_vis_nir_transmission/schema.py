@@ -172,6 +172,51 @@ class Accessory(ArchiveSection):
         a_eln={'component': 'RichTextEditQuantity'},
     )
 
+
+class PolDepol(Accessory):
+    """
+    Optional accessory to polarize or depolarize the light beam entering the sample.
+    """
+
+    m_def = Section(
+        description=(
+            'Optional accessory to polarize or depolarize the light beam '
+            'entering the sample.'
+        ),
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'mode',
+                    'polarizer_angle',
+                ],
+            ),
+        ),
+    )
+
+    mode = Quantity(
+        type=MEnum(['Polarizer', 'Depolarizer']),
+        description='Mode of the accessory: either polarizer or depolarizer.',
+        a_eln={'component': 'RadioEnumEditQuantity'},
+    )
+    polarizer_angle = Quantity(
+        type=np.float64,
+        description='Value of polarization angle when polarizer mode is used.',
+        a_eln={'component': 'NumberEditQuantity'},
+        unit='degrees',
+    )
+
+    def normalize(self, archive, logger):
+        if self.mode is None or self.mode == 'Depolarizer':
+            if self.polarizer_angle is not None:
+                logger.warning(
+                    'Ambiguous polarizer angle: '
+                    'PolDepol accessory is not set to "Polarizer" mode, '
+                    'but `polarizer_angle` is set.'
+                )
+        super().normalize(archive, logger)
+
+
 class Aperture(Accessory):
     """
     Section for adding settings of a custom aperture.
@@ -1000,6 +1045,15 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
             sample=transmission_dict['attenuation_percentage']['sample'],
             reference=transmission_dict['attenuation_percentage']['reference'],
         )
+
+        if self.get('transmission_settings'):
+            if self.transmission_settings.get('accessory'):
+                for idx, accessory in enumerate(self.transmission_settings.accessory):
+                    if isinstance(accessory, PolDepol):
+                        if accessory.mode == 'Polarizer':
+                            self.transmission_settings.accessory[
+                                idx
+                            ].polarizer_angle = transmission_dict['polarizer_angle']
 
         transmission_settings = TransmissionSettings(
             ordinate_type=transmission_dict['ordinate_type'],
