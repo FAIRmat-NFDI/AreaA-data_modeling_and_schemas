@@ -382,7 +382,7 @@ class ParserMovpe1IKZ(MatchingParser):
                 # creating GrowthMovpeIKZ archive
                 growth_data = GrowthMovpeIKZ(
                     data_file=data_file_with_path,
-                    name="Growth MOVPE 1",
+                    name=f"{dep_control_run} Growth",
                     lab_id=dep_control_run,
                     description=growth_description,
                     datetime=(
