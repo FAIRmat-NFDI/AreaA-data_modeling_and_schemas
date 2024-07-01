@@ -1561,6 +1561,18 @@ class ExperimentMovpeIKZ(Experiment, EntryData):
                 print(f'An error occurred: {e}')
         self.steps = [step for step in step_list if step is not None]
 
+        activity_lists = (
+            attr for attr in vars(self).values() if isinstance(attr, list)
+        )
+        for activity_list in activity_lists:
+            for activity in activity_list:
+                if isinstance(activity, ArchiveSection):
+                    try:
+                        step_list.extend(handle_section(activity))
+                    except (AttributeError, TypeError, NameError) as e:
+                        print(f'An error occurred: {e}')
+        self.steps = [step for step in step_list if step is not None]
+
         archive.workflow2 = None
         super(ExperimentMovpeIKZ, self).normalize(archive, logger)
 
