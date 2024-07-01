@@ -33,7 +33,7 @@ dependencies = [
     'nomad-material-processing',
     'nomad-measurements',
     'nomad-analysis',
-    'lakeshore_plugin@git+https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas.git@main#subdirectory=Lakeshore_plugin',
+    'lakeshore-nomad-plugin@git+https://github.com/IKZ-Berlin/lakeshore-nomad-plugin.git@main',
     'laytec_epitt_plugin@git+https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin.git@main',
 ]
 
