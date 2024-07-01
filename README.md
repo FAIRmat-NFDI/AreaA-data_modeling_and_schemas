@@ -56,96 +56,11 @@ We are developing a more verbose documentation to describe the basesections cont
 | Surface Coating     | Dip-coating                |           |             | surface_coating_methods                                                                                                                                           |
 | Surface Coating     | Sputtering                 |           |             | surface_coating_methods                                                                                                                                           |
 | Surface Coating     | Evaporation                |           |             | surface_coating_methods                                                                                                                                           |
-| Electric properties | Hall Measurements          | IKZ       | Plugin      | [Lakeshore_plugin](AreaA-data_modeling_and_schemas/tree/124-move-pvd-techniques-in-ikz-plugin-folder/Lakeshore_plugin)                                               |
+| Electric properties | Hall Measurements          | IKZ       | Plugin      | [lakeshore_nomad_plugin](https://github.com/IKZ-Berlin/lakeshore-nomad-plugin)                                               |
+| Optical properties | Reflectance          | IKZ       | Plugin      | [laytec_epitt_plugin](https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin)                                               |
 | Transmission        | Transmission measurements  |           |             | transmission                                                                                                                                                      |
 | AFM                 | Atomic Force Microscopy    |           |             | AFM                                                                                                                                                               |
 | Various             |                            |           |             | CPFS-Dresden                                                                                                                                                      |
 
 ---
 
-## Installation
-
-To use the plugin packages maintained by FAIRmat Area A, you need to:
-
-1. Clone this repo and, additionally, individual repos of other plugins like `nomad-measurement`.
-2. Add their `src/` directory to your environmental variable `PYTHONPATH`.
-3. Update the `nomad.yaml` file of present in the root of your local NOMAD installation.
-
-### Cloning AreaA repos
-
-You can run the following commands in your terminal to clone the GitHub repos containing AreaA plugins.
-
-```sh
-git clone https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas
-git clone https://github.com/FAIRmat-NFDI/nomad-measurements
-git clone https://github.com/FAIRmat-NFDI/nomad-material-processing
-# ( git clone https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin.git )
-```
-
-### Adding the package path to `PYTHONPATH`
-
-To add the `src/` directory of the plugins to your `PYTHONPATH`, you can use the `export` command in your terminal. Make sure to do this in the same terminal before running NOMAD (`nomad admin run appworker`). Run the following command to include the actively maintained plugins:
-
-```sh
-export AREA_A_REPO_PATH="{local path to root of AreaA-data_modeling_and_schemas}"
-export NOMAD_MEASUREMENTS_REPO_PATH="{local path to root of nomad-measurements}"
-export NOMAD_MATERIAL_PROCESSING_REPO_PATH="{local path to root of nomad-material-processing}"
-export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/IKZ_plugin/ikz_plugin/src"
-export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/Lakeshore_plugin/src"
-export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/LayTec_EpiTT_plugin/src"
-export PYTHONPATH="$PYTHONPATH:$AREA_A_REPO_PATH/analysis_plugin/src"
-export PYTHONPATH="$PYTHONPATH:$NOMAD_MEASUREMENTS_REPO_PATH/src"
-export PYTHONPATH="$PYTHONPATH:$NOMAD_MATERIAL_PROCESSING_REPO_PATH/src/nomad_material_processing"
-```
-
-To make this path persistent, write these code lines into the `.pyenv/bin/activate` file of your virtual python environment. This automatically appends the paths every time the python environment is activated in a new terminal. Make sure to prepend the correct local path where you cloned this repository.
-
-### Including the plugins in NOMAD config
-
-To use the plugins in your NOMAD instance, include it in the `nomad.yaml` configuration file available in the root of your NOMAD installation. Additionally, you should also specify the Python package for the plugin in the `options` section as follows:
-
-```yaml
-plugins:
-  include:
-    - 'parsers/nomad_measurements/xrd'
-    - 'schemas/analysis'
-    - 'schemas/nomad_material_processing'
-    - 'parsers/hall_lakeshore_measurement'
-    - 'parsers/hall_lakeshore_instrument'
-    - 'parsers/laytec_epitt'
-    - 'parsers/czochralski'
-    - 'parsers/movpe_2_growth_excel'
-    - 'parsers/movpe_1_growth_excel'
-    - 'parsers/movpe_1_constant_parameters'
-    - 'parsers/movpe_substrates_IKZ'
-    - 'parsers/directional_solidification'
-  options:
-    parsers/nomad_measurements/xrd:
-      python_package: nomad_measurements.xrd.parser
-    schemas/analysis:
-      python_package: analysis
-    schemas/nomad_material_processing:
-      python_package: nomad_material_processing
-    parsers/hall_lakeshore_measurement:
-      python_package: hall.measurement_parser
-    parsers/hall_lakeshore_instrument:
-      python_package: hall.instrument_parser
-    parsers/laytec_epitt:
-      python_package: laytec_epitt
-    parsers/czochralski:
-      python_package: ikz_plugin.czochralski
-    parsers/movpe_2_growth_excel:
-      python_package: ikz_plugin.movpe.movpe2.growth_excel
-    parsers/movpe_1_growth_excel:
-      python_package: ikz_plugin.movpe.movpe1.growth_excel
-    parsers/movpe_1_constant_parameters:
-      python_package: ikz_plugin.movpe.movpe1.constant_parameters
-    parsers/movpe_substrates_IKZ:
-     python_package: ikz_plugin.movpe.substrate
-    parsers/directional_solidification:
-      python_package: ikz_plugin.directional_solidification
-```
-
-The name after the `/` in `include` section is user defined. However, same name should be used as key when specifying the python package in `options` section.
-
----
