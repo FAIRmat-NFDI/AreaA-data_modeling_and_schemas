@@ -84,7 +84,7 @@ from ikz_plugin.general.schema import (
     SubstratePreparationStepReference,
 )
 
-from lakeshore_plugin.hall.schema import HallMeasurement
+from lakeshore_nomad_plugin.hall.schema import HallMeasurement
 from laytec_epitt_plugin.schema import LayTecEpiTTMeasurement
 
 configuration = config.get_plugin_entry_point("ikz_plugin.movpe:movpe_schema")
