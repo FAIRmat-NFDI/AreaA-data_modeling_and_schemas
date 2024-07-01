@@ -1,4 +1,0 @@
-plugin_type: schema
-name: NOMAD Lakeshore Hall plugin
-description: |
-  This is a schema and parser for Lakeshore Hall measurements
