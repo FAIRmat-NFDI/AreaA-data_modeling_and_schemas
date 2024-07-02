@@ -34,15 +34,14 @@ from nomad.datamodel.metainfo.annotations import (
     SectionProperties,
 )
 from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,
-    PureSubstanceComponent,
-    PubChemPureSubstanceSection,
+    Entity,
+    EntityReference,
     Instrument,
     InstrumentReference,
     Measurement,
     MeasurementResult,
     ReadableIdentifiers,
-    Entity,
+    CompositeSystemReference,
 )
 import numpy as np
 import plotly.express as px
@@ -146,6 +145,20 @@ class TransmissionSample(Entity, EntryData):
             logger (BoundLogger): A structlog logger.
         """
         super().normalize(archive, logger)
+
+
+class TransmissionSampleReference(EntityReference):
+    """
+    Reference to the `TransmissionSample` section.
+    """
+
+    reference = Quantity(
+        type=TransmissionSample,
+        description='A reference to a `TransmissionSample` entry.',
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        ),
+    )
 
 
 class Accessory(ArchiveSection):
@@ -793,6 +806,11 @@ class UVVisTransmission(Measurement):
         type=str,
         description='Name of user or analyst.',
         a_eln={'component': 'StringEditQuantity'},
+    )
+    samples = SubSection(
+        section_def=TransmissionSampleReference,
+        description='List of all samples used during the transmission measurement.',
+        repeats=True,
     )
     results = Measurement.results.m_copy()
     results.section_def = UVVisNirTransmissionResult
