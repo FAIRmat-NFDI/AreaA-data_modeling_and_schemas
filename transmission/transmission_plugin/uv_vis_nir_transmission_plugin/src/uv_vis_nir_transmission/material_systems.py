@@ -192,7 +192,7 @@ class ElementalDopantComponent(DopantComponent):
     )
 
 
-class SolidSolution(CompositeSystem):
+class SolidSolution(CompositeSystem, EntryData):
     m_def = Section(
         links=['https://doi.org/10.1351/goldbook.M03940'],
         description=(
@@ -203,7 +203,10 @@ class SolidSolution(CompositeSystem):
             properties=SectionProperties(
                 order=[
                     'name',
+                    'datetime',
+                    'lab_id',
                     'molecular_formula',
+                    'description',
                     'host',
                     'dopants',
                     'elemental_composition',
@@ -211,9 +214,6 @@ class SolidSolution(CompositeSystem):
                 ],
                 visible=Filter(
                     exclude=[
-                        'datetime',
-                        'lab_id',
-                        'description',
                         'components',
                     ],
                 ),
