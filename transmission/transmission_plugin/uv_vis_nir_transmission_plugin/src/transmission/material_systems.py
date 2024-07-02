@@ -247,6 +247,11 @@ class SolidSolution(CompositeSystem, EntryData):
         be the measured concentration (first preference) or the nominal concentration.
         """
 
+        # TODO: different calculation is required when one dopant substitutes multiple
+        # elements in the host crystal (or) when multiple dopants substitute the same
+        # element in the host crystal. Only the first case is currently handled.
+        # There could be a third situation which is a mix of the two.
+
         if not self.host:
             return
         if not self.dopants:
@@ -265,7 +270,9 @@ class SolidSolution(CompositeSystem, EntryData):
                 if element_substituted.element == dopant.substitution_element:
                     for element_substituting in self.elemental_composition:
                         if element_substituting.element == dopant.molecular_formula:
-                            element_substituting.atomic_fraction = (
+                            if element_substituting.atomic_fraction is None:
+                                element_substituting.atomic_fraction = 0
+                            element_substituting.atomic_fraction += (
                                 dopant_concentration
                                 / 100
                                 * element_substituted.atomic_fraction
