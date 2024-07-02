@@ -97,7 +97,7 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
 class TransmissionSample(Entity, EntryData):
     """
     Entry section for the sample used in the transmission measurement. Contains the
-    physical properties of the sample, and the information about the material system.
+    measurement-specific data along with the reference to the material system.
     """
 
     m_def = Section(
@@ -132,7 +132,7 @@ class TransmissionSample(Entity, EntryData):
         a_eln={'component': 'StringEditQuantity'},
     )
     material_system = SubSection(
-        section_def=CompositeSystem,
+        section_def=CompositeSystemReference,
     )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
