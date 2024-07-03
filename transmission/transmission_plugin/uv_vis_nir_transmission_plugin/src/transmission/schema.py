@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import numpy as np
+import plotly.express as px
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -22,8 +24,6 @@ from typing import (
     Union,
 )
 
-import numpy as np
-import plotly.express as px
 from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
@@ -32,6 +32,18 @@ from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
     SectionProperties,
+)
+
+from nomad.datamodel.data import (
+    EntryData,
+    ArchiveSection,
+)
+from nomad.metainfo import (
+    Package,
+    Quantity,
+    SubSection,
+    MEnum,
+    Section,
 )
 from nomad.datamodel.metainfo.basesections import (
     Entity,
@@ -43,19 +55,14 @@ from nomad.datamodel.metainfo.basesections import (
     ReadableIdentifiers,
     CompositeSystemReference,
 )
-import numpy as np
-import plotly.express as px
-from nomad.metainfo import (
-    MEnum,
-    Package,
-    Quantity,
-    Section,
-    SubSection,
-)
 from nomad.units import ureg
+from nomad.datamodel.metainfo.plot import (
+    PlotSection,
+    PlotlyFigure,
+)
 
 from transmission.readers import read_asc
-from transmission.utils import create_archive, merge_sections
+from transmission.utils import merge_sections, create_archive
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
