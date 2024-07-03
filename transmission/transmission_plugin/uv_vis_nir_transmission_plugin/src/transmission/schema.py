@@ -63,6 +63,7 @@ from nomad.datamodel.metainfo.plot import (
 
 from transmission.readers import read_asc
 from transmission.utils import merge_sections, create_archive
+from transmission.material_systems import PhysicalProperties
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
@@ -101,10 +102,10 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
         super().normalize(archive, logger)
 
 
-class TransmissionSample(Entity, EntryData):
+class TransmissionSampleReference(CompositeSystemReference):
     """
-    Entry section for the sample used in the transmission measurement. Contains the
-    measurement-specific data along with the reference to the material system.
+    Section for the sample used in the transmission measurement. Contains the information
+    about the physical properties of the sample and the reference to the material system.
     """
 
     m_def = Section(
@@ -112,59 +113,15 @@ class TransmissionSample(Entity, EntryData):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'datetime',
                     'lab_id',
-                    'length',
-                    'orientation',
-                    'description',
+                    'reference',
+                    'physical_properties',
                 ]
             )
         )
     )
-    length = Quantity(
-        type=np.float64,
-        description=(
-            'Length (or thickness) of the sample. '
-            'The dimension of the sample along the path of the light beam.'
-        ),
-        a_eln={
-            'component': 'NumberEditQuantity',
-            'defaultDisplayUnit': 'mm',
-        },
-        unit='mm',
-    )
-    orientation = Quantity(
-        type=str,
-        description='Crystallographic orientation of the sample.',
-        a_eln={'component': 'StringEditQuantity'},
-    )
-    material_system = SubSection(
-        section_def=CompositeSystemReference,
-    )
-
-    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
-        """
-        The normalizer for the `TransmissionSample` class.
-
-        Args:
-            archive (EntryArchive): The archive containing the section that is being
-            normalized.
-            logger (BoundLogger): A structlog logger.
-        """
-        super().normalize(archive, logger)
-
-
-class TransmissionSampleReference(EntityReference):
-    """
-    Reference to the `TransmissionSample` section.
-    """
-
-    reference = Quantity(
-        type=TransmissionSample,
-        description='A reference to a `TransmissionSample` entry.',
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        ),
+    physical_properties = SubSection(
+        section_def=PhysicalProperties,
     )
 
 
@@ -773,6 +730,29 @@ class UVVisNirTransmissionResult(MeasurementResult):
 
         return figures
 
+    def calculate_extinction_coefficient(self, archive, logger):
+        """
+        Calculate the extinction coefficient from the transmittance and sample thickness.
+
+        Args:
+            archive (EntryArchive): The archive containing the section.
+            logger (BoundLogger): A structlog logger.
+        """
+        if not archive.data.samples:
+            logger.warn('No sample found.')
+            return
+        try:
+            path_length = archive.data.samples[0].physical_properties.geometry.length
+        except AttributeError:
+            logger.warn('No path length found in the sample.')
+            path_length = None
+
+        if path_length is not None:
+            if self.transmittance is not None:
+                self.extinction_coefficient = -np.log(
+                    self.transmittance / 100
+                ) / path_length.to('cm')
+
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
         The normalizer for the `UVVisNirTransmissionResult` class.
@@ -797,6 +777,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
         if archive.data.results:
             if archive.data.results[0].get('extinction_coefficient') is not None:
                 archive.data.results[0].extinction_coefficient = None
+        self.calculate_extinction_coefficient(archive, logger)
 
 
 class UVVisTransmission(Measurement):
