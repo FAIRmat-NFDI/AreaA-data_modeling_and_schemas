@@ -26,6 +26,51 @@ from nomad.datamodel.metainfo.annotations import (
     SectionProperties,
     Filter,
 )
+from nomad_material_processing import Parallelepiped
+
+
+class TransmissionParallelepiped(Parallelepiped):
+    length = Quantity(
+        type=float,
+        description='The y dimension of the parallelepiped. '
+        'The dimension of the sample along the path of the light beam.',
+        a_eln=dict(
+            component='NumberEditQuantity',
+            defaultDisplayUnit='millimeter',
+            label='Length (y)',
+        ),
+        unit='meter',
+    )
+
+
+class PhysicalProperties(ArchiveSection):
+    """
+    Defines the physical properties of the sample used in the transmission measurement.
+    Can be either a solid sample or liquid sample.
+    """
+
+
+class SolidSamplePhysicalProperties(PhysicalProperties):
+    """
+    Physical properties of the solid sample used in the transmission measurement.
+    """
+
+    geometry = SubSection(
+        section_def=TransmissionParallelepiped,
+    )
+    orientation = Quantity(
+        type=str,
+        description='Crystallographic orientation of the sample in the '
+        'direction perpendicular to the light beam. Defined in terms of miller indices.',
+        a_eln={'component': 'StringEditQuantity'},
+    )
+
+
+class LiquidSamplePhysicalProperties(PhysicalProperties):
+    """
+    Physical properties of the liquid sample used in the transmission measurement.
+    Information related to the cuvette used for the liquid sample.
+    """
 
 
 class CrystalProperties(ArchiveSection):
