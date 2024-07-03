@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import numpy as np
+import plotly.express as px
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -22,7 +24,18 @@ from typing import (
     Callable,
     Union,
 )
-from nomad.datamodel.data import EntryData
+
+from nomad.datamodel.data import (
+    EntryData,
+    ArchiveSection,
+)
+from nomad.metainfo import (
+    Package,
+    Quantity,
+    SubSection,
+    MEnum,
+    Section,
+)
 from nomad.datamodel.metainfo.basesections import (
     Entity,
     EntityReference,
@@ -33,27 +46,12 @@ from nomad.datamodel.metainfo.basesections import (
     ReadableIdentifiers,
     CompositeSystemReference,
 )
-import numpy as np
-import plotly.express as px
-from nomad.metainfo import (
-    Package,
-    Quantity,
-    SubSection,
-    MEnum,
-    Section,
-)
-from nomad.datamodel.data import (
-    EntryData,
-    ArchiveSection,
-)
 from nomad.units import ureg
-
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
     SectionProperties,
 )
-
 from nomad.datamodel.metainfo.plot import (
     PlotSection,
     PlotlyFigure,
