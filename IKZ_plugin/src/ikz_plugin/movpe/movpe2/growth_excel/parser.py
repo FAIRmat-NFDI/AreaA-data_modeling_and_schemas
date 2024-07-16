@@ -45,6 +45,7 @@ from nomad_material_processing.vapor_deposition import (
 )
 from nomad_material_processing.vapor_deposition.cvd import (
     Rotation,
+    PushPurgeGasFlow,
 )
 
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -53,7 +54,6 @@ from ikz_plugin.movpe.schema import (
     ChamberEnvironmentMovpe,
     ExperimentMovpeIKZ,
     FilamentTemperature,
-    GasFlowMovpe,
     GrowthMovpeIKZ,
     GrowthMovpeIKZReference,
     GrowthStepMovpe2IKZ,
@@ -293,7 +293,7 @@ class ParserMovpe2IKZ(MatchingParser):
                         * ureg('rpm').to('rpm').magnitude,
                     ),
                     gas_flow=[
-                        GasFlowMovpe(
+                        PushPurgeGasFlow(
                             gas=PubChemPureSubstanceSection(
                                 name=(
                                     growth_run_file['Carrier Gas'][index]

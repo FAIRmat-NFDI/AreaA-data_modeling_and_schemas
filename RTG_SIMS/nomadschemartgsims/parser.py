@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-from nomad.datamodel import EntryArchive
+from nomad.datamodel.datamodel import EntryArchive
 from nomad.metainfo import (
     MSection,
     Quantity,
@@ -29,35 +29,39 @@ from nomad.datamodel.data import (
     EntryData,
 )
 
-#from nomad_material_processing.utils import create_archive
+# from nomad_material_processing.utils import create_archive
 from nomad_measurements.utils import create_archive
-from nomadschemartgsims.schema import RTGSIMSMeasurement #HZBUnoldLabThermalEvaporation
+from nomadschemartgsims.schema import (
+    RTGSIMSMeasurement,
+)  # HZBUnoldLabThermalEvaporation
+
 
 class RTGSIMSDPFile(EntryData):
     measurement = Quantity(
         type=RTGSIMSMeasurement,
         a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        )
+            component="ReferenceEditQuantity",
+        ),
     )
 
 
 class SIMSParser(MatchingParser):
-
     def __init__(self):
         super().__init__(
-            name='NOMAD RTG SIMS schema and parser plugin',
-            code_name= 'RTG SIMS Parser',#'HZB Unold Lab Parser',
-            code_homepage='https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas',
-            supported_compressions=['gz', 'bz2', 'xz']
+            name="NOMAD RTG SIMS schema and parser plugin",
+            code_name="RTG SIMS Parser",  #'HZB Unold Lab Parser',
+            code_homepage="https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas",
+            supported_compressions=["gz", "bz2", "xz"],
         )
 
     def parse(self, mainfile: str, archive: EntryArchive, logger) -> None:
-        data_file = mainfile.split('/')[-1]
+        data_file = mainfile.split("/")[-1]
         data_file_with_path = mainfile.split("raw/")[-1]
         entry = RTGSIMSMeasurement.m_from_dict(RTGSIMSMeasurement.m_def.a_template)
         entry.data_file = data_file_with_path
-        file_name = f'{data_file[:-9]}.archive.json'
-        #entry.normalize(archive, logger)
-        archive.data = RTGSIMSDPFile(measurement=create_archive(entry,archive,file_name))
-        archive.metadata.entry_name = data_file + ' measurement file'
+        file_name = f"{data_file[:-9]}.archive.json"
+        # entry.normalize(archive, logger)
+        archive.data = RTGSIMSDPFile(
+            measurement=create_archive(entry, archive, file_name)
+        )
+        archive.metadata.entry_name = data_file + " measurement file"

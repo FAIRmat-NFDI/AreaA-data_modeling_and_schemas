@@ -46,9 +46,10 @@ from nomad_material_processing.vapor_deposition import (
     VolumetricFlowRate,
 )
 from nomad_material_processing.vapor_deposition.cvd import (
+    FlashSource,
     FlashEvaporator,
-    GasLine,
     Rotation,
+    GasLineSource,
 )
 
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
@@ -61,8 +62,6 @@ from ikz_plugin.movpe.schema import (
     ChamberEnvironmentMovpe,
     ExperimentMovpeIKZ,
     FilamentTemperature,
-    FlashSourceIKZ,
-    GasSourceIKZ,
     GrowthMovpeIKZ,
     GrowthMovpeIKZReference,
     GrowthStepMovpe1IKZ,
@@ -467,7 +466,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                         ),
                                     ),
                                 ),
-                                FlashSourceIKZ(
+                                FlashSource(
                                     name='Flash Evaporator 2',
                                     vapor_source=FlashEvaporator(
                                         pressure=Pressure(
@@ -491,7 +490,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                         ),
                                     ),
                                 ),
-                                GasSourceIKZ(
+                                GasLineSource(
                                     name='Oxygen uniform gas ',
                                     vapor_source=GasLine(
                                         temperature=Temperature(

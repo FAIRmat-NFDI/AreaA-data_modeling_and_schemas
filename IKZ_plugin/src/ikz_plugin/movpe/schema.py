@@ -53,7 +53,6 @@ from nomad_material_processing import (
 )
 from nomad_material_processing.vapor_deposition import (
     ChamberEnvironment,
-    GasFlow,
     Pressure,
     SampleParameters,
     SubstrateHeater,
@@ -63,10 +62,7 @@ from nomad_material_processing.vapor_deposition import (
     VolumetricFlowRate,
 )
 from nomad_material_processing.vapor_deposition.cvd import (
-    BubblerEvaporator,
     CVDSource,
-    FlashEvaporator,
-    GasSupply,
     Rotation,
 )
 from nomad_measurements import (
@@ -801,40 +797,6 @@ class LayTecTemperature(Temperature):
     """
 
     pass
-
-
-class BubblerSourceIKZ(CVDSource):
-    vapor_source = SubSection(
-        section_def=BubblerEvaporator,
-    )
-
-
-class FlashSourceIKZ(CVDSource):
-    vapor_source = SubSection(
-        section_def=FlashEvaporator,
-        description="""
-        Example: A heater, a filament, a laser, a bubbler, etc.
-        """,
-    )
-
-
-class GasSourceIKZ(CVDSource):
-    vapor_source = SubSection(
-        section_def=GasSupply,
-    )
-
-
-class GasFlowMovpe(GasFlow):
-    gas = SubSection(
-        section_def=PureSubstanceSection,
-    )
-    flow_rate = SubSection(
-        section_def=VolumetricFlowRate,
-        label='Push Flow Rate',
-    )
-    purge_flow_rate = SubSection(
-        section_def=VolumetricFlowRate,
-    )
 
 
 class ChamberEnvironmentMovpe(ChamberEnvironment):

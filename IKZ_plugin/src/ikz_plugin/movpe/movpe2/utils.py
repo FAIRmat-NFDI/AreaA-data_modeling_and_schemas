@@ -38,13 +38,10 @@ from nomad_material_processing.vapor_deposition import (
 )
 from nomad_material_processing.vapor_deposition.cvd import (
     BubblerEvaporator,
-    GasLine,
     PartialVaporPressure,
-)
-
-from ikz_plugin.movpe.schema import (
-    BubblerSourceIKZ,
-    GasSourceIKZ,
+    BubblerSource,
+    GasLineSource,
+    GasLineEvaporator,
 )
 
 
@@ -236,7 +233,7 @@ def populate_sources(line_number, growth_run_file: pd.DataFrame):
             for key in bubbler_quantities
         ):
             sources.append(
-                BubblerSourceIKZ(
+                BubblerSource(
                     name=growth_run_file.get(
                         f"Bubbler Material{'' if i == 0 else '.' + str(i)}", ''
                     )[line_number],
@@ -346,7 +343,7 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
             for key in gas_source_quantities
         ):
             gas_sources.append(
-                GasSourceIKZ(
+                GasLineSource(
                     name=growth_run_file.get(
                         f"Gas Material{'' if i == 0 else '.' + str(i)}", ''
                     )[line_number],
@@ -362,7 +359,7 @@ def populate_gas_source(line_number, growth_run_file: pd.DataFrame):
                             ),
                         ),
                     ],
-                    vapor_source=GasLine(
+                    vapor_source=GasLineEvaporator(
                         total_flow_rate=VolumetricFlowRate(
                             set_value=pd.Series(
                                 [
