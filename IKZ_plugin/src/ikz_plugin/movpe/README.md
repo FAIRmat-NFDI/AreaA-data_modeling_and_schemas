@@ -23,24 +23,24 @@ IKZ_plugin/
 ├── nomad.yaml
 ├── src
 │   └── ikz_plugin
-│       └── characterization
-│           ├── nomad_plugin.yaml
+│       └── movpe
+│           ├── __init__.py
 │           ├── schema.py
 │           ├── movpe1
 │           │   ├── constant_parameters
-│           │   │   ├── nomad_plugin.yaml
+│           │   │   ├── __init__.py
 │           │   │   └── parser.py
 │           │   ├── growth_excel
-│           │   │   ├── nomad_plugin.yaml
+│           │   │   ├── __init__.py
 │           │   │   └── parser.py
 │           │   └── utils.py
 │           ├── movpe2
 │           │   ├── growth_excel
-│           │   │   ├── nomad_plugin.yaml
+│           │   │   ├── __init__.py
 │           │   │   └── parser.py
 │           │   └── utils.py
 │           └── substrate
-│               ├── nomad_plugin.yaml
+│               ├── __init__.py
 │               ├── parser.py
 │               └── utils.py
 └── tests
@@ -81,7 +81,7 @@ IKZ_plugin/
 
 - You need to copy and fill the excel files in `tests/data` folder, then drag and drop them into a new NOMAD upload.
 
-- Follow the raw file matching rules in `nomad_plugin.yaml` of each parser. In general, a file must:
+- Follow the raw file matching rules in `__init__.py` of each parser. In general, a file must:
   - have specific extension.
   - contain specific column headers.
 

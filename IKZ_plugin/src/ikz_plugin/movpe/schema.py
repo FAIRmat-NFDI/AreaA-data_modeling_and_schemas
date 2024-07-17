@@ -75,7 +75,6 @@ from structlog.stdlib import (
 
 from ikz_plugin.characterization.schema import AFMmeasurement, LightMicroscope
 from ikz_plugin.general.schema import (
-    IKZMOVPE1Category,
     IKZMOVPECategory,
     SubstratePreparationStepReference,
 )
@@ -539,7 +538,7 @@ class PrecursorsPreparationIKZ(Process, EntryData):
             ]
         },
         label_quantity='name',
-        categories=[IKZMOVPE1Category],
+        categories=[IKZMOVPECategory],
         label='PrecursorsPreparation',
     )
     data_file = Quantity(
@@ -1366,7 +1365,7 @@ class GrowthMovpe1IKZConstantParameters(Process, EntryData, TableData):
     m_def = Section(
         # a_eln={"hide": ["samples"]},
         label_quantity='lab_id',  # "growth_id",
-        categories=[IKZMOVPE1Category],
+        categories=[IKZMOVPECategory],
         label='Growth Process Constant parameters',
     )
     data_file = Quantity(
