@@ -36,9 +36,12 @@ from nomad_material_processing import (
 
 from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
+
+from nomad_material_processing import (
+    SubstrateCrystalProperties,
+)
 from ikz_plugin.movpe.schema import (
     MiscutMovpe,
-    SubstrateCrystalPropertiesMovpe,
     SubstrateInventory,
     SubstrateMovpe,
     SubstrateMovpeReference,
@@ -105,27 +108,29 @@ class MovpeSubstrateParser(MatchingParser):
                     width=(typed_df_value(substrates_file, 'Size X', float, index)),
                     length=(typed_df_value(substrates_file, 'Size Y', float, index)),
                 ),
-                crystal_properties=SubstrateCrystalPropertiesMovpe(
+                crystal_properties=SubstrateCrystalProperties(
                     orientation=(
                         typed_df_value(substrates_file, 'Orientation', str, index)
                     ),
-                    miscut=MiscutMovpe(
-                        b_angle=(
-                            typed_df_value(
-                                substrates_file, 'Miscut b angle', float, index
-                            )
+                    miscut=[
+                        MiscutMovpe(
+                            b_angle=(
+                                typed_df_value(
+                                    substrates_file, 'Miscut b angle', float, index
+                                )
+                            ),
+                            angle=(
+                                typed_df_value(
+                                    substrates_file, 'Miscut c angle', float, index
+                                )
+                            ),
+                            orientation=(
+                                typed_df_value(
+                                    substrates_file, 'Miscut c Orientation', str, index
+                                )
+                            ),
                         ),
-                        angle=(
-                            typed_df_value(
-                                substrates_file, 'Miscut c angle', float, index
-                            )
-                        ),
-                        orientation=(
-                            typed_df_value(
-                                substrates_file, 'Miscut c Orientation', str, index
-                            )
-                        ),
-                    ),
+                    ],
                 ),
                 elemental_composition=populate_element(index, substrates_file),
                 dopants=populate_dopant(index, substrates_file),
