@@ -62,7 +62,7 @@ class TransmissionParser(MatchingParser):
         data_file = mainfile.split('/')[-1]
         entry = ELNUVVisTransmission.m_from_dict(ELNUVVisTransmission.m_def.a_template)
         entry.data_file = data_file
-        file_name = f'{"".join(data_file.split(".")[:-1])}.archive.json'
+        file_name = f'{".".join(data_file.split(".")[:-1])}.archive.json'
         archive.data = RawFileTransmissionData(
             measurement=create_archive(entry, archive, file_name)
         )
