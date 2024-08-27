@@ -1,2 +1,2 @@
 data:
-  m_def: uv_vis_nir_transmission.TransmissionSpectrophotometer
+  m_def: transmission.schema.TransmissionSpectrophotometer

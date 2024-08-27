@@ -1,4 +1,0 @@
-data:
-  m_def: uv_vis_nir_transmission.UVVisNirTransmissionResult
-  data_file: /home/brueckner/schemas/AreaA-data_modeling_and_schemas/transmission/transmission_plugin/uv_vis_nir_transmission_plugin/tests/data/3DM_test01.Probe.Raw.asc
-  user: 'brueckner'

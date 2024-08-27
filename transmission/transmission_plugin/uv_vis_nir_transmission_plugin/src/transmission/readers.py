@@ -16,13 +16,14 @@
 # limitations under the License.
 #
 
-from typing import Dict, Any, TYPE_CHECKING
 from collections import defaultdict
 from datetime import datetime
 from inspect import isfunction
+from typing import TYPE_CHECKING, Any
+
 import numpy as np
-from nomad.units import ureg
 import pandas as pd
+from nomad.units import ureg
 
 if TYPE_CHECKING:
     from structlog.stdlib import (
@@ -111,7 +112,7 @@ def read_is_tungsten_lamp_used(metadata: list, logger: 'BoundLogger') -> bool:
     return None
 
 
-def read_attenuation_percentage(metadata: list, logger) -> Dict[str, int]:
+def read_attenuation_percentage(metadata: list, logger) -> dict[str, int]:
     """
     Reads the sample and reference attenuation percentage from the metadata
 
@@ -192,7 +193,7 @@ def read_long_line(line: str, logger: 'BoundLogger') -> list:
                 output_list.append(
                     {'wavelength': None, 'value': try_float(key_value_pair_list[0])}
                 )
-            elif len(key_value_pair_list) == 2:
+            elif len(key_value_pair_list) == 2:  # noqa: PLR2004
                 output_list.append(
                     {
                         'wavelength': float(key_value_pair_list[0]) * ureg.nanometer,
@@ -378,7 +379,7 @@ def read_detector_module(metadata: list, logger: 'BoundLogger') -> str:
     return None
 
 
-METADATA_MAP: Dict[str, Any] = {
+METADATA_MAP: dict[str, Any] = {
     'sample_name': read_sample_name,
     'start_datetime': read_start_datetime,
     'analyst_name': 7,
@@ -404,7 +405,7 @@ METADATA_MAP: Dict[str, Any] = {
 }
 
 
-def restructure_measured_data(data: pd.DataFrame) -> Dict[str, np.ndarray]:
+def restructure_measured_data(data: pd.DataFrame) -> dict[str, np.ndarray]:
     """
     Builds the data entry dict from the data in a pandas dataframe.
 
@@ -414,14 +415,14 @@ def restructure_measured_data(data: pd.DataFrame) -> Dict[str, np.ndarray]:
     Returns:
         Dict[str, np.ndarray]: The dict with the measured data.
     """
-    output: Dict[str, Any] = {}
+    output: dict[str, Any] = {}
     output['measured_wavelength'] = data.index.values
     output['measured_ordinate'] = data.values[:, 0] * ureg.dimensionless
 
     return output
 
 
-def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
+def read_asc(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]:
     """
     Function for reading the transmission data from PerkinElmer *.asc.
 
@@ -433,7 +434,7 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
         Dict[str, Any]: The transmission data and metadata in a Python dictionary.
     """
 
-    output: Dict[str, Any] = defaultdict(lambda: None)
+    output: dict[str, Any] = defaultdict(lambda: None)
     data_start_ind = '#DATA'
 
     with open(file_path, encoding='utf-8') as file_obj:
@@ -443,7 +444,7 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
                 break
             metadata.append(line.strip())
 
-        data = pd.read_csv(file_obj, delim_whitespace=True, header=None, index_col=0)
+        data = pd.read_csv(file_obj, sep='\\s+', header=None, index_col=0)
 
     for path, val in METADATA_MAP.items():
         # If the dict value is an int just get the data with it's index
@@ -457,7 +458,8 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> Dict[str, Any]:
             output[path] = val(metadata, logger)
         else:
             raise ValueError(
-                f"Invalid type value {type(val)} of entry '{path}:{val}' in METADATA_MAP"
+                f'Invalid type value {type(val)} of entry "{path}:{val}" in'
+                'METADATA_MAP.'
             )
 
     output.update(restructure_measured_data(data))

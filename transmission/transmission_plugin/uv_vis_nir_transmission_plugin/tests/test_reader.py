@@ -1,10 +1,11 @@
 import pytest
 from nomad.units import ureg
-from uv_vis_nir_transmission.readers import (
-    read_sample_name,
-    read_start_datetime,
+
+from transmission.readers import (
     read_attenuation_percentage,
     read_long_line,
+    read_sample_name,
+    read_start_datetime,
 )
 
 
