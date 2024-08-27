@@ -57,15 +57,15 @@ from nomad.datamodel.metainfo.plot import (
     PlotlyFigure,
 )
 
-from uv_vis_nir_transmission.readers import read_asc
-from uv_vis_nir_transmission.utils import merge_sections, create_archive
+from transmission.readers import read_asc
+from transmission.utils import merge_sections, create_archive
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
     from structlog.stdlib import BoundLogger
 
 
-m_package = Package(name='uv-vis-nir-transmission')
+m_package = Package(name='nomad_transmission')
 
 
 class TransmissionSpectrophotometer(Instrument, EntryData):

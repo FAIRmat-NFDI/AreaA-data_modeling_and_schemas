@@ -6,9 +6,10 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "uv_vis_nir_transmission"
+name = "transmission"
 dynamic = ["version"]
-description = "A plugin for NOMAD containing base sections for uv-vis transmission."
+description = """
+A plugin for NOMAD containing base sections for transmission spectrophotometry."""
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -78,5 +79,6 @@ line-ending = "auto"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-nomad_analysis = ['*/nomad_plugin.yaml']
+[project.entry-points.'nomad.plugin']
+transmission_schema = "transmission:schema"
+transmission_parser = "transmission:parser"
