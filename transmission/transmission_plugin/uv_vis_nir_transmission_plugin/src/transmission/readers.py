@@ -444,7 +444,7 @@ def read_asc(file_path: str, logger: 'BoundLogger' = None) -> dict[str, Any]:
                 break
             metadata.append(line.strip())
 
-        data = pd.read_csv(file_obj, delim_whitespace=True, header=None, index_col=0)
+        data = pd.read_csv(file_obj, sep='\\s+', header=None, index_col=0)
 
     for path, val in METADATA_MAP.items():
         # If the dict value is an int just get the data with it's index
