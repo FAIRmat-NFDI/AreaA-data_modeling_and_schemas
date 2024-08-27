@@ -193,7 +193,7 @@ def read_long_line(line: str, logger: 'BoundLogger') -> list:
                 output_list.append(
                     {'wavelength': None, 'value': try_float(key_value_pair_list[0])}
                 )
-            elif len(key_value_pair_list) == 2: # noqa: PLR2004
+            elif len(key_value_pair_list) == 2:  # noqa: PLR2004
                 output_list.append(
                     {
                         'wavelength': float(key_value_pair_list[0]) * ureg.nanometer,

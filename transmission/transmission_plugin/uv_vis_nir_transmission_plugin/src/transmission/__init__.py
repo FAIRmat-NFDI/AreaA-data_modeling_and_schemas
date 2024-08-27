@@ -38,7 +38,7 @@ class TransmissionParserEntryPoint(ParserEntryPoint):
     def load(self):
         from transmission.parser import TransmissionParser
 
-        return TransmissionParser()
+        return TransmissionParser(**self.dict())
 
 
 schema = TransmissionSchemaEntryPoint(

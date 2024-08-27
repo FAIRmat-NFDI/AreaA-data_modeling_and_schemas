@@ -1,8 +1,12 @@
+import os
 from typing import (
     TYPE_CHECKING,
 )
 
 if TYPE_CHECKING:
+    from nomad.datamodel import (
+        EntryArchive,
+    )
     from nomad.datamodel.data import (
         ArchiveSection,
     )
@@ -74,15 +78,21 @@ def get_entry_id_from_file_name(file_name, archive):
     return hash(archive.metadata.upload_id, file_name)
 
 
-def create_archive(entity, archive, file_name) -> str:
+def create_archive(
+    entity: 'ArchiveSection',
+    archive: 'EntryArchive',
+    file_name: str,
+) -> str:
     import json
 
     from nomad.datamodel.context import ClientContext
 
+    entity_entry = entity.m_to_dict(with_root_def=True)
     if isinstance(archive.m_context, ClientContext):
-        return None
+        with open(file_name, 'w') as outfile:
+            json.dump({'data': entity_entry}, outfile, indent=4)
+        return os.path.abspath(file_name)
     if not archive.m_context.raw_path_exists(file_name):
-        entity_entry = entity.m_to_dict(with_root_def=True)
         with archive.m_context.raw_file(file_name, 'w') as outfile:
             json.dump({'data': entity_entry}, outfile)
         archive.m_context.process_updated_raw_file(file_name)

@@ -56,11 +56,6 @@ class TransmissionParser(MatchingParser):
     creating instances of ELN.
     """
 
-    def __init__(self):
-        super().__init__(
-            code_name='Transmission Spectrophotometry Parser',
-        )
-
     def parse(
         self, mainfile: str, archive: 'EntryArchive', logger=None, child_archives=None
     ) -> None:
