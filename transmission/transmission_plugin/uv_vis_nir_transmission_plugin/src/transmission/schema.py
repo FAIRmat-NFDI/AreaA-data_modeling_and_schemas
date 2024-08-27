@@ -17,12 +17,22 @@
 #
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Any,
     Callable,
     Union,
 )
-from nomad.datamodel.data import EntryData
+
+import numpy as np
+import plotly.express as px
+from nomad.datamodel.data import (
+    ArchiveSection,
+    EntryData,
+)
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+    ELNComponentEnum,
+    SectionProperties,
+)
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
     Instrument,
@@ -31,34 +41,21 @@ from nomad.datamodel.metainfo.basesections import (
     MeasurementResult,
     ReadableIdentifiers,
 )
-import numpy as np
-import plotly.express as px
+from nomad.datamodel.metainfo.plot import (
+    PlotlyFigure,
+    PlotSection,
+)
 from nomad.metainfo import (
+    MEnum,
     Package,
     Quantity,
-    SubSection,
-    MEnum,
     Section,
-)
-from nomad.datamodel.data import (
-    EntryData,
-    ArchiveSection,
+    SubSection,
 )
 from nomad.units import ureg
 
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-    ELNComponentEnum,
-    SectionProperties,
-)
-
-from nomad.datamodel.metainfo.plot import (
-    PlotSection,
-    PlotlyFigure,
-)
-
 from transmission.readers import read_asc
-from transmission.utils import merge_sections, create_archive
+from transmission.utils import create_archive, merge_sections
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import EntryArchive
@@ -142,7 +139,7 @@ class TransmissionSample(CompositeSystem, EntryData):
             normalized.
             logger (BoundLogger): A structlog logger.
         """
-        super(TransmissionSample, self).normalize(archive, logger)
+        super().normalize(archive, logger)
 
 
 class Accessory(ArchiveSection):
@@ -223,9 +220,9 @@ class Aperture(Accessory):
     """
 
     m_def = Section(
-        description=(
-            'Custom aperture placed in front of the sample inside the sample compartment'
-        ),
+        description="""
+        Custom aperture placed in front of the sample inside the sample compartment.
+        """,
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -352,10 +349,10 @@ class SlitWidth(SettingOverWavelengthRange):
     )
     slit_width_servo = Quantity(
         type=bool,
-        description=(
-            'True if slit width servo is on, i.e., the system monitors the reference '
-            'beam energy and adjusts the slits to avoid over-saturation of the detectors.'
-        ),
+        description="""
+        True if slit width servo is on, i.e., the system monitors the reference
+        beam energy and adjusts the slits to avoid over-saturation of the detectors.
+        """,
         a_eln={'component': 'BoolEditQuantity'},
     )
 
@@ -511,7 +508,7 @@ class Detector(ArchiveSection):
         | **Three Detector Module**            | Installed as standard module on Perkin-Elmer Lambda 1050 WB and NB spectrophotometers. Contains three detectors for different wavelength ranges: PMT, InGaAs, PbS. |
         | **Two Detector Module**              | Installed on Perkin-Elmer Lambda 750, 900, 950 spectrophotometers. Contains two detectors for different wavelength ranges: PMT, PbS. |
         | **150-mm Integrating Sphere**        | Includes an integrating sphere with a diameter of 150 mm which is equipped with PMT (R928) and InGaAs detector. The PMT covers 200-860.8 nm and the InGaAs detector covers 860.8-2500 nm. |
-        """,
+        """,  # noqa: E501
     )
     detectors = Quantity(
         type=str,
@@ -522,7 +519,7 @@ class Detector(ArchiveSection):
         | **PMT**           | Photomultiplier Tube detector used for the Ultra-Violet (UV) or visible range.|
         | **InGaAs**        | Indium Gallium Arsenide detector used for Near-Infra-red (NIR) range.|
         | **PbS**           | Lead Sulphide detector used for Infrared (IR) range.|
-        """,
+        """,  # noqa: E501
         a_eln={'component': 'StringEditQuantity'},
         shape=['*'],
     )
@@ -759,7 +756,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
             normalized.
             logger (BoundLogger): A structlog logger.
         """
-        super(UVVisNirTransmissionResult, self).normalize(archive, logger)
+        super().normalize(archive, logger)
         if archive.data.samples:
             sample = archive.data.samples[0]
             if sample.reference is None:
@@ -801,9 +798,9 @@ class UVVisTransmission(Measurement):
 
 class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
     """
-    Entry class for UVVisTransmission. Handles the population of the schema and plotting.
-    Data is added either through manual input in the GUI or by parsing the measurement
-    files coming from the instrument.
+    Entry class for UVVisTransmission. Handles the population of the schema and
+    plotting. Data is added either through manual input in the GUI or by parsing
+    the measurement files coming from the instrument.
     """
 
     m_def = Section(
@@ -827,7 +824,8 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
 
     def get_read_write_functions(self) -> tuple[Callable, Callable]:
         """
-        Method for getting the correct read and write functions for the current data file.
+        Method for getting the correct read and write functions for the current data
+        file.
 
         Returns:
             tuple[Callable, Callable]: The read, write functions.
@@ -837,7 +835,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         return None, None
 
     def create_instrument_entry(
-        self, data_dict: Dict[str, Any], archive: 'EntryArchive', logger: 'BoundLogger'
+        self, data_dict: dict[str, Any], archive: 'EntryArchive', logger: 'BoundLogger'
     ) -> InstrumentReference:
         """
         Method for creating the instrument entry. Returns a reference to the created
@@ -866,14 +864,14 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         return InstrumentReference(reference=m_proxy_value)
 
     def get_instrument_reference(
-        self, data_dict: Dict[str, Any], archive: 'EntryArchive', logger: 'BoundLogger'
+        self, data_dict: dict[str, Any], archive: 'EntryArchive', logger: 'BoundLogger'
     ) -> Union[InstrumentReference, None]:
         """
         Method for getting the instrument reference.
         Looks for an existing instrument with the given serial number.
         If found, it returns a reference to this instrument.
-        If no instrument is found, logs a warning, creates a new entry for the instrument
-        and returns a reference to this entry.
+        If no instrument is found, logs a warning, creates a new entry for the
+        instrument and returns a reference to this entry.
         If multiple instruments are found, it logs a warning and returns None.
 
         Args:
@@ -923,9 +921,9 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
 
         return InstrumentReference(reference=m_proxy_value)
 
-    def write_transmission_data(
+    def write_transmission_data(  # noqa: PLR0912, PLR0915
         self,
-        transmission_dict: Dict[str, Any],
+        transmission_dict: dict[str, Any],
         archive: 'EntryArchive',
         logger: 'BoundLogger',
     ) -> None:

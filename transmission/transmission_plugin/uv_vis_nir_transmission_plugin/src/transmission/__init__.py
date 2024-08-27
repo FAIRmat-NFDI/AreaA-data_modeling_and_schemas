@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-from nomad.config.models.plugins import SchemaPackageEntryPoint, ParserEntryPoint
+from nomad.config.models.plugins import ParserEntryPoint, SchemaPackageEntryPoint
 
 
 class TransmissionSchemaEntryPoint(SchemaPackageEntryPoint):
