@@ -737,12 +737,12 @@ class UVVisNirTransmissionResult(MeasurementResult):
             logger (BoundLogger): A structlog logger.
         """
         if not archive.data.samples:
-            logger.warn('No sample found.')
+            logger.warning('No sample found.')
             return
         try:
             path_length = archive.data.samples[0].physical_properties.geometry.length
         except AttributeError:
-            logger.warn('No path length found in the sample.')
+            logger.warning('No path length found in the sample.')
             path_length = None
 
         if path_length is not None:
@@ -764,7 +764,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
         if archive.data.samples:
             sample = archive.data.samples[0]
             if sample.reference is None:
-                logger.warn('No reference sample found.')
+                logger.warning('No reference sample found.')
             if sample.reference.get('length') is not None:
                 if self.get('transmittance') is not None:
                     self.extinction_coefficient = -np.log(
@@ -911,14 +911,14 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         )
 
         if not search_result.data:
-            logger.warn(
+            logger.warning(
                 f'No "TransmissionSpectrophotometer" instrument found with the serial '
                 f'number "{serial_number}".'
             )
             return self.create_instrument_entry(data_dict, archive, logger)
 
         if len(search_result.data) > 1:
-            logger.warn(
+            logger.warning(
                 f'Multiple "TransmissionSpectrophotometer" instruments found with the '
                 f'serial number "{serial_number}". Please select it manually.'
             )
@@ -957,7 +957,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         elif transmission_dict['ordinate_type'] == '%T':
             result.transmittance = transmission_dict['measured_ordinate']
         else:
-            logger.warn(f"Unknown ordinate type '{transmission_dict['ordinate']}'.")
+            logger.warning(f"Unknown ordinate type '{transmission_dict['ordinate']}'.")
         result.normalize(archive, logger)
 
         lamp = Lamp(
@@ -1096,7 +1096,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         if self.data_file is not None:
             read_function, write_function = self.get_read_write_functions()
             if read_function is None or write_function is None:
-                logger.warn(
+                logger.warning(
                     f'No compatible reader found for the file: "{self.data_file}".'
                 )
             else:
