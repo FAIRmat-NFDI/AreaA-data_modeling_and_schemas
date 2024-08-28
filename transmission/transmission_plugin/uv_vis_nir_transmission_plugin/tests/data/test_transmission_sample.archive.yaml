@@ -1,2 +1,2 @@
 data:
-  m_def: transmission.schema.TransmissionSample
+  m_def: transmission.schema.TransmissionSampleReference

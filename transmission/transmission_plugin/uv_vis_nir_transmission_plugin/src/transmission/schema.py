@@ -46,8 +46,6 @@ from nomad.metainfo import (
     Section,
 )
 from nomad.datamodel.metainfo.basesections import (
-    Entity,
-    EntityReference,
     Instrument,
     InstrumentReference,
     Measurement,
