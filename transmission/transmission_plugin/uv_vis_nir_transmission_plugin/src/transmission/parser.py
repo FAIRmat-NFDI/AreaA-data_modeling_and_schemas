@@ -28,7 +28,7 @@ from nomad.metainfo import (
 )
 from nomad.parsing import MatchingParser
 
-from transmission.schema import ELNUVVisTransmission
+from transmission.schema import ELNUVVisNirTransmission
 from transmission.utils import create_archive
 
 if TYPE_CHECKING:
@@ -43,7 +43,7 @@ class RawFileTransmissionData(EntryData):
     """
 
     measurement = Quantity(
-        type=ELNUVVisTransmission,
+        type=ELNUVVisNirTransmission,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
         ),
@@ -60,7 +60,9 @@ class TransmissionParser(MatchingParser):
         self, mainfile: str, archive: 'EntryArchive', logger=None, child_archives=None
     ) -> None:
         data_file = mainfile.split('/')[-1]
-        entry = ELNUVVisTransmission.m_from_dict(ELNUVVisTransmission.m_def.a_template)
+        entry = ELNUVVisNirTransmission.m_from_dict(
+            ELNUVVisNirTransmission.m_def.a_template
+        )
         entry.data_file = data_file
         file_name = f'{".".join(data_file.split(".")[:-1])}.archive.json'
         archive.data = RawFileTransmissionData(

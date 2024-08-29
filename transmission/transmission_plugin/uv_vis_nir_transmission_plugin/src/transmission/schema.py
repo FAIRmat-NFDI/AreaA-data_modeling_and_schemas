@@ -15,8 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import numpy as np
-import plotly.express as px
+"""
+Module for schemas related to Transmission Spectrophotometry. Contains the schema for
+spectrophotometer, sample, and measurement.
+
+To add a new schema for a measurement technique, create a new schema class with the
+signature: `<MeasurementTechniqueName>Transmission(Measurement)`.
+For example, UVVisNirTransmission(Measurement) for UV-Vis-NIR Transmission.
+
+If you want a corresponding ELN schema, create a new class with the signature:
+`ELN<MeasurementTechniqueName>Transmission(
+    <MeasurementTechniqueName>Transmission, PlotSection, EntryData
+)`.
+For example, ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData).
+"""
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -144,10 +157,11 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
         super().normalize(archive, logger)
 
 
-class TransmissionSampleReference(CompositeSystemReference):
+class TransmissionSample(CompositeSystemReference):
     """
-    Section for the sample used in the transmission measurement. Contains the information
-    about the physical properties of the sample and the reference to the material system.
+    Section for the sample used in the transmission measurement. Contains the
+    information about the physical properties of the sample and the reference to the
+    material system.
     """
 
     m_def = Section(
@@ -608,7 +622,7 @@ class Attenuator(ArchiveSection):
     )
 
 
-class TransmissionSettings(ArchiveSection):
+class UVVisNirTransmissionSettings(ArchiveSection):
     """
     Section for setting of the instrument used for transmission measurement.
     """
@@ -822,7 +836,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
         self.calculate_extinction_coefficient(archive, logger)
 
 
-class UVVisTransmission(Measurement):
+class UVVisNirTransmission(Measurement):
     """
     Schema for UV-Vis NIR Transmission, which extends the basesection Measurement.
     """
@@ -838,7 +852,7 @@ class UVVisTransmission(Measurement):
         a_eln={'component': 'StringEditQuantity'},
     )
     samples = SubSection(
-        section_def=TransmissionSampleReference,
+        section_def=TransmissionSample,
         description='List of all samples used during the transmission measurement.',
         repeats=True,
     )
@@ -846,13 +860,13 @@ class UVVisTransmission(Measurement):
     results.section_def = UVVisNirTransmissionResult
 
     transmission_settings = SubSection(
-        section_def=TransmissionSettings,
+        section_def=UVVisNirTransmissionSettings,
     )
 
 
-class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
+class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
     """
-    Entry class for UVVisTransmission. Handles the population of the schema and
+    Entry class for UVVisNirTransmission. Handles the population of the schema and
     plotting. Data is added either through manual input in the GUI or by parsing
     the measurement files coming from the instrument.
     """
@@ -982,7 +996,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         logger: 'BoundLogger',
     ) -> None:
         """
-        Populate `UVVisTransmission` section with the data from the transmission_dict.
+        Populate `UVVisNirTransmission` section using data from a dict.
 
         Args:
             transmission_dict (Dict[str, Any]): A dictionary with the transmission data.
@@ -1101,7 +1115,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
                                 idx
                             ].polarizer_angle = transmission_dict['polarizer_angle']
 
-        transmission_settings = TransmissionSettings(
+        transmission_settings = UVVisNirTransmissionSettings(
             ordinate_type=transmission_dict['ordinate_type'],
             sample_beam_position=transmission_dict['sample_beam_position'],
             common_beam_mask=transmission_dict['common_beam_mask_percentage'],
@@ -1121,7 +1135,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
         else:
             instruments = []
 
-        transmission = UVVisTransmission(
+        transmission = UVVisNirTransmission(
             results=[result],
             transmission_settings=transmission_settings,
             instruments=instruments,
@@ -1130,7 +1144,7 @@ class ELNUVVisTransmission(UVVisTransmission, PlotSection, EntryData):
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
-        The normalize function of the `UVVisTransmission` section.
+        The normalize function of the `UVVisNirTransmission` section.
 
         Args:
             archive (EntryArchive): The archive containing the section that is being
