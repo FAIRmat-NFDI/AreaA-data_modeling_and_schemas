@@ -1,38 +1,12 @@
 {
-    "python.defaultInterpreterPath": ".pyenv/bin/python",
-    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.pyenv/bin/python",
     "editor.rulers": [
-        90
+        88
     ],
     "editor.renderWhitespace": "all",
     "editor.tabSize": 4,
-    "[javascript]": {
-        "editor.tabSize": 2
-    },
-    "files.trimTrailingWhitespace": true,
-    "python.linting.pylintArgs": [
-        "--rcfile=${workspaceFolder}/.pylintrc"
-    ],
-    "python.linting.pycodestylePath": "pycodestyle",
-    "python.linting.pycodestyleArgs": [
-        "--config=${workspaceFolder}/pycodestyle.ini"
-    ],
-    "python.linting.mypyArgs": [
-        "--ignore-missing-imports",
-        "--follow-imports=silent",
-        "--no-strict-optional"
-    ],
-    "files.watcherExclude": {
-      "${workspaceFolder}/.pyenv/**": true,
-    },
-    "python.linting.enabled": true,
-    "python.testing.unittestEnabled": false,
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true,
     "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff"
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml"
-    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  }
 }
