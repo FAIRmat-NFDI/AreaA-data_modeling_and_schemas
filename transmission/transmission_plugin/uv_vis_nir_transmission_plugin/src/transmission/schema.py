@@ -37,6 +37,8 @@ from typing import (
     Union,
 )
 
+import numpy as np
+import plotly.express as px
 from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
@@ -46,30 +48,26 @@ from nomad.datamodel.metainfo.annotations import (
     ELNComponentEnum,
     SectionProperties,
 )
-
-from nomad.datamodel.data import (
-    EntryData,
-    ArchiveSection,
-)
-from nomad.metainfo import (
-    Package,
-    Quantity,
-    SubSection,
-    MEnum,
-    Section,
-)
 from nomad.datamodel.metainfo.basesections import (
+    CompositeSystemReference,
     Instrument,
     InstrumentReference,
     Measurement,
     MeasurementResult,
     ReadableIdentifiers,
-    CompositeSystemReference,
+)
+from nomad.datamodel.metainfo.plot import (
+    PlotlyFigure,
+    PlotSection,
+)
+from nomad.metainfo import (
+    MEnum,
+    Package,
+    Quantity,
+    Section,
+    SubSection,
 )
 from nomad.units import ureg
-from nomad.datamodel.metainfo.plot import (
-    PlotSection,
-    PlotlyFigure,
 from nomad_material_processing import Parallelepiped
 
 from transmission.readers import read_asc
@@ -788,7 +786,8 @@ class UVVisNirTransmissionResult(MeasurementResult):
 
     def calculate_extinction_coefficient(self, archive, logger):
         """
-        Calculate the extinction coefficient from the transmittance and sample thickness.
+        Calculate the extinction coefficient from the transmittance and sample
+        thickness.
 
         Args:
             archive (EntryArchive): The archive containing the section.
@@ -910,7 +909,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         instrument.
 
         Args:
-            data_dict (Dict[str, Any]): The dictionary containing the instrument data.
+            data_dict (dict[str, Any]): The dictionary containing the instrument data.
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
 
@@ -943,7 +942,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         If multiple instruments are found, it logs a warning and returns None.
 
         Args:
-            data_dict (Dict[str, Any]): The dictionary containing the instrument data.
+            data_dict (dict[str, Any]): The dictionary containing the instrument data.
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
 
@@ -999,7 +998,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         Populate `UVVisNirTransmission` section using data from a dict.
 
         Args:
-            transmission_dict (Dict[str, Any]): A dictionary with the transmission data.
+            transmission_dict (dict[str, Any]): A dictionary with the transmission data.
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         """

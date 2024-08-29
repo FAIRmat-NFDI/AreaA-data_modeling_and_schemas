@@ -33,7 +33,7 @@ def merge_sections(  # noqa: PLR0912
     Args:
         section (ArchiveSection): section to update.
         update (ArchiveSection): section to update from.
-        overwrite_quantity (bool, optional): Whether to overwrite quantities in `section`
+        overwrite_quantity (bool, optional): Whether to overwrite in `section`.
         logger (BoundLogger, optional): A structlog logger.
 
     Raises:

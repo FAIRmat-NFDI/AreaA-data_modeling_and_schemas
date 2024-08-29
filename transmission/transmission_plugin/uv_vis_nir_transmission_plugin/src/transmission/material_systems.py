@@ -140,8 +140,8 @@ class ElementalImpurity(Crystal):
         type=np.float64,
         description=(
             'Atomic percentage of solute element with respect to the '
-            'substitution element measured in the prepared sample using techniques like '
-            'Transmission Spectrophotometry.'
+            'substitution element measured in the prepared sample using techniques'
+            'like Transmission Spectrophotometry.'
         ),
         a_eln={
             'component': 'NumberEditQuantity',
@@ -206,8 +206,9 @@ class MixedCrystal(CompositeSystem, EntryData):
         """
         Adjust the atomic fraction of each element based on each dopant substitution.
         Dopants are solutes which are added in small quantities to the solvent.
-        Dopant concentration is given as a percentage of the substitution element. It can
-        be the measured concentration (first preference) or the nominal concentration.
+        Dopant concentration is given as a percentage of the substitution element.
+        It can be the measured concentration (first preference) or the nominal
+        concentration.
         """
 
         # TODO: different calculation is required when one dopant substitutes multiple
