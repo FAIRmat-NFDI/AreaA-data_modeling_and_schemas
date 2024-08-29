@@ -1,46 +1,63 @@
 """
-Module containing NOMAD classes for material systems used in UV/Vis/NIR Transmission.
+Module containing NOMAD classes for material systems.
+To be moved to a more general plugin in the future.
 """
+
+from typing import TYPE_CHECKING
 
 import numpy as np
 from ase.data import chemical_symbols
-
-from nomad.datamodel.metainfo.basesections import (
-    CompositeSystem,
-    PubChemPureSubstanceSection,
-    PureSubstance,
-    SystemComponent,
-    EntryData,
-)
-from nomad.metainfo import (
-    Quantity,
-    SubSection,
-    MEnum,
-    Section,
-)
 from nomad.datamodel.data import (
     ArchiveSection,
+    EntryData,
 )
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
-    SectionProperties,
     Filter,
+    SectionProperties,
 )
+from nomad.datamodel.metainfo.basesections import (
+    CompositeSystem,
+    PubChemPureSubstanceSection,
+    PureSubstanceComponent,
+)
+from nomad.metainfo import (
+    MEnum,
+    Quantity,
+    SchemaPackage,
+    Section,
+    SubSection,
+)
+
+if TYPE_CHECKING:
+    from nomad.datamodel import EntryArchive
+    from structlog.stdlib import BoundLogger
+
+m_package = SchemaPackage()
 
 
 class CrystalProperties(ArchiveSection):
-    pass
+    """
+    Contains properties of a crystal structure.
+    """
 
 
-class CrystallinePureSubstance(PureSubstance, EntryData):
+class Crystal(PureSubstanceComponent):
+    # TODO should inherit from PureSubstance(System) instead, but since we are using
+    # it as a component of DopedCrystal(CompositeSystem), it needs to be a component.
+    # This will be fixed in the future when components are also made into systems in
+    # base sections.
+
     m_def = Section(
-        description='A pure substance component having a crystalline structure.',
+        description='A pure substance having a crystalline structure.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
                     'name',
                     'substance_name',
                     'molecular_formula',
+                    'pure_substance',
+                    'crystal_properties',
                 ]
             )
         ),
@@ -49,6 +66,9 @@ class CrystallinePureSubstance(PureSubstance, EntryData):
         type=str,
         description='Molecular formula of the component.',
         a_eln={'component': 'StringEditQuantity'},
+    )
+    pure_substance = SubSection(
+        section_def=PubChemPureSubstanceSection,
     )
     crystal_properties = SubSection(
         section_def=CrystalProperties,
@@ -69,76 +89,16 @@ class CrystallinePureSubstance(PureSubstance, EntryData):
         super().normalize(archive, logger)
 
 
-class HostComponent(SystemComponent):
+class ElementalImpurity(Crystal):
+    """
+    Section for elemental impurity in a crystal.
+    """
+
     m_def = Section(
-        description='Host component of the solid solution composed of crystalline '
-        'substance.',
-        a_eln=ELNAnnotation(
-            properties=SectionProperties(
-                order=[
-                    'name',
-                    'system',
-                    'molecular_formula',
-                ]
-            )
-        ),
-    )
-    system = Quantity(
-        type=CrystallinePureSubstance,
-        a_eln=dict(component='ReferenceEditQuantity'),
-    )
-    molecular_formula = Quantity(
-        type=str,
-        description='The molecular formula of the host component, e.g., LiYF4.',
-        a_eln=dict(component='StringEditQuantity'),
-    )
-
-    def normalize(self, archive, logger: 'BoundLogger') -> None:
-        super().normalize(archive, logger)
-        try:
-            self.molecular_formula = self.system.pure_substance.molecular_formula
-        except AttributeError:
-            pass
-
-
-class DopantComponent(SystemComponent):
-    m_def = Section(
-        description='Dopant component of the solid solution composed of a crystalline '
-        'substance.',
-        a_eln=ELNAnnotation(
-            properties=SectionProperties(
-                order=[
-                    'name',
-                    'system',
-                    'molecular_formula',
-                ]
-            )
-        ),
-    )
-    system = Quantity(
-        type=CrystallinePureSubstance,
-        a_eln=dict(component='ReferenceEditQuantity'),
-    )
-    molecular_formula = Quantity(
-        type=str,
-        description='The molecular formula of the dopant component, e.g., Pr.',
-        a_eln=dict(component='StringEditQuantity'),
-    )
-
-    def normalize(self, archive, logger: 'BoundLogger') -> None:
-        super().normalize(archive, logger)
-        try:
-            self.molecular_formula = self.system.pure_substance.molecular_formula
-        except AttributeError:
-            pass
-
-
-class ElementalDopantComponent(DopantComponent):
-    m_def = Section(
-        description=(
-            'An elemental dopant added in small quantities which substitutes another '
-            'element in the solvent.'
-        ),
+        description="""
+        An elemental impurity added in small quantities which substitutes another
+        element in the host crystal.
+        """,
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -192,12 +152,12 @@ class ElementalDopantComponent(DopantComponent):
     )
 
 
-class SolidSolution(CompositeSystem, EntryData):
+class MixedCrystal(CompositeSystem, EntryData):
     m_def = Section(
         links=['https://doi.org/10.1351/goldbook.M03940'],
         description=(
-            'A crystal containing other constituents (solutes) which fit into and '
-            'are distributed in the lattice of the host crystal (solvent).'
+            'A crystal containing other constituents (impurities) which fit into and '
+            'are distributed in the lattice of the host crystal.'
         ),
         a_eln=ELNAnnotation(
             properties=SectionProperties(
@@ -222,16 +182,17 @@ class SolidSolution(CompositeSystem, EntryData):
     )
     molecular_formula = Quantity(
         type=str,
-        description='Molecular formula of the solid solution. Dopant concentrations is '
-        'expressed relatively as fraction of substitution element. For example, '
-        '1 at.% Pr-doped LiYF4 is expressed as Li(Pr0.01Y0.99)F4',
+        description="""Molecular formula of the mixed crystal. Impurity concentrations
+        is expressed relatively as fraction of substitution element. For example, 1 at.%
+        Pr-doped LiYF4 is expressed as Li(Pr0.01Y0.99)F4.
+        """,
         a_eln={'component': 'StringEditQuantity'},
     )
     host = SubSection(
-        section_def=HostComponent,
+        section_def=Crystal,
     )
-    dopants = SubSection(
-        section_def=ElementalDopantComponent,
+    impurities = SubSection(
+        section_def=ElementalImpurity,
         repeats=True,
     )
     crystal_properties = SubSection(
@@ -239,7 +200,9 @@ class SolidSolution(CompositeSystem, EntryData):
         description='Properties of the crystalline structure.',
     )
 
-    def adjust_composition_for_dopant_substitution(self, archive, logger):
+    def adjust_composition_for_dopant_substitution(
+        self, archive: 'EntryArchive', logger: 'BoundLogger'
+    ):
         """
         Adjust the atomic fraction of each element based on each dopant substitution.
         Dopants are solutes which are added in small quantities to the solvent.
@@ -254,22 +217,22 @@ class SolidSolution(CompositeSystem, EntryData):
 
         if not self.host:
             return
-        if not self.dopants:
+        if not self.impurities:
             return
-        for dopant in self.dopants:
-            if dopant.measured_concentration is not None:
-                dopant_concentration = dopant.measured_concentration
-            elif dopant.nominal_concentration is not None:
-                dopant_concentration = dopant.nominal_concentration
+        for impurity in self.impurities:
+            if impurity.measured_concentration is not None:
+                dopant_concentration = impurity.measured_concentration
+            elif impurity.nominal_concentration is not None:
+                dopant_concentration = impurity.nominal_concentration
             else:
                 continue
 
             # find the substitution element and the dopant in the elemental composition
             # and adjust their atomic fractions
             for element_substituted in self.elemental_composition:
-                if element_substituted.element == dopant.substitution_element:
+                if element_substituted.element == impurity.substitution_element:
                     for element_substituting in self.elemental_composition:
-                        if element_substituting.element == dopant.molecular_formula:
+                        if element_substituting.element == impurity.molecular_formula:
                             if element_substituting.atomic_fraction is None:
                                 element_substituting.atomic_fraction = 0
                             element_substituting.atomic_fraction += (
@@ -284,34 +247,38 @@ class SolidSolution(CompositeSystem, EntryData):
                     break
 
     @staticmethod
-    def derive_molecular_formula(host, dopants):
+    def derive_molecular_formula(host, impurities):
         """
-        Derive the molecular formula of the solid solution based on dopant substitutions.
+        Derive the molecular formula of the solid solution based on impurity
+        substitutions.
         """
         if host.molecular_formula:
             molecular_formula = host.molecular_formula
         else:
             return ''
-        for dopant in dopants:
-            if dopant.molecular_formula is None or dopant.substitution_element is None:
+        for impurity in impurities:
+            if (
+                impurity.molecular_formula is None
+                or impurity.substitution_element is None
+            ):
                 continue
-            if dopant.measured_concentration is not None:
-                dopant_concentration = dopant.measured_concentration
-            elif dopant.nominal_concentration is not None:
-                dopant_concentration = dopant.nominal_concentration
+            if impurity.measured_concentration is not None:
+                dopant_concentration = impurity.measured_concentration
+            elif impurity.nominal_concentration is not None:
+                dopant_concentration = impurity.nominal_concentration
             else:
                 continue
             fractional_symbol = (
                 '('
-                + dopant.molecular_formula
-                + str('{:.2f}'.format(dopant_concentration.magnitude / 100))
+                + impurity.molecular_formula
+                + f'{round(dopant_concentration.magnitude / 100, 2):.2f}'
                 + ' '
-                + dopant.substitution_element
-                + str('{:.2f}'.format(1 - dopant_concentration.magnitude / 100))
+                + impurity.substitution_element
+                + f'{round(1 - dopant_concentration.magnitude / 100, 2):.2f}'
                 + ')'
             )
             molecular_formula = molecular_formula.replace(
-                dopant.substitution_element, fractional_symbol
+                impurity.substitution_element, fractional_symbol
             )
 
         return molecular_formula
@@ -321,12 +288,12 @@ class SolidSolution(CompositeSystem, EntryData):
         self.elemental_composition = []
         if self.host:
             self.components.append(self.host)
-        if self.dopants:
-            for dopant in self.dopants:
+        if self.impurities:
+            for dopant in self.impurities:
                 self.components.append(dopant)
         super().normalize(archive, logger)
 
-        if self.host and self.dopants:
+        if self.host and self.impurities:
             self.adjust_composition_for_dopant_substitution(archive, logger)
             # reset the mass fractions and recalculate them
             for element in self.elemental_composition:
@@ -334,5 +301,33 @@ class SolidSolution(CompositeSystem, EntryData):
             super().normalize(archive, logger)
 
             self.molecular_formula = self.derive_molecular_formula(
-                host=self.host, dopants=self.dopants
+                host=self.host, impurities=self.impurities
             )
+
+
+class PolyCrystal(Crystal):
+    """
+    A pure substance having a polycrystalline structure.
+    """
+
+    # TODO add more properties specific to polycrystallinty
+
+    grain_size = Quantity(
+        type=float,
+        description='Average grain size of the polycrystalline material.',
+        a_eln={'component': 'NumberEditQuantity', 'defaultDisplayUnit': 'micrometer'},
+        unit='meter',
+    )
+
+
+class MixedPolyCrystal(MixedCrystal):
+    """
+    A polycrystalline substance doped with impurities.
+    """
+
+    host = SubSection(
+        section_def=PolyCrystal,
+    )
+
+
+m_package.__init_metainfo__()
