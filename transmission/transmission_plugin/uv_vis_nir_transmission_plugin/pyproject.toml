@@ -112,3 +112,4 @@ where = ["src"]
 [project.entry-points.'nomad.plugin']
 transmission_schema = "transmission:schema"
 transmission_parser = "transmission:parser"
+transmission_material_systems = "transmission:material_systems_schema"

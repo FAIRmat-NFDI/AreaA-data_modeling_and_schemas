@@ -62,8 +62,8 @@ from nomad.datamodel.metainfo.plot import (
 )
 from nomad.metainfo import (
     MEnum,
-    Package,
     Quantity,
+    SchemaPackage,
     Section,
     SubSection,
 )
@@ -78,7 +78,7 @@ if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
 
-m_package = Package(name='nomad_transmission')
+m_package = SchemaPackage(name='nomad_transmission')
 
 
 class TransmissionParallelepiped(Parallelepiped):

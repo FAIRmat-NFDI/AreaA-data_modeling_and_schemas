@@ -33,7 +33,9 @@ if TYPE_CHECKING:
     from nomad.datamodel import EntryArchive
     from structlog.stdlib import BoundLogger
 
-m_package = SchemaPackage()
+m_package = SchemaPackage(
+    name='material_systems',
+)
 
 
 class CrystalProperties(ArchiveSection):
@@ -114,7 +116,7 @@ class ElementalImpurity(Crystal):
     )
     molecular_formula = Quantity(
         type=MEnum(chemical_symbols[1:]),
-        description='The symbol of the dopant element, e.g., Pr.',
+        description='The symbol of the impurity element, e.g., Pr.',
         a_eln=dict(component='AutocompleteEditQuantity'),
     )
     substitution_element = Quantity(
@@ -168,7 +170,7 @@ class MixedCrystal(CompositeSystem, EntryData):
                     'molecular_formula',
                     'description',
                     'host',
-                    'dopants',
+                    'impurities',
                     'elemental_composition',
                     'crystal_properties',
                 ],
@@ -200,19 +202,19 @@ class MixedCrystal(CompositeSystem, EntryData):
         description='Properties of the crystalline structure.',
     )
 
-    def adjust_composition_for_dopant_substitution(
+    def adjust_composition_for_impurity_substitution(
         self, archive: 'EntryArchive', logger: 'BoundLogger'
     ):
         """
-        Adjust the atomic fraction of each element based on each dopant substitution.
+        Adjust the atomic fraction of each element based on each impurity substitution.
         Dopants are solutes which are added in small quantities to the solvent.
         Dopant concentration is given as a percentage of the substitution element.
         It can be the measured concentration (first preference) or the nominal
         concentration.
         """
 
-        # TODO: different calculation is required when one dopant substitutes multiple
-        # elements in the host crystal (or) when multiple dopants substitute the same
+        # TODO: different calculation is required when one impurity substitutes multiple
+        # elements in the host crystal (or) when multiple impurities substitute the same
         # element in the host crystal. Only the first case is currently handled.
         # There could be a third situation which is a mix of the two.
 
@@ -222,14 +224,14 @@ class MixedCrystal(CompositeSystem, EntryData):
             return
         for impurity in self.impurities:
             if impurity.measured_concentration is not None:
-                dopant_concentration = impurity.measured_concentration
+                impurity_concentration = impurity.measured_concentration
             elif impurity.nominal_concentration is not None:
-                dopant_concentration = impurity.nominal_concentration
+                impurity_concentration = impurity.nominal_concentration
             else:
                 continue
 
-            # find the substitution element and the dopant in the elemental composition
-            # and adjust their atomic fractions
+            # find the substitution element and the impurity in the elemental
+            # composition and adjust their atomic fractions
             for element_substituted in self.elemental_composition:
                 if element_substituted.element == impurity.substitution_element:
                     for element_substituting in self.elemental_composition:
@@ -237,7 +239,7 @@ class MixedCrystal(CompositeSystem, EntryData):
                             if element_substituting.atomic_fraction is None:
                                 element_substituting.atomic_fraction = 0
                             element_substituting.atomic_fraction += (
-                                dopant_concentration
+                                impurity_concentration
                                 / 100
                                 * element_substituted.atomic_fraction
                             )
@@ -264,18 +266,18 @@ class MixedCrystal(CompositeSystem, EntryData):
             ):
                 continue
             if impurity.measured_concentration is not None:
-                dopant_concentration = impurity.measured_concentration
+                impurity_concentration = impurity.measured_concentration
             elif impurity.nominal_concentration is not None:
-                dopant_concentration = impurity.nominal_concentration
+                impurity_concentration = impurity.nominal_concentration
             else:
                 continue
             fractional_symbol = (
                 '('
                 + impurity.molecular_formula
-                + f'{round(dopant_concentration.magnitude / 100, 2):.2f}'
+                + f'{round(impurity_concentration.magnitude / 100, 2):.2f}'
                 + ' '
                 + impurity.substitution_element
-                + f'{round(1 - dopant_concentration.magnitude / 100, 2):.2f}'
+                + f'{round(1 - impurity_concentration.magnitude / 100, 2):.2f}'
                 + ')'
             )
             molecular_formula = molecular_formula.replace(
@@ -290,12 +292,12 @@ class MixedCrystal(CompositeSystem, EntryData):
         if self.host:
             self.components.append(self.host)
         if self.impurities:
-            for dopant in self.impurities:
-                self.components.append(dopant)
+            for impurity in self.impurities:
+                self.components.append(impurity)
         super().normalize(archive, logger)
 
         if self.host and self.impurities:
-            self.adjust_composition_for_dopant_substitution(archive, logger)
+            self.adjust_composition_for_impurity_substitution(archive, logger)
             # reset the mass fractions and recalculate them
             for element in self.elemental_composition:
                 element.mass_fraction = None
