@@ -49,6 +49,7 @@ from nomad.datamodel.metainfo.annotations import (
     SectionProperties,
 )
 from nomad.datamodel.metainfo.basesections import (
+    CompositeSystem,
     CompositeSystemReference,
     Instrument,
     InstrumentReference,
@@ -82,16 +83,44 @@ m_package = SchemaPackage(name='nomad_transmission')
 
 
 class TransmissionParallelepiped(Parallelepiped):
+    m_def = Section(
+        description='Sample geometry used in the transmission measurement.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'length',
+                    'width',
+                    'height',
+                    'alpha',
+                    'beta',
+                    'gamma',
+                    'surface_area',
+                    'volume',
+                ],
+            ),
+        ),
+    )
     length = Quantity(
         type=float,
-        description='The y dimension of the parallelepiped. '
-        'The dimension of the sample along the path of the light beam.',
+        description="""
+        The dimension of the sample along the path of the light beam.
+        The y dimension of the parallelepiped.
+        """,
         a_eln=dict(
             component='NumberEditQuantity',
             defaultDisplayUnit='millimeter',
             label='Length (y)',
         ),
         unit='meter',
+    )
+    volume = Quantity(
+        type=float,
+        description='The measure of the amount of space occupied in 3D space.',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity,
+            defaultDisplayUnit='millimeter ** 3',
+        ),
+        unit='meter ** 3',
     )
 
 
@@ -173,6 +202,16 @@ class TransmissionSample(CompositeSystemReference):
                 ]
             )
         )
+    )
+    reference = Quantity(
+        type=CompositeSystem,
+        description="""
+        A reference to the material system from which the sample is created.
+        """,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+            label='material system reference',
+        ),
     )
     physical_properties = SubSection(
         section_def=PhysicalProperties,
