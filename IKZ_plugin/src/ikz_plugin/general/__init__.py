@@ -3,7 +3,6 @@ from pydantic import Field
 
 
 class GeneralEntryPoint(SchemaPackageEntryPoint):
-
     def load(self):
         from ikz_plugin.general.schema import m_package
 

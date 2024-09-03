@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class MovpeEntryPoint(SchemaPackageEntryPoint):
-
     def load(self):
         from ikz_plugin.movpe.schema import m_package
 

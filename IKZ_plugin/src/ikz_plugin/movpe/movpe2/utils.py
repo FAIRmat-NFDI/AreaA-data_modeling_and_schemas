@@ -26,22 +26,21 @@ from nomad.datamodel.metainfo.basesections import (
     PureSubstanceComponent,
     PureSubstanceSection,
 )
-
 from nomad.units import ureg
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
-from nomad_material_processing.vapor_deposition import (
+from nomad_material_processing.vapor_deposition.general import (
     MolarFlowRate,
     Pressure,
     Temperature,
     VolumetricFlowRate,
 )
-from nomad_material_processing.vapor_deposition.cvd import (
+from nomad_material_processing.vapor_deposition.cvd.general import (
     BubblerEvaporator,
-    PartialVaporPressure,
     BubblerSource,
-    GasLineSource,
     GasLineEvaporator,
+    GasLineSource,
+    PartialVaporPressure,
 )
 
 
@@ -183,9 +182,9 @@ def fetch_substrate(archive, sample_id, substrate_id, logger):
         return None
     if len(search_result.data) >= 1:
         upload_id = search_result.data[0]['upload_id']
+        from nomad.app.v1.models.models import User
         from nomad.app.v1.routers.uploads import get_upload_with_read_access
         from nomad.files import UploadFiles
-        from nomad.app.v1.models.models import User
 
         upload_files = UploadFiles.get(upload_id)
 

@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class CharacterizationEntryPoint(SchemaPackageEntryPoint):
-
     def load(self):
         from ikz_plugin.characterization.schema import m_package
 

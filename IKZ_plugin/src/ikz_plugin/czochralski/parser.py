@@ -20,6 +20,7 @@
 from nomad.datamodel.data import (
     EntryData,
 )
+from nomad.datamodel.datamodel import EntryArchive
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
@@ -28,8 +29,6 @@ from nomad.metainfo import (
 )
 from nomad.parsing import MatchingParser
 from nomad_material_processing.utils import create_archive
-
-from nomad.datamodel.datamodel import EntryArchive
 
 from ikz_plugin.czochralski.schema import Sensors
 

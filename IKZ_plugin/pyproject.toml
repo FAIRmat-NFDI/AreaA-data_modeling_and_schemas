@@ -41,12 +41,12 @@ dependencies = [
 dev = ["ruff", "pytest", "structlog"]
 
 [project.urls]
-"Homepage" = "https://github.com/FAIRmat-NFDI/nomad-material-processing"
-"Bug Tracker" = "https://github.com/FAIRmat-NFDI/nomad-material-processing/issues"
+"Homepage" = "https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/tree/main/IKZ_plugin"
+"Bug Tracker" = "https://github.com/FAIRmat-NFDI/AreaA-data_modeling_and_schemas/issues"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
-exclude = [
+exclude = [ 
     ".bzr",
     ".direnv",
     ".eggs",

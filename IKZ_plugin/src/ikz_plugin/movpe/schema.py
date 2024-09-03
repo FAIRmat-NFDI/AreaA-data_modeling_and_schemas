@@ -1,9 +1,8 @@
 import numpy as np
-
-from plotly.subplots import make_subplots
 import plotly.express as px
 
-
+# from lakeshore_nomad_plugin.hall.schema import HallMeasurement
+from laytec_epitt_plugin.schema import LayTecEpiTTMeasurement
 from nomad.config import config
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import (
@@ -14,15 +13,16 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.metainfo.basesections import (
     Component,
     Experiment,
-    ExperimentStep,
     Process,
     PureSubstance,
-    PureSubstanceSection,
     SectionReference,
     System,
     SystemComponent,
 )
-
+from nomad.datamodel.metainfo.plot import (
+    PlotlyFigure,
+    PlotSection,
+)
 from nomad.datamodel.metainfo.workflow import (
     Link,
 )
@@ -34,24 +34,20 @@ from nomad.metainfo import (
     SubSection,
 )
 from nomad.parsing.tabular import TableData
-
-
-from nomad.datamodel.metainfo.plot import (
-    PlotlyFigure,
-    PlotSection,
-)
-
-from nomad_material_processing import (
+from nomad_material_processing.general import (
     CrystallineSubstrate,
     Geometry,
     Miscut,
-    SubstrateCrystalProperties,
     SubstrateReference,
     ThinFilm,
     ThinFilmStack,
     ThinFilmStackReference,
 )
-from nomad_material_processing.vapor_deposition import (
+from nomad_material_processing.vapor_deposition.cvd.general import (
+    CVDSource,
+    Rotation,
+)
+from nomad_material_processing.vapor_deposition.general import (
     ChamberEnvironment,
     Pressure,
     SampleParameters,
@@ -61,14 +57,11 @@ from nomad_material_processing.vapor_deposition import (
     VaporDepositionStep,
     VolumetricFlowRate,
 )
-from nomad_material_processing.vapor_deposition.cvd import (
-    CVDSource,
-    Rotation,
-)
-from nomad_measurements import (
+from nomad_measurements.general import (
     ActivityReference,
 )
-from nomad_measurements.xrd import ELNXRayDiffraction
+from nomad_measurements.xrd.schema import ELNXRayDiffraction
+from plotly.subplots import make_subplots
 from structlog.stdlib import (
     BoundLogger,
 )
@@ -78,12 +71,7 @@ from ikz_plugin.general.schema import (
     IKZMOVPECategory,
     SubstratePreparationStepReference,
 )
-
 from ikz_plugin.utils import handle_section
-
-from lakeshore_nomad_plugin.hall.schema import HallMeasurement
-from laytec_epitt_plugin.schema import LayTecEpiTTMeasurement
-
 
 configuration = config.get_plugin_entry_point('ikz_plugin.movpe:movpe_schema')
 
@@ -618,7 +606,7 @@ class HallMeasurementReference(SectionReference):
     """
 
     reference = Quantity(
-        type=HallMeasurement,
+        type=ArchiveSection,  # HallMeasurement,
         description='A reference to a NOMAD `HallMeasurement` entry.',
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',

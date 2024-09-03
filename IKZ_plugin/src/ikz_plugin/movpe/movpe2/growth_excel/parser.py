@@ -23,6 +23,7 @@ import pandas as pd
 from nomad.datamodel.data import (
     EntryData,
 )
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
 )
@@ -35,20 +36,18 @@ from nomad.units import ureg
 from nomad.utils import hash
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
-from nomad_material_processing import (
+from nomad_material_processing.general import (
     SubstrateReference,
     ThinFilmReference,
 )
-from nomad_material_processing.vapor_deposition import (
+from nomad_material_processing.vapor_deposition.general import (
     Pressure,
     VolumetricFlowRate,
 )
-from nomad_material_processing.vapor_deposition.cvd import (
-    Rotation,
+from nomad_material_processing.vapor_deposition.cvd.general import (
     PushPurgeGasFlow,
+    Rotation,
 )
-
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 
 from ikz_plugin.movpe.schema import (
     ChamberEnvironmentMovpe,
