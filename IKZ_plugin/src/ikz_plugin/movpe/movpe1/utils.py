@@ -43,7 +43,7 @@ def create_timeseries_objects(
             objects.append(
                 MetainfoClass(
                     time=dataframe.get(
-                        f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ""
+                        f"{quantities[0]}{'' if i == 0 else '.' + str(i)}", ''
                     )[index],
                     value=dataframe.get(
                         f"{quantities[1]}{'' if i == 0 else '.' + str(i)}", 0

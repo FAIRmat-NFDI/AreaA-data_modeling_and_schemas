@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 import numpy as np
 from nomad.config import config
 from nomad.datamodel.data import ArchiveSection, EntryData, EntryDataCategory
+from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
 from nomad.datamodel.metainfo.annotations import ELNAnnotation
 from nomad.datamodel.metainfo.basesections import (
     Activity,
@@ -31,11 +32,8 @@ from nomad.metainfo import (
     SubSection,
 )
 from nomad.utils import hash
-from nomad_material_processing import SubstrateReference
-from nomad_measurements import ActivityReference
-
-
-from nomad.datamodel.datamodel import EntryArchive, EntryMetadata
+from nomad_material_processing.general import SubstrateReference
+from nomad_measurements.general import ActivityReference
 
 from ikz_plugin.utils import create_archive
 

@@ -20,7 +20,6 @@ from pydantic import Field
 
 
 class PldEntryPoint(SchemaPackageEntryPoint):
-
     def load(self):
         from ikz_plugin.pld.schema import m_package
 

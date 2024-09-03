@@ -21,7 +21,7 @@ import pandas as pd
 from nomad.datamodel.metainfo.basesections import (
     ElementalComposition,
 )
-from nomad_material_processing import (
+from nomad_material_processing.general import (
     Dopant,
 )
 

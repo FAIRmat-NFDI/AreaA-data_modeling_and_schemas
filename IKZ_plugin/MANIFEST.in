@@ -1,5 +1,0 @@
-recursive-include src/basesections nomad_plugin.yaml
-recursive-include src/movpe nomad_plugin.yaml
-recursive-include src/czochralski nomad_plugin.yaml
-recursive-include src/mbe nomad_plugin.yaml
-recursive-include src/directional_solidification nomad_plugin.yaml

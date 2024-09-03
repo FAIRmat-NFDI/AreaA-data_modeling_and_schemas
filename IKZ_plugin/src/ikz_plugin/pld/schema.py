@@ -66,7 +66,7 @@ from nomad.metainfo import (
 from nomad.metainfo.metainfo import (
     Category,
 )
-from nomad_material_processing import (
+from nomad_material_processing.general import (
     CrystallineSubstrate,
     Dopant,
     Miscut,
@@ -79,7 +79,7 @@ from nomad_material_processing import (
 from nomad_material_processing.utils import (
     create_archive,
 )
-from nomad_material_processing.vapor_deposition import (
+from nomad_material_processing.vapor_deposition.general import (
     ChamberEnvironment,
     GasFlow,
     Pressure,
@@ -88,7 +88,7 @@ from nomad_material_processing.vapor_deposition import (
     ThinFilmStackReference,
     VolumetricFlowRate,
 )
-from nomad_material_processing.vapor_deposition.pvd import (
+from nomad_material_processing.vapor_deposition.pvd.general import (
     PVDSampleParameters,
     SourcePower,
 )
