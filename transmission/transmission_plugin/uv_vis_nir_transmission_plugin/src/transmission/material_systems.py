@@ -127,28 +127,31 @@ class ElementalImpurity(Crystal):
     nominal_concentration = Quantity(
         type=np.float64,
         description=(
-            'Atomic percentage of solute element with respect to the '
+            'Atomic fraction of solute element with respect to the '
             'substitution element determined during preparation. '
-            'For example, 1 at.% Pr-doped LiYF4 is equivalent to Li(Pr0.01Y0.99)F4'
+            'For example, 0.01 at. fraction Pr-doped LiYF4 is equivalent to '
+            'Li(Pr0.01Y0.99)F4, where Y is the substitution element.'
         ),
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
-            'maxValue': 100,
+            'maxValue': 1,
+            'defaultDisplayUnit': 'dimensionless',
         },
         unit='dimensionless',
     )
     measured_concentration = Quantity(
         type=np.float64,
         description=(
-            'Atomic percentage of solute element with respect to the '
+            'Atomic fraction of solute element with respect to the '
             'substitution element measured in the prepared sample using techniques'
             'like Transmission Spectrophotometry.'
         ),
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
-            'maxValue': 100,
+            'maxValue': 1,
+            'defaultDisplayUnit': 'dimensionless',
         },
         unit='dimensionless',
     )
@@ -240,7 +243,6 @@ class MixedCrystal(CompositeSystem, EntryData):
                                 element_substituting.atomic_fraction = 0
                             element_substituting.atomic_fraction += (
                                 impurity_concentration
-                                / 100
                                 * element_substituted.atomic_fraction
                             )
                             element_substituted.atomic_fraction -= (
@@ -274,10 +276,10 @@ class MixedCrystal(CompositeSystem, EntryData):
             fractional_symbol = (
                 '('
                 + impurity.molecular_formula
-                + f'{round(impurity_concentration.magnitude / 100, 2):.2f}'
+                + f'{round(impurity_concentration.magnitude, 2):.2f}'
                 + ' '
                 + impurity.substitution_element
-                + f'{round(1 - impurity_concentration.magnitude / 100, 2):.2f}'
+                + f'{round(1 - impurity_concentration.magnitude, 2):.2f}'
                 + ')'
             )
             molecular_formula = molecular_formula.replace(
@@ -310,11 +312,25 @@ class MixedCrystal(CompositeSystem, EntryData):
 
 class PolyCrystal(Crystal):
     """
-    A pure substance having a polycrystalline structure.
+    Section for a polycrystalline material.
     """
 
     # TODO add more properties specific to polycrystallinty
 
+    m_def = Section(
+        description='A pure substance having a polycrystalline structure.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'substance_name',
+                    'molecular_formula',
+                    'pure_substance',
+                    'crystal_properties',
+                ]
+            )
+        ),
+    )
     grain_size = Quantity(
         type=float,
         description='Average grain size of the polycrystalline material.',
@@ -325,9 +341,32 @@ class PolyCrystal(Crystal):
 
 class MixedPolyCrystal(MixedCrystal):
     """
-    A polycrystalline substance doped with impurities.
+    Section for a mixed crystal with polycrystalline structure.
     """
 
+    m_def = Section(
+        description=('A polycrystalline substance doped with impurities.'),
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'datetime',
+                    'lab_id',
+                    'molecular_formula',
+                    'description',
+                    'host',
+                    'impurities',
+                    'elemental_composition',
+                    'crystal_properties',
+                ],
+                visible=Filter(
+                    exclude=[
+                        'components',
+                    ],
+                ),
+            ),
+        ),
+    )
     host = SubSection(
         section_def=PolyCrystal,
     )
