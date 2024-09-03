@@ -40,13 +40,13 @@ from nomad_material_processing.general import (
     SubstrateReference,
     ThinFilmReference,
 )
-from nomad_material_processing.vapor_deposition.general import (
-    Pressure,
-    VolumetricFlowRate,
-)
 from nomad_material_processing.vapor_deposition.cvd.general import (
     PushPurgeGasFlow,
     Rotation,
+)
+from nomad_material_processing.vapor_deposition.general import (
+    Pressure,
+    VolumetricFlowRate,
 )
 
 from ikz_plugin.movpe.schema import (

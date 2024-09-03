@@ -26,7 +26,7 @@ class CharacterizationEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-characterization_schema = CharacterizationEntryPoint(
+schema = CharacterizationEntryPoint(
     name='CharacterizationSchema',
     description='Schema package for general characterization methods used at IKZ.',
 )

@@ -26,7 +26,7 @@ class DirSolEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-dir_sol_schema = DirSolEntryPoint(
+schema = DirSolEntryPoint(
     name='DirectionalSolidificationSchema',
     description='Schema package for Directional Solidification definitions.',
 )
@@ -39,7 +39,7 @@ class DirSolManualProtocolParserEntryPoint(ParserEntryPoint):
         return DSParserIKZ(**self.dict())
 
 
-dir_sol_manual_protocol_excel_parser = DirSolManualProtocolParserEntryPoint(
+excel_parser = DirSolManualProtocolParserEntryPoint(
     name='DirSolManualProtocolParser',
     description='Parse excel files containing parameters from the process.',
     mainfile_name_re=r'.+\.ds.manualprotocol.xlsx',

@@ -26,12 +26,13 @@ class Movpe2ParserEntryPoint(ParserEntryPoint):
         return ParserMovpe2IKZ(**self.dict())
 
 
-movpe2_growth_excel_parser = Movpe2ParserEntryPoint(
+parser = Movpe2ParserEntryPoint(
     name='Movpe2Parser',
     description='Parse excel files containing growth process parameters logged manually.',
     mainfile_name_re=r'.+\.growth.movpe.ikz.xlsx',
-    mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    # mainfile_contents_dict={
-    #     'GrowthRun': {'__has_all_keys': ['Sample Name']},
-    # },
+    mainfile_mime_re=r'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    mainfile_contents_dict={
+        'GrowthRun': {'__has_all_keys': ['Sample Name']},
+        '__comment_symbol': '#',
+    },
 )

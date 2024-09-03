@@ -26,7 +26,7 @@ class SubstrateParserEntryPoint(ParserEntryPoint):
         return MovpeSubstrateParser(**self.dict())
 
 
-substrate_excel_parser = SubstrateParserEntryPoint(
+parser = SubstrateParserEntryPoint(
     name='SubstrateParser',
     description='Parse excel files containing substrate parameters logged manually.',
     mainfile_name_re='.+\.substrates.movpe.ikz.xlsx',
@@ -34,6 +34,7 @@ substrate_excel_parser = SubstrateParserEntryPoint(
     mainfile_contents_dict={
         'Substrate': {
             '__has_all_keys': ['Substrates', 'Crystal', 'Orientation', 'Elements']
-        }
+        },
+        '__comment_symbol': '#',
     },
 )

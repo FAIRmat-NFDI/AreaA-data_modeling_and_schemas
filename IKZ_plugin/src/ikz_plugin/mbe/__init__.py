@@ -9,7 +9,7 @@ class MbeEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-mbe_schema = MbeEntryPoint(
+schema = MbeEntryPoint(
     name='MbeSchema',
     description='Schema package for Molecular Beam Epitaxy (MBE) definitions.',
 )

@@ -26,15 +26,16 @@ class Movpe1ParserEntryPoint(ParserEntryPoint):
         return ParserMovpe1IKZ(**self.dict())
 
 
-movpe1_growth_excel_parser = Movpe1ParserEntryPoint(
+parser = Movpe1ParserEntryPoint(
     name='Movpe1Parser',
     description='Parse excel files containing growth process parameters logged manually.',
-    mainfile_name_re='.+\.xlsx',
-    mainfile_mime_re='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    mainfile_name_re=r'.+\.xlsx',
+    mainfile_mime_re=r'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     mainfile_contents_dict={
         'Deposition Control': {
             '__has_all_keys': ['Constant Parameters ID', 'Sample ID', 'Date', 'number']
         },
         'Precursors': {'__has_all_keys': ['Sample ID']},
+        '__comment_symbol': '#',
     },
 )

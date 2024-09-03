@@ -28,6 +28,7 @@ from typing import (
 
 import numpy as np
 import plotly.graph_objects as go
+from nomad.config import config
 from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
@@ -109,6 +110,8 @@ if TYPE_CHECKING:
         BoundLogger,
     )
 
+
+configuration = config.get_plugin_entry_point('ikz_plugin.pld:schema')
 
 m_package = SchemaPackage()
 

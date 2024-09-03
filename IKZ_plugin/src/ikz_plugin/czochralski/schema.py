@@ -32,9 +32,7 @@ from nomad.metainfo import (
 )
 from nomad.parsing.tabular import TableData
 
-configuration = config.get_plugin_entry_point(
-    'ikz_plugin.czochralski:czochralski_schema'
-)
+configuration = config.get_plugin_entry_point('ikz_plugin.czochralski:schema')
 
 m_package = SchemaPackage()
 

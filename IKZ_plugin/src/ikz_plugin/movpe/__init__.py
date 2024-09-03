@@ -26,7 +26,7 @@ class MovpeEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-movpe_schema = MovpeEntryPoint(
+schema = MovpeEntryPoint(
     name='MovpeSchema',
     description='Schema package for Metal-Organic Vapor Phase Epitaxy (MOVPE) definitions.',
 )

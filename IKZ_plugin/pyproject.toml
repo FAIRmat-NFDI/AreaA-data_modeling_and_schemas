@@ -120,17 +120,17 @@ where = ["src"]
 
 [project.entry-points.'nomad.plugin']
 
-general_schema = "ikz_plugin.general:general_schema"
-characterization_schema = "ikz_plugin.characterization:characterization_schema"
-pld_schema = "ikz_plugin.pld:pld_schema"
-movpe_schema = "ikz_plugin.movpe:movpe_schema"
-movpe2_growth_excel_parser = "ikz_plugin.movpe.movpe2.growth_excel:movpe2_growth_excel_parser"
-movpe1_growth_excel_parser = "ikz_plugin.movpe.movpe1.growth_excel:movpe1_growth_excel_parser"
-substrate_excel_parser = "ikz_plugin.movpe.substrate:substrate_excel_parser"
-mbe_schema = "ikz_plugin.mbe:mbe_schema"
-dir_sol_schema = "ikz_plugin.directional_solidification:dir_sol_schema"
-dir_sol_manual_protocol_excel_parser = "ikz_plugin.directional_solidification:dir_sol_manual_protocol_excel_parser"
-czochralski_schema = "ikz_plugin.czochralski:czochralski_schema"
-czochralski_multilog_parser = "ikz_plugin.czochralski:czochralski_multilog_parser"
+general_schema = "ikz_plugin.general:schema"
+characterization_schema = "ikz_plugin.characterization:schema"
+pld_schema = "ikz_plugin.pld:schema"
+movpe_schema = "ikz_plugin.movpe:schema"
+movpe2_growth_excel_parser = "ikz_plugin.movpe.movpe2.growth_excel:parser"
+movpe1_growth_excel_parser = "ikz_plugin.movpe.movpe1.growth_excel:parser"
+substrate_excel_parser = "ikz_plugin.movpe.substrate:parser"
+mbe_schema = "ikz_plugin.mbe:schema"
+dir_sol_schema = "ikz_plugin.directional_solidification:schema"
+dir_sol_manual_protocol_excel_parser = "ikz_plugin.directional_solidification:excel_parser"
+czochralski_schema = "ikz_plugin.czochralski:schema"
+czochralski_multilog_parser = "ikz_plugin.czochralski:parser"
 
 

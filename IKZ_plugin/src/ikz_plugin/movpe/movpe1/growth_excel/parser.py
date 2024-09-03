@@ -40,16 +40,16 @@ from nomad_material_processing.general import (
     SubstrateReference,
     ThinFilmReference,
 )
-from nomad_material_processing.vapor_deposition.general import (
-    Pressure,
-    Temperature,
-    VolumetricFlowRate,
-)
 from nomad_material_processing.vapor_deposition.cvd.general import (
     FlashEvaporator,
     FlashSource,
     GasLineSource,
     Rotation,
+)
+from nomad_material_processing.vapor_deposition.general import (
+    Pressure,
+    Temperature,
+    VolumetricFlowRate,
 )
 
 from ikz_plugin.general.schema import (
@@ -440,7 +440,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                 )
                             ],
                             sources=[
-                                FlashSourceIKZ(
+                                FlashSource(
                                     name='Flash Evaporator 1',
                                     vapor_source=FlashEvaporator(
                                         pressure=Pressure(

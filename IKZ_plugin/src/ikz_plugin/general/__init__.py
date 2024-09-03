@@ -9,7 +9,7 @@ class GeneralEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-general_schema = GeneralEntryPoint(
+schema = GeneralEntryPoint(
     name='GeneralSchema',
     description='Schema package for general definitions used throughout IKZ.',
 )

@@ -27,6 +27,13 @@ from nomad.datamodel.metainfo.basesections import (
     PureSubstanceSection,
 )
 from nomad.units import ureg
+from nomad_material_processing.vapor_deposition.cvd.general import (
+    BubblerEvaporator,
+    BubblerSource,
+    GasLineEvaporator,
+    GasLineSource,
+    PartialVaporPressure,
+)
 
 # from nomad_material_processing.utils import create_archive as create_archive_ref
 from nomad_material_processing.vapor_deposition.general import (
@@ -34,13 +41,6 @@ from nomad_material_processing.vapor_deposition.general import (
     Pressure,
     Temperature,
     VolumetricFlowRate,
-)
-from nomad_material_processing.vapor_deposition.cvd.general import (
-    BubblerEvaporator,
-    BubblerSource,
-    GasLineEvaporator,
-    GasLineSource,
-    PartialVaporPressure,
 )
 
 

@@ -73,7 +73,7 @@ from ikz_plugin.general.schema import (
 )
 from ikz_plugin.utils import handle_section
 
-configuration = config.get_plugin_entry_point('ikz_plugin.movpe:movpe_schema')
+configuration = config.get_plugin_entry_point('ikz_plugin.movpe:schema')
 
 m_package = SchemaPackage()
 

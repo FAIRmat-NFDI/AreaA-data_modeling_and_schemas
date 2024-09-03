@@ -26,7 +26,7 @@ class PldEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-pld_schema = PldEntryPoint(
+schema = PldEntryPoint(
     name='PldSchema',
     description='A package containing schemas for Pulsed Laser Deposition (PLD) done at IKZ.',
 )

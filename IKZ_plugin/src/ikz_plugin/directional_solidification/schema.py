@@ -54,7 +54,7 @@ from structlog.stdlib import (
 from ikz_plugin.general.schema import IKZDSCategory
 
 configuration = config.get_plugin_entry_point(
-    'ikz_plugin.directional_solidification:dir_sol_schema'
+    'ikz_plugin.directional_solidification:schema'
 )
 
 m_package = SchemaPackage()

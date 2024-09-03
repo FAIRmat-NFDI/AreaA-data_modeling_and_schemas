@@ -12,9 +12,7 @@ from ikz_plugin.general.schema import (
     SubstratePreparationStep,
 )
 
-configuration = config.get_plugin_entry_point(
-    'ikz_plugin.characterization:characterization_schema'
-)
+configuration = config.get_plugin_entry_point('ikz_plugin.characterization:schema')
 
 m_package = SchemaPackage()
 

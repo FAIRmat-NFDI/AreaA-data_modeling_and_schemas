@@ -37,7 +37,7 @@ from nomad_measurements.general import ActivityReference
 
 from ikz_plugin.utils import create_archive
 
-configuration = config.get_plugin_entry_point('ikz_plugin.general:general_schema')
+configuration = config.get_plugin_entry_point('ikz_plugin.general:schema')
 
 m_package = SchemaPackage()
 

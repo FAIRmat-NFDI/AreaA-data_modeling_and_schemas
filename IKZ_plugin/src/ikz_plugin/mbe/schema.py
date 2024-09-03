@@ -19,7 +19,7 @@ from nomad.metainfo import (
 
 from ikz_plugin.general.schema import SampleCutIKZ, SubstratePreparationIKZ
 
-configuration = config.get_plugin_entry_point('ikz_plugin.mbe:mbe_schema')
+configuration = config.get_plugin_entry_point('ikz_plugin.mbe:schema')
 
 m_package = SchemaPackage()
 
