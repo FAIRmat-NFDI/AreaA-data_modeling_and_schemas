@@ -30,17 +30,6 @@ class TransmissionSchemaEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-class MaterialSystemsSchemaEntryPoint(SchemaPackageEntryPoint):
-    """
-    Entry point for lazy loading of the Material Systems schemas.
-    """
-
-    def load(self):
-        from transmission.material_systems import m_package
-
-        return m_package
-
-
 class TransmissionParserEntryPoint(ParserEntryPoint):
     """
     Entry point for lazy loading of the TransmissionParser.
@@ -57,10 +46,6 @@ schema = TransmissionSchemaEntryPoint(
     description='Schema for data from Transmission Spectrophotometry.',
 )
 
-material_systems_schema = MaterialSystemsSchemaEntryPoint(
-    name='Material System Schema',
-    description='Schema for material systems.',
-)
 
 parser = TransmissionParserEntryPoint(
     name='Transmission Parser',
