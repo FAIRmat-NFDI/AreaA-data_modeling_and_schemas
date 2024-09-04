@@ -43,6 +43,7 @@ from nomad_material_processing.general import (
 from nomad_material_processing.vapor_deposition.cvd.general import (
     FlashEvaporator,
     FlashSource,
+    GasLineEvaporator,
     GasLineSource,
     Rotation,
 )
@@ -490,7 +491,7 @@ class ParserMovpe1IKZ(MatchingParser):
                                 ),
                                 GasLineSource(
                                     name='Oxygen uniform gas ',
-                                    vapor_source=GasLine(
+                                    vapor_source=GasLineEvaporator(
                                         temperature=Temperature(
                                             value=gas_temp_val,
                                             time=gas_temp_time,
