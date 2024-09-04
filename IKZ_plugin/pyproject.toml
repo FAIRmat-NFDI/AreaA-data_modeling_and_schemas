@@ -34,7 +34,7 @@ dependencies = [
     'nomad-measurements',
     'nomad-analysis',
     'lakeshore-nomad-plugin@git+https://github.com/IKZ-Berlin/lakeshore-nomad-plugin.git@35406777dbac424f674ad6c61b2c9bf206535859',
-    'laytec_epitt_plugin@git+https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin.git@main',
+    'laytec_epitt_plugin@git+https://github.com/IKZ-Berlin/laytec_epitt_nomad_plugin.git@f4953ac4ecb55b7003dee323d7d7f473e49ab4e3',
 ]
 
 [project.optional-dependencies]
