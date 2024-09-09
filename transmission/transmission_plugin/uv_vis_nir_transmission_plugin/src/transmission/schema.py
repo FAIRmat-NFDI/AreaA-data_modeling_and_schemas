@@ -56,6 +56,7 @@ from nomad.datamodel.metainfo.basesections import (
     Measurement,
     MeasurementResult,
     ReadableIdentifiers,
+    SystemComponent,
 )
 from nomad.datamodel.metainfo.plot import (
     PlotlyFigure,
@@ -69,7 +70,7 @@ from nomad.metainfo import (
     SubSection,
 )
 from nomad.units import ureg
-from nomad_material_processing import Parallelepiped
+from nomad_material_processing import Geometry
 
 from transmission.readers import read_asc
 from transmission.utils import create_archive, merge_sections
@@ -82,77 +83,19 @@ if TYPE_CHECKING:
 m_package = SchemaPackage(name='nomad_transmission')
 
 
-class TransmissionParallelepiped(Parallelepiped):
-    m_def = Section(
-        description='Sample geometry used in the transmission measurement.',
-        a_eln=ELNAnnotation(
-            properties=SectionProperties(
-                order=[
-                    'length',
-                    'width',
-                    'height',
-                    'alpha',
-                    'beta',
-                    'gamma',
-                    'surface_area',
-                    'volume',
-                ],
-            ),
-        ),
+class Sample(CompositeSystem, EntryData):
+    """
+    Contains information about the sample id, geometry, and reference to the material
+    system under `components` sub-section.
+    """
+
+    components = SubSection(
+        section_def=SystemComponent,
+        repeats=True,
     )
-    length = Quantity(
-        type=float,
-        description="""
-        The dimension of the sample along the path of the light beam.
-        The y dimension of the parallelepiped.
-        """,
-        a_eln=dict(
-            component='NumberEditQuantity',
-            defaultDisplayUnit='millimeter',
-            label='Length (y)',
-        ),
-        unit='meter',
-    )
-    volume = Quantity(
-        type=float,
-        description='The measure of the amount of space occupied in 3D space.',
-        a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity,
-            defaultDisplayUnit='millimeter ** 3',
-        ),
-        unit='meter ** 3',
-    )
-
-
-class PhysicalProperties(ArchiveSection):
-    """
-    Defines the physical properties of the sample used in the transmission measurement.
-    Can be either a solid sample or liquid sample.
-    """
-
-
-class SolidSamplePhysicalProperties(PhysicalProperties):
-    """
-    Physical properties of the solid sample used in the transmission measurement.
-    """
-
     geometry = SubSection(
-        section_def=TransmissionParallelepiped,
+        section_def=Geometry,
     )
-    orientation = Quantity(
-        type=str,
-        description="""Crystallographic orientation of the sample in the direction
-        perpendicular to the light beam. Defined in terms of miller indices.
-        """,
-        a_eln={'component': 'StringEditQuantity'},
-    )
-
-
-class LiquidSamplePhysicalProperties(PhysicalProperties):
-    """
-    Physical properties of the liquid sample used in the transmission measurement.
-    Information related to the cuvette used for the liquid sample.
-    """
 
 
 class TransmissionSpectrophotometer(Instrument, EntryData):
