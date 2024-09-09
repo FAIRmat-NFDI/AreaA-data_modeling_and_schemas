@@ -740,14 +740,14 @@ class UVVisNirTransmissionResult(MeasurementResult):
             'absorption, reflection, and scattering.'
         ),
         shape=['*'],
-        unit='1/cm',
+        unit='1/m',
         a_plot={'x': 'array_index', 'y': 'extinction_coefficient'},
     )
     wavelength = Quantity(
         type=np.float64,
         description='Wavelength values for which the measurement was conducted.',
         shape=['*'],
-        unit='nm',
+        unit='m',
         a_plot={'x': 'array_index', 'y': 'wavelength'},
     )
 
@@ -766,17 +766,21 @@ class UVVisNirTransmissionResult(MeasurementResult):
             if getattr(self, key) is None:
                 continue
 
+            x = getattr(self, 'wavelength').to('nm').magnitude
             y = getattr(self, key).magnitude
             y_label = key.replace('_', ' ').capitalize()
+            yaxis_title = y_label
+            if key == 'transmittance':
+                yaxis_title += ' (%)'
+            elif key == 'extinction_coefficient':
+                yaxis_title += ' (1/cm)'
+                y = getattr(self, key).to('1/cm').magnitude
 
-            line_linear = px.line(
-                x=self.wavelength.to('nm').magnitude,
-                y=y,
-            )
+            line_linear = px.line(x=x, y=y)
             line_linear.update_layout(
                 title=f'{y_label} over Wavelength',
                 xaxis_title='Wavelength (nm)',
-                yaxis_title=y_label,
+                yaxis_title=yaxis_title,
                 xaxis=dict(
                     fixedrange=False,
                 ),
@@ -803,20 +807,24 @@ class UVVisNirTransmissionResult(MeasurementResult):
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         """
+        self.extinction_coefficient = None
         if not archive.data.samples:
-            logger.warning('No sample found.')
+            logger.warning(
+                'Cannot calculate extinction coefficient as sample not found.'
+            )
             return
-        try:
-            path_length = archive.data.samples[0].physical_properties.geometry.length
-        except AttributeError:
-            logger.warning('No path length found in the sample.')
-            path_length = None
+        if not archive.data.samples[0].thickness:
+            logger.warning(
+                'Cannot calculate extinction coefficient as sample thickness not found '
+                'or the value is 0.'
+            )
+            return
 
-        if path_length is not None:
-            if self.transmittance is not None:
-                self.extinction_coefficient = -np.log(
-                    self.transmittance / 100
-                ) / path_length.to('cm')
+        path_length = archive.data.samples[0].thickness
+        if self.transmittance is not None:
+            self.extinction_coefficient = (
+                -np.log(self.transmittance / 100) / path_length
+            )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
@@ -828,20 +836,6 @@ class UVVisNirTransmissionResult(MeasurementResult):
             logger (BoundLogger): A structlog logger.
         """
         super().normalize(archive, logger)
-        if archive.data.samples:
-            sample = archive.data.samples[0]
-            if sample.reference is None:
-                logger.warning('No reference sample found.')
-            if sample.reference.get('length') is not None:
-                if self.get('transmittance') is not None:
-                    self.extinction_coefficient = -np.log(
-                        self.transmittance / 100
-                    ) / sample.reference.length.to('cm')
-                return
-        # reset absorption coefficient if required conditions are not met
-        if archive.data.results:
-            if archive.data.results[0].get('extinction_coefficient') is not None:
-                archive.data.results[0].extinction_coefficient = None
         self.calculate_extinction_coefficient(archive, logger)
 
 
