@@ -184,11 +184,10 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
         super().normalize(archive, logger)
 
 
-class TransmissionSample(CompositeSystemReference):
+class TransmissionSampleReference(CompositeSystemReference):
     """
-    Section for the sample used in the transmission measurement. Contains the
-    information about the physical properties of the sample and the reference to the
-    material system.
+    Reference to the sample used in the transmission measurement. Additionally,
+    contains the thickness and orientation of the sample.
     """
 
     m_def = Section(
@@ -198,24 +197,53 @@ class TransmissionSample(CompositeSystemReference):
                     'name',
                     'lab_id',
                     'reference',
-                    'physical_properties',
+                    'thickness',
+                    'orientation',
                 ]
             )
         )
     )
     reference = Quantity(
-        type=CompositeSystem,
+        type=Sample,
         description="""
-        A reference to the material system from which the sample is created.
+        A reference to the sample used.
         """,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
             label='material system reference',
         ),
     )
-    physical_properties = SubSection(
-        section_def=PhysicalProperties,
+    thickness = Quantity(
+        type=np.float64,
+        description="""
+        Thickness of the sample along the direction of the light beam. 
+        Also referred to as path length of the beam.""",
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'millimeter',
+        },
+        unit='meter',
     )
+    orientation = Quantity(
+        type=str,
+        description="""
+        Crystallographic orientation of the sample surface on which the light beam is
+        incident.
+        """,
+        a_eln={'component': 'StringEditQuantity'},
+    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        """
+        The normalizer for the `TransmissionSampleReference` class.
+
+        Args:
+            archive (EntryArchive): The NOMAD archive.
+            logger (BoundLogger): A structlog logger.
+        """
+        super().normalize(archive, logger)
+        # TODO: if the thickness is not mentioned, it should be copied from the
+        # geometry of the referenced sample.
 
 
 class Accessory(ArchiveSection):
@@ -890,7 +918,7 @@ class UVVisNirTransmission(Measurement):
         a_eln={'component': 'StringEditQuantity'},
     )
     samples = SubSection(
-        section_def=TransmissionSample,
+        section_def=TransmissionSampleReference,
         description='List of all samples used during the transmission measurement.',
         repeats=True,
     )
