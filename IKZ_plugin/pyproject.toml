@@ -132,5 +132,6 @@ dir_sol_schema = "ikz_plugin.directional_solidification:schema"
 dir_sol_manual_protocol_excel_parser = "ikz_plugin.directional_solidification:excel_parser"
 czochralski_schema = "ikz_plugin.czochralski:schema"
 czochralski_multilog_parser = "ikz_plugin.czochralski:parser"
+movpe_app = "ikz_plugin.movpe.movpe_app:movpesubstrateapp"
 
 
