@@ -80,7 +80,9 @@ if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
 
-m_package = SchemaPackage(name='nomad_transmission')
+m_package = SchemaPackage(
+    aliases=['uv_vis_nir_transmission'],
+)
 
 
 class Sample(CompositeSystem, EntryData):
