@@ -1,0 +1,5 @@
+data:
+  m_def: uv_vis_nir_transmission.TransmissionSample
+  length: 1.0
+  orientation: (111)
+  chemical_composition: LiYF4

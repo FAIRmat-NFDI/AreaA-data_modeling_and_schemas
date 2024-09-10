@@ -1,0 +1,4 @@
+data:
+  m_def: uv_vis_nir_transmission.TransmissionSpectrophotometer
+  serial_number: ABC123
+  software_version: UVSoftware

@@ -1,0 +1,141 @@
+{
+  "data": {
+    "m_def": "uv_vis_nir_transmission.schema.TransmissionSpectrophotometer",
+    "name": "instrument",
+    "datetime": "2024-09-10T14:55:46.665793+00:00",
+    "serial_number": "ABC123",
+    "software_version": "UVSoftware"
+  },
+  "metadata": {
+    "entry_name": "instrument.archive.yaml",
+    "entry_type": "TransmissionSpectrophotometer",
+    "mainfile": "/home/sarthak-kapoor/repositories/fairmat/AreaA-data_modeling_and_schemas/transmission/transmission_plugin/uv_vis_nir_transmission_plugin/tests/data/0.0.1/instrument.archive.yaml",
+    "text_search_contents": [
+      "instrument",
+      "UVSoftware",
+      "ABC123"
+    ],
+    "n_quantities": 14,
+    "quantities": [
+      "",
+      "data",
+      "data.datetime",
+      "data.name",
+      "data.serial_number",
+      "data.software_version",
+      "metadata",
+      "metadata.entry_name",
+      "metadata.entry_type",
+      "metadata.mainfile",
+      "metadata.quantities",
+      "metadata.section_defs",
+      "metadata.section_defs.definition_id",
+      "metadata.section_defs.definition_qualified_name",
+      "metadata.section_defs.used_directly",
+      "metadata.sections",
+      "results",
+      "results.eln",
+      "results.eln.instruments",
+      "results.eln.names",
+      "results.eln.sections"
+    ],
+    "sections": [
+      "nomad.datamodel.datamodel.EntryArchive",
+      "nomad.datamodel.datamodel.EntryMetadata",
+      "nomad.datamodel.results.ELN",
+      "nomad.datamodel.results.Results",
+      "uv_vis_nir_transmission.schema.TransmissionSpectrophotometer"
+    ],
+    "section_defs": [
+      {
+        "definition_qualified_name": "nomad.datamodel.data.ArchiveSection",
+        "definition_id": "7047cbff9980abff17cce4b1b6b0d1c783505b7f",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.data.EntryData",
+        "definition_id": "538f52fd8d52b29372066f878319c6aeb03b74d2",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.datamodel.EntryArchive",
+        "definition_id": "d888aefedda7d8744d0aeb5a0992b1435a9cc3d3",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.datamodel.EntryMetadata",
+        "definition_id": "6edfa503af63b84d6a6021c227d00137b4c1cc9c",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.metainfo.basesections.BaseSection",
+        "definition_id": "106bafb5140238b4afe8128b8c341b5b3e927838",
+        "used_directly": false
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.metainfo.basesections.Entity",
+        "definition_id": "8d478d6cfa9d129aeafe2e6f77d6fe3da6c000a0",
+        "used_directly": false
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.metainfo.basesections.Instrument",
+        "definition_id": "65a147dd20dbc6c4f3c1617dbfdff941918eaa1f",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.results.ELN",
+        "definition_id": "eeed330bd18d40f3a2a00cc35ba6f58808d0c543",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "nomad.datamodel.results.Results",
+        "definition_id": "1caea35fada02e0b6861ceec2dd928595fc824db",
+        "used_directly": true
+      },
+      {
+        "definition_qualified_name": "uv_vis_nir_transmission.schema.TransmissionSpectrophotometer",
+        "definition_id": "08d685ba02dc81baf004bfa0bd997e919a5e0075",
+        "used_directly": true
+      }
+    ],
+    "search_quantities": [
+      {
+        "id": "data.serial_number#uv_vis_nir_transmission.schema.TransmissionSpectrophotometer",
+        "definition": "uv_vis_nir_transmission.schema.TransmissionSpectrophotometer.serial_number",
+        "path_archive": "data.serial_number",
+        "str_value": "ABC123"
+      },
+      {
+        "id": "data.software_version#uv_vis_nir_transmission.schema.TransmissionSpectrophotometer",
+        "definition": "uv_vis_nir_transmission.schema.TransmissionSpectrophotometer.software_version",
+        "path_archive": "data.software_version",
+        "str_value": "UVSoftware"
+      },
+      {
+        "id": "data.name#uv_vis_nir_transmission.schema.TransmissionSpectrophotometer",
+        "definition": "nomad.datamodel.metainfo.basesections.BaseSection.name",
+        "path_archive": "data.name",
+        "str_value": "instrument"
+      },
+      {
+        "id": "data.datetime#uv_vis_nir_transmission.schema.TransmissionSpectrophotometer",
+        "definition": "nomad.datamodel.metainfo.basesections.BaseSection.datetime",
+        "path_archive": "data.datetime",
+        "datetime_value": "2024-09-10T14:55:46.665793+00:00"
+      }
+    ]
+  },
+  "results": {
+    "eln": {
+      "sections": [
+        "TransmissionSpectrophotometer"
+      ],
+      "names": [
+        "instrument"
+      ],
+      "instruments": [
+        "instrument"
+      ]
+    }
+  }
+}
