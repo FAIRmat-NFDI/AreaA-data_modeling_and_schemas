@@ -16,9 +16,16 @@
 # limitations under the License.
 #
 
+import pytest
 from nomad.client import normalize_all
 
 
+@pytest.mark.usefixtures('caplog')
+@pytest.mark.parametrize(
+    'caplog',
+    ['error', 'critical'],
+    indirect=True,
+)
 def test_normalize_all(parsed_archive):
     normalize_all(parsed_archive)
     # TODO test the normalized data
