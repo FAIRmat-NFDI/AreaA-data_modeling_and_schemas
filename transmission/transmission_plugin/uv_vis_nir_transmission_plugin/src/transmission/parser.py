@@ -17,36 +17,14 @@
 #
 from typing import TYPE_CHECKING
 
-from nomad.datamodel.data import (
-    EntryData,
-)
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
-from nomad.metainfo import (
-    Quantity,
-)
 from nomad.parsing import MatchingParser
 
-from transmission.schema import ELNUVVisNirTransmission
+from transmission.schema import ELNUVVisNirTransmission, RawFileTransmissionData
 from transmission.utils import create_archive
 
 if TYPE_CHECKING:
     from nomad.datamodel.datamodel import (
         EntryArchive,
-    )
-
-
-class RawFileTransmissionData(EntryData):
-    """
-    Section for a Transmission Spectrophotometry data file.
-    """
-
-    measurement = Quantity(
-        type=ELNUVVisNirTransmission,
-        a_eln=ELNAnnotation(
-            component='ReferenceEditQuantity',
-        ),
     )
 
 

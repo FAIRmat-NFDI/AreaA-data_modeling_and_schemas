@@ -84,6 +84,7 @@ m_package = SchemaPackage(
     aliases=[
         'uv_vis_nir_transmission',
         'uv_vis_nir_transmission.schema',
+        'uv_vis_nir_transmission.parser',
     ],
 )
 
@@ -1187,6 +1188,19 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             return
 
         self.figures = self.results[0].generate_plots()
+
+
+class RawFileTransmissionData(EntryData):
+    """
+    Section for a Transmission Spectrophotometry data file.
+    """
+
+    measurement = Quantity(
+        type=ELNUVVisNirTransmission,
+        a_eln=ELNAnnotation(
+            component='ReferenceEditQuantity',
+        ),
+    )
 
 
 ELNUVVisTransmission = ELNUVVisNirTransmission
