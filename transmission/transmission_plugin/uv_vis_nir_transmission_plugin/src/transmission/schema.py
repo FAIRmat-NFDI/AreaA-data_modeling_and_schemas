@@ -153,7 +153,7 @@ class TransmissionSampleReference(CompositeSystemReference):
         """,
         a_eln=ELNAnnotation(
             component='ReferenceEditQuantity',
-            label='material system reference',
+            label='sample reference',
         ),
     )
     thickness = Quantity(
@@ -801,7 +801,7 @@ class UVVisNirTransmissionResult(MeasurementResult):
     def calculate_extinction_coefficient(self, archive, logger):
         """
         Calculate the extinction coefficient from the transmittance and sample
-        thickness.
+        thickness. The formula used is: -log( T[%] / 100 ) / L.
 
         Args:
             archive (EntryArchive): The archive containing the section.
@@ -822,9 +822,16 @@ class UVVisNirTransmissionResult(MeasurementResult):
 
         path_length = archive.data.samples[0].thickness
         if self.transmittance is not None:
-            self.extinction_coefficient = (
-                -np.log(self.transmittance / 100) / path_length
-            )
+            extinction_coeff = -np.log(self.transmittance / 100) / path_length
+            # TODO: The if-block is a temperary fix to avoid processing of nans in
+            # the archive. The issue will be fixed in the future.
+            if np.any(np.isnan(extinction_coeff)):
+                logger.warning(
+                    'Failed to save extinction coefficient. '
+                    'Encountered NaN values in the calculation.'
+                )
+                return
+            self.extinction_coefficient = extinction_coeff
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
