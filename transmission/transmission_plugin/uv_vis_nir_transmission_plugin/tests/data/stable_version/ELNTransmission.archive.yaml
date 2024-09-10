@@ -1,0 +1,7 @@
+data:
+  m_def: uv_vis_nir_transmission.ELNUVVisTransmission
+  data_file: "/home/sarthak-kapoor/repositories/fairmat/AreaA-data_modeling_and_schemas/transmission/transmission_plugin/uv_vis_nir_transmission_plugin/tests/data/3DM_test01.Probe.Raw.asc"
+  transmission_settings:
+    accessory:
+      polarizer: true
+      aperture: 0.5

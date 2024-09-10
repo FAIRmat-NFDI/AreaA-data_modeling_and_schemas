@@ -46,6 +46,7 @@ schema = TransmissionSchemaEntryPoint(
     description='Schema for data from Transmission Spectrophotometry.',
 )
 
+
 parser = TransmissionParserEntryPoint(
     name='Transmission Parser',
     description='Parser for data from Transmission Spectrophotometry.',

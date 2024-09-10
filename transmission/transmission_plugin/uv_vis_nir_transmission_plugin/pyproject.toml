@@ -19,13 +19,15 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
 ]
 dependencies = [
-    "nomad-lab>=1.2.2dev578",
+    "nomad-lab>=1.3.4dev",
+    "nomad-material-processing"
 ]
 [project.optional-dependencies]
 dev = [
     "ruff",
     "pytest",
     "structlog",
+    "nomad-lab[infrastructure]>=1.3.4dev",
 ]
 
 [project.license]
