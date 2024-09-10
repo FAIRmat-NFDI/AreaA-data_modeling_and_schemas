@@ -330,6 +330,7 @@ class SubstrateMovpe(CrystallineSubstrate, EntryData):
     tags = Quantity(
         type=str,
         description='FILL',
+        shape=['*'],
         a_eln=ELNAnnotation(
             component='StringEditQuantity',
             label='Box ID',
