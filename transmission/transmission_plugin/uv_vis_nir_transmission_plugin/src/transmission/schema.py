@@ -970,7 +970,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         api_query = {
             'search_quantities': {
                 'id': (
-                    'data.serial_number#uv_vis_nir_transmission.schema.'
+                    'data.serial_number#transmission.schema.'
                     'TransmissionSpectrophotometer'
                 ),
                 'str_value': f'{serial_number}',
@@ -985,7 +985,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         if not search_result.data:
             logger.warning(
                 f'No "TransmissionSpectrophotometer" instrument found with the serial '
-                f'number "{serial_number}".'
+                f'number "{serial_number}". Creating an entry for the instrument.'
             )
             return self.create_instrument_entry(data_dict, archive, logger)
 
