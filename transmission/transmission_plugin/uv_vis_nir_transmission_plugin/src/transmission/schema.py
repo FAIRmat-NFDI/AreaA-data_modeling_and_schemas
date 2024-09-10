@@ -81,7 +81,10 @@ if TYPE_CHECKING:
 
 
 m_package = SchemaPackage(
-    aliases=['uv_vis_nir_transmission'],
+    aliases=[
+        'uv_vis_nir_transmission',
+        'uv_vis_nir_transmission.schema',
+    ],
 )
 
 
@@ -963,10 +966,11 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             Union[InstrumentReference, None]: The instrument reference or None.
         """
         from nomad.datamodel.context import ClientContext
-        from nomad.search import search
 
         if isinstance(archive.m_context, ClientContext):
             return None
+
+        from nomad.search import search
 
         serial_number = data_dict['instrument_serial_number']
         api_query = {
@@ -1184,5 +1188,8 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         self.figures = self.results[0].generate_plots()
 
+
+ELNUVVisTransmission = ELNUVVisNirTransmission
+TransmissionSample = Sample
 
 m_package.__init_metainfo__()
