@@ -70,7 +70,7 @@ from nomad.metainfo import (
     SubSection,
 )
 from nomad.units import ureg
-from nomad_material_processing import Geometry
+from nomad_material_processing.general import Geometry
 
 from transmission.readers import read_asc
 from transmission.utils import create_archive, merge_sections
@@ -960,7 +960,11 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         Returns:
             Union[InstrumentReference, None]: The instrument reference or None.
         """
+        from nomad.datamodel.context import ClientContext
         from nomad.search import search
+
+        if isinstance(archive.m_context, ClientContext):
+            return None
 
         serial_number = data_dict['instrument_serial_number']
         api_query = {
