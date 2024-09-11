@@ -636,7 +636,132 @@ class Attenuator(ArchiveSection):
     )
 
 
-class UVVisNirTransmissionSettings(ArchiveSection):
+class TransmissionSettings(ArchiveSection):
+    """
+    Section for the settings of the instrument used for transmission measurement.
+    """
+
+    ordinate_type = Quantity(
+        type=MEnum(['%T', 'A']),
+        description=(
+            'Specifies whether the ordinate (y-axis) of the measurement data is '
+            'percent transmittance (%T) or absorbance (A).'
+        ),
+        a_eln={'component': 'EnumEditQuantity'},
+    )
+
+
+class TransmissionResult(MeasurementResult):
+    """
+    Section for the results of the Transmission measurement.
+    """
+
+    m_def = Section(
+        a_eln={'hide': ['array_index']},
+    )
+    array_index = Quantity(
+        type=int,
+        description='Array of indices used for plotting quantity vectors.',
+        shape=['*'],
+    )
+    transmittance = Quantity(
+        type=np.float64,
+        description='Measured transmittance in percentage.',
+        shape=['*'],
+        unit='dimensionless',
+        a_plot={'x': 'array_index', 'y': 'transmittance'},
+    )
+    absorbance = Quantity(
+        type=np.float64,
+        description='Measured absorbance ranging from 0 to 1.',
+        shape=['*'],
+        unit='dimensionless',
+        a_plot={'x': 'array_index', 'y': 'absorbance'},
+    )
+    wavelength = Quantity(
+        type=np.float64,
+        description='Wavelength values for which the measurement was conducted.',
+        shape=['*'],
+        unit='m',
+        a_plot={'x': 'array_index', 'y': 'wavelength'},
+    )
+
+    def generate_plots(self) -> list[PlotlyFigure]:
+        """
+        Generate the plotly figures for the `TransmissionResult` section.
+
+        Returns:
+            list[PlotlyFigure]: The plotly figures.
+        """
+        figures = []
+        if self.wavelength is None:
+            return figures
+
+        for key in ['transmittance', 'absorbance']:
+            if getattr(self, key) is None:
+                continue
+
+            x_label = 'Wavelength'
+            xaxis_title = x_label + ' (nm)'
+            x = self.wavelength.to('nm').magnitude
+
+            y_label = key.capitalize()
+            yaxis_title = y_label
+            if key == 'transmittance':
+                yaxis_title += ' (%)'
+            y = getattr(self, key).magnitude
+
+            line_linear = px.line(x=x, y=y)
+
+            line_linear.update_layout(
+                title=f'{y_label} over {x_label}',
+                xaxis_title=xaxis_title,
+                yaxis_title=yaxis_title,
+                xaxis=dict(
+                    fixedrange=False,
+                ),
+                yaxis=dict(
+                    fixedrange=False,
+                ),
+                template='plotly_white',
+            )
+
+            figures.append(
+                PlotlyFigure(
+                    label=f'{y_label} linear plot',
+                    figure=line_linear.to_plotly_json(),
+                ),
+            )
+
+        return figures
+
+
+class Transmission(Measurement):
+    """
+    Schema for Transmission Spectrophotometry measurement.
+    """
+
+    user = Quantity(
+        type=str,
+        description='Name of user or analyst.',
+        a_eln={'component': 'StringEditQuantity'},
+    )
+
+    method = Measurement.method.m_copy()
+    method.default = 'Transmission Spectrophotometry'
+
+    samples = Measurement.samples.m_copy()
+    samples.section_def = TransmissionSampleReference
+
+    results = Measurement.results.m_copy()
+    results.section_def = TransmissionResult
+
+    transmission_settings = SubSection(
+        section_def=TransmissionSettings,
+    )
+
+
+class UVVisNirTransmissionSettings(TransmissionSettings):
     """
     Section for setting of the instrument used for transmission measurement.
     """
@@ -652,14 +777,6 @@ class UVVisNirTransmissionSettings(ArchiveSection):
                 ],
             ),
         ),
-    )
-    ordinate_type = Quantity(
-        type=MEnum(['%T', 'A']),
-        description=(
-            'Specifies whether the ordinate (y-axis) of the measurement data is '
-            'percent transmittance (%T) or absorbance (A).'
-        ),
-        a_eln={'component': 'EnumEditQuantity'},
     )
     sample_beam_position = Quantity(
         type=MEnum(['Front', 'Rear']),
@@ -711,33 +828,11 @@ class UVVisNirTransmissionSettings(ArchiveSection):
     )
 
 
-class UVVisNirTransmissionResult(MeasurementResult):
+class UVVisNirTransmissionResult(TransmissionResult):
     """
     Section for the results of the UV-Vis NIR Transmission measurement.
     """
 
-    m_def = Section(
-        a_eln={'hide': ['array_index']},
-    )
-    array_index = Quantity(
-        type=int,
-        description='Array of indices used for plotting quantity vectors.',
-        shape=['*'],
-    )
-    transmittance = Quantity(
-        type=np.float64,
-        description='Measured transmittance in percentage.',
-        shape=['*'],
-        unit='dimensionless',
-        a_plot={'x': 'array_index', 'y': 'transmittance'},
-    )
-    absorbance = Quantity(
-        type=np.float64,
-        description='Measured absorbance ranging from 0 to 1.',
-        shape=['*'],
-        unit='dimensionless',
-        a_plot={'x': 'array_index', 'y': 'absorbance'},
-    )
     extinction_coefficient = Quantity(
         type=np.float64,
         description=(
@@ -749,58 +844,52 @@ class UVVisNirTransmissionResult(MeasurementResult):
         unit='1/m',
         a_plot={'x': 'array_index', 'y': 'extinction_coefficient'},
     )
-    wavelength = Quantity(
-        type=np.float64,
-        description='Wavelength values for which the measurement was conducted.',
-        shape=['*'],
-        unit='m',
-        a_plot={'x': 'array_index', 'y': 'wavelength'},
-    )
 
     def generate_plots(self) -> list[PlotlyFigure]:
         """
-        Generate the plotly figures for the `UVVisNirTransmissionResult` section.
+        Extends TransmissionResult.generate_plots() method to include the plotly
+        figures for the `UVVisNirTransmissionResult` section.
 
         Returns:
             list[PlotlyFigure]: The plotly figures.
         """
-        figures = []
+        figures = super().generate_plots()
         if self.wavelength is None:
             return figures
 
-        for key in ['transmittance', 'absorbance', 'extinction_coefficient']:
-            if getattr(self, key) is None:
-                continue
+        # generate plot for extinction coefficient
+        if self.extinction_coefficient is None:
+            return figures
 
-            x = getattr(self, 'wavelength').to('nm').magnitude
-            y = getattr(self, key).magnitude
-            y_label = key.replace('_', ' ').capitalize()
-            yaxis_title = y_label
-            if key == 'transmittance':
-                yaxis_title += ' (%)'
-            elif key == 'extinction_coefficient':
-                yaxis_title += ' (1/cm)'
-                y = getattr(self, key).to('1/cm').magnitude
+        x = self.wavelength.to('nm').magnitude
+        x_label = 'Wavelength'
+        xaxis_title = x_label + ' (nm)'
 
-            line_linear = px.line(x=x, y=y)
-            line_linear.update_layout(
-                title=f'{y_label} over Wavelength',
-                xaxis_title='Wavelength (nm)',
-                yaxis_title=yaxis_title,
-                xaxis=dict(
-                    fixedrange=False,
-                ),
-                yaxis=dict(
-                    fixedrange=False,
-                ),
-                template='plotly_white',
-            )
-            figures.append(
-                PlotlyFigure(
-                    label=f'{y_label} linear plot',
-                    figure=line_linear.to_plotly_json(),
-                ),
-            )
+        y = self.extinction_coefficient.to('1/cm').magnitude
+        y_label = 'Extinction coefficient'
+        yaxis_title = y_label + ' (1/cm)'
+
+        line_linear = px.line(x=x, y=y)
+
+        line_linear.update_layout(
+            title=f'{y_label} over {x_label}',
+            xaxis_title=xaxis_title,
+            yaxis_title=yaxis_title,
+            xaxis=dict(
+                fixedrange=False,
+            ),
+            yaxis=dict(
+                fixedrange=False,
+            ),
+            template='plotly_white',
+        )
+
+        figures.append(
+            PlotlyFigure(
+                label=f'{y_label} linear plot',
+                figure=line_linear.to_plotly_json(),
+            ),
+        )
 
         return figures
 
@@ -852,32 +941,21 @@ class UVVisNirTransmissionResult(MeasurementResult):
         self.calculate_extinction_coefficient(archive, logger)
 
 
-class UVVisNirTransmission(Measurement):
+class UVVisNirTransmission(Transmission):
     """
-    Schema for UV-Vis NIR Transmission, which extends the basesection Measurement.
+    Schema for UV-Vis NIR Transmission, which extends the `Transmission` class.
     """
 
     m_def = Section()
-    method = Quantity(
-        type=str,
-        default='UV-Vis-NIR Transmission',
-    )
-    user = Quantity(
-        type=str,
-        description='Name of user or analyst.',
-        a_eln={'component': 'StringEditQuantity'},
-    )
-    samples = SubSection(
-        section_def=TransmissionSampleReference,
-        description='List of all samples used during the transmission measurement.',
-        repeats=True,
-    )
-    results = Measurement.results.m_copy()
+
+    method = Transmission.method.m_copy()
+    method.default = 'UV-Vis-NIR Transmission'
+
+    results = Transmission.results.m_copy()
     results.section_def = UVVisNirTransmissionResult
 
-    transmission_settings = SubSection(
-        section_def=UVVisNirTransmissionSettings,
-    )
+    transmission_settings = Transmission.transmission_settings.m_copy()
+    transmission_settings.section_def = UVVisNirTransmissionSettings
 
 
 class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
