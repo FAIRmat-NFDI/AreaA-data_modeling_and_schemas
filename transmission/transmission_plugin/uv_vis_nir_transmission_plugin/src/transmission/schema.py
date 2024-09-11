@@ -46,6 +46,7 @@ from nomad.datamodel.data import (
 from nomad.datamodel.metainfo.annotations import (
     ELNAnnotation,
     ELNComponentEnum,
+    Filter,
     SectionProperties,
 )
 from nomad.datamodel.metainfo.basesections import (
@@ -646,7 +647,20 @@ class TransmissionResult(MeasurementResult):
     """
 
     m_def = Section(
-        a_eln={'hide': ['array_index']},
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'transmittance',
+                    'absorbance',
+                    'wavelength',
+                ],
+                visible=Filter(
+                    exclude=[
+                        'array_index',
+                    ],
+                ),
+            )
+        )
     )
     array_index = Quantity(
         type=int,
@@ -821,7 +835,23 @@ class UVVisNirTransmissionResult(TransmissionResult):
     """
     Section for the results of the UV-Vis NIR Transmission measurement.
     """
-
+    m_def = Section(
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'transmittance',
+                    'absorbance',
+                    'wavelength',
+                    'extinction_coefficient',
+                ],
+                visible=Filter(
+                    exclude=[
+                        'array_index',
+                    ],
+                ),
+            )
+        )
+    )
     extinction_coefficient = Quantity(
         type=np.float64,
         description=(
@@ -1271,6 +1301,5 @@ class RawFileTransmissionData(EntryData):
 
 
 ELNUVVisTransmission = ELNUVVisNirTransmission
-TransmissionSample = Sample
 
 m_package.__init_metainfo__()
