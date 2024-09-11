@@ -90,3 +90,91 @@ movpesubstrateapp = AppEntryPoint(
         },
     ),
 )
+
+
+movpegrowthrunapp = AppEntryPoint(
+    name='MOVPEGrowthRunApp',
+    description='Explore MOVPE growth runs.',
+    app=App(
+        label='MOVPE Growth Runs',
+        path='movpegrowthrunapp',
+        category='MOVPE',
+        columns=Columns(
+            selected=[
+                'data.name#ikz_plugin.movpe.schema.GrowthMovpeIKZ',
+                'data.name#ikz_plugin.movpe.schema.GrowthMovpeIKZ',
+                'data.datetime#ikz_plugin.movpe.schema.GrowthMovpeIKZ',
+                'data.lab_id#ikz_plugin.movpe.schema.GrowthMovpeIKZ',
+                'data.recipe_id#ikz_plugin.movpe.schema.GrowthMovpeIKZ',
+            ],
+            options={
+                'data.name#ikz_plugin.movpe.schema.GrowthMovpeIKZ': Column(),
+                'data.datetime#ikz_plugin.movpe.schema.GrowthMovpeIKZ': Column(
+                    label='Start Time'
+                ),
+                'data.lab_id#ikz_plugin.movpe.schema.GrowthMovpeIKZ': Column(
+                    label='Growth Run ID'
+                ),
+                'data.recipe_id#ikz_plugin.movpe.schema.GrowthMovpeIKZ': Column(),
+            },
+        ),
+        filter_menus=FilterMenus(
+            options={
+                'material': FilterMenu(label='Material'),
+                'eln': FilterMenu(label='Electronic Lab Notebook'),
+                'custom_quantities': FilterMenu(label='User Defined Quantities'),
+                'author': FilterMenu(label='Author / Origin / Dataset'),
+                'metadata': FilterMenu(label='Visibility / IDs / Schema'),
+            }
+        ),
+        filters=Filters(
+            include=['*#ikz_plugin.movpe.schema.GrowthMovpeIKZ'],
+        ),
+        filters_locked={
+            'section_defs.definition_qualified_name': [
+                'ikz_plugin.movpe.schema.GrowthMovpeIKZ',
+            ],
+        },
+    ),
+)
+
+
+movpelayersapp = AppEntryPoint(
+    name='MOVPELayersApp',
+    description='Explore MOVPE Layers.',
+    app=App(
+        label='MOVPE Layers',
+        path='movpelayersapp',
+        category='MOVPE',
+        columns=Columns(
+            selected=[
+                'data.name#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ',
+                'data.lab_id#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ',
+                'data.datetime#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ',
+            ],
+            options={
+                'data.name#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ': Column(),
+                'data.lab_id#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ': Column(),
+                'data.datetime#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ': Column(),
+                'data.description#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ': Column(),
+            },
+        ),
+        filter_menus=FilterMenus(
+            options={
+                'material': FilterMenu(label='Material'),
+                'eln': FilterMenu(label='Electronic Lab Notebook'),
+                'custom_quantities': FilterMenu(label='User Defined Quantities'),
+                'author': FilterMenu(label='Author / Origin / Dataset'),
+                'metadata': FilterMenu(label='Visibility / IDs / Schema'),
+            }
+        ),
+        filters=Filters(
+            include=['*#ikz_plugin.movpe.schema.ThinFilmMovpeIKZ'],
+        ),
+        filters_locked={
+            'section_defs.definition_qualified_name': [
+                'ikz_plugin.movpe.schema.ThinFilmMovpeIKZ',
+            ],
+        },
+    ),
+)
