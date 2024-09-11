@@ -121,17 +121,6 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
         a_eln={'component': 'StringEditQuantity'},
     )
 
-    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
-        """
-        The normalizer for the `TransmissionSpectrophotometer` class.
-
-        Args:
-            archive (EntryArchive): The archive containing the section that is being
-            normalized.
-            logger (BoundLogger): A structlog logger.
-        """
-        super().normalize(archive, logger)
-
 
 class TransmissionSampleReference(CompositeSystemReference):
     """
