@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-from nomad.config.models.plugins import SchemaPackageEntryPoint, ParserEntryPoint
+from nomad.config.models.plugins import ParserEntryPoint, SchemaPackageEntryPoint
 
 
 class RtgEntryPoint(SchemaPackageEntryPoint):
@@ -26,8 +26,8 @@ class RtgEntryPoint(SchemaPackageEntryPoint):
 
 
 schema = RtgEntryPoint(
-    name="RtgSchema",
-    description="Schema package for RTG SIMS technique.",
+    name='RtgSchema',
+    description='Schema package for RTG SIMS technique.',
 )
 
 
@@ -39,10 +39,10 @@ class RtgParserEntryPoint(ParserEntryPoint):
 
 
 parser = RtgParserEntryPoint(
-    name="RtgParser",
+    name='RtgParser',
     description="""
     This is a schema and parser for SIMS depth profile 
     data from RTG Microanalyse (https://www.rtg-berlin.de/).
     """,
-    mainfile_name_re=r".*\.dp_ascii",
+    mainfile_name_re=r'.*\.dp_ascii',
 )

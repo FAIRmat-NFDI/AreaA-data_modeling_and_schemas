@@ -16,20 +16,19 @@
 # limitations under the License.
 #
 
-from nomad.datamodel.datamodel import EntryArchive
-from nomad.metainfo import (
-    MSection,
-    Quantity,
-)
-from nomad.parsing import MatchingParser
-from nomad.datamodel.metainfo.annotations import (
-    ELNAnnotation,
-)
 from nomad.datamodel.data import (
     EntryData,
 )
-
+from nomad.datamodel.datamodel import EntryArchive
+from nomad.datamodel.metainfo.annotations import (
+    ELNAnnotation,
+)
+from nomad.metainfo import (
+    Quantity,
+)
+from nomad.parsing import MatchingParser
 from nomad_measurements.utils import create_archive
+
 from rtg_sims.schema import (
     RTGSIMSMeasurement,
 )
