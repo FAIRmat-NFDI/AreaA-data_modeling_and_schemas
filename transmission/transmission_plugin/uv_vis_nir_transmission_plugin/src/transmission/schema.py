@@ -1270,8 +1270,8 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             sample_beam_position=transmission_dict['sample_beam_position'],
             common_beam_mask=transmission_dict['common_beam_mask_percentage'],
             common_beam_depolarizer=transmission_dict['is_common_beam_depolarizer_on'],
-            lamp=lamp,
-            detector=detector,
+            light_sources=light_sources,
+            detector_settings=detector_settings,
             monochromator=monochromator,
             attenuator=attenuator,
         )
