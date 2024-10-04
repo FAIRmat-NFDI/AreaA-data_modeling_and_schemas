@@ -417,41 +417,45 @@ class Monochromator(ArchiveSection):
     )
 
 
-class Lamp(ArchiveSection):
+class LightSource(SettingOverWavelengthRange):
+    """
+    A section to bring together different types of light sources.
+    """
+
+    m_def = Section(
+        description='Light source setting over a wavelength range.',
+    )
+    power = Quantity(
+        type=np.float64,
+        description='Power of the light source.',
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'mW',
+        },
+        unit='W',
+    )
+
+
+class Lamp(LightSource):
     """
     Lamp setting over a wavelength range.
     """
 
-    m_def = Section(
-        description='Lamp setting over a wavelength range.',
+    type = Quantity(
+        type=str,
+        description="""
+        Type of the lamp used. Some of the popular materials are:
+        | Detector          | Description          |
+        |-------------------|----------------------|
+        | **Deuterium**     | Used for light generation in the UV range (160 nm to 400 nm).|
+        | **Tungsten**      | Used for light generation in the near-infrared range (320nm to 2500nm).|
+        """,  # noqa: E501
+        a_eln={'component': 'StringEditQuantity'},
     )
-    d2_lamp = Quantity(
-        type=bool,
-        description=(
-            'True if the Deuterium (D2) lamp is used '
-            '(typically covers the UV range from about 160 nm to 400 nm).'
-        ),
-        a_eln={'component': 'BoolEditQuantity'},
-    )
-    tungsten_lamp = Quantity(
-        type=bool,
-        description=(
-            'True if the Tungsten lamp is used '
-            '(typically covers the visible to near-infrared range from about '
-            '320 nm to 2500 nm)'
-        ),
-        a_eln={'component': 'BoolEditQuantity'},
-    )
-    lamp_change_point = Quantity(
-        type=np.float64,
-        description='The wavelength at which lamp used for the beam changes.',
-        a_eln={
-            'component': 'NumberEditQuantity',
-            'defaultDisplayUnit': 'nm',
-        },
-        unit='nm',
-        shape=['*'],
-    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        super().normalize(archive, logger)
+        self.name = self.type + ' ' + self.name
 
 
 class NIRGain(SettingOverWavelengthRange):
@@ -828,6 +832,7 @@ class UVVisNirTransmissionResult(TransmissionResult):
     """
     Section for the results of the UV-Vis NIR Transmission measurement.
     """
+
     m_def = Section(
         a_eln=ELNAnnotation(
             properties=SectionProperties(
@@ -1129,12 +1134,17 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             logger.warning(f"Unknown ordinate type '{transmission_dict['ordinate']}'.")
         result.normalize(archive, logger)
 
-        lamp = Lamp(
-            d2_lamp=transmission_dict['is_d2_lamp_used'],
-            tungsten_lamp=transmission_dict['is_tungsten_lamp_used'],
-            lamp_change_point=transmission_dict['lamp_change_wavelength'],
-        )
-        lamp.normalize(archive, logger)
+        light_sources = []
+        if transmission_dict['is_d2_lamp_used']:
+            light_sources.append(Lamp(type='Deuterium'))
+        if transmission_dict['is_tungsten_lamp_used']:
+            light_sources.append(Lamp(type='Tungsten'))
+        lamp_change_point = transmission_dict['lamp_change_wavelength'][0]
+        if lamp_change_point is not None:
+            light_sources[0].wavelength_upper_limit = lamp_change_point
+            light_sources[1].wavelength_lower_limit = lamp_change_point
+        for lamp in light_sources:
+            lamp.normalize(archive, logger)
 
         detector_module = transmission_dict['detector_module']
         if detector_module == 'uv/vis/nir detector':
