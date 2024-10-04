@@ -607,23 +607,23 @@ class Attenuator(ArchiveSection):
     m_def = Section(
         description='Attenuation setting for the sample and reference beam.',
     )
-    sample = Quantity(
+    sample_beam_attentuation = Quantity(
         type=int,
-        description='Sample beam attenuation in percentage.',
+        description='Value of sample beam attenuation in a unit interval [0,1].',
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
-            'maxValue': 100,
+            'maxValue': 1,
         },
         unit='dimensionless',
     )
-    reference = Quantity(
+    reference_beam_attenuation = Quantity(
         type=int,
-        description='Reference beam attenuation in percentage.',
+        description='Value of reference beam attenuation in a unit interval [0,1].',
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
-            'maxValue': 100,
+            'maxValue': 1,
         },
         unit='dimensionless',
     )
@@ -1246,8 +1246,14 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         monochromator.normalize(archive, logger)
 
         attenuator = Attenuator(
-            sample=transmission_dict['attenuation_percentage']['sample'],
-            reference=transmission_dict['attenuation_percentage']['reference'],
+            sample_beam_attenuation=transmission_dict['attenuation_percentage'][
+                'sample'
+            ]
+            / 100,
+            reference_beam_attenuation=transmission_dict['attenuation_percentage'][
+                'reference'
+            ]
+            / 100,
         )
 
         if self.get('transmission_settings'):
