@@ -299,7 +299,6 @@ class SettingOverWavelengthRange(ArchiveSection):
                     'name',
                     'wavelength_upper_limit',
                     'wavelength_lower_limit',
-                    'value',
                 ],
             ),
         ),
@@ -326,12 +325,6 @@ class SettingOverWavelengthRange(ArchiveSection):
             'defaultDisplayUnit': 'nm',
         },
         unit='nm',
-    )
-    value = Quantity(
-        type=np.float64,
-        description='Value of the given instrument setting.',
-        a_eln={'component': 'NumberEditQuantity'},
-        unit='dimensionless',
     )
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
