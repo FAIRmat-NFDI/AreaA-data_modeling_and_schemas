@@ -458,6 +458,28 @@ class Lamp(LightSource):
         self.name = self.type + ' ' + self.name
 
 
+class Detector(SettingOverWavelengthRange):
+    """
+    Detector setting over a wavelength range.
+    """
+
+    m_def = Section(
+        description='Detector setting over a wavelength range.',
+    )
+    type = Quantity(
+        type=str,
+        description="""
+        Type of the detector used in the instrument. Some of the popular detectors are:
+        | Detector          | Description          |
+        |-------------------|----------------------|
+        | **PMT**           | Photomultiplier Tube detector used for the Ultra-Violet (UV) or visible range.|
+        | **InGaAs**        | Indium Gallium Arsenide detector used for Near-Infra-red (NIR) range.|
+        | **PbS**           | Lead Sulphide detector used for Infrared (IR) range.|
+        """,  # noqa: E501
+        a_eln={'component': 'StringEditQuantity'},
+    )
+
+
 class NIRGain(SettingOverWavelengthRange):
     """
     NIR gain factor over a range of wavelength.
@@ -471,12 +493,12 @@ class NIRGain(SettingOverWavelengthRange):
                     'name',
                     'wavelength_upper_limit',
                     'wavelength_lower_limit',
-                    'value',
+                    'nir_gain_factor',
                 ],
             ),
         ),
     )
-    value = Quantity(
+    nir_gain_factor = Quantity(
         type=np.float64,
         description='NIR gain factor of the detector.',
         a_eln={'component': 'NumberEditQuantity'},
@@ -497,12 +519,12 @@ class IntegrationTime(SettingOverWavelengthRange):
                     'name',
                     'wavelength_upper_limit',
                     'wavelength_lower_limit',
-                    'value',
+                    'integration_time',
                 ],
             ),
         ),
     )
-    value = Quantity(
+    integration_time = Quantity(
         type=np.float64,
         description='Integration time value.',
         a_eln={
@@ -513,26 +535,25 @@ class IntegrationTime(SettingOverWavelengthRange):
     )
 
 
-class Detector(ArchiveSection):
+class DetectorSettings(ArchiveSection):
     """
-    Detector setting over a wavelength range.
+    Settings of the detector used in the instrument.
     """
 
     m_def = Section(
-        description='Detector setting over a wavelength range.',
+        description='Settings of the detector used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
-                    'module',
+                    'detector_module',
                     'detectors',
-                    'detector_change_point',
                     'nir_gain',
                     'integration_time',
                 ],
             ),
         ),
     )
-    module = Quantity(
+    detector_module = Quantity(
         type=MEnum(
             [
                 'Three Detector Module',
@@ -550,28 +571,9 @@ class Detector(ArchiveSection):
         | **150-mm Integrating Sphere**        | Includes an integrating sphere with a diameter of 150 mm which is equipped with PMT (R928) and InGaAs detector. The PMT covers 200-860.8 nm and the InGaAs detector covers 860.8-2500 nm. |
         """,  # noqa: E501
     )
-    detectors = Quantity(
-        type=str,
-        description="""
-        Detectors used in the instrument. Some of the popular detectors are:
-        | Detector          | Description          |
-        |-------------------|----------------------|
-        | **PMT**           | Photomultiplier Tube detector used for the Ultra-Violet (UV) or visible range.|
-        | **InGaAs**        | Indium Gallium Arsenide detector used for Near-Infra-red (NIR) range.|
-        | **PbS**           | Lead Sulphide detector used for Infrared (IR) range.|
-        """,  # noqa: E501
-        a_eln={'component': 'StringEditQuantity'},
-        shape=['*'],
-    )
-    detector_change_point = Quantity(
-        type=np.float64,
-        description='The wavelength at which the detector module changes.',
-        a_eln={
-            'component': 'NumberEditQuantity',
-            'defaultDisplayUnit': 'nm',
-        },
-        unit='nm',
-        shape=['*'],
+    detectors = SubSection(
+        section_def=Detector,
+        repeats=True,
     )
     nir_gain = SubSection(
         section_def=NIRGain,
@@ -584,13 +586,17 @@ class Detector(ArchiveSection):
 
     def normalize(self, archive, logger):
         super().normalize(archive, logger)
-        if self.module is not None:
-            if self.module == 'Three Detector Module':
-                self.detectors = ['PMT', 'InGaAs', 'PbS']
-            elif self.module == 'Two Detector Module':
-                self.detectors = ['PMT', 'PbS']
-            elif self.module == '150-mm Integrating Sphere':
-                self.detectors = ['PMT', 'InGaAs']
+        if self.detector_module is not None:
+            if self.detector_module == 'Three Detector Module':
+                detector_list = ['PMT', 'InGaAs', 'PbS']
+            elif self.detector_module == 'Two Detector Module':
+                detector_list = ['PMT', 'PbS']
+            elif self.detector_module == '150-mm Integrating Sphere':
+                detector_list = ['PMT', 'InGaAs']
+            else:
+                detector_list = []
+            for detector in detector_list:
+                self.detectors.append(Detector(type=detector))
 
 
 class Attenuator(ArchiveSection):
@@ -1146,6 +1152,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         for lamp in light_sources:
             lamp.normalize(archive, logger)
 
+        # add detector modules
         detector_module = transmission_dict['detector_module']
         if detector_module == 'uv/vis/nir detector':
             if 'lambda 1050' in transmission_dict['instrument_name'].lower():
@@ -1158,9 +1165,24 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                 detector_module = 'Two Detector Module'
         if detector_module == '150mm sphere':
             detector_module = '150-mm Integrating Sphere'
-        detector = Detector(
-            module=detector_module,
+        detector_settings = DetectorSettings(
+            detector_module=detector_module,
         )
+        detector_settings.normalize(archive, logger)
+
+        # add detector wavelength ranges
+        detector_change_points = transmission_dict['detector_change_wavelength']
+        if (
+            detector_change_points
+            and len(detector_change_points) == len(detector_settings.detectors) - 1
+        ):
+            for idx, change_point in enumerate(detector_change_points):
+                detector_settings.detectors[idx].wavelength_upper_limit = change_point
+                detector_settings.detectors[
+                    idx + 1
+                ].wavelength_lower_limit = change_point
+
+        # add NIR gain
         for idx, wavelength_value in enumerate(transmission_dict['detector_NIR_gain']):
             nir_gain = NIRGain(
                 wavelength_upper_limit=wavelength_value['wavelength'],
@@ -1171,7 +1193,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'detector_NIR_gain'
                 ][idx + 1]['wavelength']
             nir_gain.normalize(archive, logger)
-            detector.nir_gain.append(nir_gain)
+            detector_settings.nir_gain.append(nir_gain)
+
+        # add integration time
         for idx, wavelength_value in enumerate(
             transmission_dict['detector_integration_time']
         ):
@@ -1184,10 +1208,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'detector_integration_time'
                 ][idx + 1]['wavelength']
             integration_time.normalize(archive, logger)
-            detector.integration_time.append(integration_time)
+            detector_settings.integration_time.append(integration_time)
 
-        detector.detector_change_point = transmission_dict['detector_change_wavelength']
-        detector.normalize(archive, logger)
+        detector_settings.normalize(archive, logger)
 
         monochromator = Monochromator()
         for idx, wavelength_value in enumerate(
