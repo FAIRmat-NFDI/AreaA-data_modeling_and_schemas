@@ -155,7 +155,7 @@ class TransmissionSampleReference(CompositeSystemReference):
     thickness = Quantity(
         type=np.float64,
         description="""
-        Thickness of the sample along the direction of the light beam. 
+        Thickness of the sample along the direction of the light beam.
         Also referred to as path length of the beam.""",
         a_eln={
             'component': 'NumberEditQuantity',
@@ -356,9 +356,9 @@ class SettingOverWavelengthRange(ArchiveSection):
         self.name = f'[{lower_limit}, {upper_limit}]'
 
 
-class SlitWidth(SettingOverWavelengthRange):
+class MonochromatorSlitWidth(SettingOverWavelengthRange):
     """
-    Slit width setting over a wavelength range.
+    Monochromator slit width setting over a wavelength range.
     """
 
     m_def = Section(
@@ -369,12 +369,13 @@ class SlitWidth(SettingOverWavelengthRange):
                     'name',
                     'wavelength_upper_limit',
                     'wavelength_lower_limit',
-                    'value',
+                    'slit_width_servo',
+                    'slit_width',
                 ],
             ),
         ),
     )
-    value = Quantity(
+    slit_width = Quantity(
         type=np.float64,
         description='Slit width value.',
         a_eln={
@@ -393,7 +394,7 @@ class SlitWidth(SettingOverWavelengthRange):
     )
 
 
-class Monochromator(ArchiveSection):
+class MonochromatorSettings(ArchiveSection):
     """
     Monochromator setting over a wavelength range.
     """
@@ -403,7 +404,10 @@ class Monochromator(ArchiveSection):
     )
     monochromator_change_point = Quantity(
         type=np.float64,
-        description='The wavelength at which the monochromator changes settings.',
+        description="""
+        The wavelength at which the monochromator changes, in case the setup has
+        multiple monochromators.
+        """,
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
@@ -412,7 +416,7 @@ class Monochromator(ArchiveSection):
         shape=['*'],
     )
     monochromator_slit_width = SubSection(
-        section_def=SlitWidth,
+        section_def=MonochromatorSlitWidth,
         repeats=True,
     )
 
@@ -820,8 +824,8 @@ class UVVisNirTransmissionSettings(TransmissionSettings):
         section_def=Accessory,
         repeats=True,
     )
-    monochromator = SubSection(
-        section_def=Monochromator,
+    monochromator_settings = SubSection(
+        section_def=MonochromatorSettings,
     )
     lamp = SubSection(
         section_def=Lamp,
@@ -1212,21 +1216,21 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         detector_settings.normalize(archive, logger)
 
-        monochromator = Monochromator()
+        monochromator_settings = MonochromatorSettings()
         for idx, wavelength_value in enumerate(
             transmission_dict['monochromator_slit_width']
         ):
-            slit_width = SlitWidth(
+            slit_width = MonochromatorSlitWidth(
                 wavelength_upper_limit=wavelength_value['wavelength'],
             )
             if (
                 isinstance(wavelength_value['value'], str)
                 and wavelength_value['value'].lower() == 'servo'
             ):
-                slit_width.value = None
+                slit_width.slit_width = None
                 slit_width.slit_width_servo = True
             elif isinstance(wavelength_value['value'], ureg.Quantity):
-                slit_width.value = wavelength_value['value']
+                slit_width.slit_width = wavelength_value['value']
                 slit_width.slit_width_servo = False
             else:
                 logger.warning(
@@ -1239,11 +1243,11 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'monochromator_slit_width'
                 ][idx + 1]['wavelength']
             slit_width.normalize(archive, logger)
-            monochromator.monochromator_slit_width.append(slit_width)
-        monochromator.monochromator_change_point = transmission_dict[
+            monochromator_settings.monochromator_slit_width.append(slit_width)
+        monochromator_settings.monochromator_change_point = transmission_dict[
             'monochromator_change_wavelength'
         ]
-        monochromator.normalize(archive, logger)
+        monochromator_settings.normalize(archive, logger)
 
         attenuator = Attenuator(
             sample_beam_attenuation=transmission_dict['attenuation_percentage'][
@@ -1272,7 +1276,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             common_beam_depolarizer=transmission_dict['is_common_beam_depolarizer_on'],
             light_sources=light_sources,
             detector_settings=detector_settings,
-            monochromator=monochromator,
+            monochromator_settings=monochromator_settings,
             attenuator=attenuator,
         )
         transmission_settings.normalize(archive, logger)
