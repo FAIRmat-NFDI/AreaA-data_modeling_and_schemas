@@ -1220,13 +1220,19 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         Returns:
             InstrumentReference: The instrument reference.
         """
-        instrument = TransmissionSpectrophotometer(
-            name=data_dict['instrument_name'],
-            serial_number=data_dict['instrument_serial_number'],
-            software_version=data_dict['instrument_firmware_version'],
-        )
+        instrument_name = data_dict['instrument_name'].lower()
+
+        if 'lambda' in instrument_name:
+            instrument = PerkinElmersLambdaTransmissionSpectrophotometer()
+        else:
+            instrument = TransmissionSpectrophotometer()
+
+        instrument.name = data_dict['instrument_name']
+        instrument.serial_number = data_dict['instrument_serial_number']
+        instrument.software_version = data_dict['instrument_firmware_version']
         if data_dict['start_datetime'] is not None:
             instrument.datetime = data_dict['start_datetime']
+
         instrument.normalize(archive, logger)
 
         logger.info('Created instrument entry.')
@@ -1314,6 +1320,12 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         self.user = transmission_dict['analyst_name']
         if transmission_dict['start_datetime'] is not None:
             self.datetime = transmission_dict['start_datetime']
+
+        # add instrument
+        instrument_reference = self.get_instrument_reference(
+            transmission_dict, archive, logger
+        )
+        instruments = [instrument_reference] if instrument_reference else []
 
         result = UVVisNirTransmissionResult(
             wavelength=transmission_dict['measured_wavelength'],
@@ -1462,14 +1474,6 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             attenuator=attenuator,
         )
         transmission_settings.normalize(archive, logger)
-
-        instrument_reference = self.get_instrument_reference(
-            transmission_dict, archive, logger
-        )
-        if instrument_reference is not None:
-            instruments = [instrument_reference]
-        else:
-            instruments = []
 
         transmission = UVVisNirTransmission(
             results=[result],
