@@ -630,93 +630,18 @@ class MonochromatorSlitWidth(SettingOverWavelengthRange):
     )
 
 
-class MonochromatorSettings(ArchiveSection):
+class MonochromatorSettings(SettingOverWavelengthRange):
     """
-    Monochromator setting over a wavelength range.
-    """
-
-    m_def = Section(
-        description='Monochromator setting over a wavelength range.',
-    )
-    monochromator_change_point = Quantity(
-        type=np.float64,
-        description="""
-        The wavelength at which the monochromator changes, in case the setup has
-        multiple monochromators.
-        """,
-        a_eln={
-            'component': 'NumberEditQuantity',
-            'defaultDisplayUnit': 'nm',
-        },
-        unit='nm',
-        shape=['*'],
-    )
-    monochromator_slit_width = SubSection(
-        section_def=MonochromatorSlitWidth,
-        repeats=True,
-    )
-
-
-class LightSource(SettingOverWavelengthRange):
-    """
-    A section to bring together different types of light sources.
+    Monochromator used over a wavelength range.
     """
 
     m_def = Section(
-        description='Light source setting over a wavelength range.',
+        description='Monochromator used over a wavelength range.',
     )
-    power = Quantity(
-        type=np.float64,
-        description='Power of the light source.',
-        a_eln={
-            'component': 'NumberEditQuantity',
-            'defaultDisplayUnit': 'mW',
-        },
-        unit='W',
-    )
-
-
-class Lamp(LightSource):
-    """
-    Lamp setting over a wavelength range.
-    """
-
-    type = Quantity(
-        type=str,
-        description="""
-        Type of the lamp used. Some of the popular materials are:
-        | Detector          | Description          |
-        |-------------------|----------------------|
-        | **Deuterium**     | Used for light generation in the UV range (160 nm to 400 nm).|
-        | **Tungsten**      | Used for light generation in the near-infrared range (320nm to 2500nm).|
-        """,  # noqa: E501
-        a_eln={'component': 'StringEditQuantity'},
-    )
-
-    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
-        super().normalize(archive, logger)
-        self.name = self.type + ' ' + self.name
-
-
-class Detector(SettingOverWavelengthRange):
-    """
-    Detector setting over a wavelength range.
-    """
-
-    m_def = Section(
-        description='Detector setting over a wavelength range.',
-    )
-    type = Quantity(
-        type=str,
-        description="""
-        Type of the detector used in the instrument. Some of the popular detectors are:
-        | Detector          | Description          |
-        |-------------------|----------------------|
-        | **PMT**           | Photomultiplier Tube detector used for the Ultra-Violet (UV) or visible range.|
-        | **InGaAs**        | Indium Gallium Arsenide detector used for Near-Infra-red (NIR) range.|
-        | **PbS**           | Lead Sulphide detector used for Infrared (IR) range.|
-        """,  # noqa: E501
-        a_eln={'component': 'StringEditQuantity'},
+    monochromator = Quantity(
+        type=Monochromator,
+        description='Monochromator used in the current wavelength range.',
+        a_eln={'component': 'ReferenceEditQuantity'},
     )
 
 
@@ -775,7 +700,7 @@ class IntegrationTime(SettingOverWavelengthRange):
     )
 
 
-class DetectorSettings(ArchiveSection):
+class DetectorSettings(SettingOverWavelengthRange):
     """
     Settings of the detector used in the instrument.
     """
@@ -785,58 +710,46 @@ class DetectorSettings(ArchiveSection):
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
-                    'detector_module',
-                    'detectors',
-                    'nir_gain',
-                    'integration_time',
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'detector',
                 ],
             ),
         ),
     )
-    detector_module = Quantity(
-        type=MEnum(
-            [
-                'Three Detector Module',
-                'Two Detector Module',
-                '150-mm Integrating Sphere',
-            ]
-        ),
-        a_eln={'component': 'EnumEditQuantity'},
-        description="""
-        Modules containing multiple detectors for different wavelength ranges.
-        | Detector Module                      | Description          |
-        |--------------------------------------|----------------------|
-        | **Three Detector Module**            | Installed as standard module on Perkin-Elmer Lambda 1050 WB and NB spectrophotometers. Contains three detectors for different wavelength ranges: PMT, InGaAs, PbS. |
-        | **Two Detector Module**              | Installed on Perkin-Elmer Lambda 750, 900, 950 spectrophotometers. Contains two detectors for different wavelength ranges: PMT, PbS. |
-        | **150-mm Integrating Sphere**        | Includes an integrating sphere with a diameter of 150 mm which is equipped with PMT (R928) and InGaAs detector. The PMT covers 200-860.8 nm and the InGaAs detector covers 860.8-2500 nm. |
-        """,  # noqa: E501
-    )
-    detectors = SubSection(
-        section_def=Detector,
-        repeats=True,
-    )
-    nir_gain = SubSection(
-        section_def=NIRGain,
-        repeats=True,
-    )
-    integration_time = SubSection(
-        section_def=IntegrationTime,
-        repeats=True,
+
+    detector = Quantity(
+        type=Detector,
+        description='Detector used in the current wavelength range',
+        a_eln={'component': 'ReferenceEditQuantity'},
     )
 
-    def normalize(self, archive, logger):
-        super().normalize(archive, logger)
-        if self.detector_module is not None:
-            if self.detector_module == 'Three Detector Module':
-                detector_list = ['PMT', 'InGaAs', 'PbS']
-            elif self.detector_module == 'Two Detector Module':
-                detector_list = ['PMT', 'PbS']
-            elif self.detector_module == '150-mm Integrating Sphere':
-                detector_list = ['PMT', 'InGaAs']
-            else:
-                detector_list = []
-            for detector in detector_list:
-                self.detectors.append(Detector(type=detector))
+
+class LampSettings(SettingOverWavelengthRange):
+    """
+    Settings of the lamp used in the instrument.
+    """
+
+    m_def = Section(
+        description='Settings of the lamp used in the instrument.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'lamp',
+                ],
+            ),
+        ),
+    )
+
+    lamp = Quantity(
+        type=Lamp,
+        description='Lamp used in the current wavelength range.',
+        a_eln={'component': 'ReferenceEditQuantity'},
+    )
 
 
 class Attenuator(ArchiveSection):
