@@ -52,6 +52,7 @@ from nomad.datamodel.metainfo.annotations import (
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystem,
     CompositeSystemReference,
+    Entity,
     Instrument,
     InstrumentReference,
     Measurement,
@@ -105,9 +106,149 @@ class Sample(CompositeSystem, EntryData):
     )
 
 
+class Detector(Entity):
+    """
+    A light detector used in the instrument.
+    """
+
+    m_def = Section(
+        description='A light detector used in the instrument.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                visible=Filter(
+                    exclude=['datetime', 'lab_id'],
+                ),
+            ),
+        ),
+    )
+    type = Quantity(
+        type=str,
+        description="""
+        Type of the detector used in the instrument. Some of the popular detectors are:
+        | Detector          | Description          |
+        |-------------------|----------------------|
+        | **PMT**           | Photomultiplier Tube detector used for the Ultra-Violet (UV) or visible range.|
+        | **InGaAs**        | Indium Gallium Arsenide detector used for Near-Infra-red (NIR) range.|
+        | **PbS**           | Lead Sulphide detector used for Infrared (IR) range.|
+        """,  # noqa: E501
+        a_eln={'component': 'StringEditQuantity'},
+    )
+
+    def normalize(self, archive, logger):
+        self.name = f'{self.type} Detector' if self.type else 'Detector'
+        super().normalize(archive, logger)
+
+
+class LightSource(Entity):
+    """
+    A section to bring together different types of light sources.
+    """
+
+    m_def = Section(
+        description='Light source used in the instrument.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                visible=Filter(
+                    exclude=['datetime', 'lab_id'],
+                ),
+            ),
+        ),
+    )
+    power = Quantity(
+        type=np.float64,
+        description='Power of the light source.',
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': 'mW',
+        },
+        unit='W',
+    )
+
+
+class Lamp(LightSource):
+    """
+    Lamp used in the instrument.
+    """
+
+    m_def = Section(
+        description='Lamp used in the instrument.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                visible=Filter(
+                    exclude=['datetime', 'lab_id'],
+                ),
+            ),
+        ),
+    )
+    type = Quantity(
+        type=str,
+        description="""
+        Type of the lamp used. Some of the popular materials are:
+        | Detector          | Description          |
+        |-------------------|----------------------|
+        | **Deuterium**     | Used for light generation in the UV range (160 nm to 400 nm).|
+        | **Tungsten**      | Used for light generation in the near-infrared range (320nm to 2500nm).|
+        """,  # noqa: E501
+        a_eln={'component': 'StringEditQuantity'},
+    )
+
+    def normalize(self, archive, logger):
+        self.name = f'{self.type} Lamp' if self.type else 'Lamp'
+        super().normalize(archive, logger)
+
+
+class Monochromator(Entity):
+    """
+    Monochromator used to select a narrow band of wavelengths from the light source.
+    """
+
+    m_def = Section(
+        description="""
+        Monochromator used to select a narrow band of wavelengths from the light source.
+        """,
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                visible=Filter(
+                    exclude=['datetime', 'lab_id'],
+                ),
+            ),
+        ),
+    )
+
+
+class GratingMonochromator(Monochromator):
+    """
+    Grating monochromator used in the instrument.
+    """
+
+    m_def = Section(
+        description='Grating monochromator used in the instrument.',
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                visible=Filter(
+                    exclude=['datetime', 'lab_id'],
+                ),
+            ),
+        ),
+    )
+    groove_density = Quantity(
+        description='Number of grooves per unit length of the grating.',
+        type=float,
+        unit='1/m',
+        a_eln={
+            'component': 'NumberEditQuantity',
+            'defaultDisplayUnit': '1/mm',
+        },
+    )
+
+    def normalize(self, archive, logger):
+        self.name = 'Grating Monochromator'
+        super().normalize(archive, logger)
+
+
 class TransmissionSpectrophotometer(Instrument, EntryData):
     """
-    Entry section for the transmission spectrophotometer.
+    Entry section for transmission spectrophotometer.
     """
 
     m_def = Section()
@@ -121,6 +262,101 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
         description='Software/firmware version.',
         a_eln={'component': 'StringEditQuantity'},
     )
+    detectors = SubSection(
+        section_def=Detector,
+        repeats=True,
+    )
+    light_sources = SubSection(
+        section_def=Lamp,
+        repeats=True,
+    )
+    monochromators = SubSection(
+        section_def=Monochromator,
+        repeats=True,
+    )
+
+
+class PerkinElmersLambdaTransmissionSpectrophotometer(TransmissionSpectrophotometer):
+    """
+    Entry section for Perkin Elmers Lambda series transmission spectrophotometer.
+    """
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        """
+        The normalizer for the `PerkinElmersLambdaTransmissionSpectrophotometer` class.
+
+        Args:
+            archive (EntryArchive): The NOMAD archive.
+            logger (BoundLogger): A structlog logger.
+        """
+        # add detectors
+        if not self.detectors:
+            self.detectors.append(
+                Detector(
+                    type='PMT',
+                    description='Photomultiplier Tube used for UV or visible range.',
+                )
+            )
+            self.detectors.append(
+                Detector(
+                    type='InGaAs',
+                    description='Indium Gallium Arsenide used for NIR range.',
+                )
+            )
+            self.detectors.append(
+                Detector(
+                    type='PbS',
+                    description='Lead Sulphide used for IR range.',
+                )
+            )
+            for detector in self.detectors:
+                detector.normalize(archive, logger)
+
+        # add light sources
+        if not self.light_sources:
+            self.light_sources.append(
+                Lamp(
+                    type='Deuterium',
+                    description="""
+                    Deuterium lamp used for light generation in the UV range.
+                    """,
+                )
+            )
+            self.light_sources.append(
+                Lamp(
+                    type='Tungsten',
+                    description="""
+                    Tungsten lamp used for light generation in the near-infrared range.
+                    """,
+                )
+            )
+            for light_source in self.light_sources:
+                light_source.normalize(archive, logger)
+
+        # add monochromators
+        if not self.monochromators:
+            self.monochromators.append(
+                GratingMonochromator(
+                    groove_density=ureg.Quantity(1440, '1/mm'),
+                    description="""
+                    Holographic gratings with 1440 lines/mm used for generating light
+                    in UV/Vis range.
+                    """,
+                )
+            )
+            self.monochromators.append(
+                GratingMonochromator(
+                    groove_density=ureg.Quantity(360, '1/mm'),
+                    description="""
+                    Holographic gratings with 360 lines/mm used for generating light
+                    in NIR range.
+                    """,
+                )
+            )
+            for monochromator in self.monochromators:
+                monochromator.normalize(archive, logger)
+
+        super().normalize(archive, logger)
 
 
 class TransmissionSampleReference(CompositeSystemReference):
