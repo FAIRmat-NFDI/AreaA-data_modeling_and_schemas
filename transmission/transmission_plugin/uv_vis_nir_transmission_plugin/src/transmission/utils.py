@@ -57,7 +57,7 @@ def merge_sections(  # noqa: PLR0912
         elif (
             quantity.is_scalar
             and section.m_get(quantity) != update.m_get(quantity)
-            or quantity.repeats
+            or not quantity.is_scalar
             and (section.m_get(quantity) != update.m_get(quantity)).any()
         ):
             if overwrite_quantity:
