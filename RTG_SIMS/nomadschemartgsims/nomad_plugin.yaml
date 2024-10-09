@@ -1,7 +1,0 @@
-plugin_type: parser #schema
-name: NOMAD RTG SIMS schema and parser plugin
-description: |
-  This is a schema and parser for SIMS depth profile data from RTG Microanalyse (https://www.rtg-berlin.de/)
-mainfile_name_re: ^.*\.dp_ascii$ # added
-parser_class_name: nomadschemartgsims.SIMSParser # added
-code_name: RTG SIMS Parser # added
