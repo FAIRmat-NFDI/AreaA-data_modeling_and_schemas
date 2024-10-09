@@ -1268,13 +1268,10 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         serial_number = data_dict['instrument_serial_number']
         api_query = {
-            'search_quantities': {
-                'id': (
-                    'data.serial_number#transmission.schema.'
-                    'TransmissionSpectrophotometer'
-                ),
-                'str_value': f'{serial_number}',
-            },
+            'entry_type:any': [
+                'TransmissionSpectrophotometer',
+                'PerkinElmersLambdaTransmissionSpectrophotometer',
+            ]
         }
         search_result = search(
             owner='visible',
@@ -1289,6 +1286,11 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             )
             return self.create_instrument_entry(data_dict, archive, logger)
 
+        valid_instruments = []
+        for entry in search_result.data:
+            if entry['data']['serial_number'] == serial_number:
+                valid_instruments.append(entry)
+
         if len(search_result.data) > 1:
             logger.warning(
                 f'Multiple "TransmissionSpectrophotometer" instruments found with the '
@@ -1296,9 +1298,8 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             )
             return None
 
-        entry = search_result.data[0]
-        upload_id = entry['upload_id']
-        entry_id = entry['entry_id']
+        upload_id = valid_instruments[0]['upload_id']
+        entry_id = valid_instruments[0]['entry_id']
         m_proxy_value = f'../uploads/{upload_id}/archive/{entry_id}#/data'
 
         return InstrumentReference(reference=m_proxy_value)
