@@ -226,7 +226,8 @@ def read_monochromator_slit_width(metadata: list, logger: 'BoundLogger') -> list
     for i, el in enumerate(output_list):
         if isinstance(el['value'], float):
             output_list[i]['value'] *= ureg.nanometer
-    return output_list
+
+    return sorted(output_list, key=lambda x: x['wavelength'])
 
 
 def read_detector_integration_time(metadata: list, logger: 'BoundLogger') -> list:
@@ -246,7 +247,7 @@ def read_detector_integration_time(metadata: list, logger: 'BoundLogger') -> lis
     for i, el in enumerate(output_list):
         if isinstance(el['value'], float):
             output_list[i]['value'] *= ureg.s
-    return output_list
+    return sorted(output_list, key=lambda x: x['wavelength'])
 
 
 def read_detector_nir_gain(metadata: list, logger: 'BoundLogger') -> list:
@@ -266,7 +267,7 @@ def read_detector_nir_gain(metadata: list, logger: 'BoundLogger') -> list:
     for i, el in enumerate(output_list):
         if isinstance(el['value'], float):
             output_list[i]['value'] *= ureg.dimensionless
-    return output_list
+    return sorted(output_list, key=lambda x: x['wavelength'])
 
 
 def read_detector_change_wavelength(metadata: list, logger: 'BoundLogger') -> list:
@@ -283,7 +284,9 @@ def read_detector_change_wavelength(metadata: list, logger: 'BoundLogger') -> li
     if not metadata[43]:
         return None
     try:
-        return np.array([float(x) for x in metadata[43].split()]) * ureg.nanometer
+        return (
+            np.array(sorted([float(x) for x in metadata[43].split()])) * ureg.nanometer
+        )
     except ValueError as e:
         if logger is not None:
             logger.warning(f'Error in reading the detector change wavelength.\n{e}')
@@ -325,7 +328,9 @@ def read_monochromator_change_wavelength(metadata: list, logger: 'BoundLogger') 
     if not metadata[41]:
         return None
     try:
-        return np.array([float(x) for x in metadata[41].split()]) * ureg.nanometer
+        return (
+            np.array(sorted([float(x) for x in metadata[41].split()])) * ureg.nanometer
+        )
     except ValueError as e:
         if logger is not None:
             logger.warning(
@@ -348,7 +353,9 @@ def read_lamp_change_wavelength(metadata: list, logger: 'BoundLogger') -> list:
     if not metadata[42]:
         return None
     try:
-        return np.array([float(x) for x in metadata[42].split()]) * ureg.nanometer
+        return (
+            np.array(sorted([float(x) for x in metadata[42].split()])) * ureg.nanometer
+        )
     except ValueError as e:
         if logger is not None:
             logger.warning(f'Error in reading the lamp change wavelength.\n{e}')
