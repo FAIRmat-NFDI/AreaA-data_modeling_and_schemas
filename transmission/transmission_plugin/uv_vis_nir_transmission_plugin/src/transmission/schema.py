@@ -533,8 +533,8 @@ class SettingOverWavelengthRange(ArchiveSection):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                 ],
             ),
         ),
@@ -544,18 +544,18 @@ class SettingOverWavelengthRange(ArchiveSection):
         description='Short description containing wavelength range.',
         a_eln={'component': 'StringEditQuantity'},
     )
-    wavelength_upper_limit = Quantity(
+    wavelength_lower_limit = Quantity(
         type=np.float64,
-        description='Upper limit of wavelength range.',
+        description='Lower limit of wavelength range.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
         },
         unit='nm',
     )
-    wavelength_lower_limit = Quantity(
+    wavelength_upper_limit = Quantity(
         type=np.float64,
-        description='Lower limit of wavelength range.',
+        description='Upper limit of wavelength range.',
         a_eln={
             'component': 'NumberEditQuantity',
             'defaultDisplayUnit': 'nm',
@@ -760,9 +760,9 @@ class Attenuator(ArchiveSection):
     m_def = Section(
         description='Attenuation setting for the sample and reference beam.',
     )
-    sample_beam_attentuation = Quantity(
+    sample_beam_attenuation = Quantity(
         type=int,
-        description='Value of sample beam attenuation in a unit interval [0,1].',
+        description='Value of sample beam attenuation ranging from 0 to 1.',
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
@@ -772,7 +772,7 @@ class Attenuator(ArchiveSection):
     )
     reference_beam_attenuation = Quantity(
         type=int,
-        description='Value of reference beam attenuation in a unit interval [0,1].',
+        description='Value of reference beam attenuation ranging from 0 to 1.',
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
@@ -825,14 +825,14 @@ class TransmissionResult(MeasurementResult):
     )
     transmittance = Quantity(
         type=np.float64,
-        description='Measured transmittance in percentage.',
+        description='Measured transmittance ranging from 0 to 1.',
         shape=['*'],
         unit='dimensionless',
         a_plot={'x': 'array_index', 'y': 'transmittance'},
     )
     absorbance = Quantity(
         type=np.float64,
-        description='Measured absorbance ranging from 0 to 1.',
+        description='Calculated absorbance ranging from 0 to 1.',
         shape=['*'],
         unit='dimensionless',
         a_plot={'x': 'array_index', 'y': 'absorbance'},
@@ -964,16 +964,16 @@ class UVVisNirTransmissionSettings(TransmissionSettings):
         a_eln={'component': 'EnumEditQuantity'},
     )
     common_beam_mask = Quantity(
-        type=int,
+        type=float,
         description=(
-            'Mask setting for the common beam in percentage.'
-            '100% means the mask is fully open and '
-            '100% of the beam passes. 0% means the mask is closed and no light passes.'
+            'Mask setting for the common beam ranging from 0 to 1.'
+            '1 means the mask is fully open and the beam passes completely. '
+            '0 means the mask is closed and no light passes.'
         ),
         a_eln={
             'component': 'NumberEditQuantity',
             'minValue': 0,
-            'maxValue': 100,
+            'maxValue': 1,
         },
         unit='dimensionless',
     )
@@ -1126,7 +1126,7 @@ class UVVisNirTransmissionResult(TransmissionResult):
 
         path_length = archive.data.samples[0].thickness
         if self.transmittance is not None:
-            extinction_coeff = -np.log(self.transmittance / 100) / path_length
+            extinction_coeff = -np.log(self.transmittance) / path_length
             # TODO: The if-block is a temperary fix to avoid processing of nans in
             # the archive. The issue will be fixed in the future.
             if np.any(np.isnan(extinction_coeff)):
@@ -1334,7 +1334,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         if transmission_dict['ordinate_type'] == 'A':
             result.absorbance = transmission_dict['measured_ordinate']
         elif transmission_dict['ordinate_type'] == '%T':
-            result.transmittance = transmission_dict['measured_ordinate']
+            result.transmittance = transmission_dict['measured_ordinate'] / 100
         else:
             logger.warning(f"Unknown ordinate type '{transmission_dict['ordinate']}'.")
         result.normalize(archive, logger)
