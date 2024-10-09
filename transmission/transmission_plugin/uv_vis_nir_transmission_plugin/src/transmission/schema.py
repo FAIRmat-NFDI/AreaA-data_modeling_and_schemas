@@ -761,7 +761,7 @@ class Attenuator(ArchiveSection):
         description='Attenuation setting for the sample and reference beam.',
     )
     sample_beam_attenuation = Quantity(
-        type=int,
+        type=float,
         description='Value of sample beam attenuation ranging from 0 to 1.',
         a_eln={
             'component': 'NumberEditQuantity',
@@ -771,7 +771,7 @@ class Attenuator(ArchiveSection):
         unit='dimensionless',
     )
     reference_beam_attenuation = Quantity(
-        type=int,
+        type=float,
         description='Value of reference beam attenuation ranging from 0 to 1.',
         a_eln={
             'component': 'NumberEditQuantity',
@@ -1235,8 +1235,10 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         instrument.normalize(archive, logger)
 
+        file_name = f'{instrument.name}_{instrument.serial_number}.archive.json'
+        file_name = file_name.replace(' ', '_')
+        m_proxy_value = create_archive(instrument, archive, file_name)
         logger.info('Created instrument entry.')
-        m_proxy_value = create_archive(instrument, archive, 'instrument.archive.json')
 
         return InstrumentReference(reference=m_proxy_value)
 
@@ -1279,19 +1281,19 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             user_id=archive.metadata.main_author.user_id,
         )
 
-        if not search_result.data:
+        valid_instruments = []
+        for entry in search_result.data:
+            if entry['data']['serial_number'] == serial_number:
+                valid_instruments.append(entry)
+
+        if not valid_instruments:
             logger.warning(
                 f'No "TransmissionSpectrophotometer" instrument found with the serial '
                 f'number "{serial_number}". Creating an entry for the instrument.'
             )
             return self.create_instrument_entry(data_dict, archive, logger)
 
-        valid_instruments = []
-        for entry in search_result.data:
-            if entry['data']['serial_number'] == serial_number:
-                valid_instruments.append(entry)
-
-        if len(search_result.data) > 1:
+        if len(valid_instruments) > 1:
             logger.warning(
                 f'Multiple "TransmissionSpectrophotometer" instruments found with the '
                 f'serial number "{serial_number}". Please select it manually.'
@@ -1323,10 +1325,14 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             self.datetime = transmission_dict['start_datetime']
 
         # add instrument
+        instruments = []
         instrument_reference = self.get_instrument_reference(
             transmission_dict, archive, logger
         )
-        instruments = [instrument_reference] if instrument_reference else []
+        if instrument_reference:
+            if isinstance(instrument_reference.reference, MProxy):
+                instrument_reference.reference.m_proxy_context = archive.m_context
+            instruments = [instrument_reference]
 
         result = UVVisNirTransmissionResult(
             wavelength=transmission_dict['measured_wavelength'],
@@ -1522,7 +1528,5 @@ class RawFileTransmissionData(EntryData):
         ),
     )
 
-
-ELNUVVisTransmission = ELNUVVisNirTransmission
 
 m_package.__init_metainfo__()
