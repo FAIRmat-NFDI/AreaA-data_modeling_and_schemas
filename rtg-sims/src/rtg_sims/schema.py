@@ -1,21 +1,80 @@
+from typing import TYPE_CHECKING
 from datetime import datetime
-
+from nomad_measurements.utils import create_archive
 import numpy as np
 from nomad.config import config
 from nomad.datamodel.data import ArchiveSection, EntryData
 from nomad.datamodel.metainfo.annotations import ELNAnnotation, ELNComponentEnum
 from nomad.datamodel.metainfo.basesections import (
     CompositeSystemReference,
+    Instrument,
+    InstrumentReference,
+    MeasurementResult,
 )
 from nomad.datamodel.metainfo.eln import Measurement
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
+
+if TYPE_CHECKING:
+    from nomad.datamodel.datamodel import EntryArchive
+    from structlog.stdlib import BoundLogger
 
 configuration = config.get_plugin_entry_point('rtg_sims:schema')
 
 m_package = SchemaPackage()
 
 
-class DepthProfileQuantitative(ArchiveSection):
+class SIMSInstrument(Instrument, EntryData):
+    name = Quantity(
+        type=str,
+        description='Name of the SIMS instrument',
+        default='RTG SIMS',
+    )
+    lab_id = Quantity(
+        type=str,
+        description='Lab ID of the SIMS instrument',
+        default='RTG Mikroanalyse Cameca IMS',
+    )
+    location = Quantity(
+        type=str,
+        description='Location of the SIMS instrument',
+        default='RTG Mikroanalyse, Berlin, Germany',
+    )
+
+
+class RTGSimsReference(InstrumentReference):
+    m_def = Section()
+    reference = Quantity(
+        type=SIMSInstrument,
+        a_eln={'component': 'ReferenceEditQuantity', 'label': 'SIMS_instrument'},
+    )
+
+    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
+        """
+        The normalizer for the `RTGSimsReference` class.
+
+        Args:
+            archive (EntryArchive): The archive containing the section that is being
+            normalized.
+            logger (BoundLogger): A structlog logger.
+        """
+        super().normalize(archive, logger)
+
+
+class SIMSResults(MeasurementResult, ArchiveSection):
+    # depth_profiles_qualitative = SubSection(
+    #     section_def=DepthProfileQualitative, repeats=True
+    # )
+    # depth_profiles_quantitative = SubSection(
+    #     section_def=DepthProfileQuantitative, repeats=True
+    # )
+    m_def = Section(
+        a_eln=dict(lane_width='600px'),
+        # label_quantity='element',
+        # a_plot={'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
+    )
+
+
+class DepthProfileQuantitative(SIMSResults):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         label_quantity='element',
@@ -28,10 +87,10 @@ class DepthProfileQuantitative(ArchiveSection):
         #    'label': 'SIMS profile','x': 'depth', 'y': 'intensity'}
     )
     depth = Quantity(
-        type=np.dtype(np.float64),
+        type=np.float64,
         description='depth of the measurement profile',
         unit='µm',
-        shape=['n_values'],
+        shape=['*'],
         # a_plot={
         #    'x': 'depth', 'y': 'atomic_concentration'
         # })
@@ -39,12 +98,12 @@ class DepthProfileQuantitative(ArchiveSection):
         #   'label': 'SIMS profile','x': 'depth', 'y': './intensity'        }
     )
     atomic_concentration = Quantity(
-        type=np.dtype(np.float64),
+        type=np.float64,
         description="""Atomic concentration of the respective element by 
         calibrated measurements. See SIMS report in RTG SIMS experiment 
         entry for details on the calibration standard.""",
         unit='1/cm^3',
-        shape=['n_values'],
+        shape=['*'],
         a_plot={
             'x': 'depth',
             'y': './atomic_concentration',
@@ -56,7 +115,7 @@ class DepthProfileQuantitative(ArchiveSection):
     #   )
 
 
-class DepthProfileQualitative(ArchiveSection):  # , repeats=True):
+class DepthProfileQualitative(SIMSResults):  # , repeats=True):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
         label_quantity='element',
@@ -70,10 +129,10 @@ class DepthProfileQualitative(ArchiveSection):  # , repeats=True):
     )
 
     depth = Quantity(
-        type=np.dtype(np.float64),
+        type=np.float64,
         description='depth of the measurement profile',
         unit='µm',
-        shape=['n_values'],
+        shape=['*'],
         # a_plot={
         #    'x': 'depth', 'y': 'intensity'
         # })
@@ -81,12 +140,12 @@ class DepthProfileQualitative(ArchiveSection):  # , repeats=True):
         #   'label': 'SIMS profile','x': 'depth', 'y': './intensity'        }
     )
     intensity = Quantity(
-        type=np.dtype(np.float64),
+        type=np.float64,
         description="""Intensity measured by the mass spectrometer without calibration 
         of the measured signal to an element. Serves for qualitative 
         depth profile measurement.""",
         unit='1/s',
-        shape=['n_values'],
+        shape=['*'],
         a_plot={
             'x': 'depth',
             'y': './intensity',
@@ -98,13 +157,13 @@ class DepthProfileQualitative(ArchiveSection):  # , repeats=True):
     #   )
 
 
-class MeasurementResults(ArchiveSection):
-    depth_profiles_qualitative = SubSection(
-        section_def=DepthProfileQualitative, repeats=True
-    )
-    depth_profiles_quantitative = SubSection(
-        section_def=DepthProfileQuantitative, repeats=True
-    )
+# class MeasurementResults(MeasurementResult, ArchiveSection):
+#     depth_profiles_qualitative = SubSection(
+#         section_def=DepthProfileQualitative, repeats=True
+#     )
+#     depth_profiles_quantitative = SubSection(
+#         section_def=DepthProfileQuantitative, repeats=True
+#     )
 
 
 class RTGSIMS(Measurement):
@@ -137,31 +196,31 @@ class RTGSIMS(Measurement):
         """,
         default='52.431685, 13.526855',
     )  # IKZ coordinates
-    results = SubSection(section_def=MeasurementResults, label='Results')
+    results = SubSection(section_def=SIMSResults, label='Results', repeats=True)
 
 
 class RTGSIMSMeasurement(RTGSIMS, EntryData):
     m_def = Section(
         a_eln=dict(lane_width='600px'),
-        a_plot=[
-            {  #'label': 'SIMS depth profile',
-                'x': [
-                    'results/:/depth_profiles_qualitative/:/depth',
-                    'results/:/depth_profiles_quantitative/:/depth',
-                ],
-                'y': [
-                    'results/:/depth_profiles_qualitative/:/intensity',
-                    'results/:/depth_profiles_quantitative/:/atomic_concentration',
-                ],
-                'layout': {
-                    'yaxis': {'type': 'log'},
-                    'yaxis2': {'type': 'log'},
-                    'showlegend': 'true',
-                },  # makes only one yaxis log scale!
-            },
-        ],
+        # a_plot=[
+        #     {  #'label': 'SIMS depth profile',
+        #         'x': [
+        #             'results/:/depth_profiles_qualitative/:/depth',
+        #             'results/:/depth_profiles_quantitative/:/depth',
+        #         ],
+        #         'y': [
+        #             'results/:/depth_profiles_qualitative/:/intensity',
+        #             'results/:/depth_profiles_quantitative/:/atomic_concentration',
+        #         ],
+        #         'layout': {
+        #             'yaxis': {'type': 'log'},
+        #             'yaxis2': {'type': 'log'},
+        #             'showlegend': 'true',
+        #         },  # makes only one yaxis log scale!
+        #     },
+        # ],
         a_template=dict(
-            instruments=[dict(name='RTG SIMS', lab_id='RTG Mikroanalyse Cameca IMS')],
+            #     instruments=[dict(name='RTG SIMS', lab_id='RTG Mikroanalyse Cameca IMS')],
         ),
     )
 
@@ -174,6 +233,9 @@ class RTGSIMSMeasurement(RTGSIMS, EntryData):
         a_eln=dict(
             component='FileEditQuantity',
         ),
+    )
+    instruments = SubSection(
+        section_def=RTGSimsReference,
     )
 
     def normalize(self, archive, logger):
@@ -272,39 +334,62 @@ class RTGSIMSMeasurement(RTGSIMS, EntryData):
                 samples.lab_id = sims_dict['sample_id']
                 samples.normalize(archive, logger)
                 self.samples = [samples]
-                results = MeasurementResults()
-                results.depth_profiles_qualitative = []
-                for count, value in enumerate(
-                    sims_dict['depth_profiles_of_elements_qual']
-                ):
-                    dep_profile_object = DepthProfileQualitative()
-                    dep_profile_object.element = sims_dict[
-                        'depth_profiles_of_elements_qual'
-                    ][count]['element']
-                    dep_profile_object.depth = sims_dict[
-                        'depth_profiles_of_elements_qual'
-                    ][count]['depth']
-                    dep_profile_object.intensity = sims_dict[
-                        'depth_profiles_of_elements_qual'
-                    ][count]['intensity']
-                    results.depth_profiles_qualitative.append(dep_profile_object)
-                results.depth_profiles_quantitative = []
-                for count, value in enumerate(
-                    sims_dict['depth_profiles_of_elements_quant']
-                ):
-                    dep_profile_object = DepthProfileQuantitative()
-                    dep_profile_object.element = sims_dict[
-                        'depth_profiles_of_elements_quant'
-                    ][count]['element']
-                    dep_profile_object.depth = sims_dict[
-                        'depth_profiles_of_elements_quant'
-                    ][count]['depth']
-                    dep_profile_object.atomic_concentration = sims_dict[
-                        'depth_profiles_of_elements_quant'
-                    ][count]['atomic_concentration']
-                    results.depth_profiles_quantitative.append(dep_profile_object)
-                self.results = [results]
-        super().normalize(archive, logger)
+                # results = MeasurementResults()
+                # if qual not 0!
+                self.results = []
+                # results = []  # SIMSResults()
+                if len(sims_dict['depth_profiles_of_elements_qual']) > 0:
+                    # qualresult = DepthProfileQualitative()
+                    # results.depth_profiles_qualitative = []
+                    for count, value in enumerate(
+                        sims_dict['depth_profiles_of_elements_qual']
+                    ):
+                        dep_profile_object = DepthProfileQualitative()
+                        dep_profile_object.element = sims_dict[
+                            'depth_profiles_of_elements_qual'
+                        ][count]['element']
+                        dep_profile_object.depth = sims_dict[
+                            'depth_profiles_of_elements_qual'
+                        ][count]['depth']
+                        dep_profile_object.intensity = sims_dict[
+                            'depth_profiles_of_elements_qual'
+                        ][count]['intensity']
+                        # results.depth_profiles_qualitative.append(dep_profile_object)
+                        self.results.append(dep_profile_object)
+
+                if len(sims_dict['depth_profiles_of_elements_quant']) > 0:
+                    # results.depth_profiles_quantitative = []
+                    for count, value in enumerate(
+                        sims_dict['depth_profiles_of_elements_quant']
+                    ):
+                        dep_profile_object = DepthProfileQuantitative()
+                        dep_profile_object.element = sims_dict[
+                            'depth_profiles_of_elements_quant'
+                        ][count]['element']
+                        dep_profile_object.depth = sims_dict[
+                            'depth_profiles_of_elements_quant'
+                        ][count]['depth']
+                        dep_profile_object.atomic_concentration = sims_dict[
+                            'depth_profiles_of_elements_quant'
+                        ][count]['atomic_concentration']
+                        # results.depth_profiles_quantitative.append(dep_profile_object)
+                        self.results.append(dep_profile_object)
+                # self.results = [results]
+
+                simsinstrumentref = RTGSimsReference()
+                simsinstrumentref.lab_id = 'RTG Mikroanalyse Cameca IMS'
+                simsinstrumentref.normalize(archive, logger)
+                if simsinstrumentref.reference is None:
+                    simsinstrument = SIMSInstrument(lab_id=simsinstrumentref.lab_id)
+                    #    self.instruments = [ramanspectrometer]
+                    simsinstrumentref.reference = create_archive(
+                        simsinstrument,
+                        archive,
+                        f'rtg_sims_{simsinstrumentref.lab_id}.archive.json',
+                    )
+                self.instruments = [simsinstrumentref]
+
+            # super().normalize(archive, logger)
         # should come here
 
 
