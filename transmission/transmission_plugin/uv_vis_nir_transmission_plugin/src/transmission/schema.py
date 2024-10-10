@@ -103,11 +103,10 @@ class Sample(CompositeSystem, EntryData):
 
 class Detector(Entity):
     """
-    A light detector used in the instrument.
+    Light detector used in the transmission spectroscopy instruments.
     """
 
     m_def = Section(
-        description='A light detector used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 visible=Filter(
@@ -136,11 +135,10 @@ class Detector(Entity):
 
 class LightSource(Entity):
     """
-    A section to bring together different types of light sources.
+    Section to bring together different types of light sources.
     """
 
     m_def = Section(
-        description='Light source used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 visible=Filter(
@@ -162,11 +160,10 @@ class LightSource(Entity):
 
 class Lamp(LightSource):
     """
-    Lamp used in the instrument.
+    Lamp used in transmission spectroscopy instruments.
     """
 
     m_def = Section(
-        description='Lamp used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 visible=Filter(
@@ -194,13 +191,11 @@ class Lamp(LightSource):
 
 class Monochromator(Entity):
     """
-    Monochromator used to select a narrow band of wavelengths from the light source.
+    Monochromator used to select a narrow band of wavelengths from the light source in
+    transmission spectroscopy instruments.
     """
 
     m_def = Section(
-        description="""
-        Monochromator used to select a narrow band of wavelengths from the light source.
-        """,
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 visible=Filter(
@@ -213,11 +208,10 @@ class Monochromator(Entity):
 
 class GratingMonochromator(Monochromator):
     """
-    Grating monochromator used in the instrument.
+    Grating monochromator used in transmission spectroscopy instruments.
     """
 
     m_def = Section(
-        description='Grating monochromator used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 visible=Filter(
@@ -418,11 +412,11 @@ class TransmissionSampleReference(CompositeSystemReference):
 
 class Accessory(ArchiveSection):
     """
-    Section for adding setting for a custom accessory.
+    Section to specify settings of a custom accessory used in transmission spectroscopy
+    instruments.
     """
 
     m_def = Section(
-        description='An accessory used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -446,14 +440,10 @@ class Accessory(ArchiveSection):
 
 class PolDepol(Accessory):
     """
-    Optional accessory to polarize or depolarize the light beam entering the sample.
+    Accessory to polarize or depolarize the light beam entering the sample chamber.
     """
 
     m_def = Section(
-        description=(
-            'Optional accessory to polarize or depolarize the light beam '
-            'entering the sample.'
-        ),
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -490,13 +480,10 @@ class PolDepol(Accessory):
 
 class Aperture(Accessory):
     """
-    Section for adding settings of a custom aperture.
+    Custom aperture placed in front of the sample inside the sample compartment.
     """
 
     m_def = Section(
-        description="""
-        Custom aperture placed in front of the sample inside the sample compartment.
-        """,
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -523,7 +510,6 @@ class SettingOverWavelengthRange(ArchiveSection):
     """
 
     m_def = Section(
-        description='An instrument setting set over a range of wavelength.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -593,7 +579,6 @@ class MonochromatorSlitWidth(SettingOverWavelengthRange):
     """
 
     m_def = Section(
-        description='Slit width value over a wavelength range.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -630,9 +615,7 @@ class MonochromatorSettings(SettingOverWavelengthRange):
     Monochromator used over a wavelength range.
     """
 
-    m_def = Section(
-        description='Monochromator used over a wavelength range.',
-    )
+    m_def = Section()
     monochromator = Quantity(
         type=Monochromator,
         description='Monochromator used in the current wavelength range.',
@@ -642,11 +625,11 @@ class MonochromatorSettings(SettingOverWavelengthRange):
 
 class NIRGain(SettingOverWavelengthRange):
     """
-    NIR gain factor over a range of wavelength.
+    NIR gain factor of detectors used in transmission spectrophotometry over a range of
+    wavelength.
     """
 
     m_def = Section(
-        description='NIR gain factor over a wavelength range.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -668,11 +651,11 @@ class NIRGain(SettingOverWavelengthRange):
 
 class IntegrationTime(SettingOverWavelengthRange):
     """
-    Integration time over a wavelength range.
+    Integration time of the detectors used in transmission spectrophotometry over a
+    wavelength range.
     """
 
     m_def = Section(
-        description='Integration time over a wavelength range.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -697,11 +680,10 @@ class IntegrationTime(SettingOverWavelengthRange):
 
 class DetectorSettings(SettingOverWavelengthRange):
     """
-    Settings of the detector used in the instrument.
+    Settings of the detector used in transmission spectrophotometry instruments.
     """
 
     m_def = Section(
-        description='Settings of the detector used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -723,11 +705,10 @@ class DetectorSettings(SettingOverWavelengthRange):
 
 class LampSettings(SettingOverWavelengthRange):
     """
-    Settings of the lamp used in the instrument.
+    Settings of the lamp used in transmission spectrophotometry instruments.
     """
 
     m_def = Section(
-        description='Settings of the lamp used in the instrument.',
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -752,9 +733,7 @@ class Attenuator(ArchiveSection):
     Attenuation setting for the sample and reference beam.
     """
 
-    m_def = Section(
-        description='Attenuation setting for the sample and reference beam.',
-    )
+    m_def = Section()
     sample_beam_attenuation = Quantity(
         type=float,
         description='Value of sample beam attenuation ranging from 0 to 1.',
@@ -784,10 +763,6 @@ class UVVisNirTransmissionResult(MeasurementResult):
     """
 
     m_def = Section(
-        description="""
-        Results of the Transmission Spectroscopy measurement in UV, visible, and near-IR
-        ranges of wavelength.
-        """,
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -880,7 +855,8 @@ class UVVisNirTransmissionResult(MeasurementResult):
 
 class UVVisNirTransmissionSettings(ArchiveSection):
     """
-    Section for setting of the instrument used for transmission measurement.
+    Section for the settings of the Transmission Spectroscopy measurement in UV,
+    visible, and near IR ranges of wavelength.
     """
 
     m_def = Section(
@@ -979,12 +955,11 @@ class UVVisNirTransmissionSettings(ArchiveSection):
 
 class UVVisNirTransmission(Measurement):
     """
-    Schema for UV-Vis-NIR transmission, which extends the `Measurement` class.
+    Section for Transmission Spectroscopy measurement in UV, visible, and near IR ranges
+    of wavelength.
     """
 
-    m_def = Section(
-        description='UV-Vis-NIR Transmission Spectrophotometry measurement.',
-    )
+    m_def = Section()
 
     user = Quantity(
         type=str,
@@ -1008,7 +983,7 @@ class UVVisNirTransmission(Measurement):
 
 class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
     """
-    Entry class for UVVisNirTransmission. Handles the population of the schema and
+    Entry section for UVVisNirTransmission. Handles the population of the schema and
     plotting. Data is added either through manual input in the GUI or by parsing
     the measurement files coming from the instrument.
     """
@@ -1406,7 +1381,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
 class RawFileTransmissionData(EntryData):
     """
-    Section for a Transmission Spectrophotometry data file.
+    Entry section for transmission spectrophotometry data file.
     """
 
     measurement = Quantity(
