@@ -851,8 +851,6 @@ class UVVisNirTransmissionResult(MeasurementResult):
 
             y_label = key.capitalize()
             yaxis_title = y_label
-            if key == 'transmittance':
-                yaxis_title += ' (%)'
             y = getattr(self, key).magnitude
 
             line_linear = px.line(x=x, y=y)
