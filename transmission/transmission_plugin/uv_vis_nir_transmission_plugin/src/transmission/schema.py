@@ -238,6 +238,13 @@ class GratingMonochromator(Monochromator):
 class Spectrophotometer(Instrument, EntryData):
     """
     Entry section for transmission spectrophotometer.
+
+    When extending the section for a specific instrument, the components (detectors,
+    light sources, and monochromators) should be instantiated in the `self.normalize`
+    method based on what components are physically available in the instrument.
+    The component list should be populated such that components used in lower wavelength
+    ranges are listed first. For instance, PMT detector should be listed before InGaAs.
+    Take a look at the `PerkinElmersLambdaSpectrophotometer` class for an example.
     """
 
     m_def = Section()
