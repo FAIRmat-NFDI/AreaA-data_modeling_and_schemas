@@ -247,7 +247,7 @@ class GratingMonochromator(Monochromator):
         super().normalize(archive, logger)
 
 
-class TransmissionSpectrophotometer(Instrument, EntryData):
+class Spectrophotometer(Instrument, EntryData):
     """
     Entry section for transmission spectrophotometer.
     """
@@ -277,14 +277,14 @@ class TransmissionSpectrophotometer(Instrument, EntryData):
     )
 
 
-class PerkinElmersLambdaTransmissionSpectrophotometer(TransmissionSpectrophotometer):
+class PerkinElmersLambdaSpectrophotometer(Spectrophotometer):
     """
     Entry section for Perkin Elmers Lambda series transmission spectrophotometer.
     """
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
-        The normalizer for the `PerkinElmersLambdaTransmissionSpectrophotometer` class.
+        The normalizer for the `PerkinElmersLambdaSpectrophotometer` class.
 
         Args:
             archive (EntryArchive): The NOMAD archive.
@@ -1224,9 +1224,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         instrument_name = data_dict['instrument_name'].lower()
 
         if 'lambda' in instrument_name:
-            instrument = PerkinElmersLambdaTransmissionSpectrophotometer()
+            instrument = PerkinElmersLambdaSpectrophotometer()
         else:
-            instrument = TransmissionSpectrophotometer()
+            instrument = Spectrophotometer()
 
         instrument.name = data_dict['instrument_name']
         instrument.serial_number = data_dict['instrument_serial_number']
@@ -1272,8 +1272,8 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         serial_number = data_dict['instrument_serial_number']
         api_query = {
             'entry_type:any': [
-                'TransmissionSpectrophotometer',
-                'PerkinElmersLambdaTransmissionSpectrophotometer',
+                'Spectrophotometer',
+                'PerkinElmersLambdaSpectrophotometer',
             ]
         }
         search_result = search(
@@ -1289,14 +1289,14 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         if not valid_instruments:
             logger.warning(
-                f'No "TransmissionSpectrophotometer" instrument found with the serial '
+                f'No "Spectrophotometer" instrument found with the serial '
                 f'number "{serial_number}". Creating an entry for the instrument.'
             )
             return self.create_instrument_entry(data_dict, archive, logger)
 
         if len(valid_instruments) > 1:
             logger.warning(
-                f'Multiple "TransmissionSpectrophotometer" instruments found with the '
+                f'Multiple "Spectrophotometer" instruments found with the '
                 f'serial number "{serial_number}". Please select it manually.'
             )
             return None
