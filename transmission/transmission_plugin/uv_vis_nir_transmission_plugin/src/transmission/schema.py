@@ -83,13 +83,7 @@ if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
 
 
-m_package = SchemaPackage(
-    aliases=[
-        'uv_vis_nir_transmission',
-        'uv_vis_nir_transmission.schema',
-        'uv_vis_nir_transmission.parser',
-    ],
-)
+m_package = SchemaPackage()
 
 
 class Sample(CompositeSystem, EntryData):
