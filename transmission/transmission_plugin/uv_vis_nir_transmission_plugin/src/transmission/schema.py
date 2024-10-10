@@ -777,27 +777,17 @@ class Attenuator(ArchiveSection):
     )
 
 
-class TransmissionSettings(ArchiveSection):
+class UVVisNirTransmissionResult(MeasurementResult):
     """
-    Section for the settings of the instrument used for transmission measurement.
-    """
-
-    ordinate_type = Quantity(
-        type=MEnum(['%T', 'A']),
-        description=(
-            'Specifies whether the ordinate (y-axis) of the measurement data is '
-            'percent transmittance (%T) or absorbance (A).'
-        ),
-        a_eln={'component': 'EnumEditQuantity'},
-    )
-
-
-class TransmissionResult(MeasurementResult):
-    """
-    Section for the results of the Transmission measurement.
+    Section for the results of the Transmission Spectroscopy measurement in UV, visible,
+    and near IR ranges of wavelength.
     """
 
     m_def = Section(
+        description="""
+        Results of the Transmission Spectroscopy measurement in UV, visible, and near-IR
+        ranges of wavelength.
+        """,
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
@@ -811,7 +801,7 @@ class TransmissionResult(MeasurementResult):
                     ],
                 ),
             )
-        )
+        ),
     )
     array_index = Quantity(
         type=int,
@@ -842,7 +832,7 @@ class TransmissionResult(MeasurementResult):
 
     def generate_plots(self) -> list[PlotlyFigure]:
         """
-        Generate the plotly figures for the `TransmissionResult` section.
+        Generate the plotly figures for the `UVVisNirTransmissionResult` section.
 
         Returns:
             list[PlotlyFigure]: The plotly figures.
@@ -890,32 +880,7 @@ class TransmissionResult(MeasurementResult):
         return figures
 
 
-class Transmission(Measurement):
-    """
-    Schema for Transmission Spectrophotometry measurement.
-    """
-
-    user = Quantity(
-        type=str,
-        description='Name of user or analyst.',
-        a_eln={'component': 'StringEditQuantity'},
-    )
-
-    method = Measurement.method.m_copy()
-    method.default = 'Transmission Spectrophotometry'
-
-    samples = Measurement.samples.m_copy()
-    samples.section_def = TransmissionSampleReference
-
-    results = Measurement.results.m_copy()
-    results.section_def = TransmissionResult
-
-    transmission_settings = SubSection(
-        section_def=TransmissionSettings,
-    )
-
-
-class UVVisNirTransmissionSettings(TransmissionSettings):
+class UVVisNirTransmissionSettings(ArchiveSection):
     """
     Section for setting of the instrument used for transmission measurement.
     """
@@ -924,7 +889,6 @@ class UVVisNirTransmissionSettings(TransmissionSettings):
         a_eln=ELNAnnotation(
             properties=SectionProperties(
                 order=[
-                    'ordinate_type',
                     'sample_beam_position',
                     'common_beam_mask',
                     'common_beam_depolarizer',
@@ -1015,151 +979,33 @@ class UVVisNirTransmissionSettings(TransmissionSettings):
     )
 
 
-class UVVisNirTransmissionResult(TransmissionResult):
+class UVVisNirTransmission(Measurement):
     """
-    Section for the results of the UV-Vis NIR Transmission measurement.
+    Schema for UV-Vis-NIR transmission, which extends the `Measurement` class.
     """
 
     m_def = Section(
-        a_eln=ELNAnnotation(
-            properties=SectionProperties(
-                order=[
-                    'transmittance',
-                    'absorbance',
-                    'wavelength',
-                    'extinction_coefficient',
-                ],
-                visible=Filter(
-                    exclude=[
-                        'array_index',
-                    ],
-                ),
-            )
-        )
-    )
-    extinction_coefficient = Quantity(
-        type=np.float64,
-        description=(
-            'Extinction coefficient calculated from transmittance and sample thickness '
-            'values: -log(T)/L. The coefficient includes the effects of '
-            'absorption, reflection, and scattering.'
-        ),
-        shape=['*'],
-        unit='1/m',
-        a_plot={'x': 'array_index', 'y': 'extinction_coefficient'},
+        description='UV-Vis-NIR Transmission Spectrophotometry measurement.',
     )
 
-    def generate_plots(self) -> list[PlotlyFigure]:
-        """
-        Extends TransmissionResult.generate_plots() method to include the plotly
-        figures for the `UVVisNirTransmissionResult` section.
+    user = Quantity(
+        type=str,
+        description='Name of user or analyst.',
+        a_eln={'component': 'StringEditQuantity'},
+    )
 
-        Returns:
-            list[PlotlyFigure]: The plotly figures.
-        """
-        figures = super().generate_plots()
-        if self.wavelength is None:
-            return figures
+    method = Measurement.method.m_copy()
+    method.default = 'UV-Vis-NIR Transmission Spectrophotometry'
 
-        # generate plot for extinction coefficient
-        if self.extinction_coefficient is None:
-            return figures
+    samples = Measurement.samples.m_copy()
+    samples.section_def = TransmissionSampleReference
 
-        x = self.wavelength.to('nm').magnitude
-        x_label = 'Wavelength'
-        xaxis_title = x_label + ' (nm)'
-
-        y = self.extinction_coefficient.to('1/cm').magnitude
-        y_label = 'Extinction coefficient'
-        yaxis_title = y_label + ' (1/cm)'
-
-        line_linear = px.line(x=x, y=y)
-
-        line_linear.update_layout(
-            title=f'{y_label} over {x_label}',
-            xaxis_title=xaxis_title,
-            yaxis_title=yaxis_title,
-            xaxis=dict(
-                fixedrange=False,
-            ),
-            yaxis=dict(
-                fixedrange=False,
-            ),
-            template='plotly_white',
-        )
-
-        figures.append(
-            PlotlyFigure(
-                label=f'{y_label} linear plot',
-                figure=line_linear.to_plotly_json(),
-            ),
-        )
-
-        return figures
-
-    def calculate_extinction_coefficient(self, archive, logger):
-        """
-        Calculate the extinction coefficient from the transmittance and sample
-        thickness. The formula used is: -log( T[%] / 100 ) / L.
-
-        Args:
-            archive (EntryArchive): The archive containing the section.
-            logger (BoundLogger): A structlog logger.
-        """
-        self.extinction_coefficient = None
-        if not archive.data.samples:
-            logger.warning(
-                'Cannot calculate extinction coefficient as sample not found.'
-            )
-            return
-        if not archive.data.samples[0].thickness:
-            logger.warning(
-                'Cannot calculate extinction coefficient as sample thickness not found '
-                'or the value is 0.'
-            )
-            return
-
-        path_length = archive.data.samples[0].thickness
-        if self.transmittance is not None:
-            extinction_coeff = -np.log(self.transmittance) / path_length
-            # TODO: The if-block is a temperary fix to avoid processing of nans in
-            # the archive. The issue will be fixed in the future.
-            if np.any(np.isnan(extinction_coeff)):
-                logger.warning(
-                    'Failed to save extinction coefficient. '
-                    'Encountered NaN values in the calculation.'
-                )
-                return
-            self.extinction_coefficient = extinction_coeff
-
-    def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
-        """
-        The normalizer for the `UVVisNirTransmissionResult` class.
-
-        Args:
-            archive (EntryArchive): The archive containing the section that is being
-            normalized.
-            logger (BoundLogger): A structlog logger.
-        """
-        super().normalize(archive, logger)
-        self.calculate_extinction_coefficient(archive, logger)
-
-
-class UVVisNirTransmission(Transmission):
-    """
-    Schema for UV-Vis NIR Transmission, which extends the `Transmission` class.
-    """
-
-    m_def = Section()
-
-    method = Transmission.method.m_copy()
-    method.default = 'UV-Vis-NIR Transmission'
-
-    results = Transmission.results.m_copy()
+    results = Measurement.results.m_copy()
     results.section_def = UVVisNirTransmissionResult
 
-    transmission_settings = Transmission.transmission_settings.m_copy()
-    transmission_settings.section_def = UVVisNirTransmissionSettings
+    transmission_settings = SubSection(
+        section_def=UVVisNirTransmissionSettings,
+    )
 
 
 class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
@@ -1343,7 +1189,6 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         # add settings:
         transmission_settings = UVVisNirTransmissionSettings(
-            ordinate_type=transmission_dict['ordinate_type'],
             sample_beam_position=transmission_dict['sample_beam_position'],
             common_beam_depolarizer=transmission_dict['is_common_beam_depolarizer_on'],
         )
@@ -1536,7 +1381,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
-        The normalize function of the `UVVisNirTransmission` section.
+        The normalize function of the `ELNUVVisNirTransmission` section.
 
         Args:
             archive (EntryArchive): The archive containing the section that is being
