@@ -39,6 +39,7 @@ from typing import (
 
 import numpy as np
 import plotly.express as px
+from fairmat_readers_transmission import read_perkin_elmer_asc
 from nomad.datamodel.data import (
     ArchiveSection,
     EntryData,
@@ -75,7 +76,6 @@ from nomad.metainfo import (
 from nomad.units import ureg
 from nomad_material_processing.general import Geometry
 
-from fairmat_readers_transmission import read_perkin_elmer_asc
 from transmission.utils import create_archive, merge_sections
 
 if TYPE_CHECKING:
