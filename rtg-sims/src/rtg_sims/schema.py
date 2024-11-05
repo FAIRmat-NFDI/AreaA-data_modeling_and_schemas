@@ -12,7 +12,9 @@ from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 configuration = config.get_plugin_entry_point('rtg_sims:schema')
 
-m_package = SchemaPackage()
+m_package = SchemaPackage(
+    aliases=['nomadschemartgsims.schema',],
+)
 
 
 class DepthProfileQuantitative(ArchiveSection):
