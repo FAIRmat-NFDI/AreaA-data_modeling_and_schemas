@@ -73,7 +73,7 @@ from nomad.metainfo import (
     Section,
     SubSection,
 )
-from nomad.units import ureg
+import pint
 from nomad_material_processing.general import Geometry
 
 from transmission.utils import create_archive, merge_sections
@@ -333,7 +333,7 @@ class PerkinElmersLambdaSpectrophotometer(Spectrophotometer):
         if not self.monochromators:
             self.monochromators.append(
                 GratingMonochromator(
-                    groove_density=ureg.Quantity(1440, '1/mm'),
+                    groove_density=1440000,
                     description="""
                     Holographic gratings with 1440 lines/mm used for generating light
                     in UV/Vis range.
@@ -342,7 +342,7 @@ class PerkinElmersLambdaSpectrophotometer(Spectrophotometer):
             )
             self.monochromators.append(
                 GratingMonochromator(
-                    groove_density=ureg.Quantity(360, '1/mm'),
+                    groove_density=360000,
                     description="""
                     Holographic gratings with 360 lines/mm used for generating light
                     in NIR range.
@@ -1302,7 +1302,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             ):
                 slit_width.slit_width = None
                 slit_width.slit_width_servo = True
-            elif isinstance(wavelength_value['value'], ureg.Quantity):
+            elif isinstance(wavelength_value['value'], pint.Quantity):
                 slit_width.slit_width = wavelength_value['value']
                 slit_width.slit_width_servo = False
             else:
