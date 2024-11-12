@@ -622,7 +622,18 @@ class MonochromatorSettings(SettingOverWavelengthRange):
     Monochromator used over a wavelength range.
     """
 
-    m_def = Section()
+    m_def = Section(
+        a_eln=ELNAnnotation(
+            properties=SectionProperties(
+                order=[
+                    'name',
+                    'wavelength_upper_limit',
+                    'wavelength_lower_limit',
+                    'monochromator',
+                ],
+            ),
+        ),
+    )
     monochromator = Quantity(
         type=Monochromator,
         description='Monochromator used in the current wavelength range.',
@@ -980,8 +991,10 @@ class UVVisNirTransmission(Measurement):
     samples = Measurement.samples.m_copy()
     samples.section_def = TransmissionSampleReference
 
-    results = Measurement.results.m_copy()
-    results.section_def = UVVisNirTransmissionResult
+    results = SubSection(
+        section_def=UVVisNirTransmissionResult,
+        repeats=True,
+    )
 
     transmission_settings = SubSection(
         section_def=UVVisNirTransmissionSettings,
