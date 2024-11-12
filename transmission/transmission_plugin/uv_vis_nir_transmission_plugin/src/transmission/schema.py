@@ -1400,7 +1400,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         transmission.transmission_settings.normalize(archive, logger)
 
-        merge_sections(self, transmission, logger)
+        return transmission
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
@@ -1420,7 +1420,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             else:
                 with archive.m_context.raw_file(self.data_file) as file:
                     transmission_dict = read_function(file.name, logger)
-                write_function(transmission_dict, archive, logger)
+                transmission = write_function(transmission_dict, archive, logger)
+                merge_sections(self, transmission, logger)
+
         super().normalize(archive, logger)
 
         if not self.results:
