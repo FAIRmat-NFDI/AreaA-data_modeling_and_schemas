@@ -1145,6 +1145,22 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         return InstrumentReference(reference=m_proxy_value)
 
+    def compose_subsections(self) -> UVVisNirTransmission:
+        """
+        Method for composing the subsections of the UVVisNirTransmission section.
+
+        Args:
+            data_dict (dict[str, Any]): The dictionary containing the data.
+
+        Returns:
+            dict[str, Any]: The composed subsections.
+        """
+        transmission = UVVisNirTransmission()
+        transmission.results = [UVVisNirTransmissionResult()]
+        transmission.transmission_settings = UVVisNirTransmissionSettings()
+
+        return transmission
+
     def write_transmission_data(  # noqa: PLR0912, PLR0915
         self,
         transmission_dict: dict[str, Any],
@@ -1159,6 +1175,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         """
+        # compose subsections
+        transmission = self.compose_subsections()
+
         self.user = transmission_dict['analyst_name']
         if transmission_dict['start_datetime'] is not None:
             self.datetime = transmission_dict['start_datetime']
@@ -1172,26 +1191,29 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             if isinstance(instrument_reference.reference, MProxy):
                 instrument_reference.reference.m_proxy_context = archive.m_context
             instruments = [instrument_reference]
+        transmission.instruments = instruments
 
         # add results
-        result = UVVisNirTransmissionResult(
-            wavelength=transmission_dict['measured_wavelength'],
-        )
+        transmission.results[0].wavelength = transmission_dict['measured_wavelength']
         if transmission_dict['ordinate_type'] == 'A':
-            result.absorbance = transmission_dict['measured_ordinate']
+            transmission.results[0].absorbance = transmission_dict['measured_ordinate']
         elif transmission_dict['ordinate_type'] == '%T':
-            result.transmittance = transmission_dict['measured_ordinate'] / 100
+            transmission.results[0].transmittance = (
+                transmission_dict['measured_ordinate'] / 100
+            )
         else:
             logger.warning(f"Unknown ordinate type '{transmission_dict['ordinate']}'.")
-        result.normalize(archive, logger)
+        transmission.results[0].normalize(archive, logger)
 
         # add settings:
-        transmission_settings = UVVisNirTransmissionSettings(
-            sample_beam_position=transmission_dict['sample_beam_position'],
-            common_beam_depolarizer=transmission_dict['is_common_beam_depolarizer_on'],
-        )
+        transmission.transmission_settings.sample_beam_position = transmission_dict[
+            'sample_beam_position'
+        ]
+        transmission.transmission_settings.common_beam_depolarizer = transmission_dict[
+            'is_common_beam_depolarizer_on'
+        ]
         if transmission_dict['common_beam_mask_percentage'] is not None:
-            transmission_settings.common_beam_mask = (
+            transmission.transmission_settings.common_beam_mask = (
                 transmission_dict['common_beam_mask_percentage'] / 100
             )
 
@@ -1222,7 +1244,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                 ].wavelength_lower_limit = lamp_change_point
         for light_source_setting in light_source_settings:
             light_source_setting.normalize(archive, logger)
-        transmission_settings.light_source = light_source_settings
+        transmission.transmission_settings.light_source = light_source_settings
 
         # add settings: detector
         detector_settings = []
@@ -1230,7 +1252,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         detector_list = []
         if detector_module == 'uv/vis/nir detector':
             if 'lambda 1050' in transmission_dict['instrument_name'].lower():
-                transmission_settings.detector_module = 'Three Detector Module'
+                transmission.transmission_settings.detector_module = (
+                    'Three Detector Module'
+                )
                 detector_list = ['PMT', 'InGaAs', 'PbS']
             elif any(
                 [
@@ -1239,10 +1263,14 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'lambda 750' in transmission_dict['instrument_name'].lower(),
                 ]
             ):
-                transmission_settings.detector_module = 'Two Detector Module'
+                transmission.transmission_settings.detector_module = (
+                    'Two Detector Module'
+                )
                 detector_list = ['PMT', 'PbS']
         if detector_module == '150mm sphere':
-            transmission_settings.detector_module = '150-mm Integrating Sphere'
+            transmission.transmission_settings.detector_module = (
+                '150-mm Integrating Sphere'
+            )
             detector_list = ['PMT', 'InGaAs']
         try:
             for detector in instrument_reference.reference.detectors:
@@ -1262,7 +1290,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                 detector_settings[idx + 1].wavelength_lower_limit = change_point
         for detector_setting in detector_settings:
             detector_setting.normalize(archive, logger)
-        transmission_settings.detector = detector_settings
+        transmission.transmission_settings.detector = detector_settings
 
         # add settings: monochromator
         monochromator_settings = []
@@ -1287,7 +1315,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                 monochromator_settings[idx + 1].wavelength_lower_limit = change_point
         for monochromator_setting in monochromator_settings:
             monochromator_setting.normalize(archive, logger)
-        transmission_settings.monochromator = monochromator_settings
+        transmission.transmission_settings.monochromator = monochromator_settings
 
         # add settings: monochromator slit width
         for idx, wavelength_value in enumerate(
@@ -1316,7 +1344,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'monochromator_slit_width'
                 ][idx - 1]['wavelength']
             slit_width.normalize(archive, logger)
-            transmission_settings.monochromator_slit_width.append(slit_width)
+            transmission.transmission_settings.monochromator_slit_width.append(
+                slit_width
+            )
 
         # add settings: NIR gain
         for idx, wavelength_value in enumerate(transmission_dict['detector_NIR_gain']):
@@ -1329,7 +1359,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'detector_NIR_gain'
                 ][idx - 1]['wavelength']
             nir_gain.normalize(archive, logger)
-            transmission_settings.nir_gain.append(nir_gain)
+            transmission.transmission_settings.nir_gain.append(nir_gain)
 
         # add settings: integration time
         for idx, wavelength_value in enumerate(
@@ -1344,7 +1374,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                     'detector_integration_time'
                 ][idx - 1]['wavelength']
             integration_time.normalize(archive, logger)
-            transmission_settings.integration_time.append(integration_time)
+            transmission.transmission_settings.integration_time.append(integration_time)
 
         # add settings: attenuator
         attenuator = Attenuator()
@@ -1357,7 +1387,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                 transmission_dict['attenuation_percentage']['reference'] / 100
             )
         attenuator.normalize(archive, logger)
-        transmission_settings.attenuator = attenuator
+        transmission.transmission_settings.attenuator = attenuator
 
         if self.get('transmission_settings'):
             if self.transmission_settings.get('accessory'):
@@ -1368,13 +1398,8 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                                 idx
                             ].polarizer_angle = transmission_dict['polarizer_angle']
 
-        transmission_settings.normalize(archive, logger)
+        transmission.transmission_settings.normalize(archive, logger)
 
-        transmission = UVVisNirTransmission(
-            results=[result],
-            transmission_settings=transmission_settings,
-            instruments=instruments,
-        )
         merge_sections(self, transmission, logger)
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
