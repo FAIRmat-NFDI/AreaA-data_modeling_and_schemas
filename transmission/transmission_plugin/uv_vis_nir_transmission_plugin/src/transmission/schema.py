@@ -985,14 +985,19 @@ class UVVisNirTransmission(Measurement):
         a_eln={'component': 'StringEditQuantity'},
     )
 
-    method = Measurement.method.m_copy()
-    method.default = 'UV-Vis-NIR Transmission Spectrophotometry'
+    method = Quantity(
+        type=str,
+        default='UV-Vis-NIR Transmission Spectrophotometry',
+    )
 
-    samples = Measurement.samples.m_copy()
-    samples.section_def = TransmissionSampleReference
-
+    samples = SubSection(
+        section_def=TransmissionSampleReference,
+        description='A list of all the samples measured during the measurement.',
+        repeats=True,
+    )
     results = SubSection(
         section_def=UVVisNirTransmissionResult,
+        description='The result of the UV-Vis-NIR measurement.',
         repeats=True,
     )
 
