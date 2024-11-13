@@ -1163,6 +1163,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
     def write_transmission_data(  # noqa: PLR0912, PLR0915
         self,
+        transmission: UVVisNirTransmission,
         transmission_dict: dict[str, Any],
         archive: 'EntryArchive',
         logger: 'BoundLogger',
@@ -1175,9 +1176,6 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         """
-        # compose subsections
-        transmission = self.compose_subsections()
-
         self.user = transmission_dict['analyst_name']
         if transmission_dict['start_datetime'] is not None:
             self.datetime = transmission_dict['start_datetime']
@@ -1420,7 +1418,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             else:
                 with archive.m_context.raw_file(self.data_file) as file:
                     transmission_dict = read_function(file.name, logger)
-                transmission = write_function(transmission_dict, archive, logger)
+                # compose subsections
+                transmission = self.compose_subsections()
+                write_function(transmission, transmission_dict, archive, logger)
                 merge_sections(self, transmission, logger)
 
         super().normalize(archive, logger)
