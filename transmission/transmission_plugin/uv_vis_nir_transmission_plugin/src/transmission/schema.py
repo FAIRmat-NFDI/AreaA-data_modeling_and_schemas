@@ -1145,22 +1145,6 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         return InstrumentReference(reference=m_proxy_value)
 
-    def compose_subsections(self) -> UVVisNirTransmission:
-        """
-        Method for composing the subsections of the UVVisNirTransmission section.
-
-        Args:
-            data_dict (dict[str, Any]): The dictionary containing the data.
-
-        Returns:
-            dict[str, Any]: The composed subsections.
-        """
-        transmission = UVVisNirTransmission()
-        transmission.results = [UVVisNirTransmissionResult()]
-        transmission.transmission_settings = UVVisNirTransmissionSettings()
-
-        return transmission
-
     def write_transmission_data(  # noqa: PLR0912, PLR0915
         self,
         transmission: UVVisNirTransmission,
@@ -1408,8 +1392,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             else:
                 with archive.m_context.raw_file(self.data_file) as file:
                     data_dict = read_function(file.name, logger)
-                # compose subsections
-                transmission = self.compose_subsections()
+                transmission = self.m_def.section_cls()
                 write_function(transmission, data_dict, archive, logger)
                 merge_sections(self, transmission, logger)
 
