@@ -277,6 +277,11 @@ class PerkinElmersLambdaSpectrophotometer(Spectrophotometer):
     Entry section for Perkin Elmers Lambda series transmission spectrophotometer.
     """
 
+    monochromators = SubSection(
+        section_def=GratingMonochromator,
+        repeats=True,
+    )
+
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         """
         The normalizer for the `PerkinElmersLambdaSpectrophotometer` class.
@@ -287,68 +292,52 @@ class PerkinElmersLambdaSpectrophotometer(Spectrophotometer):
         """
         # add detectors
         if not self.detectors:
-            self.detectors.append(
-                Detector(
-                    type='PMT',
-                    description='Photomultiplier Tube used for UV or visible range.',
-                )
-            )
-            self.detectors.append(
-                Detector(
-                    type='InGaAs',
-                    description='Indium Gallium Arsenide used for NIR range.',
-                )
-            )
-            self.detectors.append(
-                Detector(
-                    type='PbS',
-                    description='Lead Sulphide used for IR range.',
-                )
-            )
+            self.m_setdefault('detectors/0')
+            self.detectors[0].type = 'PMT'
+            self.detectors[0].description = """
+            Photomultiplier Tube used for UV or visible range."""
+
+            self.m_setdefault('detectors/1')
+            self.detectors[1].type = 'InGaAs'
+            self.detectors[1].description = """
+            Indium Gallium Arsenide used for NIR range."""
+
+            self.m_setdefault('detectors/2')
+            self.detectors[2].type = 'PbS'
+            self.detectors[2].description = 'Lead Sulphide used for IR range.'
+
             for detector in self.detectors:
                 detector.normalize(archive, logger)
 
         # add light sources
         if not self.light_sources:
-            self.light_sources.append(
-                Lamp(
-                    type='Deuterium',
-                    description="""
-                    Deuterium lamp used for light generation in the UV range.
-                    """,
-                )
-            )
-            self.light_sources.append(
-                Lamp(
-                    type='Tungsten',
-                    description="""
-                    Tungsten lamp used for light generation in the near-infrared range.
-                    """,
-                )
-            )
+            self.m_setdefault('light_sources/0')
+            self.light_sources[0].type = 'Deuterium'
+            self.light_sources[0].description = """
+            Deuterium lamp used for light generation in the UV range."""
+
+            self.m_setdefault('light_sources/1')
+            self.light_sources[1].type = 'Tungsten'
+            self.light_sources[1].description = """
+            Tungsten lamp used for light generation in the NIR range."""
+
             for light_source in self.light_sources:
                 light_source.normalize(archive, logger)
 
         # add monochromators
         if not self.monochromators:
-            self.monochromators.append(
-                GratingMonochromator(
-                    groove_density=1440000,
-                    description="""
-                    Holographic gratings with 1440 lines/mm used for generating light
-                    in UV/Vis range.
-                    """,
-                )
-            )
-            self.monochromators.append(
-                GratingMonochromator(
-                    groove_density=360000,
-                    description="""
-                    Holographic gratings with 360 lines/mm used for generating light
-                    in NIR range.
-                    """,
-                )
-            )
+            self.m_setdefault('monochromators/0')
+            self.monochromators[0].groove_density = 1440000
+            self.monochromators[0].description = """
+            Holographic gratings with 1440 lines/mm used for generating light in UV/Vis
+            range."""
+
+            self.m_setdefault('monochromators/1')
+            self.monochromators[1].groove_density = 360000
+            self.monochromators[1].description = """
+            Holographic gratings with 360 lines/mm used for generating light in NIR
+            range."""
+
             for monochromator in self.monochromators:
                 monochromator.normalize(archive, logger)
 
