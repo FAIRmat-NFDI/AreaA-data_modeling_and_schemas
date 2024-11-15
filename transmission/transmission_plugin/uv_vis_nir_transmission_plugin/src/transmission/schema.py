@@ -1160,9 +1160,9 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             archive (EntryArchive): The archive containing the section.
             logger (BoundLogger): A structlog logger.
         """
-        self.user = data_dict['analyst_name']
+        transmission.user = data_dict['analyst_name']
         if data_dict['start_datetime'] is not None:
-            self.datetime = data_dict['start_datetime']
+            transmission.datetime = data_dict['start_datetime']
 
         # add instrument
         instruments = []
@@ -1174,6 +1174,7 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         transmission.instruments = instruments
 
         # add results
+        transmission.m_setdefault('results/0')
         transmission.results[0].wavelength = data_dict['measured_wavelength']
         if data_dict['ordinate_type'] == 'A':
             transmission.results[0].absorbance = data_dict['measured_ordinate']
@@ -1183,7 +1184,8 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             logger.warning(f"Unknown ordinate type '{data_dict['ordinate']}'.")
         transmission.results[0].normalize(archive, logger)
 
-        # add settings:
+        # add settings
+        transmission.m_setdefault('transmission_settings')
         transmission.transmission_settings.sample_beam_position = data_dict[
             'sample_beam_position'
         ]
@@ -1196,16 +1198,20 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             )
 
         # add settings: light sources
-        light_source_settings = []
         lamps = []
         if data_dict['is_d2_lamp_used']:
             lamps.append('Deuterium')
         if data_dict['is_tungsten_lamp_used']:
             lamps.append('Tungsten')
         try:
-            for light_source in instrument_reference.reference.light_sources:
+            for i, light_source in enumerate(
+                instrument_reference.reference.light_sources
+            ):
                 if light_source.type in lamps:
-                    light_source_settings.append(LampSettings(lamp=light_source))
+                    transmission.m_setdefault(f'transmission_settings/light_source/{i}')
+                    transmission.transmission_settings.light_source[
+                        i
+                    ].lamp = light_source
         except Exception as e:
             logger.warning(
                 f'Failed to add lamp settings. Error: {e}',
@@ -1213,19 +1219,20 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         lamp_change_points = data_dict['lamp_change_wavelength']
         if (
             lamp_change_points is not None
-            and len(lamp_change_points) == len(light_source_settings) - 1
+            and len(lamp_change_points)
+            == len(transmission.transmission_settings.light_source) - 1
         ):
             for idx, lamp_change_point in enumerate(lamp_change_points):
-                light_source_settings[idx].wavelength_upper_limit = lamp_change_point
-                light_source_settings[
+                transmission.transmission_settings.light_source[
+                    idx
+                ].wavelength_upper_limit = lamp_change_point
+                transmission.transmission_settings.light_source[
                     idx + 1
                 ].wavelength_lower_limit = lamp_change_point
-        for light_source_setting in light_source_settings:
+        for light_source_setting in transmission.transmission_settings.light_source:
             light_source_setting.normalize(archive, logger)
-        transmission.transmission_settings.light_source = light_source_settings
 
         # add settings: detector
-        detector_settings = []
         detector_module = data_dict['detector_module']
         detector_list = []
         if detector_module == 'uv/vis/nir detector':
@@ -1251,9 +1258,10 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             )
             detector_list = ['PMT', 'InGaAs']
         try:
-            for detector in instrument_reference.reference.detectors:
+            for i, detector in enumerate(instrument_reference.reference.detectors):
                 if detector.type in detector_list:
-                    detector_settings.append(DetectorSettings(detector=detector))
+                    transmission.m_setdefault(f'transmission_settings/detector/{i}')
+                    transmission.transmission_settings.detector[i].detector = detector
         except Exception as e:
             logger.warning(
                 f'Failed to add detector settings. Error: {e}',
@@ -1261,22 +1269,28 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         detector_change_points = data_dict['detector_change_wavelength']
         if (
             detector_change_points is not None
-            and len(detector_change_points) == len(detector_settings) - 1
+            and len(detector_change_points)
+            == len(transmission.transmission_settings.detector) - 1
         ):
             for idx, change_point in enumerate(detector_change_points):
-                detector_settings[idx].wavelength_upper_limit = change_point
-                detector_settings[idx + 1].wavelength_lower_limit = change_point
-        for detector_setting in detector_settings:
+                transmission.transmission_settings.detector[
+                    idx
+                ].wavelength_upper_limit = change_point
+                transmission.transmission_settings.detector[
+                    idx + 1
+                ].wavelength_lower_limit = change_point
+        for detector_setting in transmission.transmission_settings.detector:
             detector_setting.normalize(archive, logger)
-        transmission.transmission_settings.detector = detector_settings
 
         # add settings: monochromator
-        monochromator_settings = []
         try:
-            for monochromator in instrument_reference.reference.monochromators:
-                monochromator_settings.append(
-                    MonochromatorSettings(monochromator=monochromator)
-                )
+            for i, monochromator in enumerate(
+                instrument_reference.reference.monochromators
+            ):
+                transmission.m_setdefault(f'transmission_settings/monochromator/{i}')
+                transmission.transmission_settings.monochromator[
+                    i
+                ].monochromator = monochromator
         except Exception as e:
             logger.warning(
                 f'Failed to add monochromator settings. Error: {e}',
@@ -1284,29 +1298,44 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         monochromator_change_points = data_dict['monochromator_change_wavelength']
         if (
             monochromator_change_points is not None
-            and len(monochromator_change_points) == len(monochromator_settings) - 1
+            and len(monochromator_change_points)
+            == len(transmission.transmission_settings.monochromator) - 1
         ):
             for idx, change_point in enumerate(monochromator_change_points):
-                monochromator_settings[idx].wavelength_upper_limit = change_point
-                monochromator_settings[idx + 1].wavelength_lower_limit = change_point
-        for monochromator_setting in monochromator_settings:
+                transmission.transmission_settings.monochromator[
+                    idx
+                ].wavelength_upper_limit = change_point
+                transmission.transmission_settings.monochromator[
+                    idx + 1
+                ].wavelength_lower_limit = change_point
+        for monochromator_setting in transmission.transmission_settings.monochromator:
             monochromator_setting.normalize(archive, logger)
-        transmission.transmission_settings.monochromator = monochromator_settings
 
         # add settings: monochromator slit width
         for idx, wavelength_value in enumerate(data_dict['monochromator_slit_width']):
-            slit_width = MonochromatorSlitWidth(
-                wavelength_upper_limit=wavelength_value['wavelength'],
+            transmission.m_setdefault(
+                f'transmission_settings/monochromator_slit_width/{idx}'
             )
+            transmission.transmission_settings.monochromator_slit_width[
+                idx
+            ].wavelength_upper_limit = wavelength_value['wavelength']
             if (
                 isinstance(wavelength_value['value'], str)
                 and wavelength_value['value'].lower() == 'servo'
             ):
-                slit_width.slit_width = None
-                slit_width.slit_width_servo = True
+                transmission.transmission_settings.monochromator_slit_width[
+                    idx
+                ].slit_width = None
+                transmission.transmission_settings.monochromator_slit_width[
+                    idx
+                ].slit_width_servo = True
             elif isinstance(wavelength_value['value'], pint.Quantity):
-                slit_width.slit_width = wavelength_value['value']
-                slit_width.slit_width_servo = False
+                transmission.transmission_settings.monochromator_slit_width[
+                    idx
+                ].slit_width = wavelength_value['value']
+                transmission.transmission_settings.monochromator_slit_width[
+                    idx
+                ].slit_width_servo = False
             else:
                 logger.warning(
                     f'Invalid slit width value "{wavelength_value["value"]}" for '
@@ -1314,52 +1343,62 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                 )
                 continue
             if idx - 1 >= 0:
-                slit_width.wavelength_lower_limit = data_dict[
-                    'monochromator_slit_width'
-                ][idx - 1]['wavelength']
-            slit_width.normalize(archive, logger)
-            transmission.transmission_settings.monochromator_slit_width.append(
-                slit_width
+                transmission.transmission_settings.monochromator_slit_width[
+                    idx
+                ].wavelength_lower_limit = data_dict['monochromator_slit_width'][
+                    idx - 1
+                ]['wavelength']
+            transmission.transmission_settings.monochromator_slit_width[idx].normalize(
+                archive, logger
             )
 
         # add settings: NIR gain
         for idx, wavelength_value in enumerate(data_dict['detector_NIR_gain']):
-            nir_gain = NIRGain(
-                wavelength_upper_limit=wavelength_value['wavelength'],
-                nir_gain_factor=wavelength_value['value'],
-            )
+            transmission.m_setdefault(f'transmission_settings/nir_gain/{idx}')
+            transmission.transmission_settings.nir_gain[
+                idx
+            ].wavelength_upper_limit = wavelength_value['wavelength']
+            transmission.transmission_settings.nir_gain[
+                idx
+            ].nir_gain_factor = wavelength_value['value']
             if idx - 1 >= 0:
-                nir_gain.wavelength_lower_limit = data_dict['detector_NIR_gain'][
-                    idx - 1
-                ]['wavelength']
-            nir_gain.normalize(archive, logger)
-            transmission.transmission_settings.nir_gain.append(nir_gain)
+                transmission.transmission_settings.nir_gain[
+                    idx
+                ].wavelength_lower_limit = data_dict['detector_NIR_gain'][idx - 1][
+                    'wavelength'
+                ]
+            transmission.transmission_settings.nir_gain[idx].normalize(archive, logger)
 
         # add settings: integration time
         for idx, wavelength_value in enumerate(data_dict['detector_integration_time']):
-            integration_time = IntegrationTime(
-                wavelength_upper_limit=wavelength_value['wavelength'],
-                integration_time=wavelength_value['value'],
-            )
+            transmission.m_setdefault(f'transmission_settings/integration_time/{idx}')
+            transmission.transmission_settings.integration_time[
+                idx
+            ].wavelength_upper_limit = wavelength_value['wavelength']
+            transmission.transmission_settings.integration_time[
+                idx
+            ].integration_time = wavelength_value['value']
             if idx - 1 >= 0:
-                integration_time.wavelength_lower_limit = data_dict[
-                    'detector_integration_time'
-                ][idx - 1]['wavelength']
-            integration_time.normalize(archive, logger)
-            transmission.transmission_settings.integration_time.append(integration_time)
+                transmission.transmission_settings.integration_time[
+                    idx
+                ].wavelength_lower_limit = data_dict['detector_integration_time'][
+                    idx - 1
+                ]['wavelength']
+            transmission.transmission_settings.integration_time[idx].normalize(
+                archive, logger
+            )
 
         # add settings: attenuator
-        attenuator = Attenuator()
+        transmission.m_setdefault('transmission_settings/attenuator')
         if data_dict['attenuation_percentage']['sample'] is not None:
-            attenuator.sample_beam_attenuation = (
+            transmission.transmission_settings.attenuator.sample_beam_attenuation = (
                 data_dict['attenuation_percentage']['sample'] / 100
             )
         if data_dict['attenuation_percentage']['reference'] is not None:
-            attenuator.reference_beam_attenuation = (
+            transmission.transmission_settings.attenuator.reference_beam_attenuation = (
                 data_dict['attenuation_percentage']['reference'] / 100
             )
-        attenuator.normalize(archive, logger)
-        transmission.transmission_settings.attenuator = attenuator
+        transmission.transmission_settings.attenuator.normalize(archive, logger)
 
         if self.get('transmission_settings'):
             if self.transmission_settings.get('accessory'):
@@ -1371,8 +1410,6 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
                             ].polarizer_angle = data_dict['polarizer_angle']
 
         transmission.transmission_settings.normalize(archive, logger)
-
-        return transmission
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger'):
         """
