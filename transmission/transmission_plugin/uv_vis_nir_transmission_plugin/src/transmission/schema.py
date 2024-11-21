@@ -1195,14 +1195,14 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
         if data_dict['is_tungsten_lamp_used']:
             lamps.append('Tungsten')
         try:
-            for i, light_source in enumerate(
-                instrument_reference.reference.light_sources
-            ):
+            i = 0
+            for light_source in instrument_reference.reference.light_sources:
                 if light_source.type in lamps:
                     transmission.m_setdefault(f'transmission_settings/light_source/{i}')
                     transmission.transmission_settings.light_source[
                         i
                     ].lamp = light_source
+                    i += 1
         except Exception as e:
             logger.warning(
                 f'Failed to add lamp settings. Error: {e}',
@@ -1249,10 +1249,12 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
             )
             detector_list = ['PMT', 'InGaAs']
         try:
-            for i, detector in enumerate(instrument_reference.reference.detectors):
+            i = 0
+            for detector in instrument_reference.reference.detectors:
                 if detector.type in detector_list:
                     transmission.m_setdefault(f'transmission_settings/detector/{i}')
                     transmission.transmission_settings.detector[i].detector = detector
+                    i += 1
         except Exception as e:
             logger.warning(
                 f'Failed to add detector settings. Error: {e}',
@@ -1275,13 +1277,13 @@ class ELNUVVisNirTransmission(UVVisNirTransmission, PlotSection, EntryData):
 
         # add settings: monochromator
         try:
-            for i, monochromator in enumerate(
-                instrument_reference.reference.monochromators
-            ):
+            i = 0
+            for monochromator in instrument_reference.reference.monochromators:
                 transmission.m_setdefault(f'transmission_settings/monochromator/{i}')
                 transmission.transmission_settings.monochromator[
                     i
                 ].monochromator = monochromator
+                i += 1
         except Exception as e:
             logger.warning(
                 f'Failed to add monochromator settings. Error: {e}',
