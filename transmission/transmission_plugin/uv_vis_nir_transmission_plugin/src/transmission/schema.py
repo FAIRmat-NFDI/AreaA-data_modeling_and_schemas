@@ -579,8 +579,8 @@ class MonochromatorSlitWidth(SettingOverWavelengthRange):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                     'slit_width_servo',
                     'slit_width',
                 ],
@@ -616,8 +616,8 @@ class MonochromatorSettings(SettingOverWavelengthRange):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                     'monochromator',
                 ],
             ),
@@ -641,8 +641,8 @@ class NIRGain(SettingOverWavelengthRange):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                     'nir_gain_factor',
                 ],
             ),
@@ -667,8 +667,8 @@ class IntegrationTime(SettingOverWavelengthRange):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                     'integration_time',
                 ],
             ),
@@ -695,8 +695,8 @@ class DetectorSettings(SettingOverWavelengthRange):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                     'detector',
                 ],
             ),
@@ -720,8 +720,8 @@ class LampSettings(SettingOverWavelengthRange):
             properties=SectionProperties(
                 order=[
                     'name',
-                    'wavelength_upper_limit',
                     'wavelength_lower_limit',
+                    'wavelength_upper_limit',
                     'lamp',
                 ],
             ),
