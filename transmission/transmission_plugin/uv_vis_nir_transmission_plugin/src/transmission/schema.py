@@ -799,7 +799,9 @@ class UVVisNirTransmissionResult(MeasurementResult):
     )
     absorbance = Quantity(
         type=np.float64,
-        description='Calculated absorbance ranging from 0 to 1.',
+        description="""
+        Calculated absorbance using the relation A = -log(T), where T denotes
+        transmittance.""",
         shape=['*'],
         unit='dimensionless',
         a_plot={'x': 'array_index', 'y': 'absorbance'},
