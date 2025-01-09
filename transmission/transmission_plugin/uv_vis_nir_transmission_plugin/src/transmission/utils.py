@@ -15,11 +15,31 @@ if TYPE_CHECKING:
     )
 
 
+def _not_equal(a, b) -> bool:
+    comparison = a != b
+    if isinstance(comparison, np.ndarray):
+        return comparison.any()
+    return comparison
+
+
 def merge_sections(  # noqa: PLR0912
     section: 'ArchiveSection',
     update: 'ArchiveSection',
     logger: 'BoundLogger' = None,
 ) -> None:
+    """
+    Unpopulated quantities and subsections in the `section` will be populated with the
+    values from the `update` section.
+    If a quantity is present in both sections but with different values, no change is
+    made.
+    If a repeating subsection is present in both sections, and they are of the same
+    length, the subsections will be merged recursively. Else, no change is made.
+
+    Args:
+        section (ArchiveSection): section to update.
+        update (ArchiveSection): section to update from.
+        logger (BoundLogger, optional): A structlog logger.
+    """
     if update is None:
         return
     if section is None:
@@ -35,12 +55,7 @@ def merge_sections(  # noqa: PLR0912
             continue
         if not section.m_is_set(quantity):
             section.m_set(quantity, update.m_get(quantity))
-        elif (
-            quantity.is_scalar
-            and section.m_get(quantity) != update.m_get(quantity)
-            or not quantity.is_scalar
-            and (section.m_get(quantity) != update.m_get(quantity)).any()
-        ):
+        elif _not_equal(section.m_get(quantity), update.m_get(quantity)):
             warning = f'Merging sections with different values for quantity "{name}".'
             if logger:
                 logger.warning(warning)
