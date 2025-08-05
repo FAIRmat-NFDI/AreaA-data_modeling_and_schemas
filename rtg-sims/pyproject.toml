@@ -123,3 +123,5 @@ where = ["src"]
 
 schema = "rtg_sims:schema"
 parser = "rtg_sims:parser"
+
+[tool.setuptools_scm]
